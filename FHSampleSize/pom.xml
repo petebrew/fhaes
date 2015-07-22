@@ -1,0 +1,122 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>org.fhaes</groupId>
+  <artifactId>fhsamplesize</artifactId>
+  <packaging>jar</packaging>
+
+  <name>FHSampleSize</name>
+  <url>http://www.fhaes.org</url>
+
+	<!-- Repository to deploy to. When deploying make sure your .m2/settings.xml 
+		file contains the correct username and password for the repository server -->
+	<distributionManagement>
+		<repository>
+			<id>tridas-releases</id>
+			<url>http://maven.tridas.org/repository/tridas-releases/</url>
+		</repository>
+		<snapshotRepository>
+			<id>tridas-snapshots</id>
+			<url>http://maven.tridas.org/repository/tridas-snapshots/</url>
+		</snapshotRepository>
+	</distributionManagement>
+
+	<repositories>
+		<repository>
+			<id>tridas-releases</id>
+			<name>TRiDaS Maven Releases Repository</name>
+			<url>http://maven.tridas.org/repository/tridas-releases/</url>
+		</repository>
+	    <repository>
+	      <id>tridas-snapshots</id>
+	      <url>http://maven.tridas.org/repository/tridas-snapshots/</url>
+	      <snapshots>
+	      	<updatePolicy>always</updatePolicy>
+	      </snapshots>
+	    </repository>
+	</repositories>
+
+	<licenses>
+		<license>
+			<name>The GNU General Public License, Version 3.0</name>
+			<url>http://www.gnu.org/licenses/gpl-3.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<organization>
+		<name>FHAES</name>
+		<url>http://www.fhaes.org</url>
+	</organization>
+
+	<contributors>
+		<contributor>
+			<name>Elaine Sutherland</name>
+		</contributor>
+		<contributor>
+			<name>Donald Falk</name>
+		</contributor>
+	</contributors>
+
+	<developers>
+		<developer>
+			<name>Elena Velasquez</name>
+			<organization>Boise State University</organization>
+		</developer>
+		<developer>
+			<name>Peter Brewer</name>
+			<email>p.brewer@ltrr.arizona.edu</email>
+			<organization>Laboratory of Tree-Ring Research, University of Arizona</organization>
+			<organizationUrl>http://ltrr.arizona.edu</organizationUrl>
+		</developer>
+	</developers>
+
+	<scm>
+		<connection>scm:svn:http://svn.code.sf.net/p/fhaes/code/trunk/fhsamplesize</connection>
+		<developerConnection>scm:svn:http://svn.code.sf.net/p/fhaes/code/trunk/fhsamplesize</developerConnection>
+		<url>http://sf.net/p/fhaes</url>
+	</scm>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.build.timestamp.format>yyy-MM-dd</maven.build.timestamp.format>
+		<timestamp>${maven.build.timestamp}</timestamp>
+	</properties>
+	
+	<dependencies>
+		<dependency>
+	      <groupId>junit</groupId>
+	      <artifactId>junit</artifactId>
+	      <version>4.8.1</version>
+	      <scope>test</scope>
+	    </dependency>
+		<dependency>
+			<groupId>org.fhaes</groupId>
+			<artifactId>fhutil</artifactId>
+			<version>0.1.4</version>
+		</dependency>
+		<dependency>
+			<groupId>org.jfree</groupId>
+			<artifactId>jfreechart</artifactId>
+			<version>1.0.17</version>
+		</dependency>
+		<dependency>
+			<groupId>org.swinglabs</groupId>
+			<artifactId>swingx</artifactId>
+			<version>1.6.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-math</artifactId>
+			<version>2.2</version>
+		</dependency>
+		<dependency>
+			<groupId>com.itextpdf</groupId>
+			<artifactId>itextpdf</artifactId>
+			<version>5.5.2</version>
+		</dependency>
+	</dependencies>
+
+	<version>1.0.0</version>
+</project>
