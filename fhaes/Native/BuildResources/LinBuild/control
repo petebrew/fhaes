@@ -1,0 +1,9 @@
+Package: [[name]]
+Version: [[version]]
+Section: misc
+Priority: optional
+Architecture: all
+Depends: default-jre | openjdk-7-jre | openjdk-6-jre | sun-java6-jre 
+Maintainer: Peter Brewer <p.brewer@ltrr.arizona.edu>
+Description: Application for performing dendrochronological fire history analysis
+Distribution: development

@@ -1,0 +1,2 @@
+#!/bin/bash
+java -jar /usr/share/fhaes/fhaes-${version}.jar

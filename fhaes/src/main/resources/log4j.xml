@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+
+  <appender name="logfile" class="org.apache.log4j.RollingFileAppender">
+    <param name="File" value="${user.home}/fhaes.log"/>
+    <param name="MaxFileSize" value="2mb"/>
+    <param name="MaxBackupIndex" value="5"/>
+    <layout class="org.apache.log4j.TTCCLayout">
+      <param name="DateFormat" value="DATE"/>
+    </layout>
+  </appender>
+  
+  <appender name="console" class="org.apache.log4j.ConsoleAppender">
+		<param name="Target" value="System.out" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%-5p %c{1} - %m%n" />
+		</layout>
+	</appender>
+
+
+  <!-- This is really noisy, ignore it! -->
+  <logger name="org.apache.http" additivity="false">
+    <level value="info"/>
+  </logger>
+  <logger name="org.apache.james" additivity="false">
+    <level value="info"/>
+  </logger>
+
+  <root>
+    <priority value="debug"/>
+    <appender-ref ref="console"/>
+    <appender-ref ref="logfile"/>
+  </root>
+
+</log4j:configuration>
