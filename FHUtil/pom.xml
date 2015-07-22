@@ -1,0 +1,193 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>org.fhaes</groupId>
+	<artifactId>fhutil</artifactId>
+	<version>0.1.7-SNAPSHOT</version>
+
+	<packaging>jar</packaging>
+
+	<name>FHUtil</name>
+	<url>http://maven.apache.org</url>
+
+	<organization>
+		<name>FHAES</name>
+		<url>http://www.fhaes.org</url>
+	</organization>
+
+	<contributors>
+		<contributor>
+			<name>Elaine Sutherland</name>
+			<roles>
+				<role>Project Coordinator</role>
+			</roles>
+		</contributor>
+		<contributor>
+			<name>Peter Brown</name>
+		</contributor>
+		<contributor>
+			<name>Donald Falk</name>
+		</contributor>
+		<contributor>
+			<name>Henri Grissino Mayer</name>
+		</contributor>
+		<contributor>
+			<name>Connie Woodhouse</name>
+		</contributor>
+		<contributor>
+			<name>Peter Brewer</name>
+			<email>p.brewer@ltrr.arizona.edu</email>
+			<organization>Laboratory of Tree-Ring Research, University of Arizona</organization>
+			<organizationUrl>http://ltrr.arizona.edu</organizationUrl>
+		</contributor>
+		<contributor>
+			<name>Elena Velasquez</name>
+			<organization>Boise State University</organization>
+		</contributor>
+	</contributors>
+
+	<developers>
+		<developer>
+			<name>Elena Velasquez</name>
+			<organization>Boise State University</organization>
+		</developer>
+		<developer>
+			<name>Wendy Gross</name>
+			<organization>NOAA/NCDC</organization>
+		</developer>
+		<developer>
+			<name>Peter Brewer</name>
+			<email>p.brewer@ltrr.arizona.edu</email>
+			<organization>Laboratory of Tree-Ring Research, University of Arizona</organization>
+			<organizationUrl>http://ltrr.arizona.edu</organizationUrl>
+		</developer>
+	</developers>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+	<!-- Repository to deploy to. When deploying make sure your .m2/settings.xml 
+		file contains the correct username and password for the repository server -->
+	<distributionManagement>
+		<repository>
+			<id>tridas-releases</id>
+			<url>http://maven.tridas.org/repository/tridas-releases/</url>
+		</repository>
+		<snapshotRepository>
+			<id>tridas-snapshots</id>
+			<url>http://maven.tridas.org/repository/tridas-snapshots/</url>
+		</snapshotRepository>
+	</distributionManagement>
+
+	<repositories>
+		<repository>
+			<id>tridas-releases</id>
+			<url>http://maven.tridas.org/repository/tridas-releases/</url>
+		</repository>
+		<repository>
+			<id>tridas-snapshots</id>
+			<url>http://maven.tridas.org/repository/tridas-snapshots/</url>
+		</repository>
+	</repositories>
+
+
+	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
+
+		<plugins>
+			<!-- <plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.7</version>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>-->
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+
+
+
+	</build>
+
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.8.1</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.codehaus.plexus</groupId>
+			<artifactId>plexus-utils</artifactId>
+			<version>1.1</version>
+		</dependency>
+		<dependency>
+			<groupId>uk.org.lidalia</groupId>
+			<artifactId>sysout-over-slf4j</artifactId>
+			<version>1.0.2</version>
+			<type>jar</type>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.6.1</version>
+			<type>jar</type>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>1.6.1</version>
+			<type>jar</type>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>1.3.2</version>
+		</dependency>
+		<dependency>
+			<groupId>com.miglayout</groupId>
+			<artifactId>miglayout-swing</artifactId>
+			<version>4.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.swinglabs</groupId>
+			<artifactId>swingx</artifactId>
+			<version>1.6.1</version>
+		</dependency>
+	</dependencies>
+	<description>This Jar contains various utilities for working with fire history files and data.  It is used by FHAES and associated projects.</description>
+
+	<scm>
+		<url>http://sourceforge.net/p/fhaes/code/HEAD/tree/trunk/FHUtil/</url>
+	</scm>
+	<issueManagement>
+		<url>http://sourceforge.net/p/fhaes/tickets/</url>
+		<system>Sourceforge.net</system>
+	</issueManagement>
+</project>
