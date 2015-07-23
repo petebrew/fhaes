@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 import javax.swing.DefaultCellEditor;
+import javax.swing.JButton;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
@@ -77,15 +78,19 @@ public class CategoryEntryPanel extends JPanel {
 		JTextField textField = new JTextField();
 		CategoryTreeCellEditor editor = new CategoryTreeCellEditor(textField);
 
+		// Initialize the category tree and its contents
+		DefaultMutableTreeNode root = new DefaultMutableTreeNode(workingSeries.getTitle());
+
+		JPanel panel = new JPanel();
+		add(panel, BorderLayout.NORTH);
+
 		// Setup the tree cell renderer with the custom icons
 		DefaultTreeCellRenderer renderer = new DefaultTreeCellRenderer();
 		renderer.setClosedIcon(Builder.getImageIcon("tree.png"));
 		renderer.setOpenIcon(Builder.getImageIcon("tree.png"));
 		renderer.setLeafIcon(Builder.getImageIcon("node.png"));
-
-		// Initialize the category tree and its contents
-		DefaultMutableTreeNode root = new DefaultMutableTreeNode(workingSeries.getTitle());
 		categoryTree = new JTree(root);
+		panel.add(categoryTree);
 		categoryTree.setCellEditor(editor);
 		categoryTree.setCellRenderer(renderer);
 		categoryTree.setEditable(true);
@@ -93,7 +98,6 @@ public class CategoryEntryPanel extends JPanel {
 		categoryTree.setToolTipText("Category entries must be in the following format: '" + DEFAULT_CATEGORY_ENTRY_VALUES + "'.");
 		categoryTree.getModel().addTreeModelListener(new CategoryTreeModelListener());
 		categoryTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
-		this.add(categoryTree, BorderLayout.CENTER);
 
 		// Setup the popup menu
 		JPopupMenu popupMenu = new JPopupMenu();
@@ -105,6 +109,9 @@ public class CategoryEntryPanel extends JPanel {
 		popupMenu.add(mntmAddNewCategory);
 		popupMenu.addSeparator();
 		popupMenu.add(mntmRemoveSelectedCategory);
+
+		JButton btnAddNewCategory = new JButton("Add new category entry");
+		panel.add(btnAddNewCategory);
 
 		// Add the nodes to the category tree
 		if (!workingSeries.getCategoryEntries().isEmpty())
@@ -343,6 +350,7 @@ public class CategoryEntryPanel extends JPanel {
 
 		component.addMouseListener(new MouseAdapter() {
 
+			@Override
 			public void mousePressed(MouseEvent e) {
 
 				if (e.isPopupTrigger())
@@ -351,6 +359,7 @@ public class CategoryEntryPanel extends JPanel {
 				}
 			}
 
+			@Override
 			public void mouseReleased(MouseEvent e) {
 
 				if (e.isPopupTrigger())
@@ -395,22 +404,26 @@ public class CategoryEntryPanel extends JPanel {
 	 */
 	class CategoryTreeModelListener implements TreeModelListener {
 
+		@Override
 		public void treeNodesChanged(TreeModelEvent e) {
 
 			refreshCategoryEntriesList();
 			addDoubleClickNode();
 		}
 
+		@Override
 		public void treeNodesInserted(TreeModelEvent e) {
 
 			refreshCategoryEntriesList();
 		}
 
+		@Override
 		public void treeNodesRemoved(TreeModelEvent e) {
 
 			refreshCategoryEntriesList();
 		}
 
+		@Override
 		public void treeStructureChanged(TreeModelEvent e) {
 
 			refreshCategoryEntriesList();
