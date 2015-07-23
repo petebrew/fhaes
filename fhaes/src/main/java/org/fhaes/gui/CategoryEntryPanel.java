@@ -1,12 +1,12 @@
 package org.fhaes.gui;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
@@ -21,6 +21,7 @@ import javax.swing.event.TreeModelListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
 import org.fhaes.model.FHCategoryEntry;
@@ -47,12 +48,13 @@ public class CategoryEntryPanel extends JPanel {
 	private FHAESAction actionRemoveSelectedCategory;
 
 	// Declare local constants
-	private final String DEFAULT_CATEGORY_ENTRY_VALUES = "category:content";
-	private final String DOUBLE_CLICK_TO_ADD_CATEGORY_ENTRY = "double-click to add new category entry...";
+	private final String DEFAULT_CATEGORY_VALUE = "default";
+	private final String DEFAULT_CONTENT_VALUE = "new category entry";
 
 	// Declare local variables
 	private final FHSeries workingSeries;
 	private JTree categoryTree;
+	private DefaultTreeCellRenderer renderer = new DefaultTreeCellRenderer();
 	private ArrayList<FHCategoryEntry> categoryEntries = new ArrayList<FHCategoryEntry>();
 
 	/**
@@ -72,6 +74,7 @@ public class CategoryEntryPanel extends JPanel {
 	 */
 	private void initGUI() {
 
+		// Set the layout as a borderlayout so it looks nice in windowbuilder
 		this.setLayout(new BorderLayout(0, 0));
 
 		// Setup the tree cell editor for use in the category tree
@@ -81,37 +84,35 @@ public class CategoryEntryPanel extends JPanel {
 		// Initialize the category tree and its contents
 		DefaultMutableTreeNode root = new DefaultMutableTreeNode(workingSeries.getTitle());
 
-		JPanel panel = new JPanel();
-		add(panel, BorderLayout.NORTH);
+		// Setup the base panel for displaying the tree and add button
+		JPanel basePanel = new JPanel();
+		basePanel.setBackground(new Color(255, 255, 255));
+		basePanel.setLayout(new BorderLayout(0, 0));
+		this.add(basePanel, BorderLayout.CENTER);
 
 		// Setup the tree cell renderer with the custom icons
-		DefaultTreeCellRenderer renderer = new DefaultTreeCellRenderer();
 		renderer.setClosedIcon(Builder.getImageIcon("tree.png"));
 		renderer.setOpenIcon(Builder.getImageIcon("tree.png"));
 		renderer.setLeafIcon(Builder.getImageIcon("node.png"));
 		categoryTree = new JTree(root);
-		panel.add(categoryTree);
+		basePanel.add(categoryTree, BorderLayout.CENTER);
 		categoryTree.setCellEditor(editor);
 		categoryTree.setCellRenderer(renderer);
 		categoryTree.setEditable(true);
 		categoryTree.setInvokesStopCellEditing(true);
-		categoryTree.setToolTipText("Category entries must be in the following format: '" + DEFAULT_CATEGORY_ENTRY_VALUES + "'.");
+		categoryTree.setToolTipText("Category entries must not contain any commas in order to be valid.");
 		categoryTree.getModel().addTreeModelListener(new CategoryTreeModelListener());
 		categoryTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+
+		// Setup the add-new-category button
+		JButton btnAddNewCategory = new JButton(actionAddNewCategory);
+		basePanel.add(btnAddNewCategory, BorderLayout.SOUTH);
 
 		// Setup the popup menu
 		JPopupMenu popupMenu = new JPopupMenu();
 		addPopup(categoryTree, popupMenu);
-
-		JMenuItem mntmAddNewCategory = new JMenuItem(actionAddNewCategory);
 		JMenuItem mntmRemoveSelectedCategory = new JMenuItem(actionRemoveSelectedCategory);
-
-		popupMenu.add(mntmAddNewCategory);
-		popupMenu.addSeparator();
 		popupMenu.add(mntmRemoveSelectedCategory);
-
-		JButton btnAddNewCategory = new JButton("Add new category entry");
-		panel.add(btnAddNewCategory);
 
 		// Add the nodes to the category tree
 		if (!workingSeries.getCategoryEntries().isEmpty())
@@ -120,13 +121,10 @@ public class CategoryEntryPanel extends JPanel {
 
 			for (int i = 0; i < categoriesToAdd.size(); i++)
 			{
-				String nodeText = categoriesToAdd.get(i).getCategory() + ":" + categoriesToAdd.get(i).getContent();
+				String nodeText = categoriesToAdd.get(i).getContent();
 				root.add(new DefaultMutableTreeNode(nodeText));
 			}
 		}
-
-		// Add the double-click node to the category tree
-		root.add(new DefaultMutableTreeNode(DOUBLE_CLICK_TO_ADD_CATEGORY_ENTRY));
 
 		// Perform initial repopulation of the category entries list
 		refreshCategoryEntriesList();
@@ -144,8 +142,13 @@ public class CategoryEntryPanel extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent event) {
 
-				DefaultMutableTreeNode nodeToAdd = new DefaultMutableTreeNode(DEFAULT_CATEGORY_ENTRY_VALUES);
-				getCategoryTreeModel().insertNodeInto(nodeToAdd, getRootNode(), getIndexOfLastChildNode() - 1);
+				DefaultMutableTreeNode nodeToAdd = new DefaultMutableTreeNode(DEFAULT_CONTENT_VALUE);
+				getCategoryTreeModel().insertNodeInto(nodeToAdd, getRootNode(), getRootNodeChildCount());
+				setLeafIconToBullet();
+
+				// Start editing the new node
+				TreePath pathToAddedNode = new TreePath(getChildNodeAtIndex(getRootNodeChildCount() - 1).getPath());
+				categoryTree.startEditingAtPath(pathToAddedNode);
 			}
 		};
 
@@ -159,11 +162,11 @@ public class CategoryEntryPanel extends JPanel {
 				try
 				{
 					DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) categoryTree.getLastSelectedPathComponent();
+					getCategoryTreeModel().removeNodeFromParent(selectedNode);
 
-					// Remove the selected node only if it is not the double-click node
-					if (selectedNode.getUserObject().toString() != DOUBLE_CLICK_TO_ADD_CATEGORY_ENTRY)
+					if (getRootNodeChildCount() == 0)
 					{
-						getCategoryTreeModel().removeNodeFromParent(selectedNode);
+						setLeafIconToTree();
 					}
 				}
 				catch (IllegalArgumentException ex)
@@ -176,6 +179,22 @@ public class CategoryEntryPanel extends JPanel {
 				}
 			}
 		};
+	}
+
+	/**
+	 * Updates the leaf icon to appear as a bullet. This is to account for when the tree contains at least one node.
+	 */
+	private void setLeafIconToBullet() {
+
+		renderer.setLeafIcon(Builder.getImageIcon("node.png"));
+	}
+
+	/**
+	 * Updates the leaf icon to appear as a tree. This is to account for when the tree contains no nodes.
+	 */
+	private void setLeafIconToTree() {
+
+		renderer.setLeafIcon(Builder.getImageIcon("tree.png"));
 	}
 
 	/**
@@ -227,16 +246,6 @@ public class CategoryEntryPanel extends JPanel {
 	}
 
 	/**
-	 * Returns the root node of the category tree.
-	 * 
-	 * @return root node of categoryTree
-	 */
-	private DefaultMutableTreeNode getRootNode() {
-
-		return (DefaultMutableTreeNode) categoryTree.getModel().getRoot();
-	}
-
-	/**
 	 * Returns the child node at the given index in the category tree.
 	 * 
 	 * @param index
@@ -248,35 +257,23 @@ public class CategoryEntryPanel extends JPanel {
 	}
 
 	/**
-	 * Returns the index of the last child node in the category tree.
+	 * Returns the root node of the category tree.
 	 * 
-	 * @return index of the last child node
+	 * @return root node of categoryTree
 	 */
-	private int getIndexOfLastChildNode() {
+	private DefaultMutableTreeNode getRootNode() {
 
-		return getRootNode().getChildCount();
+		return (DefaultMutableTreeNode) categoryTree.getModel().getRoot();
 	}
 
 	/**
-	 * Ensures that exactly one double click node is present in the category tree.
+	 * Returns the number of children contained by the root node.
+	 * 
+	 * @return number of children under the root node
 	 */
-	private void addDoubleClickNode() {
+	private int getRootNodeChildCount() {
 
-		boolean treeHasDoubleClickNode = false;
-
-		for (int i = 0; i < getIndexOfLastChildNode(); i++)
-		{
-			if (getChildNodeAtIndex(i).getUserObject().toString() == DOUBLE_CLICK_TO_ADD_CATEGORY_ENTRY)
-			{
-				treeHasDoubleClickNode = true;
-			}
-		}
-
-		if (!treeHasDoubleClickNode)
-		{
-			DefaultMutableTreeNode nodeToAdd = new DefaultMutableTreeNode(DOUBLE_CLICK_TO_ADD_CATEGORY_ENTRY);
-			getCategoryTreeModel().insertNodeInto(nodeToAdd, getRootNode(), getIndexOfLastChildNode());
-		}
+		return getRootNode().getChildCount();
 	}
 
 	/**
@@ -288,13 +285,13 @@ public class CategoryEntryPanel extends JPanel {
 		categoryEntries.clear();
 
 		// Validate all category entries and add them to the list
-		for (int i = 0; i < getIndexOfLastChildNode() - 1; i++)
+		for (int i = 0; i < getRootNodeChildCount(); i++)
 		{
 			FHCategoryEntry currentEntry = validateEntryAtIndex(i);
 
 			while (currentEntry == null)
 			{
-				getChildNodeAtIndex(i).setUserObject(DEFAULT_CATEGORY_ENTRY_VALUES);
+				getChildNodeAtIndex(i).setUserObject(DEFAULT_CONTENT_VALUE);
 				currentEntry = validateEntryAtIndex(i);
 			}
 
@@ -316,28 +313,14 @@ public class CategoryEntryPanel extends JPanel {
 	 */
 	private FHCategoryEntry validateEntryAtIndex(int index) {
 
-		Scanner sc = new Scanner(getChildNodeAtIndex(index).getUserObject().toString());
-		sc.useDelimiter(":");
+		String entryContent = getChildNodeAtIndex(index).getUserObject().toString();
 
-		try
+		if (entryContent.contains(","))
 		{
-			String category = sc.next(); // Verify the category string exists
-			String content = sc.next(); // Verify the content string exists
-
-			if (sc.hasNext())
-			{
-				sc.close();
-				return null;
-			}
-
-			sc.close();
-			return new FHCategoryEntry(workingSeries.getTitle(), category, content);
-		}
-		catch (Exception ex)
-		{
-			sc.close();
 			return null;
 		}
+
+		return new FHCategoryEntry(workingSeries.getTitle(), DEFAULT_CATEGORY_VALUE, entryContent);
 	}
 
 	/**
@@ -385,7 +368,6 @@ public class CategoryEntryPanel extends JPanel {
 		private static final long serialVersionUID = 1L;
 
 		public CategoryTreeCellEditor(JTextField textField) {
-
 			super(textField);
 		}
 
@@ -408,7 +390,6 @@ public class CategoryEntryPanel extends JPanel {
 		public void treeNodesChanged(TreeModelEvent e) {
 
 			refreshCategoryEntriesList();
-			addDoubleClickNode();
 		}
 
 		@Override
