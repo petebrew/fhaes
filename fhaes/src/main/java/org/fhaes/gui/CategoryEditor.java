@@ -15,8 +15,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 
-import net.miginfocom.swing.MigLayout;
-
 import org.fhaes.fhfilereader.FHCategoryReader;
 import org.fhaes.model.FHCategoryEntry;
 import org.fhaes.model.FHFile;
@@ -24,6 +22,7 @@ import org.fhaes.model.FHSeries;
 import org.fhaes.util.Builder;
 
 import au.com.bytecode.opencsv.CSVWriter;
+import net.miginfocom.swing.MigLayout;
 
 /**
  * CategoryEditor Class.
@@ -39,7 +38,7 @@ public class CategoryEditor extends JDialog {
 
 	// Declare local variables
 	private final FHFile workingFile;
-	private JPanel categoryListPanel = new JPanel();
+	private JPanel categoryListPanel;
 
 	/**
 	 * Initializes the dialog.
@@ -59,6 +58,7 @@ public class CategoryEditor extends JDialog {
 
 		this.getContentPane().setLayout(new BorderLayout(0, 0));
 
+		categoryListPanel = new JPanel();
 		categoryListPanel.setBackground(new Color(80, 80, 80));
 		categoryListPanel.setLayout(new MigLayout("wrap 1", "[grow,fill]", "[top]"));
 
@@ -80,6 +80,7 @@ public class CategoryEditor extends JDialog {
 		JButton btnExpandAll = new JButton("Expand All");
 		btnExpandAll.addActionListener(new ActionListener() {
 
+			@Override
 			public void actionPerformed(ActionEvent arg0) {
 
 				expandAllEntries();
@@ -93,6 +94,7 @@ public class CategoryEditor extends JDialog {
 		JButton btnCollapseAll = new JButton("Collapse All");
 		btnCollapseAll.addActionListener(new ActionListener() {
 
+			@Override
 			public void actionPerformed(ActionEvent arg0) {
 
 				collapseAllEntries();
@@ -106,6 +108,7 @@ public class CategoryEditor extends JDialog {
 		JButton btnSave = new JButton("Save");
 		btnSave.addActionListener(new ActionListener() {
 
+			@Override
 			public void actionPerformed(ActionEvent arg0) {
 
 				if (workingFile.getCategoryFilePath() != null)
@@ -130,6 +133,7 @@ public class CategoryEditor extends JDialog {
 		JButton btnCancel = new JButton("Cancel");
 		btnCancel.addActionListener(new ActionListener() {
 
+			@Override
 			public void actionPerformed(ActionEvent arg0) {
 
 				dispose();
@@ -204,7 +208,23 @@ public class CategoryEditor extends JDialog {
 
 		for (int i = 0; i < seriesList.size(); i++)
 		{
-			categoryListPanel.add(new CategoryEntryPanel(seriesList.get(i)));
+			categoryListPanel.add(new CategoryEntryPanel(this, seriesList.get(i)));
+		}
+	}
+
+	/**
+	 * Ensures that exactly one CategoryEntryPanel can be selected at any one time.
+	 */
+	protected void refreshAfterNewSelection(CategoryEntryPanel selectedPanel) {
+
+		for (int i = 0; i < categoryListPanel.getComponentCount(); i++)
+		{
+			CategoryEntryPanel currentPanel = (CategoryEntryPanel) categoryListPanel.getComponents()[i];
+
+			if (!currentPanel.equals(selectedPanel))
+			{
+				currentPanel.clearTreeSelection();
+			}
 		}
 	}
 

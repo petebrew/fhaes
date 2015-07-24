@@ -6,6 +6,7 @@ import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
 
 import javax.swing.DefaultCellEditor;
@@ -18,6 +19,8 @@ import javax.swing.JTextField;
 import javax.swing.JTree;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
@@ -52,6 +55,7 @@ public class CategoryEntryPanel extends JPanel {
 	private final String DEFAULT_CONTENT_VALUE = "new category entry";
 
 	// Declare local variables
+	private final CategoryEditor parentEditor;
 	private final FHSeries workingSeries;
 	private JTree categoryTree;
 	private DefaultTreeCellRenderer renderer = new DefaultTreeCellRenderer();
@@ -62,8 +66,9 @@ public class CategoryEntryPanel extends JPanel {
 	 * 
 	 * @param series
 	 */
-	public CategoryEntryPanel(FHSeries series) {
+	public CategoryEntryPanel(CategoryEditor editor, FHSeries series) {
 
+		parentEditor = editor;
 		workingSeries = series;
 		initActions();
 		initGUI();
@@ -77,25 +82,24 @@ public class CategoryEntryPanel extends JPanel {
 		// Set the layout as a borderlayout so it looks nice in windowbuilder
 		this.setLayout(new BorderLayout(0, 0));
 
-		// Setup the tree cell editor for use in the category tree
-		JTextField textField = new JTextField();
-		CategoryTreeCellEditor editor = new CategoryTreeCellEditor(textField);
-
-		// Initialize the category tree and its contents
-		DefaultMutableTreeNode root = new DefaultMutableTreeNode(workingSeries.getTitle());
-
 		// Setup the base panel for displaying the tree and add button
 		JPanel basePanel = new JPanel();
 		basePanel.setBackground(new Color(255, 255, 255));
 		basePanel.setLayout(new BorderLayout(0, 0));
 		this.add(basePanel, BorderLayout.CENTER);
 
-		// Setup the tree cell renderer with the custom icons
+		// Setup the tree cell editor for use in the category tree
+		JTextField textField = new JTextField();
+		CategoryTreeCellEditor editor = new CategoryTreeCellEditor(textField);
+
+		// Setup the tree renderer for displaying custom icons on the category tree
 		renderer.setClosedIcon(Builder.getImageIcon("tree.png"));
 		renderer.setOpenIcon(Builder.getImageIcon("tree.png"));
 		renderer.setLeafIcon(Builder.getImageIcon("node.png"));
+
+		// Setup the category tree
+		DefaultMutableTreeNode root = new DefaultMutableTreeNode(workingSeries.getTitle());
 		categoryTree = new JTree(root);
-		basePanel.add(categoryTree, BorderLayout.CENTER);
 		categoryTree.setCellEditor(editor);
 		categoryTree.setCellRenderer(renderer);
 		categoryTree.setEditable(true);
@@ -103,6 +107,23 @@ public class CategoryEntryPanel extends JPanel {
 		categoryTree.setToolTipText("Category entries must not contain any commas in order to be valid.");
 		categoryTree.getModel().addTreeModelListener(new CategoryTreeModelListener());
 		categoryTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+		categoryTree.addTreeSelectionListener(new CategoryTreeSelectionListener());
+		categoryTree.addMouseMotionListener(new MouseMotionListener() {
+
+			@Override
+			public void mouseDragged(MouseEvent mouseEvent) {
+
+				// Do nothing!
+			}
+
+			@Override
+			public void mouseMoved(MouseEvent mouseEvent) {
+
+				int selectedRow = categoryTree.getRowForLocation(mouseEvent.getX(), mouseEvent.getY());
+				categoryTree.setSelectionRow(selectedRow);
+			}
+		});
+		basePanel.add(categoryTree, BorderLayout.CENTER);
 
 		// Setup the add-new-category button
 		JButton btnAddNewCategory = new JButton(actionAddNewCategory);
@@ -198,11 +219,19 @@ public class CategoryEntryPanel extends JPanel {
 	}
 
 	/**
+	 * Clears row selection for the category tree.
+	 */
+	protected void clearTreeSelection() {
+
+		categoryTree.clearSelection();
+	}
+
+	/**
 	 * Collapses all rows on the category tree.
 	 */
-	public void collapseAllEntries() {
+	protected void collapseAllEntries() {
 
-		// Must clear selection before collapsing rows
+		// Must clear selection before collapsing rows, otherwise it does not behave correctly
 		categoryTree.clearSelection();
 
 		for (int i = 0; i < categoryTree.getRowCount(); i++)
@@ -214,9 +243,9 @@ public class CategoryEntryPanel extends JPanel {
 	/**
 	 * Expands all rows on the category tree.
 	 */
-	public void expandAllEntries() {
+	protected void expandAllEntries() {
 
-		// Must clear selection before expanding rows
+		// Must clear selection before expanding rows, otherwise it does not behave correctly
 		categoryTree.clearSelection();
 
 		for (int i = 0; i < categoryTree.getRowCount(); i++)
@@ -230,7 +259,7 @@ public class CategoryEntryPanel extends JPanel {
 	 * 
 	 * @return an array list of the category entries contained in categoryTree
 	 */
-	public ArrayList<FHCategoryEntry> getCategoryEntries() {
+	protected ArrayList<FHCategoryEntry> getCategoryEntries() {
 
 		return categoryEntries;
 	}
@@ -274,6 +303,14 @@ public class CategoryEntryPanel extends JPanel {
 	private int getRootNodeChildCount() {
 
 		return getRootNode().getChildCount();
+	}
+
+	/**
+	 * Notifies the parent category editor window that a new selection has been made on this panel's category tree.
+	 */
+	private void notifyParentOfNewSelection() {
+
+		parentEditor.refreshAfterNewSelection(this);
 	}
 
 	/**
@@ -408,6 +445,20 @@ public class CategoryEntryPanel extends JPanel {
 		public void treeStructureChanged(TreeModelEvent e) {
 
 			refreshCategoryEntriesList();
+		}
+	}
+
+	/**
+	 * CategoryTreeSelectionListener Class.
+	 * 
+	 * @author Joshua Brogan
+	 */
+	class CategoryTreeSelectionListener implements TreeSelectionListener {
+
+		@Override
+		public void valueChanged(TreeSelectionEvent e) {
+
+			notifyParentOfNewSelection();
 		}
 	}
 }
