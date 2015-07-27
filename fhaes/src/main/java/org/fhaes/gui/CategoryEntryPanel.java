@@ -138,8 +138,7 @@ public class CategoryEntryPanel extends JPanel {
 		// Setup the popup menu
 		JPopupMenu popupMenu = new JPopupMenu();
 		addPopup(categoryTree, popupMenu);
-		JMenuItem mntmRemoveSelectedCategory = new JMenuItem(actionRemoveSelectedCategory);
-		popupMenu.add(mntmRemoveSelectedCategory);
+		popupMenu.add(new JMenuItem(actionRemoveSelectedCategory));
 
 		// Add the nodes to the category tree
 		if (!workingSeries.getCategoryEntries().isEmpty())
@@ -151,6 +150,8 @@ public class CategoryEntryPanel extends JPanel {
 				String nodeText = categoriesToAdd.get(i).getContent();
 				root.add(new DefaultMutableTreeNode(nodeText));
 			}
+
+			getCategoryTreeModel().reload(root);
 		}
 		else
 		{
@@ -174,8 +175,18 @@ public class CategoryEntryPanel extends JPanel {
 			public void actionPerformed(ActionEvent event) {
 
 				DefaultMutableTreeNode nodeToAdd = new DefaultMutableTreeNode(DEFAULT_CONTENT_VALUE);
-				getCategoryTreeModel().insertNodeInto(nodeToAdd, getRootNode(), getRootNodeChildCount());
-				setLeafIconToBullet();
+
+				if (getRootNodeChildCount() > 0)
+				{
+					getCategoryTreeModel().insertNodeInto(nodeToAdd, getRootNode(), getRootNodeChildCount());
+				}
+				else
+				{
+					// Need to add root manually if root node has no children; this ensures nodes are displayed correctly
+					getRootNode().add(nodeToAdd);
+					getCategoryTreeModel().reload(getRootNode());
+					setLeafIconToBullet();
+				}
 
 				// Start editing the new node
 				TreePath pathToAddedNode = new TreePath(getChildNodeAtIndex(getRootNodeChildCount() - 1).getPath());
