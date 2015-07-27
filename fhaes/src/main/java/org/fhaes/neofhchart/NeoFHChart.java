@@ -1,26 +1,21 @@
+/**************************************************************************************************
+ * Fire History Analysis and Exploration System (FHAES), Copyright (C) 2015
+ * 
+ * Contributors: Aaron Decker, Michael Ababio, Zachariah Ferree, Matthew Willie, Peter Brewer
+ * 
+ * 		This program is free software: you can redistribute it and/or modify it under the terms of
+ * 		the GNU General Public License as published by the Free Software Foundation, either version
+ * 		3 of the License, or (at your option) any later version.
+ * 
+ * 		This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * 		without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * 		See the GNU General Public License for more details.
+ * 
+ * 		You should have received a copy of the GNU General Public License along with this program.
+ * 		If not, see <http://www.gnu.org/licenses/>.
+ * 
+ *************************************************************************************************/
 package org.fhaes.neofhchart;
-
-/*******************************************************************************
- * Copyright (C) 2015 Aaron Decker, Michael Ababio, Zachariah Ferree, 
- * Matthew Willie
- * 
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * Contributors:
- *     Aaron Decker, Michael Ababio, Zachariah Ferree, Matthew Willie, 
- *     Peter Brewer
- ******************************************************************************/
 
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
@@ -64,34 +59,34 @@ import org.slf4j.LoggerFactory;
  * @author Aaron Decker, Michael Ababio, Zachariah Ferree, Matthew Willie, Peter Brewer
  */
 public class NeoFHChart extends JPanel implements PrefsListener {
-
+	
 	private static final long serialVersionUID = 1L;
 	private static final Logger log = LoggerFactory.getLogger(NeoFHChart.class);
 	protected boolean paneActive = false;
-
+	
 	private JLabel lblLoading;
 	public JSVGCanvas svgCanvas = new JSVGCanvas();
 	protected FireChartSVG currentChart;
-
+	
 	@SuppressWarnings("unused")
 	private HashMap<String, FireChartSVG> chartMap = new HashMap<String, FireChartSVG>();
-
+	
 	/**
 	 * Constructor for JPanel containing SVG chart.
 	 */
 	@SuppressWarnings("unchecked")
 	public NeoFHChart() {
-
+		
 		App.prefs.addPrefsListener(this);
 		setLayout(new BorderLayout());
-
+		
 		JSVGScrollPane scrollPane = new JSVGScrollPane(svgCanvas);
 		svgCanvas.getInteractors().add(this.panInteractor);
 		svgCanvas.addMouseWheelListener(new MouseWheelListener() {
-
+			
 			@Override
 			public void mouseWheelMoved(MouseWheelEvent evt) {
-
+				
 				double rotation = evt.getPreciseWheelRotation();
 				ActionMap map = svgCanvas.getActionMap();
 				Action action = null;
@@ -128,53 +123,54 @@ public class NeoFHChart extends JPanel implements PrefsListener {
 						action = map.get(JSVGCanvas.SCROLL_UP_ACTION);
 					}
 				}
-
+				
 				action.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, null));
 			}
 		});
-
+		
 		add(scrollPane, BorderLayout.CENTER);
-
+		
 		lblLoading = new JLabel("Loading...");
 		lblLoading.setVisible(false);
 		scrollPane.add(lblLoading, BorderLayout.NORTH);
 	}
-
+	
 	/**
 	 * Custom interactor for panning with mouse drags.
 	 */
 	protected AbstractPanInteractor panInteractor = new AbstractPanInteractor() {
-
+		
+		@Override
 		public boolean startInteraction(InputEvent ie) {
-
+			
 			int mods = ie.getModifiers();
 			return ie.getID() == MouseEvent.MOUSE_PRESSED && (mods & InputEvent.BUTTON1_MASK) != 0;
 		}
 	};
-
+	
 	/**
 	 * Clear the current chart from the canvas.
 	 */
 	public void clearChart() {
-
+		
 		currentChart = null;
 		svgCanvas.setDocument(null);
 	}
-
+	
 	/**
 	 * Create a chart from the specified AbstractFireHistoryReader. Charts are cached so transient settings are maintains e.g. series order.
 	 * 
 	 * @param fr
 	 */
 	public void loadFile(AbstractFireHistoryReader fr) {
-
+		
 		if (fr == null)
 		{
 			// Reader is null so clear chart
 			clearChart();
 			return;
 		}
-
+		
 		/*
 		 * if (chartMap.containsKey(fr.getFile().getAbsolutePath())) { // Chart has previously been instantiated to retrieve from cache
 		 * currentChart = chartMap.get(fr.getFile().getAbsolutePath()); currentChart.buildElements(); } else {
@@ -183,85 +179,85 @@ public class NeoFHChart extends JPanel implements PrefsListener {
 		currentChart = new FireChartSVG(fr);
 		// chartMap.put(fr.getFile().getAbsolutePath(), currentChart);
 		// }
-
+		
 		// Add chart to canvas
 		svgCanvas.setDocument(currentChart.doc);
-
+		
 	}
-
+	
 	/**
 	 * This method creates the series list dialog if it doesn't exist yet
 	 */
 	protected void showSeriesPane() {
-
+		
 		SeriesListDialog.showDialog(currentChart, svgCanvas);
-
+		
 	}
-
+	
 	@Override
 	public void prefChanged(PrefsEvent e) {
-
+		
 		if (currentChart == null)
 			return;
-
+			
 		if (e.getPref().getValue().toLowerCase().startsWith("chart"))
 		{
 			// currentChart.positionChartGroupersAndDrawTimeAxis();
 			log.debug("Preference change for key " + e.getPref() + " picked up by NeoFHChart");
-
+			
 			App.prefs.setSilentMode(false);
 			redrawChart();
 			App.prefs.setSilentMode(false);
 		}
 	}
-
+	
 	/**
 	 * Force redraw of chart
 	 */
 	public void redrawChart() {
-
+		
 		Runnable r = new Runnable() {
-
+			
 			@Override
 			public void run() {
-
+				
 				currentChart.buildElements();
-
+				
 			}
 		};
-
+		
 		svgCanvas.getUpdateManager().getUpdateRunnableQueue().invokeLater(r);
 	}
-
+	
 	/**
 	 * Export the chart to SVG
 	 */
 	public void doExport() {
-
+		
 		doExport("SVG");
 	}
-
+	
 	/**
 	 * Export the chart to one of the following formats: SVG, PDF or PNG.
 	 * 
 	 * @param format
 	 */
 	public void doExport(String format) {
-
+		
 		if (currentChart == null)
 			return;
-
+			
 		File outputFile;
 		FileFilter selectedFilter;
 		String lastVisitedFolder = App.prefs.getPref(PrefKey.PREF_LAST_EXPORT_FOLDER, null);
-
+		
 		// Create a file chooser
 		final JFileChooser fc = new JFileChooser(lastVisitedFolder);
-
+		
 		SVGFilter svgf = new SVGFilter();
 		PNGFilter pngf = new PNGFilter();
 		PDFFilter pdff = new PDFFilter();
-
+		
 		if (format == null)
 		{
 			fc.addChoosableFileFilter(pngf);
@@ -284,23 +280,23 @@ public class NeoFHChart extends JPanel implements PrefsListener {
 			fc.addChoosableFileFilter(pdff);
 			fc.setFileFilter(pdff);
 		}
-
+		
 		fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		fc.setAcceptAllFileFilterUsed(false);
 		fc.setMultiSelectionEnabled(false);
 		fc.setDialogTitle("Save as...");
-
+		
 		// In response to a button click:
 		int returnVal = fc.showOpenDialog(App.mainFrame);
-
+		
 		if (returnVal == JFileChooser.APPROVE_OPTION)
 		{
 			outputFile = fc.getSelectedFile();
-
+			
 			if (FileUtils.getExtension(outputFile.getAbsolutePath()) == "")
 			{
 				log.debug("Output file extension not set by user");
-
+				
 				if (fc.getFileFilter().getDescription().equals(new FHXFileFilter().getDescription()))
 				{
 					log.debug("Adding fhx extension to output file name");
@@ -331,38 +327,38 @@ public class NeoFHChart extends JPanel implements PrefsListener {
 					log.debug("Adding svg extension to output file name");
 					outputFile = new File(outputFile.getAbsolutePath() + ".svg");
 				}
-
+				
 			}
 			else
 			{
 				log.debug("Output file extension set my user to '" + FileUtils.getExtension(outputFile.getAbsolutePath()) + "'");
 			}
-
+			
 			App.prefs.setPref(PrefKey.PREF_LAST_EXPORT_FOLDER, outputFile.getAbsolutePath());
-
+			
 			selectedFilter = fc.getFileFilter();
 		}
 		else
 		{
 			return;
 		}
-
+		
 		if (outputFile.exists())
 		{
 			Object[] options = { "Overwrite", "No", "Cancel" };
-			int response = JOptionPane.showOptionDialog(App.mainFrame, "The file '" + outputFile.getName()
-					+ "' already exists.  Are you sure you want to overwrite?", "Confirm", JOptionPane.YES_NO_CANCEL_OPTION,
-					JOptionPane.QUESTION_MESSAGE, null, // do not use a custom Icon
+			int response = JOptionPane.showOptionDialog(App.mainFrame,
+					"The file '" + outputFile.getName() + "' already exists.  Are you sure you want to overwrite?", "Confirm",
+					JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, // do not use a custom Icon
 					options, // the titles of buttons
 					options[0]); // default button title
-
+					
 			if (response != JOptionPane.YES_OPTION)
 			{
 				doExport();
 				return;
 			}
 		}
-
+		
 		if (selectedFilter.equals(svgf))
 		{
 			currentChart.saveSVGToDisk(outputFile);

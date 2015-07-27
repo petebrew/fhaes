@@ -1,24 +1,20 @@
-/*******************************************************************************
- * Copyright (C) 2013 NOAA/NCDC - Wendy Gross.
+/**************************************************************************************************
+ * Fire History Analysis and Exploration System (FHAES), Copyright (C) 2015 NOAA/NCDC
  * 
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * Contributors: Cay Horstmann, Wendy Gross, and Peter Brewer
  * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * 		This program is free software: you can redistribute it and/or modify it under the terms of
+ * 		the GNU General Public License as published by the Free Software Foundation, either version
+ * 		3 of the License, or (at your option) any later version.
  * 
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * 		This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * 		without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * 		See the GNU General Public License for more details.
  * 
- * Contributors:
- *     Cay Horstmann
- *     Wendy Gross
- *     Peter Brewer
- ******************************************************************************/
+ * 		You should have received a copy of the GNU General Public License along with this program.
+ * 		If not, see <http://www.gnu.org/licenses/>.
+ * 
+ *************************************************************************************************/
 package org.fhaes.util;
 
 import java.awt.Dimension;
@@ -38,17 +34,17 @@ import javax.swing.text.PlainDocument;
  * FHIntTextBean Class.
  */
 public class FHIntTextBean extends JTextField implements Serializable {
-
+	
 	private static final long serialVersionUID = 1L;
-
+	
 	/**
 	 * TODO
 	 */
 	public FHIntTextBean() {
-
+		
 		this(0, 10);
 	}
-
+	
 	/**
 	 * TODO
 	 * 
@@ -56,20 +52,22 @@ public class FHIntTextBean extends JTextField implements Serializable {
 	 * @param size
 	 */
 	public FHIntTextBean(int defval, int size) {
-
+		
 		super("" + defval, size);
 		addFocusListener(new FocusListener() {
-
+			
+			@Override
 			public void focusGained(FocusEvent event) {
-
+				
 				if (!event.isTemporary())
 				{
 					lastValue = getValue();
 				}
 			}
-
+			
+			@Override
 			public void focusLost(FocusEvent event) {
-
+				
 				if (!event.isTemporary())
 				{
 					editComplete();
@@ -77,12 +75,12 @@ public class FHIntTextBean extends JTextField implements Serializable {
 			}
 		});
 	}
-
+	
 	/**
 	 * TODO
 	 */
 	public void editComplete() {
-
+		
 		Integer oldValue = new Integer(lastValue);
 		Integer newValue = new Integer(getValue());
 		try
@@ -99,9 +97,9 @@ public class FHIntTextBean extends JTextField implements Serializable {
 			// doesn't work in all JDK versions--see bug #4128659
 		}
 	}
-
+	
 	public int getValue() {
-
+		
 		try
 		{
 			return Integer.parseInt(getText());
@@ -111,9 +109,9 @@ public class FHIntTextBean extends JTextField implements Serializable {
 			return -1;
 		}
 	}
-
+	
 	public void setValue(int v) throws PropertyVetoException {
-
+		
 		Integer oldValue = new Integer(getValue());
 		Integer newValue = new Integer(v);
 		fireVetoableChange("value", oldValue, newValue);
@@ -121,23 +119,25 @@ public class FHIntTextBean extends JTextField implements Serializable {
 		setText("" + v);
 		firePropertyChange("value", oldValue, newValue);
 	}
-
+	
+	@Override
 	protected Document createDefaultModel() {
-
+		
 		return new IntTextDocument();
 	}
-
+	
+	@Override
 	public Dimension getMinimumSize() {
-
+		
 		return new Dimension(XMINSIZE, YMINSIZE);
 	}
-
+	
 	private int lastValue;
-
+	
 	private static final int XMINSIZE = 50;
-
+	
 	private static final int YMINSIZE = 20;
-
+	
 	// public static void main() {
 	// JFrame f = new JFrame()
 	// asdf
@@ -145,11 +145,12 @@ public class FHIntTextBean extends JTextField implements Serializable {
 }
 
 class IntTextDocument extends PlainDocument {
-
+	
 	private static final long serialVersionUID = 1L;
-
+	
+	@Override
 	public void insertString(int offs, String str, AttributeSet a) throws BadLocationException {
-
+		
 		if (str == null)
 			return;
 		String oldString = getText(0, getLength());

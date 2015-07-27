@@ -1,4 +1,4 @@
-/*
+/**************************************************************************************************
  * Copyright (c) 1995, 2008, Oracle and/or its affiliates. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,8 +27,8 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
+ * 
+ *************************************************************************************************/
 package org.fhaes.segmentation;
 
 import java.awt.Component;
@@ -52,16 +52,16 @@ import javax.swing.text.NumberFormatter;
 /**
  * IntegerEditor Class. Implements a cell editor that uses a formatted text field to edit Integer values.
  * 
- * IntegerEditor is used by TableFTFEditDemo.java.
+ * Note that IntegerEditor is used by TableFTFEditDemo.java.
  */
 public class IntegerEditor extends DefaultCellEditor {
-
+	
 	private static final long serialVersionUID = 1L;
 	JFormattedTextField ftf;
 	NumberFormat integerFormat;
-	private Integer minimum, maximum;
-	private boolean DEBUG = false;
-
+	private final Integer minimum, maximum;
+	private final boolean DEBUG = false;
+	
 	/**
 	 * TODO
 	 * 
@@ -69,34 +69,35 @@ public class IntegerEditor extends DefaultCellEditor {
 	 * @param max
 	 */
 	public IntegerEditor(int min, int max) {
-
+		
 		super(new JFormattedTextField());
 		ftf = (JFormattedTextField) getComponent();
 		minimum = new Integer(min);
 		maximum = new Integer(max);
-
+		
 		// Set up the editor for the integer cells.
 		integerFormat = NumberFormat.getIntegerInstance();
 		NumberFormatter intFormatter = new NumberFormatter(integerFormat);
 		intFormatter.setFormat(integerFormat);
 		intFormatter.setMinimum(minimum);
 		intFormatter.setMaximum(maximum);
-
+		
 		ftf.setFormatterFactory(new DefaultFormatterFactory(intFormatter));
 		ftf.setValue(minimum);
 		ftf.setHorizontalAlignment(JTextField.TRAILING);
 		ftf.setFocusLostBehavior(JFormattedTextField.PERSIST);
-
+		
 		// React when the user presses Enter while the editor is
 		// active. (Tab is handled as specified by
 		// JFormattedTextField's focusLostBehavior property.)
 		ftf.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "check");
 		ftf.getActionMap().put("check", new AbstractAction() {
-
+			
 			private static final long serialVersionUID = 1L;
-
+			
+			@Override
 			public void actionPerformed(ActionEvent e) {
-
+				
 				if (!ftf.isEditValid())
 				{ // The text is invalid.
 					if (userSaysRevert())
@@ -105,6 +106,7 @@ public class IntegerEditor extends DefaultCellEditor {
 					}
 				}
 				else
+				{
 					try
 					{ // The text is valid,
 						ftf.commitEdit(); // so use it.
@@ -113,21 +115,28 @@ public class IntegerEditor extends DefaultCellEditor {
 					catch (java.text.ParseException exc)
 					{
 					}
+				}
 			}
 		});
 	}
-
-	// Override to invoke setValue on the formatted text field.
+	
+	/**
+	 * Override to invoke setValue on the formatted text field.
+	 */
+	@Override
 	public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
-
+		
 		JFormattedTextField ftf = (JFormattedTextField) super.getTableCellEditorComponent(table, value, isSelected, row, column);
 		ftf.setValue(value);
 		return ftf;
 	}
-
-	// Override to ensure that the value remains an Integer.
+	
+	/**
+	 * Override to ensure that the value remains an Integer.
+	 */
+	@Override
 	public Object getCellEditorValue() {
-
+		
 		JFormattedTextField ftf = (JFormattedTextField) getComponent();
 		Object o = ftf.getValue();
 		if (o instanceof Integer)
@@ -155,14 +164,14 @@ public class IntegerEditor extends DefaultCellEditor {
 			}
 		}
 	}
-
-	// Override to check whether the edit is valid,
-	// setting the value if it is and complaining if
-	// it isn't. If it's OK for the editor to go
-	// away, we need to invoke the superclass's version
-	// of this method so that everything gets cleaned up.
+	
+	/**
+	 * Override to check whether the edit is valid, setting the value if it is and complaining if it isn't. If it's OK for the editor to go
+	 * away, we need to invoke the superclass's version of this method so that everything gets cleaned up.
+	 */
+	@Override
 	public boolean stopCellEditing() {
-
+		
 		JFormattedTextField ftf = (JFormattedTextField) getComponent();
 		if (ftf.isEditValid())
 		{
@@ -173,7 +182,7 @@ public class IntegerEditor extends DefaultCellEditor {
 			catch (java.text.ParseException exc)
 			{
 			}
-
+			
 		}
 		else
 		{ // text is invalid
@@ -184,20 +193,21 @@ public class IntegerEditor extends DefaultCellEditor {
 		}
 		return super.stopCellEditing();
 	}
-
+	
 	/**
 	 * Lets the user know that the text they entered is bad. Returns true if the user elects to revert to the last good value. Otherwise,
 	 * returns false, indicating that the user wants to continue editing.
 	 */
 	protected boolean userSaysRevert() {
-
+		
 		Toolkit.getDefaultToolkit().beep();
 		ftf.selectAll();
 		Object[] options = { "Edit", "Revert" };
-		int answer = JOptionPane.showOptionDialog(SwingUtilities.getWindowAncestor(ftf), "The value must be an integer between " + minimum
-				+ " and " + maximum + ".\n" + "You can either continue editing " + "or revert to the last valid value.",
+		int answer = JOptionPane.showOptionDialog(SwingUtilities.getWindowAncestor(ftf),
+				"The value must be an integer between " + minimum + " and " + maximum + ".\n" + "You can either continue editing "
+						+ "or revert to the last valid value.",
 				"Invalid Text Entered", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE, null, options, options[1]);
-
+				
 		if (answer == 1)
 		{ // Revert!
 			ftf.setValue(ftf.getValue());

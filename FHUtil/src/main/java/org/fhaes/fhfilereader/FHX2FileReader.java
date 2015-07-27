@@ -1,24 +1,21 @@
+/**************************************************************************************************
+ * Fire History Analysis and Exploration System (FHAES), Copyright (C) 2015
+ * 
+ * Contributors: Elena Velasquez and Peter Brewer
+ * 
+ * 		This program is free software: you can redistribute it and/or modify it under the terms of
+ * 		the GNU General Public License as published by the Free Software Foundation, either version
+ * 		3 of the License, or (at your option) any later version.
+ * 
+ * 		This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * 		without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * 		See the GNU General Public License for more details.
+ * 
+ * 		You should have received a copy of the GNU General Public License along with this program.
+ * 		If not, see <http://www.gnu.org/licenses/>.
+ * 
+ *************************************************************************************************/
 package org.fhaes.fhfilereader;
-
-/*******************************************************************************
- * Copyright (C) 2013 Elena Velasquez
- * 
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * Contributors:
- *     Peter Brewer
- ******************************************************************************/
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -58,7 +55,7 @@ import org.slf4j.LoggerFactory;
  * @author Elena Velasquez
  */
 public class FHX2FileReader extends AbstractFireHistoryReader {
-
+	
 	private static final Logger log = LoggerFactory.getLogger(FHX2FileReader.class);
 	private final File file;
 	private String format;
@@ -76,7 +73,7 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 	private ArrayList<String> dataBlock;
 	private ArrayList<String> dataByRow;
 	private ArrayList<Integer> badDataLines;
-
+	
 	// *********
 	// The following arrays all come in I, II, III variants corresponding to:
 	// I - fires only
@@ -92,18 +89,18 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 	private ArrayList<ArrayList<Double>> filters2dI;
 	private ArrayList<ArrayList<Double>> filters2dII;
 	private ArrayList<ArrayList<Double>> filters2dIII;
-
+	
 	// Booleans for keeping track of which arrays have been initialised
 	private boolean isClimate1dIinit = false;
 	private boolean isClimate1dIIinit = false;
 	private boolean isClimate1dIIIinit = false;
 	private boolean isClimate2dIinit = false;
-	private boolean isClimate2dIIinit = false;
+	private final boolean isClimate2dIIinit = false;
 	private boolean isClimate2dIIIinit = false;
 	private boolean isFilterse2dIinit = false;
 	private boolean isFilterse2dIIinit = false;
 	private boolean isFilterse2dIIIinit = false;
-
+	
 	private ArrayList<ArrayList<Character>> capsperSample2d;
 	private ArrayList<ArrayList<Integer>> capsYearperSample2d;
 	private ArrayList<ArrayList<Character>> lowsperSample2d;
@@ -115,7 +112,7 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 	private ArrayList<ArrayList<Integer>> DecompSyb2d;
 	private int[] lastFirePerSample;
 	private int[] lastInjuryPerSample;
-
+	
 	private int[] pithIndexPerSample;
 	private int[] totalRecordYearsPerSample;
 	private int[] totals;
@@ -129,47 +126,47 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 	private int[] fIYearPerTree;
 	private int[] fIIYearPerTree;
 	private int[] fIIIYearPerTree;
-
+	
 	/**
 	 * Constructor for reading FHX2 format fire history data files
 	 * 
 	 * @param file - File to read
 	 */
 	public FHX2FileReader(File file) {
-
+		
 		this.file = file;
 		init();
 	}
-
+	
 	/**
 	 * Generate the ArrayList of series names present in this file
 	 */
 	private void generateSeriesName() {
-
+		
 		seriesName = new ArrayList<String>();
 		String ts;
-
+		
 		for (int i = 0; i < numberOfSeries; i++)
 		{
 			ts = "";
 			for (int j = 0; j < lengthOfSeriesName; j++)
 			{
 				ts = ts + seriesNameLine.get(j).charAt(i);
-			}// end of j loop
+			} // end of j loop
 			seriesName.add(ts);
 			// log.debug("the string is: "+ts);
-		}// end of i loop
+		} // end of i loop
 	}
-
+	
 	/**
 	 * Generates the standard fireEventsArray
 	 */
 	private void generate1DEventsI() {
-
+		
 		climate1dI = new ArrayList<Integer>();
 		String str;
 		Integer in;
-
+		
 		for (int i = 0; i < dataBlock.size(); i++)
 		{
 			in = -7;
@@ -198,19 +195,19 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 		this.isClimate1dIinit = true;
 		firstFireYear = firstYear + climate1dI.indexOf(1);
 	}
-
+	
 	/**
 	 * Generates the otherInjuriesArray for storing lowercase events
 	 */
 	private void generate1DEventsII() {
-
+		
 		// instantiate the climate array list
 		climate1dII = new ArrayList<Integer>();
 		// declare local variables
 		String strI;
 		Integer inI;
 		// log.debug("I am in make climateI injury");
-
+		
 		for (int i = 0; i < dataBlock.size(); i++)
 		{
 			inI = -7;
@@ -237,15 +234,15 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 			climate1dII.add(inI);
 		}
 		isClimate1dIIinit = true;
-
+		
 		firstInjuryYear = firstYear + climate1dII.indexOf(1);
 	}
-
+	
 	/**
 	 * Generates most of the basic arrays of data including climate2D.
 	 */
 	public void generate2DEventsI() {
-
+		
 		climate2dI = new ArrayList<ArrayList<Integer>>();
 		capsperSample2d = new ArrayList<ArrayList<Character>>();
 		lowsperSample2d = new ArrayList<ArrayList<Character>>();
@@ -267,7 +264,7 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 		Integer in;
 		// log.debug("I am in make climate2d");
 		// int FirstFireFlag[];
-
+		
 		fIYearPerTree = new int[numberOfSeries];
 		FFyearperTree = new int[numberOfSeries];
 		pithIndexPerSample = new int[numberOfSeries];
@@ -278,7 +275,7 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 		lastYearIndexPerSample = new int[numberOfSeries];
 		lastFirePerSample = new int[numberOfSeries];
 		lastInjuryPerSample = new int[numberOfSeries];
-
+		
 		// Load the data of the fhx file into the str[j][i]
 		// str is of size
 		for (int i = 0; i < dataBlock.size(); i++)
@@ -287,9 +284,9 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 			for (int j = 0; j < ts.length(); j++)
 			{
 				str[j][i] = ts.charAt(j);
-			}// end of j loop
-		}// end of i loop load
-
+			} // end of j loop
+		} // end of i loop load
+		
 		// /new stuff from elena
 		for (int i = 0; i < numberOfSeries; i++)
 		{
@@ -324,9 +321,9 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 				{
 					eachTreeTemp.add(0);
 				}
-				// log.debug(i+" "+str[i][j] +"  "
+				// log.debug(i+" "+str[i][j] +" "
 				// +eachTreeTemp.get(j));
-			}// end of j loop
+			} // end of j loop
 			if (eachTreeTemp.contains(1))
 			{
 				FFyearperTree[i] = eachTreeTemp.indexOf(1);
@@ -390,9 +387,9 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 			eachTreeTemp.clear();
 			// log.debug(" tree "+ i
 			// +"index of firstfire "+FFyearperTree[i]);
-		}// end of i loop
+		} // end of i loop
 			// end new stuff
-
+		
 		// Load each crossection (or tree) into the ArrayList variable eachTree
 		for (int j = 0; j < numberOfSeries; j++)
 		{
@@ -448,10 +445,10 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 						in = -1;
 					else
 						in = -1;
-
+						
 				}
 				eachTree.add(in);
-			}// end of i loop
+			} // end of i loop
 			climate2dI.add(eachTree);
 			capsperSample2d.add(capstemp);
 			capsYearperSample2d.add(capsYtemp);
@@ -462,7 +459,7 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 			// if(j==0){log.debug("caps #, Y"+capstemp+" "+ capsYtemp
 			// +"lows #, Y"+ lowstemp+" "+ lowsYtemp
 			// +"capls #, Y"+calostemp+" "+ calosYtemp);}
-		}// end of j loop
+		} // end of j loop
 		/*
 		 * set the start year for each sample it is the pith date or the innermost yearset the Last year for each sample it is the bark or
 		 * the outermost year
@@ -537,14 +534,14 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 				{
 					lastYearIndexPerSample[k] = -1;
 				}
-
+				
 			}
 			// log.debug("sample "+k +" the start " +
 			// startYearperSample[k]+ " the end " + lastYearperSample[k]);
 		}
-
+		
 		// determineFirstFireYear2
-
+		
 		// firstFireYear = firstYear + climate2d.indexOf(1);
 		ArrayList<Integer> ind = new ArrayList<Integer>();
 		for (int j = 0; j < numberOfSeries; j++)
@@ -554,7 +551,7 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 			ind.add(climate2dI.get(j).indexOf(1));
 		}
 		Collections.sort(ind);
-
+		
 		// log.debug("DEBUG Element " + climate2d.get(k).indexOf(1));
 		boolean breakme = true;
 		for (int j = 0; j < numberOfSeries; j++)
@@ -565,33 +562,33 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 				breakme = false;
 			}
 		}
-
+		
 		// log.debug("DEBUG Internal First Fire Year is" +
 		// firstFireYear);
 		isClimate2dIinit = true;
 	}
-
+	
 	/**
 	 * Generate multi-dimensional ArrayList of recorder years. A recorder year is where the sample actually recorded an event or a year in
 	 * which it was capable of recording an event if one was present
 	 */
 	private void generateRecorderYearsArray() {
-
+		
 		if (this.isClimate2dIinit == false)
 			this.generate2DEventsI();
-
+			
 		// instantiate the recorder array list
 		recorderYears2DArray = new ArrayList<ArrayList<Integer>>();
-
+		
 		// declare local variables
 		char[][] str = new char[numberOfSeries][dataBlock.size()];
 		String ts;
 		ArrayList<Integer> tempRecorderYearsForSample;
 		boolean charFlagFound = false;
 		char previousCharToCompare = ' ';
-
+		
 		totalRecordYearsPerSample = new int[numberOfSeries];
-
+		
 		// Load the data of the fhx file into the str[j][i]
 		for (int i = 0; i < dataBlock.size(); i++)
 		{
@@ -601,13 +598,13 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 				str[j][i] = ts.charAt(j);
 			}
 		}
-
+		
 		// Loop through all series with index i
 		for (int i = 0; i < numberOfSeries; i++)
 		{
 			tempRecorderYearsForSample = new ArrayList<Integer>();
 			totalRecordYearsPerSample[i] = 0;
-
+			
 			// Loop through years with index j
 			for (int j = 0; j < dataBlock.size(); j++)
 			{
@@ -616,7 +613,7 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 				if ((startYearIndexPerSample[i] <= j) && (lastYearIndexPerSample[i] >= j))
 				{
 					char theCurrentValue = str[i][j];
-
+					
 					// All the simple cases first...
 					if (theCurrentValue == '|')
 					{
@@ -674,7 +671,7 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 							tempRecorderYearsForSample.add(0);
 						}
 					}
-
+					
 					// Also complicated for the last year in sample and for
 					// injuries
 					else if ((theCurrentValue >= 'a' && theCurrentValue <= 'z'))
@@ -695,8 +692,8 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 							for (int k = ln - 1; k >= startYearIndexPerSample[i]; k--)
 							{
 								// log.debug("k is: "+ k);
-								if ((str[i][k] == '.') || (str[i][k] == '|') || (str[i][k] >= 'A' && str[i][k] <= 'Z')
-										|| (str[i][k] == '{') || (str[i][k] == '['))
+								if ((str[i][k] == '.') || (str[i][k] == '|') || (str[i][k] >= 'A' && str[i][k] <= 'Z') || (str[i][k] == '{')
+										|| (str[i][k] == '['))
 								{
 									charFlagFound = true;
 									previousCharToCompare = str[i][k];
@@ -728,7 +725,7 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 								log.error("Error calculating recorder year matrix.  Should never reach this code!");
 							}
 						}
-					}// adding separate case for } ]. in this case we step backwards (only) until we find a . | or fire event
+					} // adding separate case for } ]. in this case we step backwards (only) until we find a . | or fire event
 					else if ((theCurrentValue == '}') || (theCurrentValue == ']'))
 					{
 						// Step backwards until we find a . | or fire event
@@ -769,8 +766,8 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 						{
 							log.error("Error calculating recorder year matrix.  Should never reach this code!");
 						}
-					}// end of new stuff
-				}// end first if
+					} // end of new stuff
+				} // end first if
 				else
 				{
 					// Current year outside of the range of this sample so mark
@@ -778,39 +775,39 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 					tempRecorderYearsForSample.add(-1);
 				}
 			}
-
+			
 			Integer previousSize = null;
-
+			
 			if (recorderYears2DArray != null && recorderYears2DArray.size() > 0)
 			{
 				previousSize = recorderYears2DArray.get(0).size();
 			}
-
+			
 			if (previousSize != null)
 			{
 				if (previousSize != tempRecorderYearsForSample.size())
 				{
 					log.error("Size mismatch: " + previousSize + " v. " + tempRecorderYearsForSample.size());
-
+					
 				}
 			}
-
+			
 			recorderYears2DArray.add(tempRecorderYearsForSample);
-
+			
 			// + "x" +
 			// recorder2d.get(i).size()+" the sum of rec "+totalrecYearsperSample[i]);
-		}// end of i loop
+		} // end of i loop
 			// log.debug("DEBUG: SIZE recorder2d " + recorder2d.size()
 			// + "x" + recorder2d.get(2).size());
-
+		
 		isRecorderYears2DArrayInit = true;
 	}
-
+	
 	/**
 	 * Generates the basic injuries arrays including climate2dII and fIIYearPerTree
 	 */
 	private void generate2DEventsII() {
-
+		
 		// instantiate the climate array list
 		climate2dII = new ArrayList<ArrayList<Integer>>();
 		// declare local variables
@@ -821,10 +818,10 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 		Integer inII;
 		// log.debug("I am in make climate2dII injury");
 		// int FirstFireFlag[];
-
+		
 		// FirstFireFlag = new int[numberOfSeries];
 		fIIYearPerTree = new int[numberOfSeries];
-
+		
 		// Load the data of the fhx file into the strII[j][i]
 		// strII is of size
 		for (int i = 0; i < dataBlock.size(); i++)
@@ -833,9 +830,9 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 			for (int j = 0; j < tsII.length(); j++)
 			{
 				strII[j][i] = tsII.charAt(j);
-			}// end of j loop
-		}// end of i loop load
-
+			} // end of j loop
+		} // end of i loop load
+		
 		// /new stuff from elena
 		for (int i = 0; i < numberOfSeries; i++)
 		{
@@ -850,9 +847,9 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 				{
 					eachTreeTempII.add(0);
 				}
-				// log.debug(i+" "+str[i][j] +"  "
+				// log.debug(i+" "+str[i][j] +" "
 				// +eachTreeTemp.get(j));
-			}// end of j loop
+			} // end of j loop
 			if (eachTreeTempII.contains(1))
 			{
 				fIIYearPerTree[i] = eachTreeTempII.indexOf(1);
@@ -863,9 +860,9 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 				// FFyearperTree[i]=-1;
 			}
 			eachTreeTempII.clear();
-
-		}// end of i loop
-
+			
+		} // end of i loop
+		
 		// Load each crossection (or tree) into the ArrayList variable eachTree
 		for (int j = 0; j < numberOfSeries; j++)
 		{
@@ -885,16 +882,16 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 						inII = -1;
 					else
 						inII = -1;
-
+						
 				}
 				eachTreeII.add(inII);
-			}// end of i loop
+			} // end of i loop
 			climate2dII.add(eachTreeII);
-		}// end of j loop
+		} // end of j loop
 			// log.debug("DEBUG: SIZE climate2d " + climate2dII.size()
 			// + "x" + climate2dII.get(0).size());
 			// determineFirstInjuryYear2
-
+		
 		// firstFireYear = firstYear + climate2d.indexOf(1);
 		ArrayList<Integer> indII = new ArrayList<Integer>();
 		for (int j = 0; j < numberOfSeries; j++)
@@ -915,18 +912,18 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 				breakme = false;
 			}
 		}
-
+		
 		isClimate2dIinit = true;
 	}
-
+	
 	/**
 	 * Generates the filters2d array
 	 */
 	private void generate2DFiltersI() {
-
+		
 		if (this.isClimate2dIinit == false)
 			this.generate2DEventsI();
-
+			
 		// instantiate the climate array list
 		filters2dI = new ArrayList<ArrayList<Double>>();
 		// declare local variables
@@ -940,32 +937,32 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 		double TotalLowerCase;
 		double TotalTrees;
 		int[] datayears = new int[dataBlock.size()];
-
+		
 		filtercaps = new ArrayList<Double>();
 		filtertrees = new ArrayList<Double>();
 		filterprotrees = new ArrayList<Double>();
-
+		
 		// Load the data of the fhx file into the str[j][i]
 		for (int i = 0; i < dataBlock.size(); i++)
 		{
 			tsfilters = dataBlock.get(i);
 			datayears[i] = yearArray.get(i);
-
+			
 			for (int j = 0; j < tsfilters.length(); j++)
 			{
 				strfilters[j][i] = tsfilters.charAt(j);
 			}
-
+			
 			// Load each crossection (or tree) into the ArrayList variable
 			// eachTree
-
+			
 			filters[0] = 0;
 			filters[1] = 0;
 			filters[2] = 0;
 			TotalBars = 0;
 			TotalLowerCase = 0;
 			TotalTrees = 0;
-
+			
 			for (int j = 0; j < numberOfSeries; j++)
 			{
 				if (strfilters[j][i] >= 'A' && strfilters[j][i] <= 'Z')
@@ -977,7 +974,7 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 				if ((FFyearperTree[j] != -1) && (yearArray.get(i) >= yearArray.get(FFyearperTree[j]))
 						&& (TotalLowerCase >= 1 || TotalBars >= 1 || filters[0] >= 1))
 					TotalTrees = TotalTrees + 1;
-			}// end j loop
+			} // end j loop
 			filtercaps.add(filters[0]);
 			filters[1] = TotalTrees;
 			filtertrees.add(filters[1]);
@@ -986,25 +983,25 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 			else
 				filters[2] = -99;
 			filterprotrees.add(filters[2]);
-
-		}// end i loop
+			
+		} // end i loop
 		filters2dI.add(filtercaps);
 		filters2dI.add(filtertrees);
 		filters2dI.add(filterprotrees);
-
+		
 		this.isFilterse2dIinit = true;
 	}
-
+	
 	/**
 	 * Generate the filters2dII array
 	 */
 	private void generate2DFiltersII() {
-
+		
 		if (this.isClimate2dIinit == false)
 			this.generate2DEventsI();
 		if (this.isClimate2dIIinit == false)
 			this.generate2DEventsII();
-
+			
 		// instantiate the climate array list
 		filters2dII = new ArrayList<ArrayList<Double>>();
 		// declare local variables
@@ -1018,11 +1015,11 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 		double TotalUpperCaseII;
 		double TotalTreesII;
 		int[] datayearsII = new int[dataBlock.size()];
-
+		
 		filterlowsII = new ArrayList<Double>();
 		filtertreesII = new ArrayList<Double>();
 		filterprotreesII = new ArrayList<Double>();
-
+		
 		// Load the data of the fhx file into the str[j][i]
 		for (int i = 0; i < dataBlock.size(); i++)
 		{
@@ -1034,19 +1031,19 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 			{
 				strfiltersII[j][i] = tsfiltersII.charAt(j);
 			}
-
+			
 			// Load each sample into the ArrayList variable eachTree
-
+			
 			filtersII[0] = 0;
 			filtersII[1] = 0;
 			filtersII[2] = 0;
 			TotalBarsII = 0;
 			TotalUpperCaseII = 0;
 			TotalTreesII = 0;
-
+			
 			for (int j = 0; j < numberOfSeries; j++)
 			{
-
+				
 				if (strfiltersII[j][i] >= 'a' && strfiltersII[j][i] <= 'z')
 					filtersII[0] = filtersII[0] + 1;
 				if (strfiltersII[j][i] >= 'A' && strfiltersII[j][i] <= 'Z')
@@ -1056,7 +1053,7 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 				if ((fIIYearPerTree[j] != -1) && (yearArray.get(i) >= yearArray.get(fIIYearPerTree[j]))
 						&& (TotalUpperCaseII >= 1 || TotalBarsII >= 1 || filtersII[0] >= 1))
 					TotalTreesII = TotalTreesII + 1;
-			}// end j loop
+			} // end j loop
 			filterlowsII.add(filtersII[0]);
 			filtersII[1] = TotalTreesII;
 			filtertreesII.add(filtersII[1]);
@@ -1065,32 +1062,32 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 			else
 				filtersII[2] = -99;
 			filterprotreesII.add(filtersII[2]);
-
+			
 			// log.debug(filtercapsII.get(i)+" "+filtertreesII.get(i)+
 			// " "+ filterprotreesII.get(i));
-
-		}// end i loop
+			
+		} // end i loop
 		filters2dII.add(filterlowsII);
 		filters2dII.add(filtertreesII);
 		filters2dII.add(filterprotreesII);
 		// log.debug("DEBUG: SIZE Filtersed " + filters2d.size() + "x"
 		// + filters2d.get(0).size());
-
+		
 		// determineFirstInjuryYear2();
 		this.isFilterse2dIIinit = true;
-
+		
 	}
-
+	
 	/**
 	 * Generates the filters2dIII array
 	 */
 	private void generate2DFiltersIII() {
-
+		
 		if (this.isClimate2dIinit == false)
 			this.generate2DEventsI();
 		if (this.isClimate2dIIIinit == false)
 			this.generate2DEventsIII();
-
+			
 		// instantiate the climate array list
 		filters2dIII = new ArrayList<ArrayList<Double>>();
 		// declare local variables
@@ -1104,11 +1101,11 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 		double TotalIndicatorsIII;
 		double TotalTreesIII;
 		int[] datayearsIII = new int[dataBlock.size()];
-
+		
 		filterIndicatorsIII = new ArrayList<Double>();
 		filtertreesIII = new ArrayList<Double>();
 		filterprotreesIII = new ArrayList<Double>();
-
+		
 		// Load the data of the fhx file into the str[j][i]
 		for (int i = 0; i < dataBlock.size(); i++)
 		{
@@ -1120,19 +1117,19 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 			{
 				strfiltersIII[j][i] = tsfiltersIII.charAt(j);
 			}
-
+			
 			// Load each sample into the ArrayList variable eachTree
-
+			
 			filtersIII[0] = 0;
 			filtersIII[1] = 0;
 			filtersIII[2] = 0;
 			TotalBarsIII = 0;
 			TotalIndicatorsIII = 0;
 			TotalTreesIII = 0;
-
+			
 			for (int j = 0; j < numberOfSeries; j++)
 			{
-
+				
 				if ((strfiltersIII[j][i] >= 'a' && strfiltersIII[j][i] <= 'z')
 						|| (strfiltersIII[j][i] >= 'A' && strfiltersIII[j][i] <= 'Z'))
 					filtersIII[0] = filtersIII[0] + 1;
@@ -1144,7 +1141,7 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 				if ((fIIIYearPerTree[j] != -1) && (yearArray.get(i) >= yearArray.get(fIIIYearPerTree[j]))
 						&& (TotalIndicatorsIII >= 1 || TotalBarsIII >= 1 || filtersIII[0] >= 1))
 					TotalTreesIII = TotalTreesIII + 1;
-			}// end j loop
+			} // end j loop
 			filterIndicatorsIII.add(filtersIII[0]);
 			filtersIII[1] = TotalTreesIII;
 			filtertreesIII.add(filtersIII[1]);
@@ -1153,34 +1150,35 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 			else
 				filtersIII[2] = -99;
 			filterprotreesIII.add(filtersIII[2]);
-
+			
 			// log.debug(filtercapsII.get(i)+" "+filtertreesII.get(i)+
 			// " "+ filterprotreesII.get(i));
-
-		}// end i loop
+			
+		} // end i loop
 		filters2dIII.add(filterIndicatorsIII);
 		filters2dIII.add(filtertreesIII);
 		filters2dIII.add(filterprotreesIII);
 		// log.debug("DEBUG: SIZE Filtersed " + filters2d.size() + "x"
 		// + filters2d.get(0).size());
-
+		
 		// determineFirstIndicatorYear2();
 		this.isFilterse2dIIIinit = true;
-
+		
 	}
-
+	
 	/**
 	 * TODO Documentation needed
 	 * 
 	 */
+	@Override
 	public void makeDecompSyb2d() {
-
+		
 		// instantiate the DecompSyb ArrayList
-
+		
 		DecompSyb2d = new ArrayList<ArrayList<Integer>>();
 		ArrayList<Integer> DecompSybtemp;
 		// declare local variables
-
+		
 		String tsfilters;
 		/*
 		 * totals = { tcaps,tlows,tD,tE,tM,tL,tA,tU,td, te,tm, tl, ta, tu ,t[]{} } filters = { caps, lows, D, E, M, L, A, U, d, e, m, l, a,
@@ -1188,7 +1186,7 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 		 */
 		int[] filters = new int[20];
 		totals = new int[15];
-
+		
 		log.debug("I am in make DecompSyb");
 		totals[0] = 0;
 		totals[1] = 0;
@@ -1209,10 +1207,10 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 		{
 			tsfilters = dataBlock.get(i);
 			DecompSybtemp = new ArrayList<Integer>();
-
+			
 			// Load each crossection (or tree) into the ArrayList variable
 			// eachTree
-
+			
 			filters[0] = 0;
 			filters[1] = 0;
 			filters[2] = 0;
@@ -1236,7 +1234,7 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 			for (int j = 0; j < tsfilters.length(); j++)
 			{
 				char c = tsfilters.charAt(j);
-				// log.debug("I am in  and the makeDecompSyb per tree is "+FFyearperTree[j]);
+				// log.debug("I am in and the makeDecompSyb per tree is "+FFyearperTree[j]);
 				if (c >= 'A' && c <= 'Z')
 					filters[0] = filters[0] + 1;
 				if (c >= 'a' && c <= 'z')
@@ -1277,24 +1275,24 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 					filters[18] = filters[18] + 1;
 				if (c == '.')
 					filters[19] = filters[19] + 1;
-			}// end j loop
+			} // end j loop
 			for (int k = 0; k < 14; k++)
 			{
 				totals[k] = totals[k] + filters[k];
 			}
-
+			
 			totals[14] = totals[14] + filters[14] + filters[15] + filters[16] + filters[17];
 			for (int ik = 0; ik < 5; ik++)
 			{
 				DecompSybtemp.add(totals[ik + 2]);
 			}
 			DecompSyb2d.add(DecompSybtemp);
-		}// end i loop
+		} // end i loop
 			// for(int k=0;k<9;k++){
 			// log.debug("DEBUG: SIZE totals " + totals.length
 			// +" number of totals is "+ totals[k]);
 			// }
-
+		
 		// log.debug("DEBUG: SIZE DecompSyb " + DecompSyb.size() + "x"
 		// + DecompSyb.get(0).size());
 		// for(int k=0;k<DecompSyb.get(0).size();k++){
@@ -1303,24 +1301,24 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 		// }
 		// log.debug("DEBUG: SIZE DecompSyb2d " + DecompSyb2d.size() +
 		// "x" + DecompSyb2d.get(0).size());
-
+		
 		// end Decompsyb
 		// endDecomp
 		// new determnine First injury year
 	}
-
+	
 	/**
 	 * Generate the firesAndInjuriesArray
 	 */
 	private void generate1DEventsIII() {
-
+		
 		// instantiate the climate array list
 		climate1dIII = new ArrayList<Integer>();
 		// declare local variables
 		String strIII;
 		Integer inIII;
 		// log.debug("I am in make climate");
-
+		
 		for (int i = 0; i < dataBlock.size(); i++)
 		{
 			inIII = -7;
@@ -1349,12 +1347,12 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 		isClimate1dIIIinit = true;
 		firstIndicatorYear = firstYear + climate1dIII.indexOf(1);
 	}
-
+	
 	/**
 	 * Generates the basic fire events and injuries arrays including climate2dIII
 	 */
 	private void generate2DEventsIII() {
-
+		
 		// instantiate the climate array list
 		climate2dIII = new ArrayList<ArrayList<Integer>>();
 		// declare local variables
@@ -1364,9 +1362,9 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 		ArrayList<Integer> eachTreeTempIII;
 		Integer inIII;
 		// log.debug("I am in make climate2dII injury");
-
+		
 		fIIIYearPerTree = new int[numberOfSeries];
-
+		
 		// Load the data of the fhx file into the strIII[j][i]
 		for (int i = 0; i < dataBlock.size(); i++)
 		{
@@ -1374,9 +1372,9 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 			for (int j = 0; j < tsIII.length(); j++)
 			{
 				strIII[j][i] = tsIII.charAt(j);
-			}// end of j loop
-		}// end of i loop load
-
+			} // end of j loop
+		} // end of i loop load
+		
 		// /new stuff from elena
 		for (int i = 0; i < numberOfSeries; i++)
 		{
@@ -1391,9 +1389,9 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 				{
 					eachTreeTempIII.add(0);
 				}
-				// log.debug(i+" "+str[i][j] +"  "
+				// log.debug(i+" "+str[i][j] +" "
 				// +eachTreeTemp.get(j));
-			}// end of j loop
+			} // end of j loop
 			if (eachTreeTempIII.contains(1))
 			{
 				fIIIYearPerTree[i] = eachTreeTempIII.indexOf(1);
@@ -1404,9 +1402,9 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 				// FFyearperTree[i]=-1;
 			}
 			eachTreeTempIII.clear();
-
-		}// end of i loop
-
+			
+		} // end of i loop
+		
 		// Load each crossection (or tree) into the ArrayList variable eachTree
 		for (int j = 0; j < numberOfSeries; j++)
 		{
@@ -1426,17 +1424,17 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 						inIII = -1;
 					else
 						inIII = -1;
-
+						
 				}
 				eachTreeIII.add(inIII);
-			}// end of i loop
+			} // end of i loop
 			climate2dIII.add(eachTreeIII);
-		}// end of j loop
+		} // end of j loop
 			// log.debug("DEBUG: SIZE climate2d " + climate2dIII.size()
 			// + "x" + climate2dIII.get(0).size());
-
+		
 		// determineFirstIndicatorYear2
-
+		
 		ArrayList<Integer> indIII = new ArrayList<Integer>();
 		for (int j = 0; j < numberOfSeries; j++)
 		{
@@ -1454,15 +1452,15 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 		}
 		// log.debug("DEBUG Internal First indicator Year" +
 		// firstIndicatorYear);
-
+		
 		isClimate2dIIIinit = true;
 	}
-
+	
 	/**
 	 * Initialise the FHX2FileReader
 	 */
 	private void init() {
-
+		
 		String record = null;
 		String blankName = "";
 		FileReader fr = null;
@@ -1476,12 +1474,12 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 		// String fhx2dataline = "^[a-z A-Z . | } { \\[ \\]]+$";
 		String regexNumericalDataint = "^[0-9 \\-]+$";
 		int idx;
-
+		
 		try
 		{
 			fr = new FileReader(file);
 			br = new BufferedReader(fr);
-
+			
 			while ((record = br.readLine()) != null)
 			{
 				idx = record.lastIndexOf(" ");
@@ -1494,7 +1492,7 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 					// log.debug(record is);
 					if (record.toLowerCase().startsWith("fhx2 format") || record.toLowerCase().startsWith("fire2 format"))
 					{
-
+						
 						isFormatInfoSet = true;
 						// set file format type
 						if (record.toLowerCase().startsWith("fhx2 format"))
@@ -1505,11 +1503,11 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 						{
 							format = "FIRE2";
 						}
-
+						
 						record = br.readLine();
 						String[] result = p.split(record);
 						// if(result[0].t)
-
+						
 						firstYear = Integer.parseInt(result[0].trim());
 						numberOfSeries = Integer.parseInt(result[1].trim());
 						lengthOfSeriesName = Integer.parseInt(result[2].trim());
@@ -1521,7 +1519,7 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 						}
 						for (int i = 0; i <= this.getLengthOfSeriesName(); i++)
 						{
-
+							
 							// record = br.readLine().trim();
 							record = br.readLine();
 							// log.debug("length of record is : "+
@@ -1541,11 +1539,11 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 								{
 									seriesNameLine.add((record.substring(0, record.length()))
 											+ (blankName.substring(0, (this.getNumberOfSeries() - record.length()))));
-
+											
 								}
 							}
 							// log.debug("nameLine : "+ record);
-						}// endofloopi getting the name of the namelines
+						} // endofloopi getting the name of the namelines
 						int countblines = 0;
 						while ((record = br.readLine()) != null)
 						{
@@ -1558,11 +1556,12 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 							}
 							else if (record.length() > this.getNumberOfSeries())
 							{
-								// log.debug("length is "+record.length()+"piece left  is: "+record.substring(this.getNumberOfSeries(),record.length()).trim());
+								// log.debug("length is "+record.length()+"piece left is:
+								// "+record.substring(this.getNumberOfSeries(),record.length()).trim());
 								String yearbit = record.substring(this.getNumberOfSeries(), record.length()).trim();
 								if (!yearbit.matches(regexNumericalDataint))
 								{
-									// log.debug("Year bit of line is wonky.  Year bit is:"
+									// log.debug("Year bit of line is wonky. Year bit is:"
 									// +yearbit);
 									hitBadline = true;
 									badDataLines.add(countblines);
@@ -1587,7 +1586,7 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 							{
 								log.debug("Setting hitBadLine because record.length() = " + record.length()
 										+ ", whereas getNumberOfSeries() = " + this.getNumberOfSeries());
-
+										
 								hitBadline = true;
 								badDataLines.add(countblines);
 								// log.debug("I am here in recor.length less that series number");
@@ -1615,7 +1614,7 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 		}
 		finally
 		{
-
+			
 			// Clean up readers
 			try
 			{
@@ -1624,53 +1623,56 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 			}
 			catch (IOException e)
 			{
-
+			
 			}
-
+			
 		}
 		yearArray = new ArrayList<Integer>();
 		for (int i = 0; i < dataBlock.size(); i++)
 			yearArray.add(this.getFirstYear() + i);
-
+			
 		generateSeriesName();
-
+		
 	}
-
+	
 	// **************
 	//
 	// ACCESSORS
 	//
 	// **************
-
+	
 	/**
 	 * Get the first year in which an indicator is found within this file
 	 * 
 	 * @return
 	 */
+	@Override
 	public Integer getFirstIndicatorYear() {
-
+		
 		if (isClimate1dIIIinit == false)
 			this.generate1DEventsIII();
 		return firstIndicatorYear;
 	}
-
+	
 	/**
 	 * Get the year in which the first injury is found
 	 * 
 	 * @return
 	 */
+	@Override
 	public Integer getFirstInjuryYear() {
-
+		
 		if (isClimate1dIIinit == false)
 			this.generate1DEventsII();
 		return firstInjuryYear;
 	}
-
+	
+	@Override
 	public boolean passesBasicSyntaxCheck() {
-
+		
 		return hitBlankline && !hitBadline;
 	}
-
+	
 	/**
 	 * <p>
 	 * Get an ArrayList with length equal to number of years in file, containing Integer codes meaning
@@ -1683,13 +1685,14 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 	 * 
 	 * @return
 	 */
+	@Override
 	public ArrayList<Integer> getFireEventsArray() {
-
+		
 		if (isClimate1dIinit == false)
 			this.generate1DEventsI();
 		return climate1dI;
 	}
-
+	
 	/**
 	 * <p>
 	 * Get an ArrayList with length equal to number of years in file, containing Integer codes meaning
@@ -1702,13 +1705,14 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 	 * 
 	 * @return
 	 */
+	@Override
 	public ArrayList<Integer> getOtherInjuriesArray() {
-
+		
 		if (this.isClimate1dIIinit == false)
 			this.generate1DEventsII();
 		return climate1dII;
 	}
-
+	
 	/**
 	 * <p>
 	 * Get an ArrayList with length equal to number of years in file, containing Integer codes meaning
@@ -1721,64 +1725,70 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 	 * 
 	 * @return
 	 */
+	@Override
 	public ArrayList<Integer> getFiresAndInjuriesArray() {
-
+		
 		if (isClimate1dIIIinit == false)
 			this.generate1DEventsIII();
 		return climate1dIII;
 	}
-
+	
 	/**
 	 * Get an ArrayList of years contained within this file
 	 * 
 	 * @return
 	 */
+	@Override
 	public ArrayList<Integer> getYearArray() {
-
+		
 		return yearArray;
 	}
-
+	
 	/**
 	 * Returns an array of strings, each containing the data portion of the FHX file minus any year value on the end. Each string will
 	 * contain the same number of characters as there are series in the file.
 	 * 
 	 * @return
 	 */
+	@Override
 	public ArrayList<String> getData() {
-
+		
 		return dataBlock;
 	}
-
+	
 	/**
 	 * Returns an array of rows containing the raw character data extracted from the data block of the FHX file
 	 * 
 	 * @return
 	 */
+	@Override
 	public ArrayList<String> getRawRowData() {
-
+		
 		return dataByRow;
 	}
-
+	
 	/**
 	 * Get ArrayList of line numbers for all data lines that contain errors
 	 * 
 	 * @return
 	 */
+	@Override
 	public ArrayList<Integer> getBadDataLineNumbers() {
-
+		
 		return badDataLines;
 	}
-
+	
 	/**
 	 * TODO Documentation needed
 	 * 
 	 * @return
 	 */
+	@Override
 	public int[] getTotals() {
-
+		
 		return totals;
 	}
-
+	
 	/**
 	 * <p>
 	 * Get a multi-dimensional array with rows = number of years, and columns = number of samples. The integer values within the arrays mean
@@ -1794,13 +1804,14 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 	 * @param eventType
 	 * @return
 	 */
+	@Override
 	public ArrayList<ArrayList<Integer>> getEventDataArrays(EventTypeToProcess eventType) {
-
+		
 		if (eventType == null)
 		{
 			return null;
 		}
-
+		
 		if (eventType.equals(EventTypeToProcess.FIRE_EVENT))
 		{
 			if (this.isClimate2dIinit == false)
@@ -1819,59 +1830,63 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 				this.generate2DEventsIII();
 			return this.climate2dIII;
 		}
-
+		
 		return null;
-
+		
 	}
-
+	
 	/**
 	 * TODO Documentation needed
 	 * 
 	 * @return
 	 */
+	@Override
 	public ArrayList<ArrayList<Integer>> getCapsYearperSample2d() {
-
+		
 		if (this.isClimate2dIinit == false)
 			this.generate2DEventsI();
 		return capsYearperSample2d;
 	}
-
+	
 	/**
 	 * TODO Documentation needed
 	 * 
 	 * @return
 	 */
+	@Override
 	public ArrayList<ArrayList<Integer>> getCalosYearperSample2d() {
-
+		
 		if (this.isClimate2dIinit == false)
 			this.generate2DEventsI();
 		return calosYearperSample2d;
 	}
-
+	
 	/**
 	 * TODO Documentation needed
 	 * 
 	 * @return
 	 */
+	@Override
 	public ArrayList<ArrayList<Character>> getCapsperSample2d() {
-
+		
 		if (this.isClimate2dIinit == false)
 			this.generate2DEventsI();
 		return capsperSample2d;
 	}
-
+	
 	/**
 	 * TODO Documentation needed
 	 * 
 	 * @return
 	 */
+	@Override
 	public ArrayList<ArrayList<Character>> getCalosperSample2d() {
-
+		
 		if (this.isClimate2dIinit == false)
 			this.generate2DEventsI();
 		return calosperSample2d;
 	}
-
+	
 	/**
 	 * <p>
 	 * Get a multi-dimensional array with rows = number of years, and columns = 3.
@@ -1890,13 +1905,14 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 	 * @param eventType
 	 * @return
 	 */
+	@Override
 	public ArrayList<ArrayList<Double>> getFilterArrays(EventTypeToProcess eventType) {
-
+		
 		if (eventType == null)
 		{
 			return null;
 		}
-
+		
 		if (eventType.equals(EventTypeToProcess.FIRE_EVENT))
 		{
 			if (this.isFilterse2dIinit == false)
@@ -1915,110 +1931,117 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 				generate2DFiltersIII();
 			return this.filters2dIII;
 		}
-
+		
 		return null;
-
+		
 	}
-
+	
 	/**
 	 * Returns an int[] with one entry per sample in the file with each int containing the index to the earliest year for the sample.
 	 * 
 	 * @return
 	 */
+	@Override
 	public int[] getStartYearIndexPerSample() {
-
+		
 		if (this.isRecorderYears2DArrayInit == false)
 			this.generateRecorderYearsArray();
 		return startYearIndexPerSample;
 	}
-
+	
 	/**
 	 * Returns an int[] with one entry per sample in the file with each int containing the year number for the sample.
 	 * 
 	 * @return
 	 */
+	@Override
 	public int[] getStartYearPerSample() {
-
+		
 		int[] ind = getStartYearIndexPerSample();
 		int[] years = new int[ind.length];
 		int firstyear = getFirstYear();
-
+		
 		for (int i = 0; i < ind.length; i++)
 		{
 			years[i] = ind[i] + firstyear;
 		}
-
+		
 		return years;
 	}
-
+	
 	/**
 	 * Returns an int[] with one entry per sample in the file with each int containing the index to the last year for the sample.
 	 * 
 	 * @return
 	 */
+	@Override
 	public int[] getLastYearIndexPerSample() {
-
+		
 		if (this.isRecorderYears2DArrayInit == false)
 			this.generateRecorderYearsArray();
 		return lastYearIndexPerSample;
 	}
-
+	
 	/**
 	 * Returns an int[] with one entry per sample in the file with each int containing the year number for the last year in the sample.
 	 * 
 	 * @return
 	 */
+	@Override
 	public int[] getLastYearPerSample() {
-
+		
 		int[] ind = getLastYearIndexPerSample();
 		int[] years = new int[ind.length];
 		int firstyear = getFirstYear();
-
+		
 		for (int i = 0; i < ind.length; i++)
 		{
 			years[i] = ind[i] + firstyear;
 		}
-
+		
 		return years;
 	}
-
+	
 	/**
 	 * Returns an int[] with one entry per sample in the file with each int containing the index to the year in which the pith for the
 	 * sample is found. In series where there is no pith, the index to the first year is returned instead
 	 * 
 	 * @return
 	 */
+	@Override
 	public int[] getPithIndexPerSample() {
-
+		
 		if (this.isRecorderYears2DArrayInit == false)
 			this.generateRecorderYearsArray();
 		return pithIndexPerSample;
 	}
-
+	
 	/**
 	 * Get an int array with one entry per sample in the file with each int containing the count of the number of recorder years
 	 * 
 	 * @return
 	 */
+	@Override
 	public int[] getTotalRecorderYearsPerSample() {
-
+		
 		if (this.isRecorderYears2DArrayInit == false)
 			this.generateRecorderYearsArray();
 		return totalRecordYearsPerSample;
 	}
-
+	
 	/**
 	 * TODO
 	 * 
 	 * @return
 	 */
+	@Override
 	public ArrayList<ArrayList<Integer>> getRecorderYears2DArray() {
-
+		
 		if (this.isRecorderYears2DArrayInit == false)
 			this.generateRecorderYearsArray();
 		return this.recorderYears2DArray;
 	}
-
+	
 	/**
 	 * Get an array containing the index (not year) of the innermost (earliest) ring for each sample where the sample has no pith. The array
 	 * will contain one value per series in the file, and will be in the order the series are arranged in the file. Samples with pith will
@@ -2026,110 +2049,118 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 	 * 
 	 * @return int[]
 	 */
+	@Override
 	public int[] getInnerMostperTree() {
-
+		
 		if (this.isClimate2dIinit == false)
 			this.generate2DEventsI();
 		return innerMostPerTree;
 	}
-
+	
 	/**
 	 * Get an array containing the year (not index) of the innermost (earliest) ring for each sample. The array will contain one value per
 	 * series in the file, and will be in the order the series are arranged in the file.
 	 * 
 	 * @return
 	 */
+	@Override
 	public int[] getInnerMostYearPerTree() {
-
+		
 		if (this.isClimate2dIinit == false)
 			this.generate2DEventsI();
-
+			
 		int[] arr = new int[innerMostPerTree.length];
-
+		
 		for (int i = 0; i < innerMostPerTree.length; i++)
 		{
 			arr[i] = innerMostPerTree[i] + this.getFirstYear();
 		}
-
+		
 		return arr;
 	}
-
+	
 	/**
 	 * Get an array containing the index (not year) of the outermost (most recent) ring for each sample. The array with contain one value
 	 * per series in the file, and will be in the order the series are arranged in the file.
 	 * 
 	 * @return int[]
 	 */
+	@Override
 	public int[] getOutterMostperTree() {
-
+		
 		if (this.isClimate2dIinit == false)
 			this.generate2DEventsI();
-
+			
 		return outerMostPerTree;
 	}
-
+	
 	/**
 	 * Get an array containing the year (not index) of the outermost (most recent) ring for each sample. The array with contain one value
 	 * per series in the file, and will be in the order the series are arranged in the file.
 	 * 
 	 * @return int[]
 	 */
+	@Override
 	public int[] getOuterMostYearPerTree() {
-
+		
 		if (this.isClimate2dIinit == false)
 			this.generate2DEventsI();
-
+			
 		int[] arr = new int[outerMostPerTree.length];
-
+		
 		for (int i = 0; i < outerMostPerTree.length; i++)
 		{
 			arr[i] = outerMostPerTree[i] + this.getFirstYear();
 		}
-
+		
 		return arr;
 	}
-
+	
 	/**
 	 * Returns an int[] with one entry per sample in the file with each int containing the index to the year in which the bark for the
 	 * sample is found. In series where there is no bark, the index to the last year is returned instead
 	 * 
 	 * @return
 	 */
+	@Override
 	public int[] getBarkIndexPerTree() {
-
+		
 		if (this.isClimate2dIinit == false)
 			this.generate2DEventsI();
-
+			
 		return barkPerTree;
 	}
-
+	
 	/**
 	 * Get the first year in the file as indicated by the file header
 	 * 
 	 * @return
 	 */
+	@Override
 	public Integer getFirstYear() {
-
+		
 		return firstYear;
 	}
-
+	
 	/**
 	 * Get an ArrayList of the series names from this file
 	 * 
 	 * @return
 	 */
+	@Override
 	public ArrayList<String> getSeriesNameArray() {
-
+		
 		return seriesName;
 	}
-
+	
 	/**
 	 * Whether this file contains any fire events or injuries
 	 * 
 	 * @return boolean
 	 */
+	@Override
 	public boolean hasFireEventsOrInjuries() {
-
+		
 		for (String line : dataBlock)
 		{
 			if (line.contains("U") || line.contains("u") || line.contains("A") || line.contains("a") || line.contains("L")
@@ -2139,18 +2170,19 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 				return true;
 			}
 		}
-
+		
 		return false;
-
+		
 	}
-
+	
 	/**
 	 * Whether this file contains any fire events
 	 * 
 	 * @return boolean
 	 */
+	@Override
 	public boolean hasFireEvents() {
-
+		
 		for (String line : dataBlock)
 		{
 			if (line.contains("U") || line.contains("A") || line.contains("L") || line.contains("M") || line.contains("E")
@@ -2161,14 +2193,15 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 		}
 		return false;
 	}
-
+	
 	/**
 	 * Whether this file contains any injury events
 	 * 
 	 * @return boolean
 	 */
+	@Override
 	public boolean hasInjuryEvents() {
-
+		
 		for (String line : dataBlock)
 		{
 			if (line.contains("u") || line.contains("a") || line.contains("l") || line.contains("m") || line.contains("e")
@@ -2179,315 +2212,343 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 		}
 		return false;
 	}
-
+	
 	/**
 	 * Get the file being read
 	 * 
 	 * @return
 	 */
+	@Override
 	public File getFile() {
-
+		
 		return file;
 	}
-
+	
 	/**
 	 * Get the first year where a file was recorded in any series within this file
 	 * 
 	 * @return
 	 */
+	@Override
 	public Integer getFirstFireYear() {
-
+		
 		if (isClimate1dIinit == false)
 			this.generate1DEventsI();
 		return firstFireYear;
 	}
-
+	
 	/**
 	 * Returns the name of the file being read. This is just the last name in the pathname's name sequence. If the pathname's name sequence
 	 * is empty, then the empty string is returned.
 	 * 
 	 * @return String of the name of the file being read
 	 */
+	@Override
 	public String getName() {
-
+		
 		return file.getName();
 	}
-
+	
 	/**
 	 * Get the number of series contained in this file
 	 * 
 	 * @return Integer number of series
 	 */
+	@Override
 	public Integer getNumberOfSeries() {
-
+		
 		return numberOfSeries;
 	}
-
+	
 	/**
 	 * Get the maximum length of the series names specified in the file header
 	 * 
 	 * @return Integer maximum series name length
 	 */
+	@Override
 	public Integer getLengthOfSeriesName() {
-
+		
 		return lengthOfSeriesName;
 	}
-
+	
 	/**
 	 * Get the last (most recent) year in the file. Calculated from first year as reported by the header plus the number of years of data
 	 * 
 	 * @return
 	 */
+	@Override
 	public Integer getLastYear() {
-
+		
 		if (this.firstYear == null)
 		{
 			log.error("Missing first year from file");
 			return null;
 		}
-
+		
 		if (this.dataBlock == null)
 		{
 			log.error("File has no data in it");
 			return null;
 		}
-
+		
 		return this.firstYear + dataBlock.size() - 1;
 	}
-
+	
 	/***********************
 	 * 
 	 * DEPRECATED METHODS
 	 * 
 	 ***********************/
-
+	
 	/**
 	 * @deprecated
 	 * @return
 	 */
+	@Deprecated
 	public ArrayList<Integer> getClimate() {
-
+		
 		return getFireEventsArray();
 	}
-
+	
 	/**
 	 * @deprecated
 	 * @return
 	 */
+	@Deprecated
 	public ArrayList<Integer> getClimateI() {
-
+		
 		return climate1dII;
 	}
-
+	
 	/**
 	 * @deprecated
 	 * @return
 	 */
+	@Deprecated
 	public ArrayList<Integer> getClimateIII() {
-
+		
 		return this.getFiresAndInjuriesArray();
 	}
-
+	
 	/**
 	 * There is no need to run this anymore as the data is generated automatically on demand
 	 * 
 	 * @deprecated
 	 */
+	@Deprecated
 	public void makeClimate() {
-
+		
 		generate1DEventsI();
 	}
-
+	
 	/**
 	 * There is no need to run this anymore as the data is generated automatically on demand
 	 * 
 	 * @deprecated
 	 */
+	@Deprecated
 	public void makeClimateI() {
-
+		
 		generate1DEventsII();
-
+		
 	}
-
+	
 	/**
 	 * There is no need to call this function anymore as it is run automatically when needed
 	 * 
 	 * @deprecated
 	 */
+	@Deprecated
 	public void makeClimateIII() {
-
+		
 		generate1DEventsIII();
-
+		
 	}
-
+	
 	/**
 	 * @deprecated
 	 * @return
 	 */
+	@Deprecated
 	public ArrayList<Integer> getYear() {
-
+		
 		return yearArray;
 	}
-
+	
 	/**
 	 * @deprecated
 	 * @return
 	 */
+	@Deprecated
 	public ArrayList<String> getSeriesNameLine() {
-
+		
 		return seriesNameLine;
 	}
-
+	
 	/**
 	 * Has the format info (FHX2 or FIRE2) been set?
 	 * 
 	 * @deprecated
 	 * @return
 	 */
+	@Deprecated
 	public boolean isFormatInfoSet() {
-
+		
 		return isFormatInfoSet;
 	}
-
+	
 	/**
 	 * Get the style of file being read. Either FHX2 or FIRE2.
 	 * 
 	 * @return
 	 */
+	@Override
 	public String getFileFormat() {
-
+		
 		return format;
 	}
-
+	
 	/**
 	 * @deprecated
 	 * @return
 	 * 
 	 */
+	@Deprecated
 	public ArrayList<ArrayList<Integer>> getClimate2d() {
-
+		
 		return this.getEventDataArrays(EventTypeToProcess.FIRE_EVENT);
 	}
-
+	
 	/**
 	 * @deprecated
 	 * @return
 	 */
+	@Deprecated
 	public ArrayList<ArrayList<Integer>> getClimate2dII() {
-
+		
 		return this.getEventDataArrays(EventTypeToProcess.INJURY_EVENT);
 	}
-
+	
 	/**
 	 * @deprecated
 	 * @return
 	 */
+	@Deprecated
 	public ArrayList<ArrayList<Integer>> getClimate2dIII() {
-
+		
 		return this.getEventDataArrays(EventTypeToProcess.FIRE_AND_INJURY_EVENT);
 	}
-
+	
 	/**
 	 * There is no need to run this manually any more as it is automatically run when required
 	 * 
 	 * @deprecated
 	 */
+	@Deprecated
 	public void makeClimate2d() {
-
+		
 		generate2DEventsI();
 	}
-
+	
 	/**
 	 * There is no need to run this manually any more as it is automatically run when required
 	 * 
 	 * @deprecated
 	 */
+	@Deprecated
 	public void makeClimate2dII() {
-
+		
 		generate2DEventsII();
-
+		
 	}
-
+	
 	/**
 	 * There is no need to run this manually any more as it is automatically run when required
 	 * 
 	 * @deprecated
 	 */
+	@Deprecated
 	public void makeClimate2dIII() {
-
+		
 		generate2DEventsIII();
 	}
-
+	
 	/**
 	 * @deprecated
 	 * @return
 	 */
+	@Deprecated
 	public ArrayList<ArrayList<Double>> getfilters2d() {
-
+		
 		return filters2dI;
 	}
-
+	
 	/**
 	 * @deprecated
 	 * @return
 	 */
+	@Deprecated
 	public ArrayList<ArrayList<Double>> getfilters2dII() {
-
+		
 		return filters2dII;
 	}
-
+	
 	/**
 	 * @deprecated
 	 * @return
 	 */
+	@Deprecated
 	public ArrayList<ArrayList<Double>> getfilters2dIII() {
-
+		
 		return filters2dIII;
 	}
-
+	
 	/**
 	 * This is run automatically now when required
 	 * 
 	 * @deprecated
 	 */
+	@Deprecated
 	public void makeFilters2d() {
-
+		
 		generate2DFiltersI();
 	}
-
+	
 	/**
 	 * This is run automatically now when required
 	 * 
 	 * @deprecated
 	 */
+	@Deprecated
 	public void makefilters2dII() {
-
+		
 		generate2DFiltersII();
 	}
-
+	
 	/**
 	 * This is run automatically now when required
 	 * 
 	 * @deprecated
 	 */
+	@Deprecated
 	public void makefilters2dIII() {
-
+		
 		generate2DFiltersIII();
 	}
-
+	
 	@Override
 	protected void populateSeriesList() {
-
+		
 		this.seriesList = new ArrayList<FHSeries>();
-
+		
 		for (int i = 0; i < getNumberOfSeries(); i++)
 		{
 			try
 			{
-
+				
 				String title = getSeriesNameArray().get(i);
 				int firstYear = getStartYearPerSample()[i];
-
+				
 				// Work out if series has pith and/or bark
 				boolean hasPith = false;
 				boolean hasBark = false;
@@ -2505,7 +2566,7 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 				}
 				else
 				{
-
+				
 				}
 				if (outeryearbark[i] != -1 && outeryear[i] == -1)
 				{
@@ -2517,9 +2578,9 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 				}
 				else
 				{
-
+				
 				}
-
+				
 				// Calculate inner index, outer index and length of series
 				/*
 				 * int outer = this.getOutterMostperTree()[i]; int inner = this.getInnerMostperTree()[i]; if (outer == -1) outer =
@@ -2528,29 +2589,29 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 				int inner = this.startYearIndexPerSample[i];
 				int outer = this.lastYearIndexPerSample[i];
 				int arraylength = (outer - inner) + 1;
-
+				
 				// Create boolean data arrays
 				boolean[] recordingYears = new boolean[arraylength];
 				boolean[] eventYears = new boolean[arraylength];
 				boolean[] injuryYears = new boolean[arraylength];
-
+				
 				ArrayList<ArrayList<Integer>> rya = getRecorderYears2DArray();
 				ArrayList<ArrayList<Integer>> eda1 = getEventDataArrays(EventTypeToProcess.FIRE_EVENT);
 				ArrayList<ArrayList<Integer>> eda2 = getEventDataArrays(EventTypeToProcess.INJURY_EVENT);
-
+				
 				int j = 0;
 				for (int ind = inner; ind <= outer; ind++)
 				{
-
+					
 					recordingYears[j] = rya.get(i).get(ind) == 1;
 					eventYears[j] = eda1.get(i).get(ind) == 1;
 					injuryYears[j] = eda2.get(i).get(ind) == 1;
 					j++;
 				}
-
+				
 				FHSeries series = new FHSeries(title, firstYear, hasPith, hasBark, recordingYears, eventYears, injuryYears);
 				seriesList.add(series);
-
+				
 			}
 			catch (Exception e)
 			{

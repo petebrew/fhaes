@@ -1,24 +1,22 @@
+/**************************************************************************************************
+ * Fire History Analysis and Exploration System (FHAES), Copyright (C) 2015
+ * 
+ * Contributors: Peter Brewer
+ * 
+ * 		This program is free software: you can redistribute it and/or modify it under the terms of
+ * 		the GNU General Public License as published by the Free Software Foundation, either version
+ * 		3 of the License, or (at your option) any later version.
+ * 
+ * 		This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * 		without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * 		See the GNU General Public License for more details.
+ * 
+ * 		You should have received a copy of the GNU General Public License along with this program.
+ * 		If not, see <http://www.gnu.org/licenses/>.
+ * 
+ *************************************************************************************************/
 package org.fhaes.neofhchart;
 
-/*******************************************************************************
- * Copyright (C) 2015 Peter Brewer
- * 
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * Contributors:
- *     Peter Brewer
- ******************************************************************************/
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
@@ -41,8 +39,6 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.text.DefaultFormatter;
 
-import net.miginfocom.swing.MigLayout;
-
 import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.TranscoderOutput;
 import org.apache.batik.transcoder.image.PNGTranscoder;
@@ -51,15 +47,17 @@ import org.fhaes.util.Builder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.miginfocom.swing.MigLayout;
+
 /**
  * PNGExportOptions Class. JDialog for getting size information when saving to a PNG image
  * 
- * @author pbrewer
+ * @author Peter Brewer
  */
 public class PNGExportOptions extends JDialog implements ActionListener {
-
+	
 	private final static Logger log = LoggerFactory.getLogger(PNGExportOptions.class);
-
+	
 	private static final long serialVersionUID = 1L;
 	private final JPanel contentPanel = new JPanel();
 	private FireChartSVG currentChart;
@@ -70,7 +68,7 @@ public class PNGExportOptions extends JDialog implements ActionListener {
 	private JToggleButton btnLock;
 	private boolean widthSpinnerEnabled = true;
 	private boolean heightSpinnerEnabled = true;
-
+	
 	/**
 	 * Create the dialog.
 	 * 
@@ -78,11 +76,11 @@ public class PNGExportOptions extends JDialog implements ActionListener {
 	 * @param currentChart
 	 */
 	public PNGExportOptions(FireChartSVG currentChart, File outputFile) {
-
+		
 		this.currentChart = currentChart;
 		this.outputFile = outputFile;
 		prop = ((double) currentChart.getTotalHeight() / (currentChart.getTotalWidth()));
-
+		
 		this.setModal(true);
 		this.setTitle("Output size");
 		this.setIconImage(Builder.getApplicationIcon());
@@ -103,10 +101,10 @@ public class PNGExportOptions extends JDialog implements ActionListener {
 			DefaultFormatter formatter = (DefaultFormatter) field.getFormatter();
 			formatter.setCommitsOnValidEdit(true);
 			spnHeight.addChangeListener(new ChangeListener() {
-
+				
 				@Override
 				public void stateChanged(ChangeEvent e) {
-
+					
 					if (btnLock.isSelected() && heightSpinnerEnabled)
 					{
 						Integer height = (Integer) spnHeight.getValue();
@@ -143,10 +141,10 @@ public class PNGExportOptions extends JDialog implements ActionListener {
 			DefaultFormatter formatter = (DefaultFormatter) field.getFormatter();
 			formatter.setCommitsOnValidEdit(true);
 			spnWidth.addChangeListener(new ChangeListener() {
-
+				
 				@Override
 				public void stateChanged(ChangeEvent e) {
-
+					
 					if (btnLock.isSelected() && widthSpinnerEnabled)
 					{
 						Integer width = (Integer) spnWidth.getValue();
@@ -183,37 +181,37 @@ public class PNGExportOptions extends JDialog implements ActionListener {
 		}
 		this.setLocationRelativeTo(App.mainFrame);
 	}
-
+	
 	@Override
 	public void actionPerformed(ActionEvent evt) {
-
+		
 		if (evt.getActionCommand().equals("OK"))
 		{
 			if (currentChart == null)
 				return;
-
+				
 			log.debug("Exporting to PNG....");
 			try
 			{
-
+				
 				currentChart.setVisibilityOfNoExportElements(false);
-
+				
 				PNGTranscoder t = new PNGTranscoder();
 				float width = Double.valueOf((int) this.spnWidth.getValue()).floatValue();
 				float height = Double.valueOf((int) this.spnHeight.getValue()).floatValue();
-
+				
 				t.addTranscodingHint(PNGTranscoder.KEY_WIDTH, width);
 				t.addTranscodingHint(PNGTranscoder.KEY_HEIGHT, height);
-
+				
 				TranscoderInput input = new TranscoderInput(currentChart.doc);
-
+				
 				String path = outputFile.getAbsolutePath();
-
+				
 				if (!path.toLowerCase().endsWith(".png"))
 				{
 					path = path + ".png";
 				}
-
+				
 				OutputStream png_ostream = new FileOutputStream(path);
 				TranscoderOutput output = new TranscoderOutput(png_ostream);
 				t.transcode(input, output);
@@ -234,5 +232,5 @@ public class PNGExportOptions extends JDialog implements ActionListener {
 			dispose();
 		}
 	}
-
+	
 }

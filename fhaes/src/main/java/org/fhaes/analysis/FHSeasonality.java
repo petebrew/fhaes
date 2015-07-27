@@ -1,22 +1,21 @@
+/**************************************************************************************************
+ * Fire History Analysis and Exploration System (FHAES), Copyright (C) 2015
+ * 
+ * Contributors: Elena Velasquez and Peter Brewer
+ * 
+ * 		This program is free software: you can redistribute it and/or modify it under the terms of
+ * 		the GNU General Public License as published by the Free Software Foundation, either version
+ * 		3 of the License, or (at your option) any later version.
+ * 
+ * 		This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * 		without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * 		See the GNU General Public License for more details.
+ * 
+ * 		You should have received a copy of the GNU General Public License along with this program.
+ * 		If not, see <http://www.gnu.org/licenses/>.
+ * 
+ *************************************************************************************************/
 package org.fhaes.analysis;
-
-/*******************************************************************************
- * Copyright (C) 2013 Elena Velasquez and Peter Brewer
- * 
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
- ******************************************************************************/
 
 import java.awt.Component;
 import java.io.BufferedWriter;
@@ -43,9 +42,9 @@ import org.slf4j.LoggerFactory;
  * FHSeasonality Class.
  */
 public class FHSeasonality {
-
+	
 	private static final Logger log = LoggerFactory.getLogger(FHInterval.class);
-
+	
 	/**
 	 * Run the FHSeasonality analysis
 	 * 
@@ -71,15 +70,15 @@ public class FHSeasonality {
 			Boolean jCheckmewood1, Boolean jChecklewood1, Boolean jChecklatewood1, Boolean jCheckdormant2, Boolean jCheckeewood2,
 			Boolean jCheckmewood2, Boolean jChecklewood2, Boolean jChecklatewood2, int jTextBeginningYear1, int jTextEndingYear,
 			EventTypeToProcess eventTypeToProcess) {
-
+			
 		boolean run = runSanityChecks(inputFile, jCheckdormant1, jCheckeewood1, jCheckmewood1, jChecklewood1, jChecklatewood1,
 				jCheckdormant2, jCheckeewood2, jCheckmewood2, jChecklewood2, jChecklatewood2, jTextBeginningYear1, jTextEndingYear,
 				eventTypeToProcess);
-
+				
 		/*
 		 * If at least one file has been choosen then the progam will run otherwise get message
 		 */
-
+		
 		// *********************
 		// FOR ELENA
 		// *********************
@@ -99,7 +98,7 @@ public class FHSeasonality {
 		{
 			log.error("Unsupported event type specified");
 		}
-
+		
 		// MAIN RUN
 		if (run)
 		{
@@ -121,11 +120,11 @@ public class FHSeasonality {
 			savePath = inputFile[0].getAbsolutePath();
 			// DecimalFormat twoPlace = new DecimalFormat("0.00");
 			DecimalFormat onePlace = new DecimalFormat("0.0");
-
+			
 			// *** CURSOR VARIABLES *** //
 			// Cursor normalCursor = new Cursor(Cursor.DEFAULT_CURSOR);
 			// setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-
+			
 			/*
 			 * create the name of the comb1
 			 */
@@ -218,7 +217,7 @@ public class FHSeasonality {
 			{
 				log.error("Unsupported event type specified");
 			}
-
+			
 			/*
 			 * create the name of the comb2
 			 */
@@ -313,7 +312,7 @@ public class FHSeasonality {
 				log.error("Unsupported event type specified");
 			}
 			System.out.println("combo2 is " + combo2);
-
+			
 			for (int i = 0; i < inputFile.length; i++)
 			{
 				myReader.add(new FHX2FileReader(inputFile[i]));
@@ -341,8 +340,8 @@ public class FHSeasonality {
 				 * Make heading for the seasonal Analysis table: 1. for each file I need an ArrayList with D E M L A
 				 */
 				TCapsHeading.add(capsheading);
-
-			}// end loop firts i
+				
+			} // end loop firts i
 			Collections.sort(firstYears);
 			Collections.sort(lastYears);
 			System.out.println("the first year of seasonality matrix is: " + firstYears.get(0));
@@ -384,7 +383,7 @@ public class FHSeasonality {
 				}
 			}
 			// end of setting both begining and end year accounting for filter
-
+			
 			/*
 			 * Calculate the listYears the common years where the file will be analyzed for the join
 			 */
@@ -393,7 +392,7 @@ public class FHSeasonality {
 			{
 				listYears.add(minFirstYear + i);
 			}
-
+			
 			/*
 			 * Declaration of all the array lists needed in the process
 			 */
@@ -439,20 +438,20 @@ public class FHSeasonality {
 			}
 			else
 			{
-
+				
 				log.error("Unsupported event type caught");
 			}
 			;
-
+			
 			double[][] totalsDecomp = new double[seaspertableparam.length][myReader.size()];
 			double[][] percentDecomp = new double[seaspertableparam.length][myReader.size()];
-
+			
 			/*
 			 * start processing each file individually:
 			 */
 			for (int i = 0; i < myReader.size(); i++)
 			{
-
+				
 				/*
 				 * get the vector Year containing the vector of year of a given fhx file load it into the array list InitalYearsVector.
 				 */
@@ -461,17 +460,17 @@ public class FHSeasonality {
 				 * make decompSyb2d
 				 */
 				myReader.get(i).makeDecompSyb2d();
-
+				
 				/*
 				 * load decompsyb into an arraylist
 				 */
 				// decompVector2= myReader.get(i).getDecompSyb2d();
-
+				
 				/*
 				 * create the table of output with totals and percents
 				 */
 				myReader.get(i).getTotals();
-
+				
 				if (eventTypeToProcess.equals(EventTypeToProcess.FIRE_EVENT))
 				{
 					totalsDecomp[0][i] = myReader.get(i).getTotals()[0];
@@ -499,7 +498,7 @@ public class FHSeasonality {
 						{
 							percentDecomp[j][i] = -99.0;
 						}
-
+						
 					}
 					/*
 					 * Find the Totals and percents of combo1 and combo 2
@@ -574,7 +573,7 @@ public class FHSeasonality {
 						totalsDecomp[9][i] = totalsDecomp[9][i] + totalsDecomp[7][i];
 					}
 					;
-
+					
 					// }
 					// totalsDecomp[9][i]=totalsDecomp[9][i];
 					System.out.println("the combo 2  total is " + totalsDecomp[9][i]);
@@ -615,7 +614,7 @@ public class FHSeasonality {
 						{
 							percentDecomp[j][i] = -99.0;
 						}
-
+						
 					}
 					/*
 					 * Find the Totals and percents of combo1 and combo 2
@@ -690,7 +689,7 @@ public class FHSeasonality {
 						totalsDecomp[9][i] = totalsDecomp[9][i] + totalsDecomp[7][i];
 					}
 					;
-
+					
 					// }
 					// totalsDecomp[9][i]=totalsDecomp[9][i];
 					System.out.println("the combo 2  total is " + totalsDecomp[9][i]);
@@ -706,7 +705,7 @@ public class FHSeasonality {
 				}
 				else if (eventTypeToProcess.equals(EventTypeToProcess.FIRE_AND_INJURY_EVENT))
 				{
-
+					
 					totalsDecomp[0][i] = myReader.get(i).getTotals()[0] + myReader.get(i).getTotals()[1];
 					percentDecomp[0][i] = -99.0;
 					totalsDecomp[1][i] = (myReader.get(i).getTotals()[0] - myReader.get(i).getTotals()[7])
@@ -733,7 +732,7 @@ public class FHSeasonality {
 						{
 							percentDecomp[j][i] = -99.0;
 						}
-
+						
 					}
 					/*
 					 * Find the Totals and percents of combo1 and combo 2
@@ -808,7 +807,7 @@ public class FHSeasonality {
 						totalsDecomp[9][i] = totalsDecomp[9][i] + totalsDecomp[7][i];
 					}
 					;
-
+					
 					// }
 					// totalsDecomp[9][i]=totalsDecomp[9][i];
 					System.out.println("the combo 2  total is " + totalsDecomp[9][i]);
@@ -821,18 +820,18 @@ public class FHSeasonality {
 						percentDecomp[9][i] = 0.0;
 					}
 					System.out.println("the combo 2  total is " + totalsDecomp[9][i] + " " + percentDecomp[9][i]);
-
+					
 				}
 				else
 				{
-
+					
 					log.error("Unsupported event type caught");
 				}
-
-			}// end of i loop processing each file
-
+				
+			} // end of i loop processing each file
+			
 			// setCursor(Cursor.getDefaultCursor());
-
+			
 			/*
 			 * create JFileChooser object to generate a browsing capabilities
 			 */
@@ -840,23 +839,23 @@ public class FHSeasonality {
 			if (outputFile == null)
 			{
 				fileBrowse = new JFileChooser(savePath.substring(0, savePath.lastIndexOf(File.separator)));
-
+				
 				// set multiselect on (even though we don't need it)
 				fileBrowse.setMultiSelectionEnabled(true);
-
+				
 				// set file and folder directive
 				fileBrowse.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-
+				
 				// set file type: coma delimited file csv
 				FileFilter filter1 = new CSVFileFilter();
 				fileBrowse.setFileFilter(filter1);
-
+				
 				// set dialog text: select the name and location of the matrix files
 				fileBrowse.setDialogTitle("Select the name and location of the Stats Summary file:");
-
+				
 				// here we get the save button information
 				fileBrowseReturn = fileBrowse.showSaveDialog(parent);
-
+				
 				if (fileBrowseReturn == 0)
 				{
 					/*
@@ -872,29 +871,29 @@ public class FHSeasonality {
 					{
 						// seasonTable = new File(outputFile.getAbsolutePath()+"seasontable.csv");
 						outputFile = new File(outputFile.getAbsolutePath() + "summaryseason.csv");
-
+						
 					}
 				}
 			}
-
+			
 			/*
 			 * create the writer object for each of the files to be created
 			 */
 			Writer wr;
 			// Writer wrSTable;
-
+			
 			/*
 			 * set delimiter in this case we are using comas ","
 			 */
 			String delim = ",";
-
+			
 			/*
 			 * Start writing information into the files
 			 */
 			try
 			{
 				wr = new BufferedWriter(new FileWriter(outputFile));
-
+				
 				/*
 				 * write the heading to the files
 				 */
@@ -906,12 +905,12 @@ public class FHSeasonality {
 				}
 				wr.write(buffer.substring(0, buffer.length() - 1) + System.getProperty("line.separator"));
 				buffer = "";
-				// wr.write("      " +delim);
+				// wr.write(" " +delim);
 				/*
 				 * for(int i=0;i<inputFile.length;i++){ wr.write("Totals" + delim+ "Percent (%)" + delim); }
 				 */
 				// wr.write(System.getProperty("line.separator"));
-
+				
 				// TOTALS Line
 				wr.write(seaspertableparam[0] + delim);
 				for (int k = 0; k < inputFile.length; k++)
@@ -924,13 +923,13 @@ public class FHSeasonality {
 					{
 						buffer = buffer + " NA" + delim;
 					}
-				}// end of k loop for number of files
+				} // end of k loop for number of files
 				wr.write(buffer.substring(0, buffer.length() - 1) + System.getProperty("line.separator"));
 				buffer = "";
-
+				
 				for (int j = 1; j < seaspertableparam.length; j++)
 				{
-
+					
 					// NUMBERS Lines
 					wr.write("Number " + seaspertableparam[j] + delim);
 					for (int k = 0; k < inputFile.length; k++)
@@ -952,16 +951,16 @@ public class FHSeasonality {
 									buffer = buffer + Double.valueOf(totalsDecomp[j][k]).intValue() + delim;
 								}
 							}
-
+							
 						}
 						else
 						{
 							buffer = buffer + " NA" + delim;
 						}
-					}// end of k loop for number of files
+					} // end of k loop for number of files
 					wr.write(buffer.substring(0, buffer.length() - 1) + System.getProperty("line.separator"));
 					buffer = "";
-
+					
 					// PERCENTAGES Lines
 					wr.write("Percentage " + seaspertableparam[j] + delim);
 					for (int k = 0; k < inputFile.length; k++)
@@ -983,17 +982,17 @@ public class FHSeasonality {
 									buffer = buffer + "NA" + delim;
 								}
 							}
-
+							
 						}
 						else
 						{
 							buffer = buffer + " NA" + delim;
 						}
-					}// end of k loop for number of files
+					} // end of k loop for number of files
 					wr.write(buffer.substring(0, buffer.length() - 1) + System.getProperty("line.separator"));
 					buffer = "";
-
-				}// end of j loop for seasonality summary parameters
+					
+				} // end of j loop for seasonality summary parameters
 				wr.close();
 				//
 				//
@@ -1010,14 +1009,14 @@ public class FHSeasonality {
 				// wrSTable.write(threePlace.format(fixvalt[j])+delim);
 				// for(int k=0;k<inputFile.length; k++){
 				// wrSTable.write(twoPlace.format(ExceeProbcomp[j][k])+delim);
-
+				
 				// }
 				// wrSTable.write(System.getProperty("line.separator"));
 				// }
-
+				
 				// wr.close();
 				// wrSTable.close();
-
+				
 			} // end of Try
 			catch (IOException ex)
 			{
@@ -1025,18 +1024,18 @@ public class FHSeasonality {
 			}
 			finally
 			{
-
+			
 			}
-
+			
 		} // end of if for at least one file selected and one analysis (if run))
 		else
 		{
 			// JOptionPane.showMessageDialog(null,
-// "Eggs are not supposed to be green.\nSelect at least One file and At least one analysis  before continuing.", "Warning",
-// JOptionPane.WARNING_MESSAGE);
+			// "Eggs are not supposed to be green.\nSelect at least One file and At least one analysis before continuing.", "Warning",
+			// JOptionPane.WARNING_MESSAGE);
 		}
 	}// end of if action perform for the run button
-
+	
 	/**
 	 * Check the input parameters for sanity
 	 * 
@@ -1060,9 +1059,9 @@ public class FHSeasonality {
 			Boolean jChecklewood1, Boolean jChecklatewood1, Boolean jCheckdormant2, Boolean jCheckeewood2, Boolean jCheckmewood2,
 			Boolean jChecklewood2, Boolean jChecklatewood2, Integer jTextBeginningYear1, Integer jTextEndingYear,
 			EventTypeToProcess eventType) {
-
+			
 		Boolean run = false;
-
+		
 		// FIRST CHECK
 		if (inputFile != null)
 		{
@@ -1097,14 +1096,14 @@ public class FHSeasonality {
 				JOptionPane.showMessageDialog(null, "At least one season must be selected in eacho composition.", "Warning",
 						JOptionPane.WARNING_MESSAGE);
 			}
-		}// end of if for checks file selected, file type selected and begining and end year correct (201-229)
+		} // end of if for checks file selected, file type selected and begining and end year correct (201-229)
 		else
 		{
 			run = false;
 			JOptionPane.showMessageDialog(null, "Select at least one file.", "Warning", JOptionPane.WARNING_MESSAGE);
-		}// end of else of if checks (201-229)
-
+		} // end of else of if checks (201-229)
+		
 		return run;
 	}
-
+	
 }

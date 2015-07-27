@@ -1,35 +1,21 @@
-/*******************************************************************************
- * Copyright (c) 2013 Peter Brewer
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the GNU Public License v3.0
- * which accompanies this distribution, and is available at
- * http://www.gnu.org/licenses/gpl.html
+/**************************************************************************************************
+ * Fire History Analysis and Exploration System (FHAES), Copyright (C) 2015
  * 
- * Contributors:
- *     Peter Brewer
- *     Elena Velasquez
- ******************************************************************************/
+ * Contributors: Elena Velasquez and Peter Brewer
+ * 
+ * 		This program is free software: you can redistribute it and/or modify it under the terms of
+ * 		the GNU General Public License as published by the Free Software Foundation, either version
+ * 		3 of the License, or (at your option) any later version.
+ * 
+ * 		This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * 		without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * 		See the GNU General Public License for more details.
+ * 
+ * 		You should have received a copy of the GNU General Public License along with this program.
+ * 		If not, see <http://www.gnu.org/licenses/>.
+ * 
+ *************************************************************************************************/
 package org.fhaes.model;
-
-/*******************************************************************************
- * Copyright (C) 2013 Peter Brewer
- * 
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * Contributors:
- *     Peter Brewer
- ******************************************************************************/
 
 import java.io.File;
 import java.io.IOException;
@@ -64,13 +50,13 @@ import org.tridas.spatial.GMLPointSRSHandler;
  * FHFile Class. Simple extension of java.io.File which includes functions for checking whether this is a valid FHX format file, and if not,
  * to access the error reporting features of the DendroFileIO library.
  * 
- * @author pbrewer
+ * @author Peter Brewer
  */
 public class FHFile extends File {
-
+	
 	private static final long serialVersionUID = 1L;
 	private static final Logger log = LoggerFactory.getLogger(FHFile.class);
-
+	
 	private AbstractFireHistoryReader fhaesReader;
 	private boolean isFileValid;
 	private boolean isInitialised = false;
@@ -83,67 +69,67 @@ public class FHFile extends File {
 	private BigDecimal longitude;
 	private FHX2Reader tricycleReader;
 	private Boolean locationInitialize = false;
-
+	
 	/**
 	 * Initializes a new FHFile.
 	 * 
 	 * @param file
 	 */
 	public FHFile(File file) {
-
+		
 		super(file.getAbsolutePath());
 		init();
 	}
-
+	
 	/**
 	 * TODO
 	 * 
 	 * @param filename
 	 */
 	public FHFile(String filename) {
-
+		
 		super(filename);
 		init();
 	}
-
+	
 	/**
 	 * TODO
 	 * 
 	 * @return
 	 */
 	public AbstractFireHistoryReader getFireHistoryReader() {
-
+		
 		return fhaesReader;
 	}
-
+	
 	/**
 	 * TODO
 	 * 
 	 * @return
 	 */
 	public String getReport() {
-
+		
 		return report;
 	}
-
+	
 	/**
 	 * TODO
 	 * 
 	 * @return
 	 */
 	public String getErrorMessage() {
-
+		
 		if (!isInitialised)
 			init();
-
+			
 		EventTypeToProcess eventType = App.prefs.getEventTypePref(PrefKey.EVENT_TYPE_TO_PROCESS, EventTypeToProcess.FIRE_EVENT);
-
+		
 		// If file is valid but is missing the required events then override the error messages from the libraries
 		if (this.isFileValid)
 		{
 			if (eventType.equals(EventTypeToProcess.FIRE_EVENT))
 			{
-
+				
 				if (!fhaesReader.hasFireEvents())
 				{
 					return "N.B. The analysis parameters are currently set to analyze files for fire scars.  "
@@ -166,17 +152,17 @@ public class FHFile extends File {
 				}
 			}
 		}
-
+		
 		return errorMessage;
 	}
-
+	
 	/**
 	 * TODO
 	 * 
 	 * @return
 	 */
 	public boolean isValidFHXFile() {
-
+		
 		if (!isInitialised)
 			init();
 		try
@@ -188,14 +174,14 @@ public class FHFile extends File {
 			return false;
 		}
 	}
-
+	
 	/**
 	 * TODO
 	 * 
 	 * @return
 	 */
 	public Integer getErrorLine() {
-
+		
 		if (!isInitialised)
 			init();
 		try
@@ -207,14 +193,14 @@ public class FHFile extends File {
 			return null;
 		}
 	}
-
+	
 	/**
 	 * TODO
 	 * 
 	 * @return
 	 */
 	public boolean hasFireEventsOrInjuries() {
-
+		
 		if (!isInitialised)
 			init();
 		try
@@ -226,14 +212,14 @@ public class FHFile extends File {
 			return false;
 		}
 	}
-
+	
 	/**
 	 * TODO
 	 * 
 	 * @return
 	 */
 	public boolean hasFireEvents() {
-
+		
 		if (!isInitialised)
 			init();
 		try
@@ -245,14 +231,14 @@ public class FHFile extends File {
 			return false;
 		}
 	}
-
+	
 	/**
 	 * TODO
 	 * 
 	 * @return
 	 */
 	public boolean hasInjuryEvents() {
-
+		
 		if (!isInitialised)
 			init();
 		try
@@ -264,14 +250,14 @@ public class FHFile extends File {
 			return false;
 		}
 	}
-
+	
 	/**
 	 * TODO
 	 * 
 	 * @return
 	 */
 	public Integer getFirstYear() {
-
+		
 		if (!isInitialised)
 			init();
 		try
@@ -283,14 +269,14 @@ public class FHFile extends File {
 			return null;
 		}
 	}
-
+	
 	/**
 	 * TODO
 	 * 
 	 * @return
 	 */
 	public Integer getLastYear() {
-
+		
 		if (!isInitialised)
 			init();
 		try
@@ -302,14 +288,14 @@ public class FHFile extends File {
 			return null;
 		}
 	}
-
+	
 	/**
 	 * TODO
 	 * 
 	 * @return
 	 */
 	public String getSiteCode() {
-
+		
 		if (!isInitialised)
 			init();
 		try
@@ -319,27 +305,27 @@ public class FHFile extends File {
 				return "Unknown site code";
 			if (projects.length == 0)
 				return "Unknown site code";
-
+				
 			TridasObject o = projects[0].getObjects().get(0);
-
+			
 			TridasGenericField objCodeField = TridasUtils.getGenericFieldByName(o, "tellervo.objectLabCode");
 			return objCodeField.getValue();
 		}
 		catch (Exception e)
 		{
-
+		
 		}
-
+		
 		return "Unknown site code";
 	}
-
+	
 	/**
 	 * TODO
 	 * 
 	 * @return
 	 */
 	public String getSiteName() {
-
+		
 		if (!isInitialised)
 			init();
 		try
@@ -349,29 +335,29 @@ public class FHFile extends File {
 				return "Unknown site";
 			if (projects.length == 0)
 				return "Unknown site";
-
+				
 			TridasObject o = projects[0].getObjects().get(0);
-
+			
 			return o.getTitle();
 		}
 		catch (Exception e)
 		{
-
+		
 		}
-
+		
 		return "Unknown site";
 	}
-
+	
 	/**
 	 * Get the string to label this file by in analysis results. The type of label is determined by the users preference settings.
 	 * 
 	 * @return
 	 */
 	public String getLabel() {
-
+		
 		AnalysisLabelType lt = App.prefs.getAnalysisLabelTypePref(PrefKey.ANALYSIS_LABEL_TYPE, AnalysisLabelType.INPUT_FILENAME);
 		String label = "";
-
+		
 		if (lt != null)
 		{
 			if (lt.equals(AnalysisLabelType.INPUT_FILENAME))
@@ -391,7 +377,7 @@ public class FHFile extends File {
 				label = getFileNameWithoutExtension().replace(",", "_");
 			}
 		}
-
+		
 		if (label == null || label.length() == 0)
 		{
 			label = getFileNameWithoutExtension().replace(",", "_");
@@ -400,23 +386,23 @@ public class FHFile extends File {
 				label = "-";
 			}
 		}
-
+		
 		return label;
 	}
-
+	
 	/**
 	 * Get the sampling date of the first samples within this file.
 	 * 
 	 * @return
 	 */
 	public String getFirstCollectionDate() {
-
+		
 		projects = tricycleReader.getProjects();
 		if (projects == null)
 			return null;
 		if (projects.length == 0)
 			return null;
-
+			
 		TridasProject p = projects[0];
 		if (p.isSetObjects())
 		{
@@ -432,23 +418,23 @@ public class FHFile extends File {
 			{
 			}
 		}
-
+		
 		return null;
 	}
-
+	
 	/**
 	 * TODO
 	 * 
 	 * @return
 	 */
 	public String getFirstState() {
-
+		
 		projects = tricycleReader.getProjects();
 		if (projects == null)
 			return null;
 		if (projects.length == 0)
 			return null;
-
+			
 		TridasProject p = projects[0];
 		if (p.isSetObjects())
 		{
@@ -460,23 +446,23 @@ public class FHFile extends File {
 			{
 			}
 		}
-
+		
 		return null;
 	}
-
+	
 	/**
 	 * TODO
 	 * 
 	 * @return
 	 */
 	public String getFirstCountry() {
-
+		
 		projects = tricycleReader.getProjects();
 		if (projects == null)
 			return null;
 		if (projects.length == 0)
 			return null;
-
+			
 		TridasProject p = projects[0];
 		if (p.isSetObjects())
 		{
@@ -488,33 +474,33 @@ public class FHFile extends File {
 			{
 			}
 		}
-
+		
 		return null;
 	}
-
+	
 	/**
 	 * TODO
 	 */
 	private void parseLocation() {
-
+		
 		if (!isInitialised)
 			init();
 		locationInitialize = true;
-
+		
 		// Parse the legacy data file
 		try
 		{
 			// TridasEntitiesFromDefaults def = new TridasEntitiesFromDefaults();
-
+			
 			projects = tricycleReader.getProjects();
-
+			
 			if (projects == null)
 				return;
 			if (projects.length == 0)
 				return;
-
+				
 			TridasProject p = projects[0];
-
+			
 			try
 			{
 				// Set coordinates using the projection handler to make sure we're reading correctly
@@ -526,16 +512,16 @@ public class FHFile extends File {
 						if (o.getLocation().getLocationGeometry().isSetPoint())
 						{
 							GMLPointSRSHandler tph = new GMLPointSRSHandler(o.getLocation().getLocationGeometry().getPoint());
-
+							
 							latitude = BigDecimal.valueOf(tph.getWGS84LatCoord());
 							// latitude = tph.getWGS84LatCoord().toString();
 							// longitude = tph.getWGS84LongCoord().toString();
 							longitude = BigDecimal.valueOf(tph.getWGS84LongCoord());
-
+							
 						}
 					}
 				}
-
+				
 			}
 			catch (Exception e1)
 			{
@@ -548,17 +534,17 @@ public class FHFile extends File {
 			e.printStackTrace();
 		}
 	}
-
+	
 	/**
 	 * TODO
 	 * 
 	 * @return
 	 */
 	public String getFirstLatitude() {
-
+		
 		if (!locationInitialize)
 			parseLocation();
-
+			
 		try
 		{
 			return latitude.toString();
@@ -568,17 +554,17 @@ public class FHFile extends File {
 			return null;
 		}
 	}
-
+	
 	/**
 	 * TODO
 	 * 
 	 * @return
 	 */
 	public String getFirstLongitude() {
-
+		
 		if (!locationInitialize)
 			parseLocation();
-
+			
 		try
 		{
 			return longitude.toString();
@@ -588,17 +574,17 @@ public class FHFile extends File {
 			return null;
 		}
 	}
-
+	
 	/**
 	 * TODO
 	 * 
 	 * @return
 	 */
 	public Double getFirstLatitudeDbl() {
-
+		
 		if (!locationInitialize)
 			parseLocation();
-
+			
 		try
 		{
 			return latitude.doubleValue();
@@ -608,17 +594,17 @@ public class FHFile extends File {
 			return null;
 		}
 	}
-
+	
 	/**
 	 * TODO
 	 * 
 	 * @return
 	 */
 	public Double getFirstLongitudeDbl() {
-
+		
 		if (!locationInitialize)
 			parseLocation();
-
+			
 		try
 		{
 			return longitude.doubleValue();
@@ -628,18 +614,18 @@ public class FHFile extends File {
 			return null;
 		}
 	}
-
+	
 	/**
 	 * Returns the name of the file without the extension. E.g. if the name is "sample-test.fhx" this would return "sample-test".
 	 * 
 	 * @return filename with no extension
 	 */
 	public String getFileNameWithoutExtension() {
-
+		
 		String ext = "." + FileUtils.getExtension(this.getName());
 		return this.getName().substring(0, this.getName().length() - ext.length());
 	}
-
+	
 	/**
 	 * Returns the file path of the default-named category file for this FHFile. E.g. if the name is "sample-test.fhx" this would return the
 	 * absolute path of the file "sample-test-categories.csv", which is assumed to be located in the same directory.
@@ -647,83 +633,83 @@ public class FHFile extends File {
 	 * @return the filepath of the default-named category file
 	 */
 	public String getDefaultCategoryFilePath() {
-
+		
 		return FilenameUtils.removeExtension(this.getAbsolutePath()) + "-categories.csv";
 	}
-
+	
 	/**
 	 * Gets the absolute file path of the category file pertaining to this FHFile.
 	 * 
 	 * @return categoryFilePath
 	 */
 	public String getCategoryFilePath() {
-
+		
 		return categoryFilePath;
 	}
-
+	
 	/**
 	 * Sets the absolute file path of the category file pertaining to this FHFile.
 	 * 
 	 * @param inPath
 	 */
 	public void setCategoryFilePath(String inPath) {
-
+		
 		categoryFilePath = inPath;
 	}
-
+	
 	/**
 	 * Attaches the category entries to their corresponding series in the FHX file.
 	 * 
 	 * @param categoryEntries
 	 */
 	public void attachCategoriesToFile(ArrayList<FHCategoryEntry> categoryEntries) {
-
+		
 		// Make a new list for storing the modified series
 		ArrayList<FHSeries> seriesListWithCategories = new ArrayList<FHSeries>();
-
+		
 		// Loop through all series in the file, add categories if necessary, and add them to the new list
 		for (int i = 0; i < getFireHistoryReader().getSeriesList().size(); i++)
 		{
 			FHSeries currentSeries = getFireHistoryReader().getSeriesList().get(i);
-
+			
 			for (int j = 0; j < categoryEntries.size(); j++)
 			{
 				FHCategoryEntry currentEntry = categoryEntries.get(j);
-
+				
 				if (currentSeries.getTitle().equals(currentEntry.getSeriesTitle()))
 				{
 					currentSeries.getCategoryEntries().add(currentEntry);
 				}
 			}
-
+			
 			seriesListWithCategories.add(currentSeries);
 		}
-
+		
 		// Replace the file's existing series list with the new series list
 		getFireHistoryReader().replaceSeriesList(seriesListWithCategories);
 	}
-
+	
 	/**
 	 * Clears all category entries for all series in the FireHistoryReader for this FHFile.
 	 */
 	public void clearAllCategoryEntries() {
-
+		
 		for (int i = 0; i < getFireHistoryReader().getSeriesList().size(); i++)
 		{
 			FHSeries currentSeries = getFireHistoryReader().getSeriesList().get(i);
 			currentSeries.getCategoryEntries().clear();
 		}
 	}
-
+	
 	/**
 	 * Initializes all properties of a new FHFile.
 	 */
 	private void init() {
-
+		
 		log.debug("Initialising file: " + this.getName());
 		isInitialised = true;
 		isFileValid = false;
-
+		
 		File outputFile = null;
 		try
 		{
@@ -734,17 +720,17 @@ public class FHFile extends File {
 		{
 			e1.printStackTrace();
 		}
-
+		
 		File[] inputFileArr = new File[1];
 		inputFileArr[0] = this;
-
+		
 		// Parse the legacy data file
 		try
 		{
 			// Create a new converter
 			tricycleReader = new FHX2Reader();
 			log.debug("Checking file using DendroFileIO...");
-
+			
 			// TridasEntitiesFromDefaults def = new TridasEntitiesFromDefaults();
 			tricycleReader.loadFile(super.getAbsolutePath());
 			log.debug("DendroFileIO is happy with file");
@@ -757,7 +743,7 @@ public class FHFile extends File {
 			errorMessage = "Unable to open file";
 			isFileValid = false;
 			return;
-
+			
 		}
 		catch (InvalidDendroFileException e)
 		{
@@ -765,7 +751,7 @@ public class FHFile extends File {
 			log.info(e.getLocalizedMessage());
 			errorMessage = e.getLocalizedMessage();
 			isFileValid = false;
-
+			
 			if (e.getPointerType().equals(PointerType.LINE) && e.getPointerNumber() != null)
 			{
 				try
@@ -779,7 +765,7 @@ public class FHFile extends File {
 			}
 			return;
 		}
-
+		
 		log.debug("DendroFileIO was happy with file, but let's make sure that FHAES parser is happy too...");
 		fhaesReader = new FHX2FileReader(this);
 		try
@@ -794,7 +780,7 @@ public class FHFile extends File {
 			errorMessage = "Error parsing file using FHAES stage 2 parser.  Unknown error";
 			report = "An unhandled error was encountered when checking this file.\nPlease contact the developers for further information. Technical details are as follows:\n\nException type:  "
 					+ e.getClass().getSimpleName() + "\nError:           " + e.getLocalizedMessage();
-
+					
 			e.printStackTrace();
 			return;
 		}
@@ -802,9 +788,9 @@ public class FHFile extends File {
 		{
 			outputFile.delete();
 		}
-
+		
 		fhaesReader = new FHX2FileReader(this);
-
+		
 		if (isFileValid)
 		{
 			log.debug("Elena's file checker is happy with file");

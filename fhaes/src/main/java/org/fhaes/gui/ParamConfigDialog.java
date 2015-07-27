@@ -1,24 +1,21 @@
+/**************************************************************************************************
+ * Fire History Analysis and Exploration System (FHAES), Copyright (C) 2015
+ * 
+ * Contributors: Peter Brewer
+ * 
+ * 		This program is free software: you can redistribute it and/or modify it under the terms of
+ * 		the GNU General Public License as published by the Free Software Foundation, either version
+ * 		3 of the License, or (at your option) any later version.
+ * 
+ * 		This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * 		without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * 		See the GNU General Public License for more details.
+ * 
+ * 		You should have received a copy of the GNU General Public License along with this program.
+ * 		If not, see <http://www.gnu.org/licenses/>.
+ * 
+ *************************************************************************************************/
 package org.fhaes.gui;
-
-/*******************************************************************************
- * Copyright (C) 2013 Peter Brewer
- * 
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * Contributors:
- *     Peter Brewer
- ******************************************************************************/
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -40,8 +37,6 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import net.miginfocom.swing.MigLayout;
-
 import org.fhaes.components.HelpTipButton;
 import org.fhaes.enums.AnalysisLabelType;
 import org.fhaes.enums.AnalysisType;
@@ -61,17 +56,19 @@ import org.fhaes.preferences.wrappers.NoDataLabelWrapper;
 import org.fhaes.preferences.wrappers.SpinnerWrapper;
 import org.fhaes.util.Builder;
 
+import net.miginfocom.swing.MigLayout;
+
 /**
  * ParamConfigDialog Class. This is the preferences dialog for the analysis modules.
  * 
- * @author pbrewer
+ * @author Peter Brewer
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class ParamConfigDialog extends JDialog implements ActionListener, ChangeListener {
-
+	
 	private static final long serialVersionUID = 1L;
 	private final JPanel contentPanel = new JPanel();
-
+	
 	private JCheckBox cbxDormantFirst;
 	private JCheckBox cbxEarlyEarlyFirst;
 	private JCheckBox cbxMiddleEarlyFirst;
@@ -131,14 +128,14 @@ public class ParamConfigDialog extends JDialog implements ActionListener, Change
 	private JLabel lblLabelNoData;
 	private JComboBox cboNoDataValue;
 	private HelpTipButton helpTipButton_1;
-
+	
 	/**
 	 * Create the dialog.
 	 */
 	public ParamConfigDialog(Component parent) {
-
+		
 		setTitle("Analysis Options");
-
+		
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
@@ -189,8 +186,8 @@ public class ParamConfigDialog extends JDialog implements ActionListener, Change
 					}
 					{
 						panelInterval = new JPanel();
-						panelInterval.setBorder(new TitledBorder(null, "Interval options", TitledBorder.LEADING, TitledBorder.TOP, null,
-								null));
+						panelInterval
+								.setBorder(new TitledBorder(null, "Interval options", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 						panelAnalysisOptions.add(panelInterval, "cell 0 1,grow");
 						panelInterval.setLayout(new MigLayout("", "[178px:178px,right][grow,fill][]", "[][][][][37.00]"));
 						{
@@ -230,11 +227,11 @@ public class ParamConfigDialog extends JDialog implements ActionListener, Change
 							}
 							{
 								panelMatrix = new JPanel();
-								panelMatrix.setBorder(new TitledBorder(null, "Matrix options", TitledBorder.LEADING, TitledBorder.TOP,
-										null, null));
+								panelMatrix.setBorder(
+										new TitledBorder(null, "Matrix options", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 								panelAnalysisOptions.add(panelMatrix, "cell 0 2,grow");
 								panelMatrix.setLayout(new MigLayout("", "[178px:178px,right][grow,fill][]", "[][]"));
-
+								
 								{
 									lblMinYearOverlap = new JLabel("Common years required:");
 									panelMatrix.add(lblMinYearOverlap, "cell 0 0");
@@ -299,7 +296,7 @@ public class ParamConfigDialog extends JDialog implements ActionListener, Change
 			panel.setLayout(new MigLayout("", "[90px,grow,fill][15px][90px,grow,fill]", "[20px]"));
 			spnFirstYear = new JSpinner();
 			spnFirstYear.setEditor(new JSpinner.NumberEditor(spnFirstYear, "####"));
-
+			
 			panel.add(spnFirstYear, "cell 0 0,alignx left,aligny top");
 			{
 				JLabel lblTo = new JLabel("to");
@@ -307,12 +304,12 @@ public class ParamConfigDialog extends JDialog implements ActionListener, Change
 			}
 			spnLastYear = new JSpinner();
 			spnLastYear.setEditor(new JSpinner.NumberEditor(spnLastYear, "####"));
-
+			
 			panel.add(spnLastYear, "flowx,cell 2 0,alignx left,aligny top");
 			panelCompositeFilter = new JPanel();
 			tabFiltersAndYears.add(panelCompositeFilter, "cell 0 1");
-			panelCompositeFilter.setBorder(new TitledBorder(null, "Composite fire threshold", TitledBorder.LEADING, TitledBorder.TOP, null,
-					null));
+			panelCompositeFilter
+					.setBorder(new TitledBorder(null, "Composite fire threshold", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 			panelCompositeFilter.setLayout(new MigLayout("", "[178px:178px][grow,fill]", "[]"));
 			{
 				lblCompositeThreshold = new JLabel("Threshold:");
@@ -348,8 +345,8 @@ public class ParamConfigDialog extends JDialog implements ActionListener, Change
 				{
 					JPanel panelFirstSeason = new JPanel();
 					tabSeasons.add(panelFirstSeason, "cell 0 0");
-					panelFirstSeason.setBorder(new TitledBorder(null, "First season combination", TitledBorder.LEADING, TitledBorder.TOP,
-							null, null));
+					panelFirstSeason.setBorder(
+							new TitledBorder(null, "First season combination", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 					panelFirstSeason.setLayout(new MigLayout("", "[][grow]", "[][][][][]"));
 					{
 						cbxDormantFirst = new JCheckBox("Dormant");
@@ -392,14 +389,14 @@ public class ParamConfigDialog extends JDialog implements ActionListener, Change
 				{
 					JPanel panelSecondSeason = new JPanel();
 					tabSeasons.add(panelSecondSeason, "cell 1 0");
-					panelSecondSeason.setBorder(new TitledBorder(null, "Second season combination", TitledBorder.LEADING, TitledBorder.TOP,
-							null, null));
+					panelSecondSeason.setBorder(
+							new TitledBorder(null, "Second season combination", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 					panelSecondSeason.setLayout(new MigLayout("", "[][grow]", "[][][][][]"));
 					{
 						cbxDormantSecond = new JCheckBox("Dormant ");
 						cbxDormantSecond.addActionListener(this);
 						cbxDormantSecond.setActionCommand("DormantSecond");
-
+						
 						panelSecondSeason.add(cbxDormantSecond, "cell 0 0");
 					}
 					{
@@ -410,14 +407,14 @@ public class ParamConfigDialog extends JDialog implements ActionListener, Change
 							panelSecondSeason.add(label_1, "cell 1 0,alignx right");
 						}
 						cbxEarlyEarlySecond.setActionCommand("EarlyEarlySecond");
-
+						
 						panelSecondSeason.add(cbxEarlyEarlySecond, "cell 0 1");
 					}
 					{
 						cbxMiddleEarlySecond = new JCheckBox("Middle earlywood");
 						cbxMiddleEarlySecond.addActionListener(this);
 						cbxMiddleEarlySecond.setActionCommand("MiddleEarlySecond");
-
+						
 						panelSecondSeason.add(cbxMiddleEarlySecond, "cell 0 2");
 					}
 					{
@@ -425,7 +422,7 @@ public class ParamConfigDialog extends JDialog implements ActionListener, Change
 						cbxLateEarlySecond.setSelected(true);
 						cbxLateEarlySecond.addActionListener(this);
 						cbxLateEarlySecond.setActionCommand("LateEarlySecond");
-
+						
 						panelSecondSeason.add(cbxLateEarlySecond, "cell 0 3");
 					}
 					{
@@ -433,7 +430,7 @@ public class ParamConfigDialog extends JDialog implements ActionListener, Change
 						cbxLateSecond.setSelected(true);
 						cbxLateSecond.addActionListener(this);
 						cbxLateSecond.setActionCommand("LateSecond");
-
+						
 						panelSecondSeason.add(cbxLateSecond, "cell 0 4");
 					}
 				}
@@ -468,9 +465,9 @@ public class ParamConfigDialog extends JDialog implements ActionListener, Change
 				buttonPane.add(btnCancel, "cell 3 1,growx,aligny top");
 			}
 		}
-
+		
 		setFromPreferences();
-
+		
 		pack();
 		setIconImage(Builder.getApplicationIcon());
 		setLocationRelativeTo(parent);
@@ -478,35 +475,35 @@ public class ParamConfigDialog extends JDialog implements ActionListener, Change
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		setVisible(true);
 	}
-
+	
 	/**
 	 * Only enable composite filters if composite type has been chosen
 	 * 
 	 */
 	private void showHideFilterGUI() {
-
+		
 		Boolean enableFilters = false;
 		if (cboAnalysisType.getSelectedItem().equals(AnalysisType.COMPOSITE))
 		{
 			enableFilters = true;
 		}
-
+		
 		this.cboFilterType.setEnabled(enableFilters);
 		this.spnFilterValue.setEnabled(enableFilters);
 	}
-
+	
 	public Boolean havePreferencesChanged() {
-
+		
 		return preferencesChanged;
 	}
-
+	
 	/**
 	 * Validate the choices made by the user and change the GUI accordingly
 	 * 
 	 * @return
 	 */
 	private boolean validateChoices() {
-
+		
 		showHideFilterGUI();
 		boolean ret = true;
 		if (cbxDormantFirst.isSelected() && cbxEarlyEarlyFirst.isSelected() && cbxMiddleEarlyFirst.isSelected()
@@ -519,31 +516,31 @@ public class ParamConfigDialog extends JDialog implements ActionListener, Change
 		{
 			ret = false;
 		}
-
+		
 		if (((Integer) spnFirstYear.getValue()) > ((Integer) spnLastYear.getValue()))
 			ret = false;
 		;
-
+		
 		if (cbxAllYears.isSelected())
 		{
 			spnFirstYear.setValue(0);
 			spnLastYear.setValue(0);
 		}
-
+		
 		spnFirstYear.setEnabled(!cbxAllYears.isSelected());
 		spnLastYear.setEnabled(!cbxAllYears.isSelected());
 		this.lblYearRange.setEnabled(!cbxAllYears.isSelected());
-
+		
 		btnOK.setEnabled(ret);
-
+		
 		return ret;
 	}
-
+	
 	/**
 	 * Set GUI components to their default values
 	 */
 	public void setToDefault() {
-
+		
 		cbxDormantFirst.setSelected(true);
 		cbxEarlyEarlyFirst.setSelected(true);
 		cbxMiddleEarlyFirst.setSelected(true);
@@ -567,56 +564,57 @@ public class ParamConfigDialog extends JDialog implements ActionListener, Change
 		cboNoDataValue.setSelectedItem(NoDataLabel.NAN);
 		validateChoices();
 	}
-
+	
 	/**
 	 * Save the settings to the application preferences
 	 */
 	private void saveToPreferences() {
-
+		
 		App.prefs.setIntPref(PrefKey.RANGE_FIRST_YEAR, (Integer) spnFirstYear.getValue());
 		App.prefs.setIntPref(PrefKey.RANGE_LAST_YEAR, (Integer) spnLastYear.getValue());
-
+		
 		App.prefs.setBooleanPref(PrefKey.SEASONALITY_FIRST_GROUP_DORMANT, cbxDormantFirst.isSelected());
 		App.prefs.setBooleanPref(PrefKey.SEASONALITY_FIRST_GROUP_EARLY_EARLY, cbxEarlyEarlyFirst.isSelected());
 		App.prefs.setBooleanPref(PrefKey.SEASONALITY_FIRST_GROUP_MIDDLE_EARLY, cbxMiddleEarlyFirst.isSelected());
 		App.prefs.setBooleanPref(PrefKey.SEASONALITY_FIRST_GROUP_LATE_EARLY, cbxLateEarlyFirst.isSelected());
 		App.prefs.setBooleanPref(PrefKey.SEASONALITY_FIRST_GROUP_LATE, cbxLateFirst.isSelected());
-
+		
 		App.prefs.setBooleanPref(PrefKey.SEASONALITY_SECOND_GROUP_DORMANT, cbxDormantSecond.isSelected());
 		App.prefs.setBooleanPref(PrefKey.SEASONALITY_SECOND_GROUP_EARLY_EARLY, cbxEarlyEarlySecond.isSelected());
 		App.prefs.setBooleanPref(PrefKey.SEASONALITY_SECOND_GROUP_MIDDLE_EARLY, cbxMiddleEarlySecond.isSelected());
 		App.prefs.setBooleanPref(PrefKey.SEASONALITY_SECOND_GROUP_LATE_EARLY, cbxLateEarlySecond.isSelected());
-
+		
 		App.prefs.setBooleanPref(PrefKey.SEASONALITY_SECOND_GROUP_LATE, cbxLateSecond.isSelected());
-
+		
 		App.prefs.setEventTypePref(PrefKey.EVENT_TYPE_TO_PROCESS, (EventTypeToProcess) this.cboEventType.getSelectedItem());
-
+		
 		preferencesChanged = true;
-
+		
 	}
-
+	
 	private void setFromPreferences() {
-
+		
 		cbxDormantFirst.setSelected(App.prefs.getBooleanPref(PrefKey.SEASONALITY_FIRST_GROUP_DORMANT, true));
 		cbxEarlyEarlyFirst.setSelected(App.prefs.getBooleanPref(PrefKey.SEASONALITY_FIRST_GROUP_EARLY_EARLY, true));
 		cbxMiddleEarlyFirst.setSelected(App.prefs.getBooleanPref(PrefKey.SEASONALITY_FIRST_GROUP_MIDDLE_EARLY, true));
 		cbxLateEarlyFirst.setSelected(App.prefs.getBooleanPref(PrefKey.SEASONALITY_FIRST_GROUP_LATE_EARLY, false));
 		cbxLateFirst.setSelected(App.prefs.getBooleanPref(PrefKey.SEASONALITY_FIRST_GROUP_LATE, false));
-
+		
 		cbxDormantSecond.setSelected(App.prefs.getBooleanPref(PrefKey.SEASONALITY_SECOND_GROUP_DORMANT, false));
 		cbxEarlyEarlySecond.setSelected(App.prefs.getBooleanPref(PrefKey.SEASONALITY_SECOND_GROUP_EARLY_EARLY, false));
 		cbxMiddleEarlySecond.setSelected(App.prefs.getBooleanPref(PrefKey.SEASONALITY_SECOND_GROUP_MIDDLE_EARLY, false));
 		cbxLateEarlySecond.setSelected(App.prefs.getBooleanPref(PrefKey.SEASONALITY_SECOND_GROUP_LATE_EARLY, true));
 		cbxLateSecond.setSelected(App.prefs.getBooleanPref(PrefKey.SEASONALITY_SECOND_GROUP_LATE, true));
-
+		
 		spnFirstYear.setValue(App.prefs.getIntPref(PrefKey.RANGE_FIRST_YEAR, 0));
 		spnLastYear.setValue(App.prefs.getIntPref(PrefKey.RANGE_LAST_YEAR, 0));
-
+		
 		validateChoices();
 	}
-
+	
+	@Override
 	public void actionPerformed(ActionEvent evt) {
-
+		
 		if (evt.getActionCommand().equals("Cancel"))
 		{
 			setVisible(false);
@@ -633,13 +631,13 @@ public class ParamConfigDialog extends JDialog implements ActionListener, Change
 		else if (evt.getActionCommand().equals("AllYearsCheckbox"))
 		{
 			validateChoices();
-
+			
 		}
 		else if (evt.getActionCommand().equals("AnalysisType"))
 		{
 			showHideFilterGUI();
 		}
-
+		
 		// Make season selectors mutually exclusive
 		else if (evt.getActionCommand().equals("DormantFirst"))
 		{
@@ -661,7 +659,7 @@ public class ParamConfigDialog extends JDialog implements ActionListener, Change
 			cbxEarlyEarlyFirst.setSelected(!cbxEarlyEarlySecond.isSelected());
 			validateChoices();
 		}
-
+		
 		else if (evt.getActionCommand().equals("MiddleEarlyFirst"))
 		{
 			cbxMiddleEarlySecond.setSelected(!cbxMiddleEarlyFirst.isSelected());
@@ -672,7 +670,7 @@ public class ParamConfigDialog extends JDialog implements ActionListener, Change
 			cbxMiddleEarlyFirst.setSelected(!cbxMiddleEarlySecond.isSelected());
 			validateChoices();
 		}
-
+		
 		else if (evt.getActionCommand().equals("LateEarlyFirst"))
 		{
 			cbxLateEarlySecond.setSelected(!cbxLateEarlyFirst.isSelected());
@@ -683,7 +681,7 @@ public class ParamConfigDialog extends JDialog implements ActionListener, Change
 			cbxLateEarlyFirst.setSelected(!cbxLateEarlySecond.isSelected());
 			validateChoices();
 		}
-
+		
 		else if (evt.getActionCommand().equals("LateFirst"))
 		{
 			cbxLateSecond.setSelected(!cbxLateFirst.isSelected());
@@ -695,11 +693,12 @@ public class ParamConfigDialog extends JDialog implements ActionListener, Change
 			validateChoices();
 		}
 	}
-
+	
+	@Override
 	public void stateChanged(ChangeEvent e) {
-
+		
 		validateChoices();
-
+		
 	}
-
+	
 }

@@ -1,22 +1,20 @@
-/*******************************************************************************
- * Copyright (C) 2013 Peter Brewer.
+/**************************************************************************************************
+ * Fire History Analysis and Exploration System (FHAES), Copyright (C) 2015
  * 
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * Contributors: Peter Brewer
  * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * 		This program is free software: you can redistribute it and/or modify it under the terms of
+ * 		the GNU General Public License as published by the Free Software Foundation, either version
+ * 		3 of the License, or (at your option) any later version.
  * 
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * 		This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * 		without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * 		See the GNU General Public License for more details.
  * 
- * Contributors:
- *     Peter Brewer
- ******************************************************************************/
+ * 		You should have received a copy of the GNU General Public License along with this program.
+ * 		If not, see <http://www.gnu.org/licenses/>.
+ * 
+ *************************************************************************************************/
 package org.fhaes.preferences.wrappers;
 
 import org.fhaes.enums.AnalysisLabelType;
@@ -41,14 +39,14 @@ import org.fhaes.preferences.FHAESPreferences.PrefKey;
  * @author lucasm
  */
 public abstract class PrefWrapper<OBJTYPE> {
-
+	
 	protected PrefKey prefName;
 	private Object prefValue;
 	private Object defaultValue;
 	private Class<?> baseClass;
 	private boolean valueModified;
-	private boolean autocommit = true;
-
+	private final boolean autocommit = true;
+	
 	/**
 	 * Create a new wrapper for this preference name, wrapping the specified type.
 	 * 
@@ -57,15 +55,15 @@ public abstract class PrefWrapper<OBJTYPE> {
 	 * @param baseClass
 	 */
 	public PrefWrapper(PrefKey prefName, Object defaultValue, Class<?> baseClass) {
-
+		
 		this.setPrefName(prefName);
 		this.baseClass = baseClass;
 		this.defaultValue = defaultValue;
-
+		
 		valueModified = false;
 		load();
 	}
-
+	
 	/**
 	 * Shortcut for creating a string-based pref.
 	 * 
@@ -73,52 +71,52 @@ public abstract class PrefWrapper<OBJTYPE> {
 	 * @param defaultValue
 	 */
 	public PrefWrapper(PrefKey prefName, Object defaultValue) {
-
+		
 		this(prefName, defaultValue, String.class);
 	}
-
+	
 	/**
 	 * Shortcut for creating a string-based pref with no default.
 	 * 
 	 * @param prefName
 	 */
 	public PrefWrapper(PrefKey prefName) {
-
+		
 		this(prefName, null, String.class);
 	}
-
+	
 	/**
 	 * TODO
 	 * 
 	 * @return
 	 */
 	public boolean isModified() {
-
+		
 		return valueModified;
 	}
-
+	
 	/**
 	 * Set the value of this preference.
 	 * 
 	 * @param value
 	 */
 	public void setValue(OBJTYPE value) {
-
+		
 		// same value? ignore it
 		if (prefValue == value)
 			return;
-
+			
 		// they equal the same thing? ignore it
 		if (prefValue != null && prefValue.equals(value))
 			return;
-
+			
 		valueModified = true;
 		prefValue = value;
-
+		
 		if (autocommit)
 			commit();
 	}
-
+	
 	/**
 	 * Get the value of the pref referenced by this wrapper.
 	 * 
@@ -126,25 +124,25 @@ public abstract class PrefWrapper<OBJTYPE> {
 	 */
 	@SuppressWarnings("unchecked")
 	public OBJTYPE getValue() {
-
+		
 		return (OBJTYPE) prefValue;
 	}
-
+	
 	/**
 	 * Commit the value represented in this pref to prefs storage. Not useful to call if autocommit is on (which it is by default).
 	 */
 	public void commit() {
-
+		
 		if (!valueModified)
 			return;
-
+			
 		if (prefValue == null)
 		{
 			FHAESPreferences.removePref(getPrefName());
 			valueModified = false;
 			return;
 		}
-
+		
 		if (baseClass == String.class)
 			App.prefs.setPref(getPrefName(), (String) prefValue);
 		/*
@@ -196,15 +194,15 @@ public abstract class PrefWrapper<OBJTYPE> {
 		}
 		else
 			throw new IllegalArgumentException("I don't know how to save a pref for type " + baseClass);
-
+			
 		valueModified = false;
 	}
-
+	
 	/**
 	 * TODO
 	 */
 	private void load() {
-
+		
 		if (baseClass == String.class)
 			prefValue = App.prefs.getPref(getPrefName(), (String) defaultValue);
 		/*
@@ -262,24 +260,24 @@ public abstract class PrefWrapper<OBJTYPE> {
 			throw new IllegalArgumentException("I don't know how to load a pref for type " + baseClass);
 		}
 	}
-
+	
 	/**
 	 * TODO
 	 * 
 	 * @param prefName
 	 */
 	public void setPrefName(PrefKey prefName) {
-
+		
 		this.prefName = prefName;
 	}
-
+	
 	/**
 	 * TODO
 	 * 
 	 * @return
 	 */
 	public PrefKey getPrefName() {
-
+		
 		return prefName;
 	}
 }

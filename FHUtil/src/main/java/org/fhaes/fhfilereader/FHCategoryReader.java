@@ -1,3 +1,20 @@
+/**************************************************************************************************
+ * Fire History Analysis and Exploration System (FHAES), Copyright (C) 2015
+ * 
+ * Contributors: Joshua Brogan and Peter Brewer
+ * 
+ * 		This program is free software: you can redistribute it and/or modify it under the terms of
+ * 		the GNU General Public License as published by the Free Software Foundation, either version
+ * 		3 of the License, or (at your option) any later version.
+ * 
+ * 		This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * 		without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * 		See the GNU General Public License for more details.
+ * 
+ * 		You should have received a copy of the GNU General Public License along with this program.
+ * 		If not, see <http://www.gnu.org/licenses/>.
+ * 
+ *************************************************************************************************/
 package org.fhaes.fhfilereader;
 
 import java.io.File;
@@ -17,43 +34,43 @@ import org.slf4j.LoggerFactory;
  * @author Joshua Brogan and Peter Brewer
  */
 public class FHCategoryReader {
-
+	
 	// Declare FHAES specialized objects
 	private static final Logger log = LoggerFactory.getLogger(FHCategoryReader.class);
-
+	
 	// Declare header constants
 	public static final String FHAES_CATEGORY_FILE_HEADER = "FHAES Category File";
 	public static final String FHAES_CATEGORY_FILE_VERSION = "version=1.0";
 	public static final int INDEX_OF_HEADER = 0;
 	public static final int INDEX_OF_VERSION = 1;
 	public static final int INDEX_OF_FILENAME = 2;
-
+	
 	// Declare IO constants
 	public static final int INDEX_OF_SERIES_TITLE = 0;
 	public static final int INDEX_OF_CATEGORY = 1;
 	public static final int INDEX_OF_CONTENT = 2;
 	public static final int NUM_COLUMNS_IN_FILE = 3;
-
+	
 	// Declare local constants
 	private final int NUM_INITIAL_VALUES_TO_READ = 2;
-
+	
 	// Declare local variables
-	private ArrayList<FHCategoryEntry> categoryEntries = new ArrayList<FHCategoryEntry>();
+	private final ArrayList<FHCategoryEntry> categoryEntries = new ArrayList<FHCategoryEntry>();
 	private String nameOfCorrespondingFHXFile;
-
+	
 	/**
 	 * Parses the input category file and stores its contents in the categoryEntries arrayList.
 	 * 
 	 * @param categoryFile
 	 */
 	public FHCategoryReader(File categoryFile) {
-
+		
 		try
 		{
 			// Setup the scanner for reading and storing the category entries from the CSV file
 			Scanner sc = new Scanner(categoryFile);
 			sc.useDelimiter(",|\r\n");
-
+			
 			// Verify that the category file has the necessary header and version number
 			for (int numValuesRead = 0; numValuesRead <= NUM_INITIAL_VALUES_TO_READ; numValuesRead++)
 			{
@@ -83,14 +100,14 @@ public class FHCategoryReader {
 					throw new InvalidCategoryFileException();
 				}
 			}
-
+			
 			// Read the contents of the category file into the categoryEntries array
 			while (sc.hasNext())
 			{
 				String seriesTitle = sc.next();
 				String category = sc.next();
 				String content = sc.next();
-
+				
 				if (!seriesTitle.equals("") && !category.equals("") && !content.equals(""))
 				{
 					categoryEntries.add(new FHCategoryEntry(seriesTitle, category, content));
@@ -101,7 +118,7 @@ public class FHCategoryReader {
 					throw new InvalidCategoryFileException();
 				}
 			}
-
+			
 			sc.close();
 		}
 		catch (FileNotFoundException ex)
@@ -113,24 +130,24 @@ public class FHCategoryReader {
 			log.error("Could not parse category file. File is in an invalid format or has missing entries.");
 		}
 	}
-
+	
 	/**
 	 * Gets the list of category entries which were parsed in by the reader.
 	 * 
 	 * @return categoryEntries
 	 */
 	public ArrayList<FHCategoryEntry> getCategoryEntryList() {
-
+		
 		return categoryEntries;
 	}
-
+	
 	/**
 	 * Gets the name of the FHX file which this category file corresponds to.
 	 * 
 	 * @return nameOfCorrespondingFHXFile
 	 */
 	public String getNameOfCorrespondingFHXFile() {
-
+		
 		return nameOfCorrespondingFHXFile;
 	}
 }

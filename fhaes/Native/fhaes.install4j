@@ -12,7 +12,7 @@
       <envVar name="JDK_HOME" />
     </searchSequence>
     <variables>
-      <variable name="cert.folder" value="/home/pbrewer/.ssh/" description="" category="" />
+      <variable name="cert.folder" value="/home/Peter Brewer/.ssh/" description="" category="" />
     </variables>
     <mergedProjects />
     <codeSigning macEnabled="false" macPkcs12File="${compiler:cert.folder}/pwb_code_signing_2014.p12" windowsEnabled="true" windowsKeySource="pkcs12" windowsPvkFile="" windowsSpcFile="" windowsPkcs12File="${compiler:cert.folder}/pwb_code_signing_2014.p12" />

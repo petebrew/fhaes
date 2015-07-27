@@ -1,23 +1,20 @@
-/*******************************************************************************
- * Copyright (C) 2014 Peter Brewer and Joshua Brogan
+/**************************************************************************************************
+ * Fire History Analysis and Exploration System (FHAES), Copyright (C) 2015
  * 
- *     This program is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     (at your option) any later version.
+ * Contributors: Joshua Brogan and Peter Brewer
  * 
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
+ * 		This program is free software: you can redistribute it and/or modify it under the terms of
+ * 		the GNU General Public License as published by the Free Software Foundation, either version
+ * 		3 of the License, or (at your option) any later version.
  * 
- *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
- *     Contributors:
- *     		Peter Brewer
- *     		Joshua Brogan
- ******************************************************************************/
+ * 		This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * 		without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * 		See the GNU General Public License for more details.
+ * 
+ * 		You should have received a copy of the GNU General Public License along with this program.
+ * 		If not, see <http://www.gnu.org/licenses/>.
+ * 
+ *************************************************************************************************/
 package org.fhaes.fhsamplesize.view;
 
 import java.awt.BasicStroke;
@@ -60,12 +57,12 @@ import com.itextpdf.text.pdf.PdfWriter;
  * @author Joshua Brogan and Peter Brewer
  */
 public class SSIZCurveChart extends ChartPanel {
-
+	
 	private static final Logger log = LoggerFactory.getLogger(SSIZCurveChart.class);
 	private static final long serialVersionUID = 1L;
-
+	
 	private static JFreeChart chart;
-
+	
 	/**
 	 * Standard constructor requires analysisResults array, which middle metric to chart, and which segment. Includes x,y coordinates for
 	 * drawing cross-hairs for marking asymptote.
@@ -78,10 +75,10 @@ public class SSIZCurveChart extends ChartPanel {
 	 */
 	public SSIZCurveChart(AnalysisResultsModel[] analysisResults, MiddleMetric metricToChart, SegmentModel segment, Integer xcross,
 			Integer ycross) {
-
+			
 		super(createChart(createEventsPerCenturyDataset(analysisResults, metricToChart, segment), xcross, ycross));
 	}
-
+	
 	/**
 	 * Standard constructor requires analysisResults array, which middle metric to chart, and which segment.
 	 * 
@@ -90,10 +87,10 @@ public class SSIZCurveChart extends ChartPanel {
 	 * @param segment
 	 */
 	public SSIZCurveChart(AnalysisResultsModel[] analysisResults, MiddleMetric metricToChart, SegmentModel segment) {
-
+		
 		super(createChart(createEventsPerCenturyDataset(analysisResults, metricToChart, segment), null, null));
 	}
-
+	
 	/**
 	 * Create the chart.
 	 * 
@@ -101,13 +98,13 @@ public class SSIZCurveChart extends ChartPanel {
 	 * @return
 	 */
 	private static JFreeChart createChart(final XYDataset eventsPerCenturyDataset, Integer xcross, Integer ycross) {
-
+		
 		// JFreeChart jfreechart = ChartFactory.createTimeSeriesChart(null, "Number of series resampled", "Number of events",
 		// eventsPerCenturyDataset, true, true, false);
-
+		
 		JFreeChart jfreechart = ChartFactory.createScatterPlot(null, "Number of series resampled", "Number of events per century",
 				eventsPerCenturyDataset);
-
+				
 		jfreechart.setBackgroundPaint(Color.WHITE);
 		XYPlot xyplot = (XYPlot) jfreechart.getPlot();
 		xyplot.setInsets(new RectangleInsets(5D, 5D, 5D, 20D));
@@ -126,26 +123,26 @@ public class SSIZCurveChart extends ChartPanel {
 		numberaxis.setAutoRangeIncludesZero(false);
 		numberaxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
 		jfreechart.removeLegend();
-
+		
 		if (xcross != null && ycross != null)
 		{
 			XYPlot xyp = jfreechart.getXYPlot();
-
+			
 			xyp.setRangeCrosshairVisible(true);
 			xyp.setRangeCrosshairValue(ycross, true);
 			xyp.setRangeCrosshairLockedOnData(true);
-
+			
 			xyp.setDomainCrosshairVisible(true);
 			xyp.setDomainCrosshairValue(xcross, true);
 			xyp.setDomainCrosshairLockedOnData(true);
 		}
-
+		
 		// Initialize the chart variable for later use
 		chart = jfreechart;
-
+		
 		return jfreechart;
 	}
-
+	
 	/**
 	 * Create the events per century dataset. Requires analysisResults array, which middle metric to chart, and which segment.
 	 * 
@@ -156,30 +153,30 @@ public class SSIZCurveChart extends ChartPanel {
 	 */
 	private static XYDataset createEventsPerCenturyDataset(AnalysisResultsModel[] analysisResults, MiddleMetric metricToChart,
 			SegmentModel segment) {
-
+			
 		if (analysisResults == null || analysisResults.length == 0)
 		{
 			log.debug("No analysis results to draw");
 			return null;
 		}
-
+		
 		YIntervalSeries yintervalseries = new YIntervalSeries("Series");
-
+		
 		for (int i = 0; i < analysisResults.length; i++)
 		{
 			if (!analysisResults[i].getSegment().equals(segment))
 				continue;
-
+				
 			if (metricToChart.equals(MiddleMetric.MEAN))
 			{
-				yintervalseries.add(analysisResults[i].getNumberOfSamples(), analysisResults[i].getMean(), analysisResults[i].getMean()
-						- analysisResults[i].getConfidenceInterval95(),
+				yintervalseries.add(analysisResults[i].getNumberOfSamples(), analysisResults[i].getMean(),
+						analysisResults[i].getMean() - analysisResults[i].getConfidenceInterval95(),
 						analysisResults[i].getMean() + analysisResults[i].getConfidenceInterval95());
 			}
 			else if (metricToChart.equals(MiddleMetric.MEDIAN))
 			{
-				yintervalseries.add(analysisResults[i].getNumberOfSamples(), analysisResults[i].getMedian(), analysisResults[i].getMean()
-						- analysisResults[i].getConfidenceInterval95(),
+				yintervalseries.add(analysisResults[i].getNumberOfSamples(), analysisResults[i].getMedian(),
+						analysisResults[i].getMean() - analysisResults[i].getConfidenceInterval95(),
 						analysisResults[i].getMean() + analysisResults[i].getConfidenceInterval95());
 			}
 			else if (metricToChart.equals(MiddleMetric.WEIBULL_MEAN))
@@ -196,13 +193,13 @@ public class SSIZCurveChart extends ChartPanel {
 			{
 				log.error("Chart does not supported the specified middle metric type");
 			}
-
+			
 		}
 		YIntervalSeriesCollection yintervalseriescollection = new YIntervalSeriesCollection();
 		yintervalseriescollection.addSeries(yintervalseries);
 		return yintervalseriescollection;
 	}
-
+	
 	/**
 	 * Save chart as PDF file. Requires iText library.
 	 * 
@@ -215,14 +212,14 @@ public class SSIZCurveChart extends ChartPanel {
 	 */
 	@SuppressWarnings("deprecation")
 	public static void writeAsPDF(File fileToSave, int width, int height) throws Exception {
-
+		
 		if (chart != null)
 		{
 			BufferedOutputStream out = null;
 			try
 			{
 				out = new BufferedOutputStream(new FileOutputStream(fileToSave.getAbsolutePath()));
-
+				
 				// convert chart to PDF with iText:
 				Rectangle pagesize = new Rectangle(width, height);
 				Document document = new Document(pagesize, 50, 50, 50, 50);
@@ -231,11 +228,11 @@ public class SSIZCurveChart extends ChartPanel {
 					PdfWriter writer = PdfWriter.getInstance(document, out);
 					document.addAuthor("JFreeChart");
 					document.open();
-
+					
 					PdfContentByte cb = writer.getDirectContent();
 					PdfTemplate tp = cb.createTemplate(width, height);
 					Graphics2D g2 = tp.createGraphics(width, height, new DefaultFontMapper());
-
+					
 					Rectangle2D r2D = new Rectangle2D.Double(0, 0, width, height);
 					chart.draw(g2, r2D, null);
 					g2.dispose();
@@ -253,17 +250,17 @@ public class SSIZCurveChart extends ChartPanel {
 			}
 		}
 	}
-
+	
 	/**
 	 * Overridden methods to prevent right-click menu from popping up.
 	 */
 	@Override
 	public void mousePressed(MouseEvent arg0) {
-
+	
 	}
-
+	
 	@Override
 	public void mouseReleased(MouseEvent arg0) {
-
+	
 	}
 }

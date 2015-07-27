@@ -1,24 +1,21 @@
+/**************************************************************************************************
+ * Fire History Analysis and Exploration System (FHAES), Copyright (C) 2015
+ * 
+ * Contributors: Peter Brewer
+ * 
+ * 		This program is free software: you can redistribute it and/or modify it under the terms of
+ * 		the GNU General Public License as published by the Free Software Foundation, either version
+ * 		3 of the License, or (at your option) any later version.
+ * 
+ * 		This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * 		without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * 		See the GNU General Public License for more details.
+ * 
+ * 		You should have received a copy of the GNU General Public License along with this program.
+ * 		If not, see <http://www.gnu.org/licenses/>.
+ * 
+ *************************************************************************************************/
 package org.fhaes.gui;
-
-/*******************************************************************************
- * Copyright (C) 2013 Peter Brewer
- * 
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * Contributors:
- *     Peter Brewer
- ******************************************************************************/
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -54,8 +51,6 @@ import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 import javax.swing.filechooser.FileFilter;
 
-import net.miginfocom.swing.MigLayout;
-
 import org.apache.commons.lang.ArrayUtils;
 import org.codehaus.plexus.util.FileUtils;
 import org.fhaes.analysis.FHMatrix;
@@ -87,15 +82,16 @@ import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
 
 import edu.emory.mathcs.backport.java.util.Arrays;
+import net.miginfocom.swing.MigLayout;
 
 /**
  * ShapeFileDialog Class.
  */
 @SuppressWarnings("rawtypes")
 public class ShapeFileDialog extends JDialog implements ActionListener, DocumentListener {
-
+	
 	private static final Logger log = LoggerFactory.getLogger(ShapeFileDialog.class);
-
+	
 	private static final long serialVersionUID = 1L;
 	private final JPanel contentPanel = new JPanel();
 	private JTextField txtFilename;
@@ -110,32 +106,32 @@ public class ShapeFileDialog extends JDialog implements ActionListener, Document
 	private final ButtonGroup buttonGroup = new ButtonGroup();
 	private JRadioButton radStyle1;
 	private JRadioButton radStyle2;
-
+	
 	/**
 	 * Create the dialog.
 	 * 
 	 * @throws Exception
 	 */
 	public ShapeFileDialog(Component parent, FHMatrix fhm) throws NullPointerException {
-
+		
 		if (fhm == null)
 			throw new NullPointerException("FHMatrix cannot be null");
 		this.fhm = fhm;
 		initGUI();
 		populate();
 	}
-
+	
 	/**
 	 * TODO
 	 */
 	private void populate() {
-
+		
 		Integer startyear = fhm.getEarliestYearInOutput();
 		Integer endyear = fhm.getLatestEndYearInOutput();
-
+		
 		log.debug("Start year = " + startyear);
 		log.debug("End year = " + endyear);
-
+		
 		if (startyear != null & endyear != null)
 		{
 			for (Integer year = fhm.getEarliestYearInOutput(); year <= fhm.getLatestEndYearInOutput(); year++)
@@ -144,26 +140,26 @@ public class ShapeFileDialog extends JDialog implements ActionListener, Document
 			}
 		}
 	}
-
+	
 	@SuppressWarnings({ "unchecked", "deprecation" })
 	private void addSelectedYear() {
-
+		
 		if (!this.lstAvailableYears.isSelectionEmpty())
 		{
 			List<Integer> values = Arrays.asList(lstAvailableYears.getSelectedValues());
-
+			
 			if (radStyle1.isSelected() && values.size() + this.selectedYearsModel.getSize() > 255)
 			{
 				JOptionPane.showMessageDialog(this, "Shapefiles with this attribute table style can only contain data for 255 years",
 						"Too many years", JOptionPane.ERROR_MESSAGE);
 				return;
 			}
-
+			
 			for (Integer val : values)
 			{
 				selectedYearsModel.addElement(val);
 			}
-
+			
 			if (lstAvailableYears.getSelectedIndices().length > 0)
 			{
 				List selected = Arrays.asList(lstAvailableYears.getSelectedValues());
@@ -172,23 +168,23 @@ public class ShapeFileDialog extends JDialog implements ActionListener, Document
 					this.availableYearsModel.removeElement(item);
 				}
 			}
-
+			
 		}
-
+		
 	}
-
+	
 	@SuppressWarnings({ "unchecked", "deprecation" })
 	private void removeSelectedYear() {
-
+		
 		if (!this.lstSelectedYears.isSelectionEmpty())
 		{
 			List<Integer> values = Arrays.asList(lstSelectedYears.getSelectedValues());
-
+			
 			for (Integer val : values)
 			{
 				availableYearsModel.addElement(val);
 			}
-
+			
 			if (lstSelectedYears.getSelectedIndices().length > 0)
 			{
 				List selected = Arrays.asList(lstSelectedYears.getSelectedValues());
@@ -197,13 +193,13 @@ public class ShapeFileDialog extends JDialog implements ActionListener, Document
 					this.selectedYearsModel.removeElement(item);
 				}
 			}
-
+			
 		}
 	}
-
+	
 	@SuppressWarnings("unchecked")
 	private void initGUI() {
-
+		
 		setBounds(100, 100, 582, 333);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -234,7 +230,7 @@ public class ShapeFileDialog extends JDialog implements ActionListener, Document
 			radStyle1.setActionCommand("Style1");
 			radStyle1.addActionListener(this);
 			// radStyle1.setSelected(true);
-
+			
 			buttonGroup.add(radStyle1);
 			contentPanel.add(radStyle1, "cell 1 1");
 		}
@@ -243,9 +239,9 @@ public class ShapeFileDialog extends JDialog implements ActionListener, Document
 			radStyle2.setActionCommand("Style2");
 			radStyle2.addActionListener(this);
 			buttonGroup.add(radStyle2);
-
+			
 			new RadioButtonWrapper(buttonGroup, PrefKey.SHAPEFILE_OUTPUT_STYLE, "Style1");
-
+			
 			contentPanel.add(radStyle2, "cell 1 2");
 		}
 		{
@@ -273,7 +269,7 @@ public class ShapeFileDialog extends JDialog implements ActionListener, Document
 				JScrollPane scrollPane = new JScrollPane();
 				panel.add(scrollPane, "cell 0 1,grow");
 				{
-
+					
 					lstAvailableYears = new JList();
 					lstAvailableYears.setModel(availableYearsModel);
 					scrollPane.setViewportView(lstAvailableYears);
@@ -298,27 +294,27 @@ public class ShapeFileDialog extends JDialog implements ActionListener, Document
 					lstSelectedYears = new JList();
 					lstSelectedYears.setModel(selectedYearsModel);
 					selectedYearsModel.addListDataListener(new ListDataListener() {
-
+						
 						@Override
 						public void contentsChanged(ListDataEvent arg0) {
-
+							
 							pingLayout();
 						}
-
+						
 						@Override
 						public void intervalAdded(ListDataEvent arg0) {
-
+							
 							pingLayout();
-
+							
 						}
-
+						
 						@Override
 						public void intervalRemoved(ListDataEvent arg0) {
-
+							
 							pingLayout();
-
+							
 						}
-
+						
 					});
 					scrollPane.setViewportView(lstSelectedYears);
 				}
@@ -343,43 +339,43 @@ public class ShapeFileDialog extends JDialog implements ActionListener, Document
 				buttonPane.add(btnCancel);
 			}
 		}
-
+		
 		this.setLocationRelativeTo(parent);
 		this.setIconImage(Builder.getApplicationIcon());
 		this.setTitle("Generate shapefile");
 		pingLayout();
 	}
-
+	
 	public JList getList() {
-
+		
 		return lstAvailableYears;
 	}
-
+	
 	public JList getList2() {
-
+		
 		return lstSelectedYears;
 	}
-
+	
 	private void pingLayout() {
-
+		
 		if (this.txtFilename.getText() != null && this.txtFilename.getText().length() > 0)
 		{
-
+		
 		}
 		else
 		{
 			btnOK.setEnabled(false);
 			return;
 		}
-
+		
 		if (this.lstSelectedYears.getModel().getSize() == 0)
 		{
 			btnOK.setEnabled(false);
 			return;
 		}
-
+		
 		btnOK.setEnabled(true);
-
+		
 		if (radStyle1.isSelected())
 		{
 			this.lblSelectedYears.setText("Selected (max. 255)");
@@ -388,12 +384,12 @@ public class ShapeFileDialog extends JDialog implements ActionListener, Document
 		{
 			this.lblSelectedYears.setText("Selected");
 		}
-
+		
 	}
-
+	
 	@Override
 	public void actionPerformed(ActionEvent evt) {
-
+		
 		if (evt.getActionCommand().equals("Cancel"))
 		{
 			dispose();
@@ -401,12 +397,12 @@ public class ShapeFileDialog extends JDialog implements ActionListener, Document
 		else if (evt.getActionCommand().equals("Browse"))
 		{
 			File filename = this.getOutputFile(new SHPFileFilter());
-
+			
 			if (filename != null)
 			{
 				txtFilename.setText(filename.getAbsolutePath());
 			}
-
+			
 		}
 		else if (evt.getActionCommand().equals("OK"))
 		{
@@ -447,55 +443,55 @@ public class ShapeFileDialog extends JDialog implements ActionListener, Document
 			{
 				JOptionPane.showMessageDialog(this, "Shapefiles with this attribute table style can only contain data for 255 years.\n"
 						+ "Remove some years and try again", "Too many years", JOptionPane.ERROR_MESSAGE);
-
+						
 				radStyle2.setSelected(true);
 				return;
 			}
-
+			
 			this.lblSelectedYears.setText("Selected (max. 255)");
 		}
 		else if (evt.getActionCommand().equals("Style2"))
 		{
 			this.lblSelectedYears.setText("Selected");
-
+			
 		}
 	}
-
+	
 	@SuppressWarnings("unchecked")
 	private void doProcessing() throws IOException {
-
+		
 		/*
 		 * We use the DataUtilities class to create a FeatureType that will describe the data in our shapefile.
 		 * 
 		 * See also the createFeatureType method below for another, more flexible approach.
 		 */
 		final SimpleFeatureType TYPE = createFeatureType(selectedYearsModel.getAllElements());
-
+		
 		List<SimpleFeature> features = new ArrayList<SimpleFeature>();
-
+		
 		/*
 		 * GeometryFactory will be used to create the geometry attribute of each feature (a Point object for the location)
 		 */
 		GeometryFactory geometryFactory = JTSFactoryFinder.getGeometryFactory(null);
-
+		
 		BufferedReader reader = null;
 		try
 		{
 			reader = new BufferedReader(new FileReader(fhm.getFileSiteResult()));
-
+			
 			/* First line of the data file is the header */
 			String line = reader.readLine();
 			String tokens2[] = line.split("\\,");
 			Integer colcount = tokens2.length;
 			reader.close();
-
+			
 			ArrayList yearsToInclude = new ArrayList();
-
+			
 			for (int i = 0; i < lstSelectedYears.getModel().getSize(); i++)
 			{
 				yearsToInclude.add(lstSelectedYears.getModel().getElementAt(i));
 			}
-
+			
 			for (int col = 1; col < colcount; col++)
 			{
 				reader = new BufferedReader(new FileReader(fhm.getFileSiteResult()));
@@ -509,11 +505,11 @@ public class ShapeFileDialog extends JDialog implements ActionListener, Document
 				for (line = reader.readLine(); line != null; line = reader.readLine())
 				{
 					linecount++;
-
+					
 					if (line.trim().length() > 0)
 					{ // skip blank lines
 						String tokens[] = line.split("\\,");
-
+						
 						if (linecount == 0)
 						{
 							name = tokens[col].trim();
@@ -541,7 +537,7 @@ public class ShapeFileDialog extends JDialog implements ActionListener, Document
 							{
 								log.debug("Not storing info for year = " + year);
 							}
-
+							
 						}
 					}
 				}
@@ -572,20 +568,20 @@ public class ShapeFileDialog extends JDialog implements ActionListener, Document
 				e.printStackTrace();
 			}
 		}
-
+		
 		/*
 		 * Get an output file name and create the new shapefile
 		 */
 		File newFile = new File(txtFilename.getText());
-
+		
 		ShapefileDataStoreFactory dataStoreFactory = new ShapefileDataStoreFactory();
-
+		
 		Map<String, Serializable> params = new HashMap<String, Serializable>();
 		params.put("url", newFile.toURI().toURL());
 		params.put("create spatial index", Boolean.TRUE);
-
+		
 		ShapefileDataStore newDataStore = (ShapefileDataStore) dataStoreFactory.createNewDataStore(params);
-
+		
 		/*
 		 * TYPE is used as a template to describe the file contents
 		 */
@@ -594,7 +590,7 @@ public class ShapeFileDialog extends JDialog implements ActionListener, Document
 		 * Write the features to the shapefile
 		 */
 		Transaction transaction = new DefaultTransaction("create");
-
+		
 		String typeName = newDataStore.getTypeNames()[0];
 		SimpleFeatureSource featureSource = newDataStore.getFeatureSource(typeName);
 		SimpleFeatureType SHAPE_TYPE = featureSource.getSchema();
@@ -606,7 +602,7 @@ public class ShapeFileDialog extends JDialog implements ActionListener, Document
 		 * Each data store has different limitations so check the resulting SimpleFeatureType.
 		 */
 		System.out.println("SHAPE:" + SHAPE_TYPE);
-
+		
 		if (featureSource instanceof SimpleFeatureStore)
 		{
 			SimpleFeatureStore featureStore = (SimpleFeatureStore) featureSource;
@@ -634,46 +630,46 @@ public class ShapeFileDialog extends JDialog implements ActionListener, Document
 		else
 		{
 			System.out.println(typeName + " does not support read/write access");
-
+			
 		}
-
+		
 	}
-
+	
 	@SuppressWarnings("unchecked")
 	private void doProcessingStyle2() throws IOException {
-
+		
 		/*
 		 * We use the DataUtilities class to create a FeatureType that will describe the data in our shapefile.
 		 * 
 		 * See also the createFeatureType method below for another, more flexible approach.
 		 */
 		final SimpleFeatureType TYPE2 = createStyle2FeatureType();
-
+		
 		List<SimpleFeature> features = new ArrayList<SimpleFeature>();
-
+		
 		/*
 		 * GeometryFactory will be used to create the geometry attribute of each feature (a Point object for the location)
 		 */
 		GeometryFactory geometryFactory = JTSFactoryFinder.getGeometryFactory(null);
-
+		
 		BufferedReader reader = null;
 		try
 		{
 			reader = new BufferedReader(new FileReader(fhm.getFileSiteResult()));
-
+			
 			/* First line of the data file is the header */
 			String line = reader.readLine();
 			String tokens2[] = line.split("\\,");
 			Integer colcount = tokens2.length;
 			reader.close();
-
+			
 			ArrayList yearsToInclude = new ArrayList();
-
+			
 			for (int i = 0; i < lstSelectedYears.getModel().getSize(); i++)
 			{
 				yearsToInclude.add(lstSelectedYears.getModel().getElementAt(i));
 			}
-
+			
 			for (int col = 1; col < colcount; col++)
 			{
 				reader = new BufferedReader(new FileReader(fhm.getFileSiteResult()));
@@ -687,11 +683,11 @@ public class ShapeFileDialog extends JDialog implements ActionListener, Document
 				for (line = reader.readLine(); line != null; line = reader.readLine())
 				{
 					linecount++;
-
+					
 					if (line.trim().length() > 0)
 					{ // skip blank lines
 						String tokens[] = line.split("\\,");
-
+						
 						if (linecount == 0)
 						{
 							name = tokens[col].trim();
@@ -723,12 +719,12 @@ public class ShapeFileDialog extends JDialog implements ActionListener, Document
 							{
 								log.debug("Not storing info for year = " + year);
 							}
-
+							
 						}
 					}
-
+					
 				}
-
+				
 				reader.close();
 			}
 		}
@@ -754,20 +750,20 @@ public class ShapeFileDialog extends JDialog implements ActionListener, Document
 				e.printStackTrace();
 			}
 		}
-
+		
 		/*
 		 * Get an output file name and create the new shapefile
 		 */
 		File newFile = getOutputFile();
-
+		
 		ShapefileDataStoreFactory dataStoreFactory = new ShapefileDataStoreFactory();
-
+		
 		Map<String, Serializable> params = new HashMap<String, Serializable>();
 		params.put("url", newFile.toURI().toURL());
 		params.put("create spatial index", Boolean.TRUE);
-
+		
 		ShapefileDataStore newDataStore = (ShapefileDataStore) dataStoreFactory.createNewDataStore(params);
-
+		
 		/*
 		 * TYPE is used as a template to describe the file contents
 		 */
@@ -776,7 +772,7 @@ public class ShapeFileDialog extends JDialog implements ActionListener, Document
 		 * Write the features to the shapefile
 		 */
 		Transaction transaction = new DefaultTransaction("create");
-
+		
 		String typeName = newDataStore.getTypeNames()[0];
 		SimpleFeatureSource featureSource = newDataStore.getFeatureSource(typeName);
 		SimpleFeatureType SHAPE_TYPE = featureSource.getSchema();
@@ -788,7 +784,7 @@ public class ShapeFileDialog extends JDialog implements ActionListener, Document
 		 * Each data store has different limitations so check the resulting SimpleFeatureType.
 		 */
 		System.out.println("SHAPE:" + SHAPE_TYPE);
-
+		
 		if (featureSource instanceof SimpleFeatureStore)
 		{
 			SimpleFeatureStore featureStore = (SimpleFeatureStore) featureSource;
@@ -816,18 +812,18 @@ public class ShapeFileDialog extends JDialog implements ActionListener, Document
 		else
 		{
 			System.out.println(typeName + " does not support read/write access");
-
+			
 		}
-
+		
 	}
-
+	
 	/**
 	 * Get the output filename. Checks and enforces that the specified filename ends with .shp
 	 * 
 	 * @return
 	 */
 	private File getOutputFile() {
-
+		
 		if (txtFilename.getText() == null || txtFilename.getText().length() == 0)
 		{
 			return null;
@@ -836,17 +832,17 @@ public class ShapeFileDialog extends JDialog implements ActionListener, Document
 		{
 			txtFilename.setText(txtFilename.getText() + ".shp");
 		}
-
+		
 		return new File(txtFilename.getText());
-
+		
 	}
-
+	
 	private static SimpleFeatureType createFeatureType(List<Integer> years) {
-
+		
 		SimpleFeatureTypeBuilder builder = new SimpleFeatureTypeBuilder();
 		builder.setName("FHAES");
 		builder.setCRS(DefaultGeographicCRS.WGS84); // <- Coordinate reference system
-
+		
 		// add attributes in order
 		builder.add("the_geom", Point.class);
 		builder.add("name", String.class);
@@ -854,31 +850,31 @@ public class ShapeFileDialog extends JDialog implements ActionListener, Document
 		{
 			builder.add(i + "", Integer.class);
 		}
-
+		
 		// build the type
 		final SimpleFeatureType FHAES = builder.buildFeatureType();
-
+		
 		return FHAES;
 	}
-
+	
 	private static SimpleFeatureType createStyle2FeatureType() {
-
+		
 		SimpleFeatureTypeBuilder builder = new SimpleFeatureTypeBuilder();
 		builder.setName("FHAES");
 		builder.setCRS(DefaultGeographicCRS.WGS84); // <- Coordinate reference system
-
+		
 		// add attributes in order
 		builder.add("the_geom", Point.class);
 		builder.add("name", String.class);
 		builder.add("year", Integer.class);
 		builder.add("value", Integer.class);
-
+		
 		// build the type
 		final SimpleFeatureType FHAES = builder.buildFeatureType();
-
+		
 		return FHAES;
 	}
-
+	
 	/**
 	 * Prompt the user for an output filename
 	 * 
@@ -886,36 +882,36 @@ public class ShapeFileDialog extends JDialog implements ActionListener, Document
 	 * @return
 	 */
 	private File getOutputFile(FileFilter filter) {
-
+		
 		String lastVisitedFolder = App.prefs.getPref(PrefKey.PREF_LAST_EXPORT_FOLDER, null);
 		File outputFile;
-
+		
 		// Create a file chooser
 		final JFileChooser fc = new JFileChooser(lastVisitedFolder);
-
+		
 		fc.setAcceptAllFileFilterUsed(true);
-
+		
 		if (filter != null)
 		{
 			fc.addChoosableFileFilter(filter);
 			fc.setFileFilter(filter);
 		}
-
+		
 		fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		fc.setMultiSelectionEnabled(false);
 		fc.setDialogTitle("Save as...");
-
+		
 		// In response to a button click:
 		int returnVal = fc.showOpenDialog(this);
-
+		
 		if (returnVal == JFileChooser.APPROVE_OPTION)
 		{
 			outputFile = fc.getSelectedFile();
-
+			
 			if (FileUtils.getExtension(outputFile.getAbsolutePath()) == "")
 			{
 				log.debug("Output file extension not set by user");
-
+				
 				if (fc.getFileFilter().getDescription().equals(new SHPFileFilter().getDescription()))
 				{
 					log.debug("Adding shp extension to output file name");
@@ -926,51 +922,51 @@ public class ShapeFileDialog extends JDialog implements ActionListener, Document
 			{
 				log.debug("Output file extension set my user to '" + FileUtils.getExtension(outputFile.getAbsolutePath()) + "'");
 			}
-
+			
 			App.prefs.setPref(PrefKey.PREF_LAST_EXPORT_FOLDER, outputFile.getAbsolutePath());
 		}
 		else
 		{
 			return null;
 		}
-
+		
 		if (outputFile.exists())
 		{
 			Object[] options = { "Overwrite", "No", "Cancel" };
-			int response = JOptionPane.showOptionDialog(this, "The file '" + outputFile.getName()
-					+ "' already exists.  Are you sure you want to overwrite?", "Confirm", JOptionPane.YES_NO_CANCEL_OPTION,
-					JOptionPane.QUESTION_MESSAGE, null,     // do not use a custom Icon
-					options,  // the titles of buttons
+			int response = JOptionPane.showOptionDialog(this,
+					"The file '" + outputFile.getName() + "' already exists.  Are you sure you want to overwrite?", "Confirm",
+					JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, // do not use a custom Icon
+					options, // the titles of buttons
 					options[0]); // default button title
-
+					
 			if (response != JOptionPane.YES_OPTION)
 			{
 				return null;
 			}
 		}
-
+		
 		return outputFile;
 	}
-
+	
 	@Override
 	public void changedUpdate(DocumentEvent arg0) {
-
+		
 		pingLayout();
-
+		
 	}
-
+	
 	@Override
 	public void insertUpdate(DocumentEvent arg0) {
-
+		
 		pingLayout();
-
+		
 	}
-
+	
 	@Override
 	public void removeUpdate(DocumentEvent arg0) {
-
+		
 		pingLayout();
-
+		
 	}
-
+	
 }

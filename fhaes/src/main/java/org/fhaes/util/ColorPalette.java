@@ -1,3 +1,20 @@
+/**************************************************************************************************
+ * Fire History Analysis and Exploration System (FHAES), Copyright (C) 2015
+ * 
+ * Contributors: Peter Brewer
+ * 
+ * 		This program is free software: you can redistribute it and/or modify it under the terms of
+ * 		the GNU General Public License as published by the Free Software Foundation, either version
+ * 		3 of the License, or (at your option) any later version.
+ * 
+ * 		This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * 		without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * 		See the GNU General Public License for more details.
+ * 
+ * 		You should have received a copy of the GNU General Public License along with this program.
+ * 		If not, see <http://www.gnu.org/licenses/>.
+ * 
+ *************************************************************************************************/
 package org.fhaes.util;
 
 import java.awt.Color;
@@ -6,18 +23,18 @@ import java.util.ArrayList;
 /**
  * ColorPalette Class. Returns a sequence of colors on each request in an attempt to give a nice palette for drawing.
  * 
- * @author pwb48
+ * @author Peter Brewer
  */
 public class ColorPalette {
-
+	
 	ArrayList<Color> colors = new ArrayList<Color>();
 	int currentColor = 0;
-
+	
 	/**
 	 * TODO
 	 */
 	public ColorPalette() {
-
+		
 		colors.add(Color.RED);
 		colors.add(Color.GREEN);
 		colors.add(Color.BLUE);
@@ -52,14 +69,14 @@ public class ColorPalette {
 		colors.add(new Color(0, 127, 255, 255).darker());
 		colors.add(new Color(255, 0, 127, 255).darker());
 	}
-
+	
 	/**
 	 * TODO
 	 * 
 	 * @return
 	 */
 	public Color getNextColor() {
-
+		
 		Color c = colors.get(currentColor);
 		if ((currentColor + 1) < colors.size())
 		{
@@ -71,7 +88,7 @@ public class ColorPalette {
 			// Used up all our palette so start again at the beginning
 			currentColor = 0;
 		}
-
+		
 		return c;
 	}
 }

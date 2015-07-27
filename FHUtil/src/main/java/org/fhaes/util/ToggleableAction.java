@@ -1,24 +1,20 @@
-/*******************************************************************************
- * Copyright (C) 2010 Lucas Madar and Peter Brewer
+/**************************************************************************************************
+ * Fire History Analysis and Exploration System (FHAES), Copyright (C) 2015
  * 
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * Contributors: Lucas Madar and Peter Brewer
  * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * 		This program is free software: you can redistribute it and/or modify it under the terms of
+ * 		the GNU General Public License as published by the Free Software Foundation, either version
+ * 		3 of the License, or (at your option) any later version.
  * 
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * 		This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * 		without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * 		See the GNU General Public License for more details.
  * 
- * Contributors:
- *     Lucas Madar
- *     Peter Brewer
- ******************************************************************************/
-
+ * 		You should have received a copy of the GNU General Public License along with this program.
+ * 		If not, see <http://www.gnu.org/licenses/>.
+ * 
+ *************************************************************************************************/
 package org.fhaes.util;
 
 import java.awt.event.ActionEvent;
@@ -27,9 +23,9 @@ import java.awt.event.ActionEvent;
  * ToggleableAction Abstract Class.
  */
 public abstract class ToggleableAction extends FHAESAction {
-
+	
 	private static final long serialVersionUID = 1L;
-
+	
 	/**
 	 * @param key
 	 * @param icon
@@ -47,6 +43,7 @@ public abstract class ToggleableAction extends FHAESAction {
 	 * @param toggleValue
 	 * @param iconSize
 	 */
+	
 	/*
 	 * public ToggleableAction(String key, boolean toggleValue, String iconName, String iconPackageName, int iconSize) { super(key,
 	 * iconName, iconPackageName, iconSize);
@@ -59,31 +56,32 @@ public abstract class ToggleableAction extends FHAESAction {
 	 * @param toggleValue
 	 */
 	public ToggleableAction(String key, boolean toggleValue, String iconName) {
-
+		
 		super(key, iconName);
-
+		
 		putValue(SELECTED_KEY, toggleValue);
 	}
-
+	
 	/**
 	 * @param key
 	 * @param toggleValue
 	 */
 	public ToggleableAction(String key, boolean toggleValue) {
-
+		
 		super(key);
-
+		
 		putValue(SELECTED_KEY, toggleValue);
 	}
-
+	
 	/**
 	 * Override and force actionPerformed to use togglePerformed instead
 	 */
+	@Override
 	public final void actionPerformed(ActionEvent ae) {
-
+		
 		togglePerformed(ae, (Boolean) getValue(SELECTED_KEY));
 	}
-
+	
 	/**
 	 * Called when an action is performed
 	 * 

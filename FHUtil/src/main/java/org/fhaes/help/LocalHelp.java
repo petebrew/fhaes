@@ -1,52 +1,69 @@
+/**************************************************************************************************
+ * Fire History Analysis and Exploration System (FHAES), Copyright (C) 2015
+ * 
+ * Contributors: Peter Brewer
+ * 
+ * 		This program is free software: you can redistribute it and/or modify it under the terms of
+ * 		the GNU General Public License as published by the Free Software Foundation, either version
+ * 		3 of the License, or (at your option) any later version.
+ * 
+ * 		This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * 		without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * 		See the GNU General Public License for more details.
+ * 
+ * 		You should have received a copy of the GNU General Public License along with this program.
+ * 		If not, see <http://www.gnu.org/licenses/>.
+ * 
+ *************************************************************************************************/
 package org.fhaes.help;
 
 /**
  * LocalHelp Class. Contains static strings for help tip displayed within FHAES. This keeps the help text in one place making it easier to
  * keep track and update.
  * 
- * @author pwb48
+ * @author Peter Brewer
  */
 public class LocalHelp {
-
+	
 	/**
 	 * 
 	 * ANALYSIS PARAMETERS INFORMATION
 	 * 
 	 */
-
+	
 	public static final String COMPOSITE_FILTER_THRESHOLD = "Specify how the composite of your samples should be filtered during analyses.  "
 			+ "If you choose 'number of fires' with a value of 1 then all fire events will be used.  By specifying "
 			+ "a larger value you will filter out events that are not consistently recorded by your samples.  You "
 			+ "also have the option of specifying the filter as a percentage occurance.";
-
+			
 	public static final String COMMON_YEARS = "Select the number of common years or overlap that must be present between two datasets before "
 			+ "comparison matrices can be calculated.";
-
+			
 	public static final String LABEL_SAMPLES_BY = "Select how you would like to label the input files in your results tables and charts.  "
 			+ "Note that FHAES will default to file name if you pick site name or code and a file is missing the relevant header information.";
-
+			
 	public static final String EVENT_TYPE = "Select whether to perform analyses on:<br/>"
 			+ "  - only fire events (upper case letters in the input files);<br/>" + "  - only other indicators (lower case letters);<br/>"
 			+ "  - both fire events <i>and</i> other indicators.<br>"
 			+ "Note that choosing one of the first two options may remove one or more of "
 			+ "your input files from the analyses if they do not contain enough of the " + "specified event types.";
-
+			
 	public static final String INCLUDE_EXTRA_INTERVAL = "Indicate whether you'd like to treat the interval from the final event marker until the end of the "
 			+ "series as an interval or not during interval analyses.";
-
+			
 	public static final String ANALYSIS_TYPE = "Select whether you want to perform analyses based separately upon each "
 			+ "sample in your file or by combining samples within a file into a composite.  Note if you select "
 			+ "'composite' then you may like to set composite filter options as well.";
-
+			
 	public static final String ALPHA_LEVEL = "Alpha level or error is the maximum probability that a given return interval"
 			+ " will be significantly short or long.  The default alpha value for this two-tailed test is 0.125.";
-
+			
 	/**
 	 * 
 	 * METADATA FIELD INFORMATION
 	 * 
 	 */
-
+	
 	public static final String FIELD_TOWNSHIP_AND_RANGE = "Township, range, section and quarter section fields have been used historically "
 			+ "to record the locations using the Public Land Survey System.  If used, the township and range fields are required at a "
 			+ "minimum, with the section and quarter section values optionally used depending on the precision and size of area being "

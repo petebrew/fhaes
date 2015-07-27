@@ -1,24 +1,21 @@
+/**************************************************************************************************
+ * Fire History Analysis and Exploration System (FHAES), Copyright (C) 2015
+ * 
+ * Contributors: Peter Brewer
+ * 
+ * 		This program is free software: you can redistribute it and/or modify it under the terms of
+ * 		the GNU General Public License as published by the Free Software Foundation, either version
+ * 		3 of the License, or (at your option) any later version.
+ * 
+ * 		This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * 		without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * 		See the GNU General Public License for more details.
+ * 
+ * 		You should have received a copy of the GNU General Public License along with this program.
+ * 		If not, see <http://www.gnu.org/licenses/>.
+ * 
+ *************************************************************************************************/
 package org.fhaes.gui;
-
-/*******************************************************************************
- * Copyright (C) 2013 Peter Brewer
- * 
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * Contributors:
- *     Peter Brewer
- ******************************************************************************/
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -48,8 +45,6 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import net.miginfocom.swing.MigLayout;
-
 import org.fhaes.enums.FireFilterType;
 import org.fhaes.model.FHFile;
 import org.fhaes.model.FHFileGroup;
@@ -67,11 +62,13 @@ import org.fhaes.util.FHCluster;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.miginfocom.swing.MigLayout;
+
 /**
  * SpatialJoinDialog Class.
  */
 public class SpatialJoinDialog extends JDialog implements PrefsListener, ActionListener {
-
+	
 	private static final long serialVersionUID = 1L;
 	private static final Logger log = LoggerFactory.getLogger(SpatialJoinDialog.class);
 	private final JPanel contentPanel = new JPanel();
@@ -83,67 +80,67 @@ public class SpatialJoinDialog extends JDialog implements PrefsListener, ActionL
 	private FHFileGroupTableModel groupModel;
 	@SuppressWarnings("rawtypes")
 	private JComboBox cboOutputType;
-
+	
 	/**
 	 * Create the dialog.
 	 */
 	public SpatialJoinDialog(ArrayList<FHFile> files) {
-
+		
 		if (files == null || files.size() == 0)
 		{
 			log.warn("SpatialJoinDialog opened with no files");
 		}
-
+		
 		fhc = new FHCluster(null);
-
+		
 		fhc.setFileList(files);
-
+		
 		setupGUI();
-
+		
 		App.prefs.addPrefsListener(this);
 		setGroups();
 	}
-
+	
 	/**
 	 * TODO
 	 */
 	private void setGroups() {
-
+		
 		groupModel = new FHFileGroupTableModel(fhc.getGroups());
 		tblGroups.setModel(groupModel);
 		tblGroups.getColumnModel().getColumn(0).setCellEditor(new FHFileGroupCellEditor());
 		setupMap();
 	}
-
+	
 	/**
 	 * TODO
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private void setFiles() {
-
+		
 		FHFileGroup g = (FHFileGroup) groupModel.getValueAt(tblGroups.getSelectedRow(), 0);
-
+		
 		if (g == null)
 			return;
 		if (g.getFiles() == null)
 			return;
 		if (g.getFiles().size() == 0)
 			return;
-
+			
 		DefaultListModel fileModel = new DefaultListModel();
 		for (FHFile f : g.getFiles())
 		{
 			fileModel.addElement(f);
 		}
-
+		
 		lstFiles.setModel(fileModel);
 		lstFiles.setCellRenderer(new FHFileListCellRenderer());
-
+		
 	}
-
+	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private void setupGUI() {
-
+		
 		setBounds(100, 100, 747, 536);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -200,7 +197,7 @@ public class SpatialJoinDialog extends JDialog implements PrefsListener, ActionL
 							{
 								tblGroups = new JTable();
 								tblGroups.setBackground(Color.WHITE);
-
+								
 								tblGroups.setTableHeader(null);
 								scrollPane.setViewportView(tblGroups);
 								{
@@ -220,16 +217,16 @@ public class SpatialJoinDialog extends JDialog implements PrefsListener, ActionL
 										}
 									}
 								}
-
+								
 								tblGroups.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-
+									
 									@Override
 									public void valueChanged(ListSelectionEvent evt) {
-
+										
 										setFiles();
-
+										
 									}
-
+									
 								});
 							}
 						}
@@ -261,26 +258,26 @@ public class SpatialJoinDialog extends JDialog implements PrefsListener, ActionL
 				buttonPane.add(cancelButton);
 			}
 		}
-
+		
 		this.setTitle("Spatial Join");
 		this.setIconImage(Builder.getApplicationIcon());
 		this.setLocationRelativeTo(null);
 	}
-
+	
 	private void setupMap() {
-
+		
 		panelMap.removeAll();
 		MapPanel map = new MapPanel();
 		map.setFHFileGroups(fhc.getGroups());
 		panelMap.add(map, BorderLayout.CENTER);
-
+		
 	}
-
+	
 	private Boolean save() {
-
+		
 		File file = null;
 		JFileChooser fc;
-
+		
 		// Open file chooser in last folder if possible
 		if (App.prefs.getPref(PrefKey.PREF_LAST_EXPORT_FOLDER, null) != null)
 		{
@@ -290,7 +287,7 @@ public class SpatialJoinDialog extends JDialog implements PrefsListener, ActionL
 		{
 			fc = new JFileChooser();
 		}
-
+		
 		// Show dialog and get specified file
 		fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		int returnVal = fc.showSaveDialog(this);
@@ -303,7 +300,7 @@ public class SpatialJoinDialog extends JDialog implements PrefsListener, ActionL
 		{
 			return false;
 		}
-
+		
 		CompositeFilterDialog compositeDialog = null;
 		TemporalFilterDialog temporalDialog = null;
 		if (cboOutputType.getSelectedIndex() == 0)
@@ -336,16 +333,16 @@ public class SpatialJoinDialog extends JDialog implements PrefsListener, ActionL
 			if (!temporalDialog.success())
 				return false;
 		}
-
+		
 		for (int i = 0; i < groupModel.getRowCount(); i++)
 		{
 			FHFileGroup gr = (FHFileGroup) groupModel.getValueAt(i, 0);
 			File outputfile = null;
-
+			
 			if (cboOutputType.getSelectedIndex() == 0)
 			{
 				outputfile = new File(file.getAbsolutePath() + File.separator + gr.getName() + ".fhx");
-
+				
 				// Composite
 				new FHOperations(App.mainFrame, gr.getFiles().toArray(new File[gr.getFiles().size()]), outputfile,
 						compositeDialog.getStartYear(), compositeDialog.getEndYear(), compositeDialog.getFireFilterValue(),
@@ -354,7 +351,7 @@ public class SpatialJoinDialog extends JDialog implements PrefsListener, ActionL
 			else if (cboOutputType.getSelectedIndex() == 1)
 			{
 				outputfile = new File(file.getAbsolutePath() + File.separator + gr.getName() + ".fhx");
-
+				
 				// Merge
 				new FHOperations(App.mainFrame, gr.getFiles().toArray(new File[gr.getFiles().size()]), outputfile,
 						temporalDialog.getStartYear(), temporalDialog.getEndYear(), 1.0, FireFilterType.NUMBER_OF_EVENTS, true, false,
@@ -363,35 +360,35 @@ public class SpatialJoinDialog extends JDialog implements PrefsListener, ActionL
 			else if (cboOutputType.getSelectedIndex() == 2)
 			{
 				outputfile = new File(file.getAbsolutePath() + File.separator + gr.getName() + ".txt");
-
+				
 				// Event file
 				new FHOperations(App.mainFrame, gr.getFiles().toArray(new File[gr.getFiles().size()]), outputfile,
 						compositeDialog.getStartYear(), compositeDialog.getEndYear(), compositeDialog.getFireFilterValue(),
 						compositeDialog.getFireFilterType(), false, false, true, compositeDialog.getMinNumberOfSamples(),
 						compositeDialog.getComments());
-
+						
 			}
-
+			
 		}
 		return true;
 	}
-
+	
 	@Override
 	public void prefChanged(PrefsEvent e) {
-
+		
 		log.debug("Preference change for key " + e.getPref() + " picked up by SpatialJoinDialog");
-
+		
 		if (e.getPref().equals(PrefKey.COMPOSITE_DISTANCE_THRESHOLD_KM))
 		{
 			fhc.process();
 			setGroups();
 		}
-
+		
 	}
-
+	
 	@Override
 	public void actionPerformed(ActionEvent evt) {
-
+		
 		if (evt.getActionCommand().equals("Save"))
 		{
 			Boolean success = save();
@@ -402,7 +399,7 @@ public class SpatialJoinDialog extends JDialog implements PrefsListener, ActionL
 		{
 			dispose();
 		}
-
+		
 	}
-
+	
 }

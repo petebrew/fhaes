@@ -1,25 +1,21 @@
+/**************************************************************************************************
+ * Fire History Analysis and Exploration System (FHAES), Copyright (C) 2015
+ * 
+ * Contributors: Elena Velasquez and Peter Brewer
+ * 
+ * 		This program is free software: you can redistribute it and/or modify it under the terms of
+ * 		the GNU General Public License as published by the Free Software Foundation, either version
+ * 		3 of the License, or (at your option) any later version.
+ * 
+ * 		This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * 		without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * 		See the GNU General Public License for more details.
+ * 
+ * 		You should have received a copy of the GNU General Public License along with this program.
+ * 		If not, see <http://www.gnu.org/licenses/>.
+ * 
+ *************************************************************************************************/
 package org.fhaes.tools;
-
-/*******************************************************************************
- * Copyright (C) 2013 Elena Velasquez, Peter Brewer
- * 
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * Contributors:
- *     Peter Brewer
- *     Elena Velasquez
- ******************************************************************************/
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -49,7 +45,7 @@ import org.slf4j.LoggerFactory;
  * FHOperations Class.
  */
 public class FHOperations {
-
+	
 	private JFrame parent;
 	private File[] inputFileArray;
 	private File outputFile;
@@ -61,29 +57,29 @@ public class FHOperations {
 	private Boolean createJoinFile;
 	private Boolean createCompositeFile;
 	private Boolean createEventFile;
-
+	
 	@SuppressWarnings("unused")
 	private int minRecordingSamples;
-
+	
 	private static final Logger log = LoggerFactory.getLogger(FHOperations.class);
-
+	
 	// highway is the choice a user has to start the matrix
 	// from the first fire year or the first year of data
 	@SuppressWarnings("unused")
 	private boolean highway = true;
-
+	
 	public FHOperations(JFrame parent, File[] inputFiles, File outputFile, Integer startYear, Integer endYear, Double fireFilterValue,
 			FireFilterType fireFilterType, Boolean createJoinFile, Boolean createCompositeFile, Boolean createEventFile,
 			int minNumberSamples, String comments) {
-
+			
 		log.debug("InputFileArray:");
 		for (File f : inputFiles)
 		{
 			log.debug("  - " + f.getName());
 		}
-
+		
 		this.parent = parent;
-
+		
 		// Filter the file array if according to min number of samples
 		this.minRecordingSamples = minNumberSamples;
 		this.inputFileArray = inputFiles;
@@ -98,7 +94,7 @@ public class FHOperations {
 		this.comments = comments;
 		performOperation();
 	}
-
+	
 	/**
 	 * Join multiple files together into a new FHX file. Combines all years from input files.
 	 * 
@@ -107,19 +103,19 @@ public class FHOperations {
 	 * @param minNumberSamples
 	 */
 	public static File joinFiles(JFrame parent, File[] inputFileArray, Integer minNumberSamples) {
-
+		
 		File file = getOutputFile(parent, new FHXFileFilter(), false);
-
+		
 		if (file != null)
 		{
-			new FHOperations(parent, inputFileArray, file, 0, 0, 1.0, FireFilterType.NUMBER_OF_EVENTS, true, false, false,
-					minNumberSamples, null);
+			new FHOperations(parent, inputFileArray, file, 0, 0, 1.0, FireFilterType.NUMBER_OF_EVENTS, true, false, false, minNumberSamples,
+					null);
 			return file;
 		}
-
+		
 		return null;
 	}
-
+	
 	/**
 	 * Create an event file from the specified file array
 	 * 
@@ -129,36 +125,36 @@ public class FHOperations {
 	 * @return
 	 */
 	public static File createEventFile(JFrame parent, File[] inputFileArray, Integer minNumberSamples) {
-
+		
 		File file = getOutputFile(parent, new TXTFileFilter(), true);
-
+		
 		if (file != null)
 		{
-			new FHOperations(parent, inputFileArray, file, 0, 0, 1.0, FireFilterType.NUMBER_OF_EVENTS, false, false, true,
-					minNumberSamples, null);
+			new FHOperations(parent, inputFileArray, file, 0, 0, 1.0, FireFilterType.NUMBER_OF_EVENTS, false, false, true, minNumberSamples,
+					null);
 			return file;
 		}
-
+		
 		return null;
 	}
-
+	
 	/**
 	 * Create an event file from the specified file array and trimmed to the specified start and end years
 	 */
 	public static File createEventFile(JFrame parent, File[] inputFileArray, Integer startYear, Integer endYear, Integer minNumberSamples) {
-
+		
 		File file = getOutputFile(parent, new TXTFileFilter(), true);
-
+		
 		if (file != null)
 		{
 			new FHOperations(parent, inputFileArray, file, startYear, endYear, 1.0, FireFilterType.NUMBER_OF_EVENTS, false, false, true,
 					minNumberSamples, null);
 			return file;
 		}
-
+		
 		return null;
 	}
-
+	
 	/**
 	 * Create an event file from the specified file array and trimmed to the specified start and end years
 	 * 
@@ -173,38 +169,38 @@ public class FHOperations {
 	 */
 	public static File createEventFile(JFrame parent, File[] inputFileArray, Integer startYear, Integer endYear,
 			FireFilterType fireFilterType, Double fireFilterValue, Integer minNumberSamples, String comments) {
-
+			
 		File file = getOutputFile(parent, new TXTFileFilter(), true);
-
+		
 		if (file != null)
 		{
 			new FHOperations(parent, inputFileArray, file, startYear, endYear, fireFilterValue, fireFilterType, false, false, true,
 					minNumberSamples, comments);
 			return file;
 		}
-
+		
 		return null;
 	}
-
+	
 	/**
 	 * Create a composite file from the specified file array and trimmed to the specified start and end years
 	 * 
 	 */
 	public static File createCompositeFile(JFrame parent, File[] inputFileArray, Integer startYear, Integer endYear,
 			FireFilterType fireFilterType, Double fireFilterValue, Integer minNumberSamples) {
-
+			
 		File file = getOutputFile(parent, new FHXFileFilter(), true);
-
+		
 		if (file != null)
 		{
 			new FHOperations(parent, inputFileArray, file, startYear, endYear, fireFilterValue, fireFilterType, false, true, false,
 					minNumberSamples, null);
 			return file;
 		}
-
+		
 		return null;
 	}
-
+	
 	/**
 	 * Join multiple files together into a new FHX file trimmed to the specified years
 	 * 
@@ -215,19 +211,19 @@ public class FHOperations {
 	 * @param minNumberSamples
 	 */
 	public static File joinFiles(JFrame parent, File[] inputFileArray, Integer startYear, Integer endYear, Integer minNumberSamples) {
-
+		
 		File file = getOutputFile(parent, new FHXFileFilter(), false);
-
+		
 		if (file != null)
 		{
 			new FHOperations(parent, inputFileArray, file, startYear, endYear, 1.0, FireFilterType.NUMBER_OF_EVENTS, true, false, false,
 					minNumberSamples, null);
 			return file;
 		}
-
+		
 		return null;
 	}
-
+	
 	/**
 	 * Join multiple files together into a new FHX file trimmed to the specified years
 	 * 
@@ -239,11 +235,11 @@ public class FHOperations {
 	 */
 	public static void joinFiles(JFrame parent, File[] inputFileArray, File outputFile, Integer startYear, Integer endYear,
 			Integer minNumberSamples) {
-
+			
 		new FHOperations(parent, inputFileArray, outputFile, startYear, endYear, 1.0, FireFilterType.NUMBER_OF_EVENTS, true, false, false,
 				minNumberSamples, null);
 	}
-
+	
 	/**
 	 * Create a basic composite file from the specified input files.
 	 * 
@@ -251,10 +247,10 @@ public class FHOperations {
 	 * @param outputFile
 	 */
 	public static void createCompositeFile(JFrame parent, File[] inputFileArray, File outputFile) {
-
+		
 		new FHOperations(parent, inputFileArray, outputFile, 0, 0, 1.0, FireFilterType.NUMBER_OF_EVENTS, false, true, false, 1, null);
 	}
-
+	
 	/**
 	 * Create a composite file from the specified input files. Limit to the specified years and filter on the specified fire filter type and
 	 * value
@@ -269,19 +265,19 @@ public class FHOperations {
 	 */
 	public static void createCompositeFile(JFrame parent, File[] inputFileArray, File outputFile, Integer startYear, Integer endYear,
 			FireFilterType filter, Double fireFilterValue, Integer minNumberSamples) {
-
+			
 		new FHOperations(parent, inputFileArray, outputFile, startYear, endYear, fireFilterValue, filter, false, true, false,
 				minNumberSamples, null);
 	}
-
+	
 	/**
 	 * Run the operation
 	 */
 	@SuppressWarnings({ "deprecation", "unused" })
 	private void performOperation() {
-
+		
 		boolean run = false;
-
+		
 		/**
 		 * PERFORM SANITY CHECKS
 		 */
@@ -317,8 +313,8 @@ public class FHOperations {
 		{
 			run = false;
 			JOptionPane.showMessageDialog(parent, "Select at least one file.", "Warning", JOptionPane.WARNING_MESSAGE);
-		}// end sanity checks
-
+		} // end sanity checks
+		
 		/**
 		 * PERFORM OPERATION
 		 */
@@ -343,7 +339,7 @@ public class FHOperations {
 			String dotsTemp = new String();
 			int tempstartcomp = 0;
 			String noNameTemp = new String();
-
+			
 			for (int i = 0; i < inputFileArray.length; i++)
 			{
 				myReader.add(new FHX2FileReader(inputFileArray[i]));
@@ -370,9 +366,11 @@ public class FHOperations {
 					// myReader.get(i).makefilters2d();
 					if (startYear.equals(0))
 					{
-						if ((myReader.get(i).getStartYearIndexPerSample()[0] + myReader.get(i).getFirstYear().intValue()) < minFirstYearComp)
+						if ((myReader.get(i).getStartYearIndexPerSample()[0]
+								+ myReader.get(i).getFirstYear().intValue()) < minFirstYearComp)
 						{
-							minFirstYearComp = (myReader.get(i).getStartYearIndexPerSample()[0] + myReader.get(i).getFirstYear().intValue());
+							minFirstYearComp = (myReader.get(i).getStartYearIndexPerSample()[0]
+									+ myReader.get(i).getFirstYear().intValue());
 							log.debug("the minFirstYearComp is: " + minFirstYearComp);
 						}
 					}
@@ -384,10 +382,11 @@ public class FHOperations {
 						}
 						else
 						{
-							minFirstYearComp = (myReader.get(i).getStartYearIndexPerSample()[0] + myReader.get(i).getFirstYear().intValue());
+							minFirstYearComp = (myReader.get(i).getStartYearIndexPerSample()[0]
+									+ myReader.get(i).getFirstYear().intValue());
 						}
 					}
-
+					
 					/*
 					 * Set the last year accounting for the filter
 					 */
@@ -400,9 +399,9 @@ public class FHOperations {
 						maxLastYearComp = endYear;
 					}
 					log.debug("at i = " + i + " minFirstYear = " + minFirstYearComp + " maxLastYearComp = " + maxLastYearComp);
-				}// end of if jcheckcomp
-
-			}// end loop first i
+				} // end of if jcheckcomp
+				
+			} // end loop first i
 			log.debug(" (436) size of Series seiesNameLengthComp " + SeriesNameLengthComp.size() + " size of name comp is "
 					+ sampleNameComp.size() + " minFirstYearComp final is " + minFirstYearComp);
 			Collections.sort(firstYears);
@@ -450,7 +449,7 @@ public class FHOperations {
 				}
 			}
 			// end of setting both beginning and end year accounting for filter
-
+			
 			/*
 			 * Calculate the listYears the common years where the file will be analyzed for the join
 			 */
@@ -459,7 +458,7 @@ public class FHOperations {
 			{
 				listYears.add(minFirstYear + i);
 			}
-
+			
 			/*
 			 * Declaration of all the array lists needed in the process
 			 */
@@ -467,7 +466,7 @@ public class FHOperations {
 			String joinStringTemp = new String();
 			String nameTemp = new String();
 			ArrayList<String> joinNameMatrix = new ArrayList<String>();
-
+			
 			if (createJoinFile)
 			{
 				for (int i = 0; i < totalNumberOfseriesJoin; i++)
@@ -475,7 +474,7 @@ public class FHOperations {
 					dotsTemp = dotsTemp + ".";
 					noNameTemp = noNameTemp + " ";
 				}
-
+				
 				/*
 				 * start processing each file individually:
 				 */
@@ -496,10 +495,10 @@ public class FHOperations {
 							joinStringTemp = joinStringTemp
 									+ myReader.get(k).getData().get(myReader.get(k).getYear().indexOf(listYears.get(j)));
 						}
-					}// end k loop
+					} // end k loop
 					JoinMatrix.add(joinStringTemp);
-
-				}// end of j loop
+					
+				} // end of j loop
 				/*
 				 * Start the process of generating the Join file
 				 */
@@ -520,12 +519,12 @@ public class FHOperations {
 							else
 							{
 								nameTemp = nameTemp
-										+ myReader.get(k).getSeriesNameLine().get(j)
-												.substring(0, myReader.get(k).getSeriesNameLine().get(j).length())
-										+ noNameTemp.substring(0, (myReader.get(k).getNumberOfSeries() - myReader.get(k)
-												.getSeriesNameLine().get(j).length()));
+										+ myReader.get(k).getSeriesNameLine().get(j).substring(0,
+												myReader.get(k).getSeriesNameLine().get(j).length())
+										+ noNameTemp.substring(0, (myReader.get(k).getNumberOfSeries()
+												- myReader.get(k).getSeriesNameLine().get(j).length()));
 							}
-
+							
 						}
 						else
 						{
@@ -535,8 +534,8 @@ public class FHOperations {
 					}
 					joinNameMatrix.add(nameTemp);
 				}
-			}// end of if jcheckjoin.isselected
-
+			} // end of if jcheckjoin.isselected
+			
 			/*
 			 * create arraylist need for the composite
 			 */
@@ -548,18 +547,18 @@ public class FHOperations {
 			ArrayList<Integer> climateVectorActualSite = null;
 			ArrayList<Double> filterVectorActual = null;
 			ArrayList<Integer> climateYear = new ArrayList<Integer>();
-
+			
 			ArrayList<ArrayList<Character>> nameLine = new ArrayList<ArrayList<Character>>();
-
+			
 			ArrayList<Integer> listYearsComp = new ArrayList<Integer>();
-
+			
 			if (createCompositeFile || createEventFile)
 			{
 				log.debug("i am here in jChekckcomp processing File ");
 				Collections.sort(SeriesNameLengthComp);
 				// maxSeriesNameLengthJoin = SeriesNameLengthJoin.get((SeriesNameLengthJoin.size()-1));
 				maxSeriesNameLengthComp = SeriesNameLengthComp.get((SeriesNameLengthComp.size() - 1));
-
+				
 				/*
 				 * Set up either of the two filters two create the binary matrix on the case of binary analysis there are two possible
 				 * filters: Number of fires and percentage of scared trees.
@@ -611,7 +610,7 @@ public class FHOperations {
 					 */
 					// log.debug("got pass the if ");
 					climateYear = myReader.get(i).getYear();
-
+					
 					if (fireFilterValue.intValue() != 1)
 					{
 						/*
@@ -620,9 +619,9 @@ public class FHOperations {
 						 * 2. filters2d matrix composed of the 3 filters number of fires (total capital letter per row) total number of tree
 						 * (total lower case letter plus bars counting only after a fire) percent of scared trees total fires/total trees
 						 */
-
+						
 						climateVectorFilter2 = myReader.get(i).getfilters2d();
-
+						
 						/*
 						 * if by tree analysis is selected create two matrices (array list) 1. filterMatrix containing the three filter
 						 * vectors only in between common years (so using the listYearComp array list subset of the years vector) 2.
@@ -632,16 +631,18 @@ public class FHOperations {
 						{
 							filterVectorActual = new ArrayList<Double>();
 							for (int ij = 0; ij < listYearsComp.size(); ij++)
-							{  // log.debug(" climateYear.indexOf(listYearsComp.get(j))" + climateYear.indexOf(listYearsComp.get(ij)));
-								// if(ik==0){log.debug("number of fires "+climateVectorFilter2.get(0).get(climateYear.indexOf(listYearsComp.get(ij)))+" year "+listYearsComp.get(ij));}
+							{ // log.debug(" climateYear.indexOf(listYearsComp.get(j))" + climateYear.indexOf(listYearsComp.get(ij)));
+								// if(ik==0){log.debug("number of fires
+								// "+climateVectorFilter2.get(0).get(climateYear.indexOf(listYearsComp.get(ij)))+" year
+								// "+listYearsComp.get(ij));}
 								if (climateYear.indexOf(listYearsComp.get(ij)) == -1)
 								{
 									filterVectorActual.add(-1.0);
 								}
 								else
 								{
-									filterVectorActual.add(new Double(climateVectorFilter2.get(ik).get(
-											climateYear.indexOf(listYearsComp.get(ij)))));
+									filterVectorActual
+											.add(new Double(climateVectorFilter2.get(ik).get(climateYear.indexOf(listYearsComp.get(ij)))));
 								}
 								if (ik == 0)
 								{
@@ -653,19 +654,19 @@ public class FHOperations {
 							// if(ik==0){log.debug("filters is: "+filter);
 						}
 						// log.debug("size of the FilterMatrix is" + filterMatrix.size());
-
-					}// end of if filters not equal to 1
+						
+					} // end of if filters not equal to 1
 					/*
 					 * get matrix climate binary matrix by site (binary analysis)
 					 */
 					climateVector = myReader.get(i).getClimate();
 					// log.debug("the climateyear first is: " + climateYear.get(0)+ " listYearsComp.get(0) "
-// +climateYear.indexOf(listYearsComp.get(0)));
+					// +climateYear.indexOf(listYearsComp.get(0)));
 					climateVectorActualSite = new ArrayList<Integer>();
-
+					
 					for (int j = 0; j < listYearsComp.size(); j++)
 					{
-
+						
 						if (climateYear.indexOf(listYearsComp.get(j)) == -1)
 						{
 							climateVectorActualSite.add(-1);
@@ -679,9 +680,10 @@ public class FHOperations {
 								{
 									// climateVectorActualSite.add(climateVector.get(climateYear.indexOf(listYears.get(j))));
 									// log.debug("number of fires is selected is: "+
-// firesFilter1+" "+climateVector.get(climateYear.indexOf(listYears.get(j))));
+									// firesFilter1+" "+climateVector.get(climateYear.indexOf(listYears.get(j))));
 									// log.debug("fire filter: "+firesFilter1+" year is: "+listYears.get(j)
-// +" fires: "+filterMatrix.get(3*i).get(j)+" climatevector: "+climateVector.get(climateYear.indexOf(listYears.get(j))));
+									// +" fires: "+filterMatrix.get(3*i).get(j)+" climatevector:
+									// "+climateVector.get(climateYear.indexOf(listYears.get(j))));
 									log.debug("fire filter: " + firesFilter1 + " year is: " + listYearsComp.get(j) + " fires: "
 											+ filterMatrix.get(3 * i).get(j) + " climatevector: "
 											+ climateVector.get(climateYear.indexOf(listYearsComp.get(j))));
@@ -698,7 +700,7 @@ public class FHOperations {
 								if (fireFilterType.equals(FireFilterType.PERCENTAGE_OF_EVENTS))
 								{
 									// log.debug("percent of fires is selected is: "+
-// firesFilter2+" "+climateVector.get(climateYear.indexOf(listYearsComp.get(j))));
+									// firesFilter2+" "+climateVector.get(climateYear.indexOf(listYearsComp.get(j))));
 									// log.debug("the filter percent of fires is"+filterMatrix.get((3*i+2)).get(j));
 									if ((filterMatrix.get(3 * i + 2).get(j) == -99))
 									{
@@ -717,20 +719,20 @@ public class FHOperations {
 										}
 									}
 								}
-							}// end of if filter not equal to 1
+							} // end of if filter not equal to 1
 							else
 							{
 								climateVectorActualSite.add(climateVector.get(climateYear.indexOf(listYearsComp.get(j))));
-							}// end of else of if filter not equal to 1
-						}// end else for if == -1
-					}// end of j loop listyears
+							} // end of else of if filter not equal to 1
+						} // end else for if == -1
+					} // end of j loop listyears
 						// log.debug("size by site binary "+climateVectorActualSite.size()+" "+climateVectorActualSite);
 					climateMatrixSite.add(climateVectorActualSite);
-
+					
 					/*
 					 * Create the section of the fhx file with the name of the sample in columns. the names of the samples will be the
 					 */
-					// log.debug("the reader size  is "+ myReader.size());
+					// log.debug("the reader size is "+ myReader.size());
 					// log.debug("the size of sampleNameComp is "+sampleNameComp.size());
 					ArrayList<Character> nameVectorActualComp = new ArrayList<Character>();
 					for (int j = 0; j < maxSeriesNameLengthComp; j++)
@@ -748,11 +750,11 @@ public class FHOperations {
 					}
 					nameLine.add(nameVectorActualComp);
 					// log.debug("size of nameline "+nameLine.size()+" X "+nameLine.get(i).size());
-					// log.debug("  endding to Process file : "+ myReader.get(i).getName());
-				}// end of i reader do loop
-
-			}// end of if jcheckcomp is selected
-
+					// log.debug(" endding to Process file : "+ myReader.get(i).getName());
+				} // end of i reader do loop
+				
+			} // end of if jcheckcomp is selected
+			
 			// Instantiate the file and writer objects
 			File outputFileJoin = outputFile;
 			File outputFileComp = outputFile;
@@ -760,21 +762,21 @@ public class FHOperations {
 			Writer wr = null;
 			Writer wrComp = null;
 			Writer wrEvent = null;
-
+			
 			/**
 			 * Write data to output files
 			 */
 			try
 			{
-
+				
 				/**
 				 * Create join file if requested
 				 */
 				if (createJoinFile)
 				{
-
+					
 					wr = new BufferedWriter(new FileWriter(outputFileJoin));
-
+					
 					// write the format heading to the files
 					wr.write("FHX2 FORMAT" + System.getProperty("line.separator"));
 					wr.write(minFirstYear.toString() + " " + totalNumberOfseriesJoin.toString() + " " + maxSeriesNameLengthJoin.toString()
@@ -789,16 +791,16 @@ public class FHOperations {
 						wr.write(JoinMatrix.get(i) + " " + listYears.get(i).toString());
 						wr.write(System.getProperty("line.separator"));
 					}
-
+					
 				}
-
+				
 				/**
 				 * Create composite file if requested
 				 */
 				if (createCompositeFile)
 				{
 					wrComp = new BufferedWriter(new FileWriter(outputFileComp));
-
+					
 					// write the format heading to the files
 					wrComp.write("FHX2 FORMAT" + System.getProperty("line.separator"));
 					wrComp.write(minFirstYearComp.toString() + " " + totalNumberOfseriesComp.toString() + " "
@@ -846,9 +848,9 @@ public class FHOperations {
 						wrComp.write(" " + listYearsComp.get(i).toString());
 						wrComp.write(System.getProperty("line.separator"));
 					}
-
+					
 				}
-
+				
 				/**
 				 * Create event file if requested
 				 */
@@ -856,20 +858,20 @@ public class FHOperations {
 				{
 					Boolean eventFlag;
 					wrEvent = new BufferedWriter(new FileWriter(outputFileEvent));
-
+					
 					// write the format heading to the file
 					wrEvent.write("* this is an Event file created from the following FHX files:" + System.getProperty("line.separator"));
 					for (File f : this.inputFileArray)
 					{
 						wrEvent.write("*   - " + f.getAbsolutePath() + System.getProperty("line.separator"));
 					}
-
+					
 					// Write any comments
 					for (String line : this.comments.split(System.getProperty("line.separator")))
 					{
 						wrEvent.write("* " + line + System.getProperty("line.separator"));
 					}
-
+					
 					// write the data to the file
 					for (int i = 0; i < listYearsComp.size(); i++)
 					{
@@ -880,14 +882,14 @@ public class FHOperations {
 							{
 								eventFlag = true;
 							}
-
+							
 						}
 						if (eventFlag)
 						{
 							wrEvent.write(listYearsComp.get(i).toString());
 							wrEvent.write(System.getProperty("line.separator"));
 						}
-					}// end of i loop
+					} // end of i loop
 				}
 			}
 			catch (IOException ex)
@@ -922,7 +924,7 @@ public class FHOperations {
 			}
 		}
 	}
-
+	
 	/**
 	 * Show JFileChooser dialog with specified filter to get a save filename from the user
 	 * 
@@ -932,10 +934,10 @@ public class FHOperations {
 	 * @return
 	 */
 	private static File getOutputFile(JFrame parent, FileFilter filter, Boolean acceptAll) {
-
+		
 		File file;
 		JFileChooser fc;
-
+		
 		// Open file chooser in last folder if possible
 		if (App.prefs.getPref(PrefKey.PREF_LAST_EXPORT_FOLDER, null) != null)
 		{
@@ -945,7 +947,7 @@ public class FHOperations {
 		{
 			fc = new JFileChooser();
 		}
-
+		
 		fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		fc.setAcceptAllFileFilterUsed(acceptAll);
 		if (filter != null)
@@ -953,7 +955,7 @@ public class FHOperations {
 			fc.addChoosableFileFilter(filter);
 			fc.setFileFilter(filter);
 		}
-
+		
 		// Show dialog and get specified file
 		int returnVal = fc.showSaveDialog(parent);
 		if (returnVal == JFileChooser.APPROVE_OPTION)
@@ -965,13 +967,13 @@ public class FHOperations {
 		{
 			return null;
 		}
-
+		
 		log.debug("User selected '" + fc.getFileFilter() + "' file filter");
-
+		
 		if (FileUtils.getExtension(file.getAbsolutePath()) == "")
 		{
 			log.debug("Output file extension not set by user");
-
+			
 			if (fc.getFileFilter().getDescription().equals(new FHXFileFilter().getDescription()))
 			{
 				log.debug("Adding fhx extension to output file name");
@@ -987,23 +989,23 @@ public class FHOperations {
 		{
 			log.debug("Output file extension set my user to '" + FileUtils.getExtension(file.getAbsolutePath()) + "'");
 		}
-
+		
 		if (file.exists())
 		{
 			Object[] options = { "Overwrite", "No", "Cancel" };
-			int response = JOptionPane.showOptionDialog(parent, "The file '" + file.getName()
-					+ "' already exists.  Are you sure you want to overwrite?", "Confirm", JOptionPane.YES_NO_CANCEL_OPTION,
-					JOptionPane.QUESTION_MESSAGE, null,     // do not use a custom Icon
-					options,  // the titles of buttons
+			int response = JOptionPane.showOptionDialog(parent,
+					"The file '" + file.getName() + "' already exists.  Are you sure you want to overwrite?", "Confirm",
+					JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, // do not use a custom Icon
+					options, // the titles of buttons
 					options[0]); // default button title
-
+					
 			if (response != JOptionPane.YES_OPTION)
 			{
 				return null;
 			}
 		}
-
+		
 		return file;
 	}
-
+	
 }

@@ -1,22 +1,21 @@
+/**************************************************************************************************
+ * Fire History Analysis and Exploration System (FHAES), Copyright (C) 2015
+ * 
+ * Contributors: Elena Velasquez and Peter Brewer
+ * 
+ * 		This program is free software: you can redistribute it and/or modify it under the terms of
+ * 		the GNU General Public License as published by the Free Software Foundation, either version
+ * 		3 of the License, or (at your option) any later version.
+ * 
+ * 		This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * 		without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * 		See the GNU General Public License for more details.
+ * 
+ * 		You should have received a copy of the GNU General Public License along with this program.
+ * 		If not, see <http://www.gnu.org/licenses/>.
+ * 
+ *************************************************************************************************/
 package org.fhaes.analysis;
-
-/*******************************************************************************
- * Copyright (C) 2013 Elena Velasquez and Peter Brewer
- * 
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
- ******************************************************************************/
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -48,9 +47,9 @@ import org.slf4j.LoggerFactory;
  * FHInterval Class.
  */
 public class FHInterval {
-
+	
 	private static final Logger log = LoggerFactory.getLogger(FHInterval.class);
-
+	
 	private FHFile[] inputFileArray;
 	private Boolean doComposite;
 	private Boolean doSample;
@@ -64,7 +63,7 @@ public class FHInterval {
 	private File exceedenceFile = null;
 	private File summaryFile = null;
 	private Double alphaLevel = 0.125;
-
+	
 	/**
 	 * Construction for setting up an FHInterval analysis. After construction call doAnalysis() to run the analysis and then get results by
 	 * calling getExceedence() and getSummary().
@@ -81,23 +80,23 @@ public class FHInterval {
 	 */
 	public FHInterval(FHFile[] inputFileArray, AnalysisType analysisType, Integer startYear, Integer endYear, FireFilterType filterType,
 			Double filterValue, Boolean includeIncomplete, EventTypeToProcess eventTypeToProcess, Double alphaLevel) {
-
+			
 		this.inputFileArray = inputFileArray;
-
+		
 		try
 		{
 			summaryFile = File.createTempFile("FHInterval", ".tmp");
 			exceedenceFile = File.createTempFile("FHInterval", ".tmp");
 			summaryFile.deleteOnExit();
 			exceedenceFile.deleteOnExit();
-
+			
 		}
 		catch (IOException e)
 		{
 			e.printStackTrace();
 			return;
 		}
-
+		
 		if (analysisType == null)
 		{
 			log.warn("Analysis type in FHInterval was null.  Defaulting to Sample");
@@ -114,7 +113,7 @@ public class FHInterval {
 			this.doComposite = false;
 			this.doSample = true;
 		}
-
+		
 		if (filterType == null)
 		{
 			log.warn("FireFilterType in FHInterval was null. Defaulting to 'Number'");
@@ -131,17 +130,17 @@ public class FHInterval {
 			this.doNumberFilter = false;
 			this.doPercentageFilter = true;
 		}
-
+		
 		this.filterValue = filterValue;
 		this.startYear = startYear;
 		this.endYear = endYear;
 		this.includeIncomplete = includeIncomplete;
 		this.eventTypeToProcess = eventTypeToProcess;
 		this.alphaLevel = alphaLevel;
-
+		
 		doAnalysis();
 	}
-
+	
 	/**
 	 * Deprecated method for setting up an FHInterval analysis. Used by original stand-alone application.
 	 * 
@@ -161,9 +160,9 @@ public class FHInterval {
 	@Deprecated
 	public FHInterval(FHFile[] inputFileArray, File outputFileStem, Boolean doComposite, Boolean doSample, Integer startYear,
 			Integer endYear, Boolean doNumberFilter, Boolean doPercentageFilter, Double filterValue, Boolean includeIncomplete) {
-
+			
 		this.inputFileArray = inputFileArray;
-
+		
 		try
 		{
 			summaryFile = File.createTempFile("FHInterval", ".tmp");
@@ -177,7 +176,7 @@ public class FHInterval {
 			e.printStackTrace();
 			return;
 		}
-
+		
 		this.doComposite = doComposite;
 		this.doSample = doSample;
 		this.startYear = startYear;
@@ -186,36 +185,36 @@ public class FHInterval {
 		this.doPercentageFilter = doPercentageFilter;
 		this.filterValue = filterValue;
 		this.includeIncomplete = includeIncomplete;
-
+		
 		doAnalysis();
 	}
-
+	
 	/**
 	 * Get CSV file containing Exceedence results#.
 	 * 
 	 * @return
 	 */
 	public File getExceedence() {
-
+		
 		return exceedenceFile;
 	}
-
+	
 	/**
 	 * Get CSV file containing summary of results.
 	 * 
 	 * @return
 	 */
 	public File getSummary() {
-
+		
 		return summaryFile;
 	}
-
+	
 	/**
 	 * Actually perform the analysis.
 	 */
 	@SuppressWarnings("deprecation")
 	private void doAnalysis() {
-
+		
 		log.debug("INPUT PARAMETERS");
 		log.debug("inputFileArray = " + inputFileArray);
 		log.debug("doComposite = " + doComposite);
@@ -227,10 +226,10 @@ public class FHInterval {
 		log.debug("filterValue = " + filterValue);
 		log.debug("includeIncomplete = " + includeIncomplete);
 		log.debug("alphaLevel = " + alphaLevel);
-
+		
 		boolean run = false;
 		boolean highway = true;
-
+		
 		/*
 		 * If at least one file has been choosen then the progam will run otherwise get message
 		 */
@@ -249,28 +248,28 @@ public class FHInterval {
 				JOptionPane.showMessageDialog(App.mainFrame, "At least one output file should be selected.", "Error",
 						JOptionPane.ERROR_MESSAGE);
 			}
-		}// end of if for checks file selected, file type selected and begining
+		} // end of if for checks file selected, file type selected and begining
 			// and end year correct (201-229)
 		else
 		{
 			run = false;
 			JOptionPane.showMessageDialog(App.mainFrame, "Select at least one file.", "Error", JOptionPane.ERROR_MESSAGE);
-		}// end of else of if checks (201-229)
-
+		} // end of else of if checks (201-229)
+		
 		// MAIN RUN
 		if (run)
 		{
 			ArrayList<FHX2FileReader> myReader = new ArrayList<FHX2FileReader>();
 			Integer minFirstYear = new Integer(9999);
 			Integer maxLastYear = new Integer(0);
-
+			
 			String savePath = new String();
 			savePath = inputFileArray[0].getAbsolutePath();
-
+			
 			for (int i = 0; i < inputFileArray.length; i++)
 			{
 				myReader.add(new FHX2FileReader(inputFileArray[i]));
-
+				
 				/*
 				 * set the beginning year accounting for the filter
 				 */
@@ -359,7 +358,7 @@ public class FHInterval {
 					maxLastYear = endYear;
 				}
 			} // end of i loop
-
+			
 			log.debug("the input filelength is " + inputFileArray.length);
 			log.debug("The FIRST FIRE YEAR is " + minFirstYear);
 			log.debug("The LAST YEAR is " + maxLastYear);
@@ -369,7 +368,7 @@ public class FHInterval {
 			 */
 			DecimalFormat twoPlace = new DecimalFormat("0.00");
 			DecimalFormat threePlace = new DecimalFormat("0.000");
-
+			
 			/*
 			 * Calculate the listYears the common years where the files will be analyzed
 			 */
@@ -381,7 +380,7 @@ public class FHInterval {
 			/*
 			 * create arraylist need for the Interval Analysis
 			 */
-
+			
 			ArrayList<ArrayList<Integer>> climateMatrixSite = new ArrayList<ArrayList<Integer>>();
 			ArrayList<ArrayList<Double>> filterMatrix = new ArrayList<ArrayList<Double>>();
 			ArrayList<Integer> climateVector = new ArrayList<Integer>();
@@ -470,13 +469,13 @@ public class FHInterval {
 			}
 			else
 			{
-
+				
 				log.error("Unsupported event type caught");
 			}
-
+			
 			double[] fixvalt = { 0.999, 0.99, 0.975, 0.95, 0.9, 0.875, 0.8, 0.75, 0.7, 0.667, 0.5, 0.333, 0.3, 0.25, 0.2, 0.125, 0.1, 0.05,
 					0.025, 0.01, 0.001 };
-
+					
 			double[][] ExceeProbcomp = new double[fixvalt.length][myReader.size()];
 			double[][] ExceeProbsample = new double[fixvalt.length][myReader.size()];
 			// log.debug("the size of statsparam is " +
@@ -520,13 +519,13 @@ public class FHInterval {
 			for (int i = 0; i < myReader.size(); i++)
 			{
 				log.debug("  Starting to Process file : " + myReader.get(i).getName());
-
+				
 				/*
 				 * get the vector Year containing the vector of year of a given fhx file load it into the array list climateYear.
 				 */
-
+				
 				climateYear = myReader.get(i).getYearArray();
-
+				
 				// if ((doComposite)&&(!jTextOfFires.getText().equals("1"))){
 				/*
 				 * get filter matrix for each file.
@@ -534,9 +533,9 @@ public class FHInterval {
 				 * filters2d matrix composed of the 3 filters number of fires (total capital letter per row) total number of tree (total
 				 * lower case letter plus bars counting only after a fire) percent of scared trees total fires/total trees
 				 */
-
+				
 				climateVectorFilter2 = myReader.get(i).getFilterArrays(eventTypeToProcess);
-
+				
 				/*
 				 * 
 				 * 1. Create the filterMatrix containing the tree filter vectors only in between common years (so using the listYearComp
@@ -555,7 +554,7 @@ public class FHInterval {
 						{
 							filterVectorActual.add(new Double(climateVectorFilter2.get(ik).get(climateYear.indexOf(listYears.get(ij)))));
 						}
-
+						
 					}
 					/*
 					 * ArrayList filterMatrix containes the filter matrix for each of the files
@@ -571,7 +570,7 @@ public class FHInterval {
 				{
 					log.debug("inside the comp");
 					// System.out.println("inside the comp " + " working on file "+ myReader.get(i).getName() );
-
+					
 					if (eventTypeToProcess.equals(EventTypeToProcess.FIRE_EVENT))
 					{
 						climateVector = myReader.get(i).getFireEventsArray();
@@ -586,15 +585,15 @@ public class FHInterval {
 					}
 					else
 					{
-
+						
 						log.error("Unsupported event type caught");
 					}
-
+					
 					climateVectorActualSite = new ArrayList<Integer>();
-
+					
 					for (int j = 0; j < listYears.size(); j++)
 					{
-
+						
 						if (climateYear.indexOf(listYears.get(j)) == -1)
 						{
 							climateVectorActualSite.add(-1);
@@ -606,7 +605,8 @@ public class FHInterval {
 								if (doNumberFilter)
 								{
 									// log.debug("fire filter: "+firesFilter1+" year is: "+listYears.get(j)
-									// +" fires: "+filterMatrix.get(3*i).get(j)+" climatevector: "+climateVector.get(climateYear.indexOf(listYears.get(j))));
+									// +" fires: "+filterMatrix.get(3*i).get(j)+" climatevector:
+									// "+climateVector.get(climateYear.indexOf(listYears.get(j))));
 									if ((filterMatrix.get(3 * i).get(j) < firesFilter1)
 											&& (climateVector.get(climateYear.indexOf(listYears.get(j)))) != -1.0)
 									{
@@ -639,19 +639,19 @@ public class FHInterval {
 										}
 									}
 								}
-							}// end of if filter not equal to 1 (429-454)
+							} // end of if filter not equal to 1 (429-454)
 							else
 							{
 								climateVectorActualSite.add(climateVector.get(climateYear.indexOf(listYears.get(j))));
-							}// end of else of if filter not equal to 1
+							} // end of else of if filter not equal to 1
 								//
-						}// end else
-					}// end of j loop listyears (420-459)
+						} // end else
+					} // end of j loop listyears (420-459)
 					/*
 					 * climateMatrixSite has the composite information taking in consideration both the filters and common years
 					 */
 					climateMatrixSite.add(climateVectorActualSite);
-
+					
 					/*
 					 * Must get the years with Fires from the climateMatrixSite which has been filter already
 					 */
@@ -666,7 +666,7 @@ public class FHInterval {
 							// +listYears.get(ij));
 						}
 					}
-
+					
 					/*
 					 * check that the number of years with fires is bigger of equal than 3 if so make the fire intervals else the test can
 					 * not be run and report NA
@@ -692,10 +692,10 @@ public class FHInterval {
 						{
 							// log.debug("fire intervals are: "+
 							// test1.getFireIntervals().get(ij));
-							fireintervalspersite.add((Double) (fireIntervals.get(ij) * 1.0));
+							fireintervalspersite.add(fireIntervals.get(ij) * 1.0);
 						}
 						log.debug("FireintervalsPerSite =" + fireintervalspersite);
-
+						
 						/*
 						 * Add extra interval if include incomplete is selected. the interval goes from the last fire scar year to the last
 						 * year of the fire history.
@@ -703,12 +703,12 @@ public class FHInterval {
 						if (includeIncomplete)
 						{
 							double includeinterval = maxLastYear - yearsWithFires.get(yearsWithFires.size() - 1);
-							fireintervalspersite.add((Double) includeinterval);
+							fireintervalspersite.add(includeinterval);
 							System.out.println("the last year is " + maxLastYear + "the last year with fire is "
 									+ yearsWithFires.get(yearsWithFires.size() - 1));
 							log.debug("the included interval is " + includeinterval);
 						}
-
+						
 						/*
 						 * Get the normal statistics for the fire intervals add the values to the stats and then call them for the stats
 						 */
@@ -749,9 +749,9 @@ public class FHInterval {
 						}
 						// log.debug("nomean \t\t nostd \t\t nokurt \t noskew \t\t nomedian");
 						// log.debug(twoPlace.format(mean)+"\t\t"+twoPlace.format(std)+"\t\t"+twoPlace.format(kurt)+"\t\t"+twoPlace.format(skew)+"\t\t"+twoPlace.format(median));
-
+						
 						Weibull weibull = new Weibull(fireintervalspersite);
-
+						
 						ArrayList<Double> weibullProb = weibull.getWeibullProbability(fireintervalspersite);
 						ArrayList<Double> siglonglowbound = new ArrayList<Double>();
 						ArrayList<Double> sigshortupbound = new ArrayList<Double>();
@@ -762,16 +762,16 @@ public class FHInterval {
 							if (weibullProb.get(ij) <= alphaLevel)
 							{
 								siglonglowbound.add(fireintervalspersite.get(ij));
-
+								
 							}
 							if (weibullProb.get(ij) >= (1 - alphaLevel))
 							{
 								sigshortupbound.add(fireintervalspersite.get(ij));
-
+								
 							}
-
+							
 						}
-
+						
 						summaryComp[10][i] = weibull.getScale();
 						summaryComp[11][i] = weibull.getShape();
 						summaryComp[12][i] = weibull.getMean();
@@ -793,7 +793,7 @@ public class FHInterval {
 							summaryComp[20][i] = Double.NaN;
 						}
 						Collections.sort(siglonglowbound);
-
+						
 						try
 						{
 							summaryComp[21][i] = siglonglowbound.get(0);
@@ -820,25 +820,25 @@ public class FHInterval {
 							// log.debug("file "+i+"Exce probability "+
 							// ExceeProbcomp[kk][i]);
 						}
-					}// end of if enoughIntComp
+					} // end of if enoughIntComp
 					else
 					{
 						enoughIntComp[i] = false;
 					}
-				}// end the if composite is selected
+				} // end the if composite is selected
 				/*
 				 * starting the process for the sample mode.
 				 */
 				if (doSample)
 				{
 					log.debug("I am in sample ");
-
+					
 					ArrayList<Double> fireintervalspersample = new ArrayList<Double>();
 					FIyearperSampletemp = new ArrayList<Integer>();
 					// FyearperSampletemp = new ArrayList<Integer>();
 					for (int k = 0; k < myReader.get(i).getNumberOfSeries(); k++)
 					{
-
+						
 						log.debug("Parsing file index " + i + ", series number " + k);
 						FyearperSampletemp = new ArrayList<Integer>();
 						// log.debug("the size of the years of the file is:"+
@@ -875,10 +875,10 @@ public class FHInterval {
 							}
 							else
 							{
-
+								
 								log.error("Unsupported event type caught");
 							}
-
+							
 						}
 						if (FyearperSampletemp.size() != 0)
 						{
@@ -900,7 +900,7 @@ public class FHInterval {
 								FIyearperSampletemp.add((myReader.get(i).getFirstYear() + myReader.get(i).getLastYearIndexPerSample()[k])
 										- FyearperSampletemp.get(FyearperSampletemp.size() - 1));
 							}
-						}// end of if one fire year and includelastyear so we have at least one interval in a given series.
+						} // end of if one fire year and includelastyear so we have at least one interval in a given series.
 							// endofnew
 						if ((FyearperSampletemp.size() >= 2))
 						{
@@ -938,16 +938,16 @@ public class FHInterval {
 									// myReader.get(i).getlastYearperSample()[k])-FyearperSampletemp.get(FyearperSampletemp.size()-1)));
 								}
 							}
-						}// end of if at least 2 fier years so we have at least one interval in a given series.
+						} // end of if at least 2 fier years so we have at least one interval in a given series.
 							// log.debug("size of FIyearperSample "+
 							// FIyearperSampletemp.size()+
 							// " X "+FIyearperSampletemp.get(0).size());
-					}// end of the loop for number of series.
+					} // end of the loop for number of series.
 						// log.debug("size of FIyearperSample "+
 						// FIyearperSampletemp.size());
 					for (int j = 0; j < FIyearperSampletemp.size(); j++)
 					{
-						fireintervalspersample.add((Double) (FIyearperSampletemp.get(j) * 1.0));
+						fireintervalspersample.add(FIyearperSampletemp.get(j) * 1.0);
 					}
 					/*
 					 * Get the normal statistics for the fire intervals add the values to the stats and then call them for the stats
@@ -968,11 +968,11 @@ public class FHInterval {
 							log.debug("the " + ik + " fire interval is " + dfireintervalspersample[ik]);
 						}
 						log.debug("the size for dfireintervalspersample is " + dfireintervalspersample.length);
-
+						
 						// ADDED BY PETE
 						if (dfireintervalspersample.length == 0)
 							continue;
-
+							
 						/*
 						 * load the Summary Analysis for the Sample fire intervals
 						 */
@@ -1007,9 +1007,9 @@ public class FHInterval {
 						log.debug("summarySample[7][] " + i + " " + summarySample[7][i]);
 						// log.debug("nomean \t\t nostd \t\t nokurt \t noskew \t\t nomedian");
 						// log.debug(twoPlace.format(mean)+"\t\t"+twoPlace.format(std)+"\t\t"+twoPlace.format(kurt)+"\t\t"+twoPlace.format(skew)+"\t\t"+twoPlace.format(median));
-
+						
 						Weibull weibull = new Weibull(fireintervalspersample);
-
+						
 						//
 						ArrayList<Double> weibullProb = weibull.getWeibullProbability(fireintervalspersample);
 						ArrayList<Double> siglonglowbound = new ArrayList<Double>();
@@ -1021,18 +1021,18 @@ public class FHInterval {
 							if (weibullProb.get(ij) <= alphaLevel)
 							{
 								siglonglowbound.add(fireintervalspersample.get(ij));
-
+								
 							}
 							if (weibullProb.get(ij) >= (1 - alphaLevel))
 							{
 								sigshortupbound.add(fireintervalspersample.get(ij));
-
+								
 							}
-
+							
 						}
-
+						
 						//
-
+						
 						summarySample[10][i] = weibull.getScale();
 						log.debug("summarySample[10][] " + i + " " + summarySample[10][i]);
 						summarySample[11][i] = weibull.getShape();
@@ -1056,7 +1056,7 @@ public class FHInterval {
 							summarySample[20][i] = Double.NaN;
 						}
 						Collections.sort(siglonglowbound);
-
+						
 						try
 						{
 							summarySample[21][i] = siglonglowbound.get(0);
@@ -1066,9 +1066,9 @@ public class FHInterval {
 							summarySample[21][i] = Double.NaN;
 						}
 						log.debug("sigshortupbound is " + sigshortupbound);
-
+						
 						Collections.sort(fireintervalspersample);
-
+						
 						try
 						{
 							summarySample[8][i] = fireintervalspersample.get(0);
@@ -1087,7 +1087,8 @@ public class FHInterval {
 						// log.debug("maxhazard \t\t lei \t\t uei ");
 						// log.debug(twoPlace.format(test2.maxhazard_int(test2.Weibull_Parameters(fireintervalspersample)))+"\t\t"+twoPlace.format(test2.weibull_lowuppexcint(test2.Weibull_Parameters(fireintervalspersample))[0])+"\t\t"+twoPlace.format(test2.weibull_lowuppexcint(test2.Weibull_Parameters(fireintervalspersample))[1]));
 						// log.debug("the size of YearWith Fires is "+YearsWithFires.size());
-						// log.debug("the size of the prb exdc is "+test2.weibull_Exprob(test2.Weibull_Parameters(fireintervalspersample)).length);
+						// log.debug("the size of the prb exdc is
+						// "+test2.weibull_Exprob(test2.Weibull_Parameters(fireintervalspersample)).length);
 						System.out.println("the size of the prb exdc sample  is " + weibull.getExceedenceProbability().length);
 						for (int kk = 0; kk < weibull.getExceedenceProbability().length; kk++)
 						{
@@ -1095,17 +1096,17 @@ public class FHInterval {
 							log.debug("file " + i + " Exce probability " + ExceeProbsample[kk][i]);
 							// log.debug("the size is "+ExceeProbsample.length);
 						}
-					}// end of if at least 4 fireintervals
+					} // end of if at least 4 fireintervals
 					else
 					{
 						enoughIntSamp[i] = false;
 					}
-				}// end of if jRadioSample selected.
+				} // end of if jRadioSample selected.
 					// log.debug("the size of exceeprobsample is "ExceeProbsample.length+" X "+ExceeProbsample[0].length);
-			}// end of i readering each file loop do loop (354-465)
+			} // end of i readering each file loop do loop (354-465)
 			/*
-	         * 
-	         */
+			 * 
+			 */
 			// log.debug("size of the climateMatrixSite is "+climateMatrixSite.size()+" X "+climateMatrixSite.get(0).size());
 			// for (int j = 0; j < listYears.size(); j++){
 			// log.debug(climateMatrixSite.get(0).get(j) + " " +
@@ -1116,7 +1117,7 @@ public class FHInterval {
 			 * create JFileChooser object to generate a browsing capabilities
 			 */
 			JFileChooser fileBrowse = new JFileChooser();
-
+			
 			fileBrowse = new JFileChooser(savePath.substring(0, savePath.lastIndexOf(File.separator)));
 			/*
 			 * set multiselect on (even though we don't need it)
@@ -1136,7 +1137,7 @@ public class FHInterval {
 			 * set dialog text: select the name and location of the matrix files
 			 */
 			fileBrowse.setDialogTitle("Select the name and location of the Stats Summary file:");
-
+			
 			/*
 			 * create the writer object for each of the files to be created
 			 */
@@ -1148,7 +1149,7 @@ public class FHInterval {
 			 * set delimiter in this case we are using comas ","
 			 */
 			String delim = ",";
-
+			
 			/*
 			 * Start writing information into the files
 			 */
@@ -1162,7 +1163,7 @@ public class FHInterval {
 					 * write the heading to the files
 					 */
 					String buffer = "";
-
+					
 					buffer = buffer + "Composite Parameters" + delim;
 					for (int i = 0; i < inputFileArray.length; i++)
 					{
@@ -1170,12 +1171,12 @@ public class FHInterval {
 					}
 					;
 					wr.write(buffer.substring(0, buffer.length() - 1) + System.getProperty("line.separator"));
-
+					
 					buffer = "";
 					for (int j = 0; j < statsparam.length; j++)
 					{
 						buffer = buffer + statsparam[j] + delim;
-
+						
 						for (int k = 0; k < inputFileArray.length; k++)
 						{
 							if (j == 0)
@@ -1188,7 +1189,7 @@ public class FHInterval {
 								{
 									buffer = buffer + twoPlace.format(summaryComp[0][k]) + delim;
 								}
-
+								
 							}
 							else
 							{
@@ -1208,11 +1209,11 @@ public class FHInterval {
 									buffer = buffer + "NA" + delim;
 								}
 							}
-						}// end of k loop filearray
-
+						} // end of k loop filearray
+						
 						wr.write(buffer.substring(0, buffer.length() - 1) + System.getProperty("line.separator"));
 						buffer = "";
-					}// end of j loop Stats
+					} // end of j loop Stats
 						// wr.close();
 						//
 						//
@@ -1221,7 +1222,7 @@ public class FHInterval {
 					/*
 					 * write the heading to the files
 					 */
-
+					
 					buffer = "";
 					wrWDE.write("Exceedence Prob" + delim);
 					for (int i = 0; i < inputFileArray.length; i++)
@@ -1230,11 +1231,11 @@ public class FHInterval {
 					}
 					wrWDE.write(buffer.substring(0, buffer.length() - 1) + System.getProperty("line.separator"));
 					buffer = "";
-
+					
 					for (int j = 0; j < fixvalt.length; j++)
 					{
 						buffer = buffer + threePlace.format(fixvalt[j]) + delim;
-
+						
 						for (int k = 0; k < inputFileArray.length; k++)
 						{
 							if (enoughIntComp[k])
@@ -1249,11 +1250,11 @@ public class FHInterval {
 						wrWDE.write(buffer.substring(0, buffer.length() - 1) + System.getProperty("line.separator"));
 						buffer = "";
 					}
-
+					
 					wr.close();
 					wrWDE.close();
-
-				}// end of if jRadioComp is selecte
+					
+				} // end of if jRadioComp is selecte
 				if (doSample)
 				{
 					wrSample = new BufferedWriter(new FileWriter(summaryFile));
@@ -1282,7 +1283,7 @@ public class FHInterval {
 								{
 									wrSample.write(twoPlace.format(summarySample[0][k]) + delim);
 								}
-
+								
 							}
 							else
 							{
@@ -1302,9 +1303,9 @@ public class FHInterval {
 									wrSample.write("NA" + delim);
 								}
 							}
-						}// end of k loop file array
+						} // end of k loop file array
 						wrSample.write(System.getProperty("line.separator"));
-					}// end of loop j loop stats
+					} // end of loop j loop stats
 						// wrSample.close();
 						//
 						//
@@ -1334,15 +1335,15 @@ public class FHInterval {
 							{
 								wrWDESample.write("NA" + delim);
 							}
-
+							
 						}
 						// System.out.print(System.getProperty("line.separator"));
 						wrWDESample.write(System.getProperty("line.separator"));
 					}
 					wrSample.close();
 					wrWDESample.close();
-				}// end of jradiosample
-
+				} // end of jradiosample
+				
 			} // end of Try
 			catch (IOException ex)
 			{
@@ -1350,28 +1351,28 @@ public class FHInterval {
 			}
 			finally
 			{
-
+			
 			}
-
+			
 		} // end of if for at least one file selected and one analysis (if run))
 		else
 		{
 			JOptionPane.showMessageDialog(null, "Select at least One file and At least one analysis  before continuing.", "Warning",
 					JOptionPane.WARNING_MESSAGE);
 		}
-
+		
 	}
-
+	
 	public static ArrayList<Integer> generateFireIntervals(ArrayList<Integer> YearsWithFires) {
-
+		
 		ArrayList<Integer> fireIntervals = new ArrayList<Integer>();
 		for (int i = 0; i < YearsWithFires.size() - 1; i++)
 		{
 			fireIntervals.add(YearsWithFires.get(i + 1) - YearsWithFires.get(i));
 			log.debug("here are the FireIntervals " + fireIntervals.get(i));
 		}
-
+		
 		return fireIntervals;
 	}
-
+	
 }

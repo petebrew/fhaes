@@ -1,13 +1,20 @@
-/*******************************************************************************
- * Copyright (c)  2012 Elena Velasquez
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the GNU Public License v3.0
- * which accompanies this distribution, and is available at
- * http://www.gnu.org/licenses/gpl.html
+/**************************************************************************************************
+ * Fire History Analysis and Exploration System (FHAES), Copyright (C) 2015
  * 
- * Contributors:
- *     Peter Brewer
- ******************************************************************************/
+ * Contributors: Elena Velasquez and Peter Brewer
+ * 
+ * 		This program is free software: you can redistribute it and/or modify it under the terms of
+ * 		the GNU General Public License as published by the Free Software Foundation, either version
+ * 		3 of the License, or (at your option) any later version.
+ * 
+ * 		This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * 		without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * 		See the GNU General Public License for more details.
+ * 
+ * 		You should have received a copy of the GNU General Public License along with this program.
+ * 		If not, see <http://www.gnu.org/licenses/>.
+ * 
+ *************************************************************************************************/
 package org.fhaes.fhfilechecker;
 
 import java.awt.BorderLayout;
@@ -30,7 +37,7 @@ import org.fhaes.util.Builder;
  * FrameViewHelp Class.
  */
 public class FrameViewHelp extends JFrame {
-
+	
 	private static final long serialVersionUID = 1L;
 	JPanel panel1 = new JPanel();
 	BorderLayout borderLayout = new BorderLayout();
@@ -40,12 +47,12 @@ public class FrameViewHelp extends JFrame {
 	public JTextArea TArea = new JTextArea();
 	JScrollPane jScrollPane = new JScrollPane();
 	public String out_file_name;
-
+	
 	/**
 	 * TODO
 	 */
 	public FrameViewHelp() {
-
+		
 		try
 		{
 			jbInit();
@@ -56,14 +63,14 @@ public class FrameViewHelp extends JFrame {
 			exception.printStackTrace();
 		}
 	}
-
+	
 	/**
 	 * TODO
 	 * 
 	 * @throws Exception
 	 */
 	private void jbInit() throws Exception {
-
+		
 		panel1.setLayout(borderLayout);
 		this.setTitle("FHAES File Format Report (Outputfile)");
 		setIconImage(Builder.getApplicationIcon());
@@ -82,17 +89,17 @@ public class FrameViewHelp extends JFrame {
 		jScrollPane.getViewport().add(TArea);
 		// System.out.println(jScrollPane.getVerticalScrollBar().getMinimum());
 	}
-
+	
 	/**
 	 * TODO
 	 * 
 	 * @param e
 	 */
 	public void btnClose_actionPerformed(ActionEvent e) {
-
+		
 		dispose();
 	}
-
+	
 	/**
 	 * TODO
 	 * 
@@ -100,7 +107,7 @@ public class FrameViewHelp extends JFrame {
 	 */
 	// http://java.sun.com/j2se/1.3/docs/guide/2d/spec/j2d-print.fm3.html
 	public void btnPrint_actionPerformed(ActionEvent e) {
-
+		
 		// Get a PrinterJob
 		PrinterJob job = PrinterJob.getPrinterJob();
 		// Ask user for page format (e.g., portrait/landscape)
@@ -123,14 +130,14 @@ public class FrameViewHelp extends JFrame {
 				/* handle exception */}
 		}
 	}
-
+	
 	/**
 	 * TODO
 	 * 
 	 * @param e
 	 */
 	public void this_windowOpened(WindowEvent e) {
-
+		
 		jScrollPane.getVerticalScrollBar().setValue(0);
 	}
 }// end of main
@@ -139,16 +146,17 @@ public class FrameViewHelp extends JFrame {
  * Frame_HelpView_this_windowAdapter Class.
  */
 class Frame_HelpView_this_windowAdapter extends WindowAdapter {
-
-	private FrameViewHelp adaptee;
-
+	
+	private final FrameViewHelp adaptee;
+	
 	Frame_HelpView_this_windowAdapter(FrameViewHelp adaptee) {
-
+		
 		this.adaptee = adaptee;
 	}
-
+	
+	@Override
 	public void windowOpened(WindowEvent e) {
-
+		
 		adaptee.this_windowOpened(e);
 	}
 }
@@ -159,16 +167,17 @@ class Frame_HelpView_this_windowAdapter extends WindowAdapter {
  * Frame_HelpView_btnPrint_actionAdapter Class.
  */
 class Frame_HelpView_btnPrint_actionAdapter implements ActionListener {
-
-	private FrameViewHelp adaptee;
-
+	
+	private final FrameViewHelp adaptee;
+	
 	Frame_HelpView_btnPrint_actionAdapter(FrameViewHelp adaptee) {
-
+		
 		this.adaptee = adaptee;
 	}
-
+	
+	@Override
 	public void actionPerformed(ActionEvent e) {
-
+		
 		adaptee.btnPrint_actionPerformed(e);
 	}
 }
@@ -177,16 +186,17 @@ class Frame_HelpView_btnPrint_actionAdapter implements ActionListener {
  * Frame_HelpView_btnClose_actionAdapter Class.
  */
 class Frame_HelpView_btnClose_actionAdapter implements ActionListener {
-
-	private FrameViewHelp adaptee;
-
+	
+	private final FrameViewHelp adaptee;
+	
 	Frame_HelpView_btnClose_actionAdapter(FrameViewHelp adaptee) {
-
+		
 		this.adaptee = adaptee;
 	}
-
+	
+	@Override
 	public void actionPerformed(ActionEvent e) {
-
+		
 		adaptee.btnClose_actionPerformed(e);
 	}
 }

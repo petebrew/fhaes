@@ -1,22 +1,21 @@
+/**************************************************************************************************
+ * Fire History Analysis and Exploration System (FHAES), Copyright (C) 2015
+ * 
+ * Contributors: Elena Velasquez and Peter Brewer
+ * 
+ * 		This program is free software: you can redistribute it and/or modify it under the terms of
+ * 		the GNU General Public License as published by the Free Software Foundation, either version
+ * 		3 of the License, or (at your option) any later version.
+ * 
+ * 		This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * 		without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * 		See the GNU General Public License for more details.
+ * 
+ * 		You should have received a copy of the GNU General Public License along with this program.
+ * 		If not, see <http://www.gnu.org/licenses/>.
+ * 
+ *************************************************************************************************/
 package org.fhaes.math;
-
-/*******************************************************************************
- * Copyright (C) 2013 Elena Velasquez and Peter Brewer
- * 
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
- ******************************************************************************/
 
 import java.util.ArrayList;
 
@@ -26,19 +25,19 @@ import java.util.ArrayList;
  * @author Elena Velasquez
  */
 public class Weibull {
-
+	
 	private static double[] wparam;
-
+	
 	/**
 	 * TODO
 	 * 
 	 * @param data
 	 */
 	public Weibull(ArrayList<Double> data) {
-
+		
 		wparam = Weibull.generateParameters(data);
 	}
-
+	
 	/**
 	 * TODO
 	 * 
@@ -46,7 +45,7 @@ public class Weibull {
 	 * @return
 	 */
 	private static double[] generateParameters(ArrayList<Double> data) {
-
+		
 		//
 		// Initialization of local variables.
 		//
@@ -62,7 +61,7 @@ public class Weibull {
 		double lgxi = 0;
 		double slnx = 0;
 		double tt = Math.abs(m - mnew);
-
+		
 		wparam = new double[2];
 		//
 		// loading of the data: converting the ArrayList into an Array
@@ -73,7 +72,7 @@ public class Weibull {
 		for (int k = 0; k < Ddatap.length; k++)
 		{
 			datap[k] = Ddatap[k].doubleValue();
-
+			
 		}
 		// log.debug("here is the data : "+ datap);
 		//
@@ -96,7 +95,7 @@ public class Weibull {
 			double sxmlnx = 0.0;
 			double sxmlnx2 = 0.0;
 			double xitom = 0.0;
-
+			
 			for (int i = 0; i < datap.length; i++)
 			{
 				xitom = Math.pow(datap[i], m);
@@ -123,13 +122,13 @@ public class Weibull {
 			// The 2-parameter weibull distribution calculated parameter are:
 			// Shape parameter = mnew = shapepar
 			// Scale parameter = x0 = scalepar
-
+		
 		wparam[0] = m;
 		wparam[1] = x0;
-
+		
 		return wparam;
 	}
-
+	
 	/**
 	 * Calculation of the Weibull maximum hazard interval.
 	 * 
@@ -137,13 +136,13 @@ public class Weibull {
 	 * @return
 	 */
 	public double getMaximumHazardInterval() {
-
+		
 		double mhibase = 1.0;
 		double mhiex = 0.0;
 		double mhi = 0.0;
 		double shape = wparam[0];
 		double scale = wparam[1];
-
+		
 		if (shape > 1.005)
 		{
 			mhibase = (0.5) * Math.exp(shape * Math.log10(scale) / shape);
@@ -154,10 +153,10 @@ public class Weibull {
 		{
 			mhi = -99;
 		}
-
+		
 		return mhi;
 	}
-
+	
 	/**
 	 * TODO Elena needs to check this!
 	 * 
@@ -165,11 +164,11 @@ public class Weibull {
 	 * @return
 	 */
 	public double getExceedencePercentile(Double percentile) {
-
+		
 		double val = percentile / 100;
 		return Math.exp(Math.log(-1.0 * Math.log(1.0 - val)) / getShape() + Math.log(getScale()));
 	}
-
+	
 	/**
 	 * Calculate the lower and upper exceedence intervals.
 	 * 
@@ -177,7 +176,7 @@ public class Weibull {
 	 * @return
 	 */
 	public double[] getExceedenceProbability() {
-
+		
 		// boolean hflag =true;
 		// double uei=0.0;
 		// double lei=0.0;
@@ -197,30 +196,30 @@ public class Weibull {
 			// log.debug("luei"+excprb[k]);
 			// temp=Math.exp((Math.log(-1.0*Math.log(1.0-fixval[k]))/shape)+Math.log(scale));
 			// if(fixval[k]<=tolerance){lei=temp;
-			// log.debug("lei  "+excprb[k]);
+			// log.debug("lei "+excprb[k]);
 			// }
 			// if(fixval[k]>=(1.0-tolerance)){
 			// if(hflag){
 			// uei=temp;
 			// hflag=false;
-			// log.debug("uei  "+excprb[k]);
+			// log.debug("uei "+excprb[k]);
 			// }
 			// }
 		}
-
+		
 		// lowupint[0]=lei;
 		// lowupint[1]=uei;
-
+		
 		return excprb;
 	}
-
+	
 	/**
 	 * TODO
 	 * 
 	 * @return
 	 */
 	public double[] getExceedenceProbability2() {
-
+		
 		boolean hflag = true;
 		double uei = 0.0;
 		double lei = 0.0;
@@ -243,7 +242,7 @@ public class Weibull {
 			if (fixval[k] <= tolerance)
 			{
 				lei = temp;
-				// log.debug("lei  "+excprb[k]);
+				// log.debug("lei "+excprb[k]);
 			}
 			if (fixval[k] >= (1.0 - tolerance))
 			{
@@ -251,37 +250,37 @@ public class Weibull {
 				{
 					uei = temp;
 					hflag = false;
-					// log.debug("uei  "+excprb[k]);
+					// log.debug("uei "+excprb[k]);
 				}
 			}
 		}
-
+		
 		lowupint[0] = lei;
 		lowupint[1] = uei;
-
+		
 		return lowupint;
 	}
-
+	
 	/**
 	 * TODO
 	 * 
 	 * @return
 	 */
 	public double getShape() {
-
+		
 		return wparam[0];
 	}
-
+	
 	/**
 	 * TODO
 	 * 
 	 * @return
 	 */
 	public double getScale() {
-
+		
 		return wparam[1];
 	}
-
+	
 	/**
 	 * Calculate the Weibull mean.
 	 * 
@@ -289,7 +288,7 @@ public class Weibull {
 	 * @return
 	 */
 	public double getMean() {
-
+		
 		double xmu = 0.0;
 		double wmean = 0;
 		double shape = wparam[0];
@@ -298,26 +297,26 @@ public class Weibull {
 		// Calculation of the weibull mean
 		//
 		GammaFunction test = new GammaFunction();
-
+		
 		xmu = 1.0 + (1.0 / shape);
 		// log.debug("the gamma functionof 5 is 4 factorial "+test.la_gamma(5));
 		wmean = scale * test.la_gamma(xmu);
-
+		
 		return wmean;
 	}
-
+	
 	/**
 	 * TODO
 	 * 
 	 * @return
 	 */
 	public double getSigma() {
-
+		
 		double xmu = 0.0;
 		double ymu = 0.0;
 		double shape = wparam[0];
 		double scale = wparam[1];
-
+		
 		//
 		// Calculation of the Weibull Sigma
 		//
@@ -326,17 +325,17 @@ public class Weibull {
 		ymu = 1 + (2 / shape);
 		double xsig = test.la_gamma(ymu) - (test.la_gamma(xmu) * test.la_gamma(xmu));
 		double wsigma = scale * Math.sqrt(xsig);
-
+		
 		return wsigma;
 	}
-
+	
 	/**
 	 * TODO
 	 * 
 	 * @return
 	 */
 	public double getSkew() {
-
+		
 		double xmu = 0.0;
 		// double ymu=0.0;
 		double wskew = 0.0;
@@ -346,28 +345,29 @@ public class Weibull {
 		// Calculation of the weibull mean
 		//
 		GammaFunction test = new GammaFunction();
-
+		
 		xmu = 1.0 + (3.0 / shape);
-		double numskew = (test.la_gamma(xmu) * Math.pow(scale, 3.0) - (3.0 * getMean() * getSigma() * getSigma()) - (getMean() * getMean() * getMean()));
-
+		double numskew = (test.la_gamma(xmu) * Math.pow(scale, 3.0) - (3.0 * getMean() * getSigma() * getSigma())
+				- (getMean() * getMean() * getMean()));
+				
 		// log.debug("the gamma functionof 5 is 4 factorial "+test.la_gamma(1.5));
 		wskew = numskew / (Math.pow(getSigma(), 3.0));
-
+		
 		return wskew;
 	}
-
+	
 	/**
 	 * Calculate the Weibull mode.
 	 * 
 	 * @return
 	 */
 	public double getMode() {
-
+		
 		double wmode = 0.0;
 		double xmod = 0.0;
 		double shape = wparam[0];
 		double scale = wparam[1];
-
+		
 		//
 		// Calculation of the weibull mode
 		//
@@ -385,10 +385,10 @@ public class Weibull {
 			// Invalid
 			wmode = -99;
 		}
-
+		
 		return wmode;
 	}
-
+	
 	/**
 	 * Calculate the Weibull median.
 	 * 
@@ -396,15 +396,15 @@ public class Weibull {
 	 * @return
 	 */
 	public double getMedian() {
-
+		
 		double wmed = 0.0;
 		double shape = wparam[0];
 		double scale = wparam[1];
-
+		
 		wmed = scale * Math.pow(Math.log(2.0), (1.0 / shape));
 		return wmed;
 	}
-
+	
 	/**
 	 * Calculate Weibull probability.
 	 * 
@@ -412,16 +412,16 @@ public class Weibull {
 	 * @return probability = Math.exp(-1*Math.pow((data.get(i)/scale),shape)))
 	 */
 	public ArrayList<Double> getWeibullProbability(ArrayList<Double> data) {
-
+		
 		ArrayList<Double> weibullProb = new ArrayList<Double>();
 		double shape = wparam[0];
 		double scale = wparam[1];
-
+		
 		for (int i = 0; i < data.size() - 1; i++)
 		{
 			weibullProb.add(Math.exp(-1 * Math.pow((data.get(i) / scale), shape)));
 		}
-
+		
 		return weibullProb;
 	}
 }

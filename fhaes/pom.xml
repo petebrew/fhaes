@@ -406,7 +406,7 @@
 								<exec dir="${project.build.directory}" executable="install4jc">
 									<arg value="--win-keystore-password" />
 									<arg value="${cert.password}" />
-									<arg value="/home/pbrewer/dev/java11/FHAES/Native/fhaes.install4j" />
+									<arg value="/home/Peter Brewer/dev/java11/FHAES/Native/fhaes.install4j" />
 								</exec>
 							</tasks>
 						</configuration>
@@ -491,10 +491,10 @@
 				/> <mkdir dir="${project.build.directory}/binaries/${project.version}/Java" 
 				/> <trycatch> <try> <exec dir="${project.build.directory}" executable="jarsigner"> 
 				<arg value="-storetype" /> <arg value="pkcs12" /> <arg value="-keystore" 
-				/> <arg value="/home/pbrewer/.ssh/pwb_code_signing.p12" /> <arg value="-tsa" 
+				/> <arg value="/home/Peter Brewer/.ssh/pwb_code_signing.p12" /> <arg value="-tsa" 
 				/> <arg value="http://timestamp.comodoca.com/rfc3161" /> <arg value="-storepass:file" 
-				/> <arg value="/home/pbrewer/.ssh/key" /> <arg value="-keypass:file" /> <arg 
-				value="/home/pbrewer/.ssh/key" /> <arg value="-digestalg" /> <arg value="SHA-256" 
+				/> <arg value="/home/Peter Brewer/.ssh/key" /> <arg value="-keypass:file" /> <arg 
+				value="/home/Peter Brewer/.ssh/key" /> <arg value="-digestalg" /> <arg value="SHA-256" 
 				/> <arg value="${project.build.directory}/${project.build.finalName}.jarxx" 
 				/> <arg value="the university of arizona's internet2 id" /> </exec> </try> 
 				<catch> <echo>**********************************************</echo> <echo> 
@@ -512,8 +512,8 @@
 				classpathref="maven.plugin.classpath" /> <trycatch> <try> // Try to sign 
 				the Setup.exe with the University of Arizona certificate <exec dir="${project.build.directory}" 
 				executable="osslsigncode"> <arg value="sign" /> <arg value="-certs" /> <arg 
-				value="/home/pbrewer/.ssh/pwb_code_signing.pem" /> <arg value="-key" /> <arg 
-				value="/home/pbrewer/.ssh/key.pem" /> <arg value="-n" /> <arg value="FHAES" 
+				value="/home/Peter Brewer/.ssh/pwb_code_signing.pem" /> <arg value="-key" /> <arg 
+				value="/home/Peter Brewer/.ssh/key.pem" /> <arg value="-n" /> <arg value="FHAES" 
 				/> <arg value="-i" /> <arg value="http://www.fhaes.org" /> <arg value="-t" 
 				/> <arg value="http://tsa.starfieldtech.com/" /> <arg value="-in" /> <arg 
 				value="${project.build.directory}/${project.build.finalName}-unsigned.exe" 
@@ -532,8 +532,8 @@
 				/> </catch> </trycatch> <trycatch> <try> //Try to sign the Setup.exe with 
 				the University of Arizona certificate <exec dir="${project.build.directory}" 
 				executable="osslsigncode"> <arg value="sign" /> <arg value="-certs" /> <arg 
-				value="/home/pbrewer/.ssh/pwb_code_signing.pem" /> <arg value="-key" /> <arg 
-				value="/home/pbrewer/.ssh/key.pem" /> <arg value="-n" /> <arg value="FHAES" 
+				value="/home/Peter Brewer/.ssh/pwb_code_signing.pem" /> <arg value="-key" /> <arg 
+				value="/home/Peter Brewer/.ssh/key.pem" /> <arg value="-n" /> <arg value="FHAES" 
 				/> <arg value="-i" /> <arg value="http://www.fhaes.org" /> <arg value="-t" 
 				/> <arg value="http://tsa.starfieldtech.com/" /> <arg value="-in" /> <arg 
 				value="${project.build.directory}/${project.build.finalName}-setup-unsigned.exe" 
@@ -549,8 +549,8 @@
 				<tasks> <taskdef resource="net/sf/antcontrib/antcontrib.properties" classpathref="maven.plugin.classpath" 
 				/> <trycatch> <try> //Try to sign the Setup.exe with the University of Arizona 
 				certificate <exec dir="${project.build.directory}" executable="osslsigncode"> 
-				<arg value="sign" /> <arg value="-certs" /> <arg value="/home/pbrewer/.ssh/pwb_code_signing.pem" 
-				/> <arg value="-key" /> <arg value="/home/pbrewer/.ssh/key.pem" /> <arg value="-n" 
+				<arg value="sign" /> <arg value="-certs" /> <arg value="/home/Peter Brewer/.ssh/pwb_code_signing.pem" 
+				/> <arg value="-key" /> <arg value="/home/Peter Brewer/.ssh/key.pem" /> <arg value="-n" 
 				/> <arg value="FHAES" /> <arg value="-i" /> <arg value="http://www.fhaes.org" 
 				/> <arg value="-t" /> <arg value="http://tsa.starfieldtech.com/" /> <arg 
 				value="-in" /> <arg value="${project.build.directory}/${project.build.finalName}-unsigned.exe" 

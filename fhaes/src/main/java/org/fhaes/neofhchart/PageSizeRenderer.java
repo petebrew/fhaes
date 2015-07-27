@@ -1,24 +1,22 @@
+/**************************************************************************************************
+ * Fire History Analysis and Exploration System (FHAES), Copyright (C) 2015
+ * 
+ * Contributors: Peter Brewer
+ * 
+ * 		This program is free software: you can redistribute it and/or modify it under the terms of
+ * 		the GNU General Public License as published by the Free Software Foundation, either version
+ * 		3 of the License, or (at your option) any later version.
+ * 
+ * 		This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * 		without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * 		See the GNU General Public License for more details.
+ * 
+ * 		You should have received a copy of the GNU General Public License along with this program.
+ * 		If not, see <http://www.gnu.org/licenses/>.
+ * 
+ *************************************************************************************************/
 package org.fhaes.neofhchart;
 
-/*******************************************************************************
- * Copyright (C) 2015 Peter Brewer
- * 
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * Contributors:
- *     Peter Brewer
- ******************************************************************************/
 import java.awt.Component;
 
 import javax.swing.BorderFactory;
@@ -32,31 +30,31 @@ import com.itextpdf.text.Rectangle;
 /**
  * PageSizeRenderer Class. List renderer for displaying iText PageSizes nicely.
  * 
- * @author pbrewer
+ * @author Peter Brewer
  */
 public class PageSizeRenderer extends JLabel implements ListCellRenderer<Object> {
-
+	
 	private static final long serialVersionUID = 1L;
-
+	
 	/**
 	 * TODO
 	 */
 	public PageSizeRenderer() {
-
+		
 		setOpaque(true);
 		setHorizontalAlignment(LEFT);
 		setVerticalAlignment(CENTER);
 	}
-
+	
 	/**
 	 * TODO
 	 */
 	@SuppressWarnings("rawtypes")
 	@Override
 	public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-
+		
 		this.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
-
+		
 		if (value instanceof Rectangle)
 		{
 			if (value.equals(PageSize.A5))
@@ -100,7 +98,7 @@ public class PageSizeRenderer extends JLabel implements ListCellRenderer<Object>
 		{
 			setText(value.toString());
 		}
-
+		
 		if (isSelected)
 		{
 			setBackground(list.getSelectionBackground());
@@ -111,8 +109,8 @@ public class PageSizeRenderer extends JLabel implements ListCellRenderer<Object>
 			setBackground(list.getBackground());
 			setForeground(list.getForeground());
 		}
-
+		
 		return this;
 	}
-
+	
 }

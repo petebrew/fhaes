@@ -1,3 +1,20 @@
+/**************************************************************************************************
+ * Fire History Analysis and Exploration System (FHAES), Copyright (C) 2015
+ * 
+ * Contributors: Elena Velasquez and Peter Brewer
+ * 
+ * 		This program is free software: you can redistribute it and/or modify it under the terms of
+ * 		the GNU General Public License as published by the Free Software Foundation, either version
+ * 		3 of the License, or (at your option) any later version.
+ * 
+ * 		This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * 		without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * 		See the GNU General Public License for more details.
+ * 
+ * 		You should have received a copy of the GNU General Public License along with this program.
+ * 		If not, see <http://www.gnu.org/licenses/>.
+ * 
+ *************************************************************************************************/
 package org.fhaes.analysis;
 
 import java.io.BufferedWriter;
@@ -19,34 +36,34 @@ import org.slf4j.LoggerFactory;
  * FHSummary Class.
  */
 public class FHSummary {
-
+	
 	private static final Logger log = LoggerFactory.getLogger(FHSummary.class);
 	private FHFile[] inputFileArray;
-
+	
 	/**
 	 * Constructor for FHSummary
 	 * 
 	 * @param inputFileArray
 	 */
 	public FHSummary(FHFile[] inputFileArray) {
-
+		
 		this.inputFileArray = inputFileArray;
 	}
-
+	
 	/**
 	 * Generate a CSV file containing summary information for the files specified in the constructor
 	 * 
 	 * @return
 	 */
 	public File getFilesSummaryAsCSVFile() {
-
+		
 		String str = getFilesSummaryAsString();
-
+		
 		try
 		{
 			File temp = File.createTempFile("fhsummary", ".tmp");
 			temp.deleteOnExit();
-
+			
 			BufferedWriter wr = new BufferedWriter(new FileWriter(temp));
 			wr.write(str);
 			wr.close();
@@ -62,22 +79,23 @@ public class FHSummary {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
+		
 		return null;
-
+		
 	}
-
+	
 	/**
 	 * Generate a string containing CSV delimited summary table
 	 * 
 	 * @return
 	 */
 	public String getFilesSummaryAsString() {
-
+		
 		EventTypeToProcess ettp = App.prefs.getEventTypePref(PrefKey.EVENT_TYPE_TO_PROCESS, EventTypeToProcess.FIRE_AND_INJURY_EVENT);
 		StringBuilder string = new StringBuilder();
-
-		string.append("Filename,Site name,Site code,Series name,Sampling date,Lat,Lon,State,Country,First year,Last year,Has pith,Has bark,");
+		
+		string.append(
+				"Filename,Site name,Site code,Series name,Sampling date,Lat,Lon,State,Country,First year,Last year,Has pith,Has bark,");
 		if (ettp.equals(EventTypeToProcess.FIRE_EVENT))
 		{
 			string.append("Fire event years,");
@@ -93,16 +111,16 @@ public class FHSummary {
 			string.append("Fire and injury event years,");
 			string.append("Fire and injury event year seasonality\n");
 		}
-
+		
 		for (FHFile file : inputFileArray)
 		{
 			try
 			{
 				FHX2FileReader fhx = new FHX2FileReader(file);
-
+				
 				if (fhx.getNumberOfSeries() == 0)
 					continue;
-
+					
 				String filename = file.getAbsoluteFile().getName();
 				int[] inneryearpith = fhx.getPithIndexPerSample();
 				int[] inneryear = fhx.getInnerMostperTree();
@@ -111,7 +129,7 @@ public class FHSummary {
 				int firstyear = fhx.getFirstYear();
 				ArrayList<ArrayList<Integer>> eventdata = fhx.getEventDataArrays(ettp);
 				ArrayList<String> seasonalitydata = fhx.getData();
-
+				
 				for (int i = 0; i < fhx.getNumberOfSeries(); i++)
 				{
 					Integer firstyearind = 0;
@@ -143,13 +161,13 @@ public class FHSummary {
 					}
 					else
 					{
-
+						
 						log.debug("Inconsistent first year in file " + filename + " series number " + i);
 						log.debug("outeryearbark value = " + outeryearbark[i]);
 						log.debug("outeryear value     = " + outeryear[i]);
 						continue;
 					}
-
+					
 					string.append(filename);
 					string.append(", ");
 					string.append(file.getSiteName().trim().replace(",", ";") + " ");
@@ -167,7 +185,7 @@ public class FHSummary {
 						string.append(" ");
 					}
 					string.append(", ");
-
+					
 					if (file.getFirstLatitude() == null)
 					{
 						string.append(" ");
@@ -194,13 +212,13 @@ public class FHSummary {
 					{
 						string.append(inneryearpith[i] + firstyear);
 						firstyearind = inneryearpith[i];
-
+						
 					}
 					else
 					{
 						string.append(inneryear[i] + firstyear);
 						firstyearind = inneryear[i];
-
+						
 					}
 					string.append(", ");
 					if (hasBark)
@@ -212,7 +230,7 @@ public class FHSummary {
 					{
 						string.append(outeryear[i] + firstyear);
 						lastyearind = outeryear[i];
-
+						
 					}
 					string.append(", ");
 					if (hasPith)
@@ -224,7 +242,7 @@ public class FHSummary {
 						string.append("n");
 					}
 					string.append(", ");
-
+					
 					if (hasBark)
 					{
 						string.append("y");
@@ -237,7 +255,7 @@ public class FHSummary {
 					if (fhx.hasFireEventsOrInjuries())
 					{
 						ArrayList<Integer> bb = eventdata.get(i);
-
+						
 						for (int yrind = firstyearind; yrind < lastyearind; yrind++)
 						{
 							Integer code = bb.get(yrind);
@@ -252,14 +270,14 @@ public class FHSummary {
 					if (fhx.hasFireEventsOrInjuries())
 					{
 						ArrayList<Integer> bb = eventdata.get(i);
-
+						
 						for (int yrind = firstyearind; yrind < lastyearind; yrind++)
 						{
 							Integer code = bb.get(yrind);
-
+							
 							String seasonline = seasonalitydata.get(yrind);
 							String seasoncode = seasonline.substring(i, i + 1);
-
+							
 							if (code.equals(1))
 							{
 								string.append(yrind + firstyear);
@@ -274,12 +292,12 @@ public class FHSummary {
 			catch (Exception e)
 			{
 				log.debug("The file " + file.getAbsolutePath() + " is invalid");
-
+				
 			}
-
+			
 		}
-
+		
 		return string.toString();
-
+		
 	}
 }

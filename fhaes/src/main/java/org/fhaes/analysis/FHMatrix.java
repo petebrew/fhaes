@@ -1,22 +1,21 @@
+/**************************************************************************************************
+ * Fire History Analysis and Exploration System (FHAES), Copyright (C) 2015
+ * 
+ * Contributors: Elena Velasquez and Peter Brewer
+ * 
+ * 		This program is free software: you can redistribute it and/or modify it under the terms of
+ * 		the GNU General Public License as published by the Free Software Foundation, either version
+ * 		3 of the License, or (at your option) any later version.
+ * 
+ * 		This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * 		without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * 		See the GNU General Public License for more details.
+ * 
+ * 		You should have received a copy of the GNU General Public License along with this program.
+ * 		If not, see <http://www.gnu.org/licenses/>.
+ * 
+ *************************************************************************************************/
 package org.fhaes.analysis;
-
-/*******************************************************************************
- * Copyright (C) 2013 Elena Velasquez and Peter Brewer
- * 
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
- ******************************************************************************/
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -40,9 +39,9 @@ import org.slf4j.LoggerFactory;
  * FHMatrix Class.
  */
 public class FHMatrix {
-
+	
 	private static final Logger log = LoggerFactory.getLogger(FHMatrix.class);
-
+	
 	private final FHFile[] inputFileArray;
 	private File outputFileTree;
 	private final Integer startYear;
@@ -62,10 +61,10 @@ public class FHMatrix {
 	private final Double filterValue;
 	private final Integer overlapRequired;
 	private final EventTypeToProcess eventType;
-
+	
 	@SuppressWarnings("unused")
 	private Double noDataValue = -99.0;
-
+	
 	private Boolean highway = true;
 	private File outputFileNTP;
 	private File outputFileSite;
@@ -78,12 +77,12 @@ public class FHMatrix {
 	private File outputFileDSCOH;
 	private File outputFileSJAC;
 	private File outputFileDSJAC;
-
+	
 	private Boolean debugfile = true;
-
+	
 	Integer minFirstYear = new Integer(9999);
 	Integer maxLastYear = new Integer(0);
-
+	
 	/**
 	 * New simplified constructor for FHAES GUI
 	 * 
@@ -98,7 +97,7 @@ public class FHMatrix {
 	 */
 	public FHMatrix(FHFile[] inputFileArray, Integer startYear, Integer endYear, FireFilterType filterType,
 			EventTypeToProcess eventTypeToProcess, Double filterValue, Integer yearOverlapThreshold, NoDataLabel noDataLabel) {
-
+			
 		this.inputFileArray = inputFileArray;
 		this.startYear = startYear;
 		this.endYear = endYear;
@@ -116,7 +115,7 @@ public class FHMatrix {
 		this.ntpMatrix = true;
 		this.eventType = eventTypeToProcess;
 		this.noDataValue = noDataLabel.toDouble();
-
+		
 		if (filterType == null)
 		{
 			log.warn("FireFilterType in FHMatrix was null. Defaulting to 'Number'");
@@ -134,11 +133,11 @@ public class FHMatrix {
 			this.filterByNumber = false;
 			this.filterByPercentage = true;
 		}
-
+		
 		runAnalysis();
-
+		
 	}
-
+	
 	/**
 	 * Constructor for original GUI
 	 * 
@@ -168,7 +167,7 @@ public class FHMatrix {
 			Boolean site01, Boolean site10, Boolean site11, Boolean siteSum, Boolean binaryMatrix, Boolean ntpMatrix,
 			Boolean filterByNumber, Boolean filterByPercentage, Boolean scohSim, Boolean sjacSim, Boolean fireEvent, Boolean fireInjury,
 			Double filterValue) throws Exception {
-
+			
 		this.inputFileArray = inputFile;
 		this.outputFileTree = outputFile;
 		this.startYear = startYear;
@@ -185,7 +184,7 @@ public class FHMatrix {
 		this.filterByPercentage = filterByPercentage;
 		this.scohSim = scohSim;
 		this.sjacSim = sjacSim;
-
+		
 		if (fireEvent && fireInjury)
 		{
 			eventType = EventTypeToProcess.FIRE_AND_INJURY_EVENT;
@@ -202,7 +201,7 @@ public class FHMatrix {
 		{
 			throw new Exception("Invalid events specified.  Must have either Fire, Injury or both selected");
 		}
-
+		
 		this.filterValue = filterValue;
 		this.overlapRequired = 25;
 		outputFileNTP = new File(outputFile.getAbsolutePath() + "NTP.tmp");
@@ -216,30 +215,30 @@ public class FHMatrix {
 		outputFileDSCOH = new File(outputFile.getAbsolutePath() + "DSCOH.tmp");
 		outputFileSJAC = new File(outputFile.getAbsolutePath() + "SJAC.tmp");
 		outputFileDSJAC = new File(outputFile.getAbsolutePath() + "DSJAC.tmp");
-
+		
 		/*
 		 * outputFileFilters.deleteOnExit(); outputFileSite.deleteOnExit(); outputFileM11.deleteOnExit(); outputFileM10.deleteOnExit();
 		 * outputFileM01.deleteOnExit(); outputFileM00.deleteOnExit(); outputFileSum.deleteOnExit(); outputFileSCOH.deleteOnExit();
 		 * outputFileDSCOH.deleteOnExit(); outputFileSJAC.deleteOnExit(); outputFileDSJAC.deleteOnExit(); this.outputFile.deleteOnExit();
 		 */
-
+		
 		runAnalysis();
 	}
-
+	
 	/**
 	 * Run the actual FHMatrix analysis
 	 */
 	@SuppressWarnings("deprecation")
 	private void runAnalysis() {
-
+		
 		log.debug("Running FHMatrix analysis");
-
+		
 		// TODO Elena to implement
 		if (this.overlapRequired > 0)
 		{
-
+		
 		}
-
+		
 		/*
 		 * If at least one file has been choosen then the program will run otherwise get message
 		 */
@@ -270,9 +269,9 @@ public class FHMatrix {
 			JOptionPane.showMessageDialog(null, "Select at least one file.", "Warning", JOptionPane.WARNING_MESSAGE);
 			return;
 		}
-
+		
 		ArrayList<FHX2FileReader> myReader = new ArrayList<FHX2FileReader>();
-
+		
 		// *** CURSOR VARIABLES *** //
 		// Cursor hourglassCursor = new Cursor(Cursor.WAIT_CURSOR);
 		// Cursor hourglassCursor =
@@ -282,7 +281,7 @@ public class FHMatrix {
 		// Cursor normalCursor = new Cursor(Cursor.DEFAULT_CURSOR);
 		// setCursor(hourglassCursor);
 		// setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-
+		
 		for (int i = 0; i < inputFileArray.length; i++)
 		{
 			myReader.add(new FHX2FileReader(inputFileArray[i]));
@@ -328,7 +327,7 @@ public class FHMatrix {
 					// System.out.println("I am fire and Injur2 2");
 					myReader.get(i).makeClimateIII();
 				}
-
+				
 			}
 			// myReader.get(i).PrintReport();
 			/*
@@ -348,7 +347,7 @@ public class FHMatrix {
 					// myReader.get(i).getLastYear());
 					// System.out.println("the minFirstYear is: " +
 					// minFirstYear);
-
+					
 					if (myReader.get(i).getFirstFireYear() < minFirstYear)
 					{
 						// System.out.println("i am here in line 350");
@@ -384,7 +383,7 @@ public class FHMatrix {
 					// myReader.get(i).getLastYear());
 					// System.out.println("the minFirstYear is: " +
 					// minFirstYear);
-
+					
 					if (myReader.get(i).getFirstInjuryYear() < minFirstYear)
 					{
 						// System.out.println("i am here in line 380");
@@ -420,7 +419,7 @@ public class FHMatrix {
 					// myReader.get(i).getLastYear());
 					// System.out.println("the minFirstYear is: " +
 					// minFirstYear);
-
+					
 					if (myReader.get(i).getFirstIndicatorYear() < minFirstYear)
 					{
 						// System.out.println("i am here in line 350");
@@ -458,7 +457,7 @@ public class FHMatrix {
 		// System.out.println("the input filelength is" + inputFile.length);
 		// System.out.println("The FIRST FIRE YEAR is " + minFirstYear);
 		// System.out.println("The LAST YEAR is " + maxLastYear);
-
+		
 		// System.out.println("Minimum and Maximum years are " + minFirstYear +
 		// " " + maxLastYear);
 		/*
@@ -498,9 +497,9 @@ public class FHMatrix {
 		double[][] matrixDSJAC = new double[myReader.size()][myReader.size()];
 		// String savePath = new String();
 		// savePath = inputFileArray[0].getAbsolutePath();
-
+		
 		// ArrayList<String> XsectionName = new ArrayList<String>();
-
+		
 		// eeSystem.out.println("DEBUG: myReader's size is " + myReader.size());
 		/*
 		 * Set up either of the two filters two create the binary matrix on the case of binary analysis there are two possible filters:
@@ -521,7 +520,7 @@ public class FHMatrix {
 			firesFilter2 = filterValue / 100.0;
 			System.out.println("percentage of fires is selected is: " + firesFilter2);
 		}
-
+		
 		/*
 		 * start processing each file individually: The analysis can be done by either tree (non-binary) or by site (binary). by tree the
 		 * box selected is: jCheckTree. by site the box selected is:
@@ -585,11 +584,11 @@ public class FHMatrix {
 				// eeSystem.out.println("I got climateVectorFilters");
 				// eeSystem.out.println("size by "+climateVector.size()+" "+climateVector);
 			}
-
+			
 			/*
 			 * get the vector Year containing the vector of year of a given fhx file load it into the array list climateYear.
 			 */
-
+			
 			climateYear = myReader.get(i).getYear();
 			if (ntpMatrix || filterValue != 1)
 			{
@@ -611,13 +610,13 @@ public class FHMatrix {
 						{
 							filterVectorActual.add(new Double(climateVectorFilter2.get(ik).get(climateYear.indexOf(listYears.get(ij)))));
 						}
-
+						
 					}
 					// System.out.println("size of filterVectorActual is : "+filterVectorActual.size()+" "+filterVectorActual);
 					filterMatrix.add(filterVectorActual);
 				}
 				// System.out.println("size of the FilterMatrix is");
-			}// /newforelena
+			} // /newforelena
 				// System.out.println("filter "+ ik
 				// +" is size "+filterVectorActual.size());
 				// System.out.println("size of filterMatrix is: "+filterMatrix.size());
@@ -631,12 +630,12 @@ public class FHMatrix {
 						if (climateYear.indexOf(listYears.get(j)) == -1)
 						{
 							climateVectorActual.add(-1);
-
+							
 						}
 						else
 						{
 							climateVectorActual.add(climateVector2.get(k).get(climateYear.indexOf(listYears.get(j))));
-
+							
 						}
 					}
 					// eeSystem.out.println("size by tree "+climateVectorActual.size()+" "+climateVectorActual);
@@ -705,7 +704,7 @@ public class FHMatrix {
 									}
 								}
 							}
-						}// end of if filter not equal to 1
+						} // end of if filter not equal to 1
 						else
 						{
 							climateVectorActualSite.add(climateVector.get(climateYear.indexOf(listYears.get(j))));
@@ -727,7 +726,7 @@ public class FHMatrix {
 			 * End of processing each file ie calculation of climateMatrix and filterMatrix
 			 */
 			System.out.println("Done Processing file " + myReader.get(i).getName());
-		}// end of i loop
+		} // end of i loop
 			// elena adds
 		if (site11 || site01 || site10 || site00 || siteSum || scohSim || sjacSim)
 		{
@@ -758,7 +757,7 @@ public class FHMatrix {
 					matrix10[r][c] = 0;
 					matrix00[r][c] = 0;
 					matrixsum[r][c] = 0;
-
+					
 					for (int i = 0; i < listYears.size(); i++)
 					{
 						if (temp[i][c] == 1 && temp[i][r] == 1)
@@ -777,26 +776,26 @@ public class FHMatrix {
 						{
 							matrix00[r][c] = matrix00[r][c] + 1;
 						}
-					}// endofloop i
+					} // endofloop i
 					matrixsum[r][c] = matrix11[r][c] + matrix01[r][c] + matrix10[r][c] + matrix00[r][c];
-					matrixApDdL[r][c] = ((double) matrix11[r][c] + (double) matrix00[r][c]) / (double) matrixsum[r][c];
-					matrixApBdL[r][c] = ((double) matrix11[r][c] + (double) matrix01[r][c]) / (double) matrixsum[r][c];
-					matrixApCdL[r][c] = ((double) matrix11[r][c] + (double) matrix10[r][c]) / (double) matrixsum[r][c];
+					matrixApDdL[r][c] = ((double) matrix11[r][c] + (double) matrix00[r][c]) / matrixsum[r][c];
+					matrixApBdL[r][c] = ((double) matrix11[r][c] + (double) matrix01[r][c]) / matrixsum[r][c];
+					matrixApCdL[r][c] = ((double) matrix11[r][c] + (double) matrix10[r][c]) / matrixsum[r][c];
 					matrixSCOHdeno[r][c] = 1.0 - ((matrixApBdL[r][c]) * (matrixApCdL[r][c]));
 					matrixSCOH[r][c] = (matrixApDdL[r][c] - (matrixApBdL[r][c] * matrixApCdL[r][c])) / matrixSCOHdeno[r][c];
 					matrixSCOH[c][r] = matrixSCOH[r][c];
 					matrixDSCOH[r][c] = 1.0 - matrixSCOH[r][c];
 					matrixDSCOH[c][r] = matrixDSCOH[r][c];
 					matrixSJACdeno[r][c] = matrix11[r][c] + matrix01[r][c] + matrix10[r][c];
-					matrixSJAC[r][c] = (double) matrix11[r][c] / (double) matrixSJACdeno[r][c];
+					matrixSJAC[r][c] = matrix11[r][c] / matrixSJACdeno[r][c];
 					matrixSJAC[c][r] = matrixSJAC[r][c];
 					matrixDSJAC[r][c] = 1.0 - matrixSJAC[r][c];
 					matrixDSJAC[c][r] = matrixDSJAC[r][c];
-
-				}// end loop c
-			}// end of loop r
-
-		}// end of if statement
+					
+				} // end loop c
+			} // end of loop r
+			
+		} // end of if statement
 			// needs to add: fill the similarity and dissimilarity matrices
 			// end of elena adds
 		/*
@@ -810,10 +809,10 @@ public class FHMatrix {
 		 * create JFileChooser object to generate a browsing capabilities
 		 */
 		// JFileChooser fileBrowse = new JFileChooser();
-
+		
 		// fileBrowse = new JFileChooser(
 		// savePath.substring(0,savePath.lastIndexOf(File.separator)));
-
+		
 		/*
 		 * set multiselect on (even though we don't need it)
 		 */
@@ -855,7 +854,7 @@ public class FHMatrix {
 		 */
 		// if (l <= 4
 		// || !(outputFile.getName().substring(l - 4, l).equals(".tmp"))) {
-
+		
 		try
 		{
 			if (ntpMatrix && outputFileNTP == null)
@@ -976,7 +975,7 @@ public class FHMatrix {
 		 */
 		try
 		{
-
+			
 			if (binaryMatrix)
 			{
 				/*
@@ -986,7 +985,7 @@ public class FHMatrix {
 				/*
 				 * Maintain the format for each file the common years is the first column of the file.
 				 */
-
+				
 				// eeSystem.out.println("listYears size " + listYears.size());
 				/*
 				 * write header of each file some files have two lines of header.
@@ -1000,7 +999,7 @@ public class FHMatrix {
 					// header for by tree matrix
 					for (int k = 0; k < myReader.get(i).getNumberOfSeries(); k++)
 					{
-
+						
 						if ((i == inputFileArray.length - 1) && (k == myReader.get(i).getNumberOfSeries() - 1))
 						{
 							wr.write(inputFileArray[i].getLabel());
@@ -1009,7 +1008,7 @@ public class FHMatrix {
 						{
 							wr.write(inputFileArray[i].getLabel() + delim);
 						}
-
+						
 					}
 				}
 				// add newline
@@ -1034,7 +1033,7 @@ public class FHMatrix {
 					}
 				}
 				wr.write(System.getProperty("line.separator"));
-
+				
 				//
 				for (int i = 0; i < listYears.size(); i++)
 				{
@@ -1043,7 +1042,7 @@ public class FHMatrix {
 					for (int j = 0; j < climateMatrix.size(); j++)
 					{
 						wr.write(climateMatrix.get(j).get(i) + delim);
-
+						
 					}
 					wr.write(System.getProperty("line.separator"));
 				}
@@ -1059,7 +1058,7 @@ public class FHMatrix {
 					// header for by tree matrix
 					for (int k = 0; k < 3; k++)
 					{
-
+						
 						if (k == 2 && (i == inputFileArray.length - 1))
 						{
 							wrfilters.write(inputFileArray[i].getLabel());
@@ -1087,7 +1086,7 @@ public class FHMatrix {
 					wrfilters.write(System.getProperty("line.separator"));
 				}
 				wrfilters.close();
-			}// end if treeV1
+			} // end if treeV1
 			if (siteMatrix)
 			{
 				/*
@@ -1111,13 +1110,13 @@ public class FHMatrix {
 					{
 						wrSite.write(inputFileArray[i].getLabel() + delim);
 					}
-
+					
 					// Save FHFile version of file to array
 					FHFile fhf = new FHFile(inputFileArray[i].getAbsoluteFile());
 					fhfileArray[i] = fhf;
 				}
 				wrSite.write(System.getProperty("line.separator"));
-
+				
 				// Longitude from header
 				wrSite.write("Longitude" + delim);
 				for (int i = 0; i < inputFileArray.length; i++)
@@ -1137,7 +1136,7 @@ public class FHMatrix {
 					}
 				}
 				wrSite.write(System.getProperty("line.separator"));
-
+				
 				// Latitude from header
 				wrSite.write("Latitude" + delim);
 				for (int i = 0; i < inputFileArray.length; i++)
@@ -1157,7 +1156,7 @@ public class FHMatrix {
 					}
 				}
 				wrSite.write(System.getProperty("line.separator"));
-
+				
 				//
 				for (int i = 0; i < listYears.size(); i++)
 				{
@@ -1170,7 +1169,7 @@ public class FHMatrix {
 					wrSite.write(System.getProperty("line.separator"));
 				}
 				wrSite.close();
-			}// end if SiteMatrix
+			} // end if SiteMatrix
 			if (site11)
 			{
 				/*
@@ -1196,11 +1195,11 @@ public class FHMatrix {
 				for (int r = 0; r < matrix11.length; r++)
 				{
 					// wrM11.write(inputFile[r].getName() + delim);
-
+					
 					wrM11.write(inputFileArray[r].getLabel() + delim);
 					for (int c = 0; c < matrix11[r].length; c++)
 					{
-
+						
 						if (c == (matrix11.length - 1))
 						{
 							wrM11.write(matrix11[r][c]);
@@ -1217,9 +1216,9 @@ public class FHMatrix {
 				}
 				// wrM11.write(System.getProperty("line.separator"));
 				wrM11.close();
-			}// end if site11
+			} // end if site11
 				// /elena add similarities
-
+			
 			if (scohSim)
 			{
 				/*
@@ -1265,10 +1264,10 @@ public class FHMatrix {
 				wrSCOH.write(System.getProperty("line.separator"));
 				for (int r = 0; r < matrix11.length; r++)
 				{
-
+					
 					// System.out.println("sitecode");
 					wrSCOH.write(inputFileArray[r].getLabel() + delim);
-
+					
 					// wrSCOH.write(inputFile[r].getName() + delim);
 					// wrSCOH.write(mylatlonarray.searchByFilename(inputFile[r].getName()).getLabel()
 					// + delim);
@@ -1290,8 +1289,8 @@ public class FHMatrix {
 					wrSCOH.write(System.getProperty("line.separator"));
 				}
 				wrSCOH.close();
-			}// end of SCOHmatrix
-
+			} // end of SCOHmatrix
+			
 			if (scohSim)
 			{
 				/*
@@ -1368,8 +1367,8 @@ public class FHMatrix {
 					wrDSCOH.write(System.getProperty("line.separator"));
 				}
 				wrDSCOH.close();
-			}// end of DSCOHmatrix
-
+			} // end of DSCOHmatrix
+			
 			if (sjacSim)
 			{
 				/*
@@ -1388,14 +1387,14 @@ public class FHMatrix {
 						{
 							// System.out.println("filename");
 							wrSJAC.write(inputFileArray[i].getLabel());
-
+							
 						}
 						else
 						{
 							// System.out.println("filename");
 							wrSJAC.write(inputFileArray[i].getLabel() + delim);
 						}
-
+						
 					}
 					else
 					{
@@ -1418,10 +1417,10 @@ public class FHMatrix {
 				for (int r = 0; r < matrix11.length; r++)
 				{
 					// wrSJAC.write(inputFile[r].getName() + delim);
-
+					
 					// System.out.println("sitecode");
 					wrSJAC.write(inputFileArray[r].getLabel() + delim);
-
+					
 					// wrSJAC.write(mylatlonarray.searchByFilename(inputFile[r].getName()).getLabel()
 					// + delim);
 					for (int c = 0; c < matrix11.length; c++)
@@ -1441,8 +1440,8 @@ public class FHMatrix {
 					wrSJAC.write(System.getProperty("line.separator"));
 				}
 				wrSJAC.close();
-			}// end of SJACmatrix
-
+			} // end of SJACmatrix
+			
 			if (sjacSim)
 			{
 				/*
@@ -1487,10 +1486,10 @@ public class FHMatrix {
 				for (int r = 0; r < matrix11.length; r++)
 				{
 					// wrDSJAC.write(inputFile[r].getName() + delim);
-
+					
 					// System.out.println("sitecode");
 					wrDSJAC.write(inputFileArray[r].getLabel() + delim);
-
+					
 					// wrDSJAC.write(mylatlonarray.searchByFilename(inputFile[r].getName()).getLabel()
 					// + delim);
 					for (int c = 0; c < matrix11.length; c++)
@@ -1511,8 +1510,8 @@ public class FHMatrix {
 					wrDSJAC.write(System.getProperty("line.separator"));
 				}
 				wrDSJAC.close();
-			}// end of DSJACmatrix
-
+			} // end of DSJACmatrix
+			
 			// /elena end add similarities
 			if (site01)
 			{
@@ -1533,7 +1532,7 @@ public class FHMatrix {
 					{
 						wrM01.write(inputFileArray[i].getLabel() + delim);
 					}
-
+					
 				}
 				wrM01.write(System.getProperty("line.separator"));
 				for (int r = 0; r < matrix01.length; r++)
@@ -1559,7 +1558,7 @@ public class FHMatrix {
 				}
 				// wrM11.write(System.getProperty("line.separator"));
 				wrM01.close();
-			}// end if site01
+			} // end if site01
 			if (site10)
 			{
 				/*
@@ -1584,10 +1583,10 @@ public class FHMatrix {
 				for (int r = 0; r < matrix10.length; r++)
 				{
 					// wrM10.write(inputFile[r].getName() + delim);
-
+					
 					// System.out.println("sitecode");
 					wrM10.write(inputFileArray[r].getLabel() + delim);
-
+					
 					// wrM10.write(mylatlonarray.searchByFilename(inputFile[r].getName()).getLabel()
 					// + delim);
 					for (int c = 0; c < matrix10[r].length; c++)
@@ -1598,7 +1597,7 @@ public class FHMatrix {
 				}
 				// wrM11.write(System.getProperty("line.separator"));
 				wrM10.close();
-			}// end if site10
+			} // end if site10
 			if (site00)
 			{
 				/*
@@ -1623,10 +1622,10 @@ public class FHMatrix {
 				for (int r = 0; r < matrix00.length; r++)
 				{
 					// wrM00.write(inputFile[r].getName() + delim);
-
+					
 					// System.out.println("sitecode");
 					wrM00.write(inputFileArray[r].getLabel() + delim);
-
+					
 					// wrM00.write(mylatlonarray.searchByFilename(inputFile[r].getName()).getLabel()
 					// + delim);
 					for (int c = 0; c < matrix00[r].length; c++)
@@ -1637,7 +1636,7 @@ public class FHMatrix {
 				}
 				// wrM11.write(System.getProperty("line.separator"));
 				wrM00.close();
-			}// end if site11
+			} // end if site11
 			if (siteSum)
 			{
 				/*
@@ -1663,10 +1662,10 @@ public class FHMatrix {
 				for (int r = 0; r < matrixsum.length; r++)
 				{
 					// wrMSum.write(inputFile[r].getName() + delim);
-
+					
 					// System.out.println("sitecode");
 					wrMSum.write(inputFileArray[r].getLabel() + delim);
-
+					
 					// wrMSum.write(mylatlonarray.searchByFilename(inputFile[r].getName()).getLabel()
 					// + delim);
 					for (int c = 0; c < matrixsum[r].length; c++)
@@ -1677,9 +1676,9 @@ public class FHMatrix {
 				}
 				// wrM11.write(System.getProperty("line.separator"));
 				wrMSum.close();
-			}// end if siteSum
+			} // end if siteSum
 				// elenaend adding
-
+			
 		} // end of Try
 		catch (IOException ex)
 		{
@@ -1687,77 +1686,77 @@ public class FHMatrix {
 		}
 		finally
 		{
-
+		
 		}
 	}
-
+	
 	public File getFileNTPResult() {
-
+		
 		return outputFileNTP;
 	}
-
+	
 	public File getFileSiteResult() {
-
+		
 		return outputFileSite;
 	}
-
+	
 	public File getTreeSummaryFile() {
-
+		
 		return outputFileTree;
 	}
-
+	
 	public File getFileMatrix00Result() {
-
+		
 		return outputFileM00;
 	}
-
+	
 	public File getFileMatrix01Result() {
-
+		
 		return outputFileM01;
 	}
-
+	
 	public File getFileMatrix10Result() {
-
+		
 		return outputFileM10;
 	}
-
+	
 	public File getFileMatrix11Result() {
-
+		
 		return outputFileM11;
 	}
-
+	
 	public File getFileSumResult() {
-
+		
 		return outputFileSum;
 	}
-
+	
 	public File getFileSCOHResult() {
-
+		
 		return outputFileSCOH;
 	}
-
+	
 	public File getFileDSCOHResult() {
-
+		
 		return outputFileDSCOH;
 	}
-
+	
 	public File getFileSJACResult() {
-
+		
 		return outputFileSJAC;
 	}
-
+	
 	public File getFileDSJACResult() {
-
+		
 		return outputFileDSJAC;
 	}
-
+	
 	public Integer getEarliestYearInOutput() {
-
+		
 		return this.minFirstYear;
 	}
-
+	
 	public Integer getLatestEndYearInOutput() {
-
+		
 		return this.maxLastYear;
 	}
 }

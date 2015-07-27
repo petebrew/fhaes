@@ -1,24 +1,20 @@
-/*******************************************************************************
- * Copyright (C) 2013 Peter Brewer
+/**************************************************************************************************
+ * Fire History Analysis and Exploration System (FHAES), Copyright (C) 2015
  * 
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * Contributors: Elena Velasquez, Joshua Brogan, and Peter Brewer
  * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * 		This program is free software: you can redistribute it and/or modify it under the terms of
+ * 		the GNU General Public License as published by the Free Software Foundation, either version
+ * 		3 of the License, or (at your option) any later version.
  * 
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * 		This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * 		without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * 		See the GNU General Public License for more details.
  * 
- * Contributors:
- *     Peter Brewer
- *     Elena Velasquez
- *     Joshua Brogan
- ******************************************************************************/
+ * 		You should have received a copy of the GNU General Public License along with this program.
+ * 		If not, see <http://www.gnu.org/licenses/>.
+ * 
+ *************************************************************************************************/
 package org.fhaes.jsea;
 
 import java.awt.BorderLayout;
@@ -65,8 +61,6 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.filechooser.FileFilter;
 
-import net.miginfocom.swing.MigLayout;
-
 import org.apache.commons.io.FilenameUtils;
 import org.fhaes.components.JToolBarButton;
 import org.fhaes.filefilter.CSVFileFilter;
@@ -95,18 +89,19 @@ import org.slf4j.LoggerFactory;
 import org.tridas.io.util.StringUtils;
 
 import au.com.bytecode.opencsv.CSVReader;
+import net.miginfocom.swing.MigLayout;
 
 /**
  * JSEAFrame Class.
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class JSEAFrame extends JFrame implements ActionListener {
-
+	
 	private static final long serialVersionUID = 1L;
-
+	
 	public static final int MAX_DRAW_HEIGHT = 1080;
 	public static final int MAX_DRAW_WIDTH = 1920;
-
+	
 	private final JPanel contentPanel = new JPanel();
 	private JTextField txtTimeSeriesFile;
 	private JTextField txtEventListFile;
@@ -124,19 +119,19 @@ public class JSEAFrame extends JFrame implements ActionListener {
 	private JTabbedPane tabbedPane;
 	private JMenu mnSave;
 	private TextComponentWrapper txtwrapper;
-
+	
 	private JTableSpreadsheetByRowAdapter adapterActualTable;
 	private JTableSpreadsheetByRowAdapter adapterSimulationTable;
-
+	
 	private static final Logger log = LoggerFactory.getLogger(JSEAFrame.class);
-
+	
 	protected ArrayList<Integer> chronologyYears = new ArrayList<Integer>();
 	protected ArrayList<Double> chronologyActual = new ArrayList<Double>();;
 	protected ArrayList<Integer> events = new ArrayList<Integer>();
 	private JSpinner spnFirstYear;
 	private JSpinner spnLastYear;
 	private JCheckBox chkAllYears;
-
+	
 	private FHAESAction actionFileExit;
 	private FHAESAction actionReset;
 	private FHAESAction actionRun;
@@ -146,27 +141,27 @@ public class JSEAFrame extends JFrame implements ActionListener {
 	private FHAESAction actionSaveChart;
 	private FHAESAction actionCopy;
 	private FHAESAction actionChartProperties;
-
+	
 	protected SegmentationPanel segmentationPanel;
-
+	
 	private JPanel summaryPanel;
 	private JTextArea txtSummary;
 	private JScrollPane scrollPane;
-
+	
 	private JPanel dataPanel;
 	private JXTable tblActual;
 	private JXTable tblSimulation;
-
+	
 	private JPanel chartPanel;
 	private JSEABarChart barChart;
 	private JLabel plotSegmentLabel;
 	private JComboBox segmentComboBox;
-
+	
 	/**
 	 * Create the dialog.
 	 */
 	public JSEAFrame(Component parent) {
-
+		
 		setupGui();
 		this.pack();
 		this.setLocationRelativeTo(parent);
@@ -189,14 +184,14 @@ public class JSEAFrame extends JFrame implements ActionListener {
 		}
 		this.setVisible(true);
 	}
-
+	
 	/**
 	 * Copy the currently table cells to the clipboard.
 	 */
 	public void copyCurrentSelectionToClipboard() {
-
+		
 		Component focusedComponent = this.getFocusOwner();
-
+		
 		if (focusedComponent != null)
 		{
 			if (focusedComponent.equals(tblActual))
@@ -213,12 +208,12 @@ public class JSEAFrame extends JFrame implements ActionListener {
 			}
 		}
 	}
-
+	
 	/**
 	 * Setup toolbar.
 	 */
 	private void setupToolbar() {
-
+		
 		JToolBar toolBar = new JToolBar();
 		toolBar.setFloatable(false);
 		toolBar.setRollover(true);
@@ -227,34 +222,34 @@ public class JSEAFrame extends JFrame implements ActionListener {
 			JToolBarButton btnNew = new JToolBarButton(actionReset);
 			btnNew.setToolTipText("Start new analysis");
 			toolBar.add(btnNew);
-
+			
 			JToolBarButton btnSaveAll = new JToolBarButton(actionSaveAll);
 			btnSaveAll.setToolTipText("Save all results");
 			toolBar.add(btnSaveAll);
-
+			
 			toolBar.addSeparator();
-
+			
 			JToolBarButton btnCopy = new JToolBarButton(actionCopy);
 			btnSaveAll.setToolTipText("Copy");
 			toolBar.add(btnCopy);
-
+			
 			JToolBarButton btnChartProperties = new JToolBarButton(actionChartProperties);
 			btnChartProperties.setToolTipText("Chart properties");
 			toolBar.add(btnChartProperties);
-
+			
 			toolBar.addSeparator();
-
+			
 			JToolBarButton btnRun = new JToolBarButton(actionRun);
 			btnRun.setToolTipText("Run analysis");
 			toolBar.add(btnRun);
 		}
 	}
-
+	
 	/**
 	 * Setup menu bar
 	 */
 	private void setupMenu() {
-
+		
 		JMenuBar menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
 		{
@@ -262,7 +257,7 @@ public class JSEAFrame extends JFrame implements ActionListener {
 			menuBar.add(mnFile);
 			{
 				JMenuItem mntmClose = new JMenuItem(actionFileExit);
-
+				
 				{
 					JMenuItem mntmNew = new JMenuItem(actionReset);
 					mnFile.add(mntmNew);
@@ -299,10 +294,10 @@ public class JSEAFrame extends JFrame implements ActionListener {
 			{
 				JMenuItem mntmCopy = new JMenuItem(actionCopy);
 				mnEdit.add(mntmCopy);
-
+				
 				JMenuItem mntmChartProperties = new JMenuItem(actionChartProperties);
 				mnEdit.add(mntmChartProperties);
-
+				
 				mnEdit.addSeparator();
 				JMenuItem mntmRun = new JMenuItem(actionRun);
 				mnEdit.add(mntmRun);
@@ -322,34 +317,34 @@ public class JSEAFrame extends JFrame implements ActionListener {
 			}
 		}
 	}
-
+	
 	/**
 	 * Initialize the menu/toolbar actions.
 	 */
 	private void initActions() {
-
+		
 		final JFrame glue = this;
-
-		actionFileExit = new FHAESAction("Close", "close.png") {  //$NON-NLS-1$
-
+		
+		actionFileExit = new FHAESAction("Close", "close.png") { //$NON-NLS-1$
+			
 			private static final long serialVersionUID = 1L;
-
+			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-
+				
 				dispose();
 			}
 		};
-
-		actionChartProperties = new FHAESAction("Chart properties", "properties.png") {  //$NON-NLS-1$
-
+		
+		actionChartProperties = new FHAESAction("Chart properties", "properties.png") { //$NON-NLS-1$
+			
 			private static final long serialVersionUID = 1L;
-
+			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-
-				ChartEditor editor = ChartEditorManager.getChartEditor(jsea.getChartList().get(segmentComboBox.getSelectedIndex())
-						.getChart());
+				
+				ChartEditor editor = ChartEditorManager
+						.getChartEditor(jsea.getChartList().get(segmentComboBox.getSelectedIndex()).getChart());
 				int result = JOptionPane.showConfirmDialog(glue, editor, "Properties", JOptionPane.OK_CANCEL_OPTION,
 						JOptionPane.PLAIN_MESSAGE);
 				if (result == JOptionPane.OK_OPTION)
@@ -358,49 +353,49 @@ public class JSEAFrame extends JFrame implements ActionListener {
 				}
 			}
 		};
-
+		
 		actionReset = new FHAESAction("Reset", "filenew.png") {
-
+			
 			private static final long serialVersionUID = 1L;
-
+			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-
+				
 				Object[] options = { "Yes", "No", "Cancel" };
 				int n = JOptionPane.showOptionDialog(glue, "Are you sure you want to start a new analysis?", "Confirm",
 						JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[2]);
-
+						
 				if (n == JOptionPane.YES_OPTION)
 				{
 					setToDefault();
 				}
 			}
 		};
-
+		
 		actionRun = new FHAESAction("Run analysis", "run.png") {
-
+			
 			private static final long serialVersionUID = 1L;
-
+			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-
+				
 				runAnalysis();
 			}
 		};
-
+		
 		actionSaveAll = new FHAESAction("Save all results", "save_all.png") {
-
+			
 			private static final long serialVersionUID = 1L;
-
+			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-
+				
 				if (jsea == null)
 					return;
-
+					
 				File file;
 				JFileChooser fc;
-
+				
 				// Open file chooser in last folder if possible
 				if (App.prefs.getPref(PrefKey.PREF_LAST_EXPORT_FOLDER, null) != null)
 				{
@@ -410,9 +405,9 @@ public class JSEAFrame extends JFrame implements ActionListener {
 				{
 					fc = new JFileChooser();
 				}
-
+				
 				fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-
+				
 				// Show dialog and get specified file
 				int returnVal = fc.showSaveDialog(glue);
 				if (returnVal == JFileChooser.APPROVE_OPTION)
@@ -424,28 +419,28 @@ public class JSEAFrame extends JFrame implements ActionListener {
 				{
 					return;
 				}
-
+				
 				File f;
 				try
 				{
 					f = new File(file.getAbsolutePath() + File.separator + "report.txt");
 					saveReportTXT(f);
-
+					
 					f = new File(file.getAbsolutePath() + File.separator + "report.pdf");
 					saveReportPDF(f);
-
+					
 					f = new File(file.getAbsolutePath() + File.separator + "chart.png");
 					saveChartPNG(f);
-
+					
 					f = new File(file.getAbsolutePath() + File.separator + "chart.pdf");
 					saveChartPDF(f);
-
+					
 					f = new File(file.getAbsolutePath() + File.separator + "data.xls");
 					saveDataXLS(f);
-
+					
 					f = new File(file.getAbsolutePath());
 					saveDataCSV(f);
-
+					
 				}
 				catch (IOException e)
 				{
@@ -453,20 +448,20 @@ public class JSEAFrame extends JFrame implements ActionListener {
 				}
 			}
 		};
-
+		
 		actionSaveData = new FHAESAction("Save data tables", "table.png") {
-
+			
 			private static final long serialVersionUID = 1L;
-
+			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-
+				
 				if (jsea == null)
 					return;
-
+					
 				File file;
 				JFileChooser fc;
-
+				
 				// Open file chooser in last folder if possible
 				if (App.prefs.getPref(PrefKey.PREF_LAST_EXPORT_FOLDER, null) != null)
 				{
@@ -476,9 +471,9 @@ public class JSEAFrame extends JFrame implements ActionListener {
 				{
 					fc = new JFileChooser();
 				}
-
+				
 				fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-
+				
 				// Show dialog and get specified file
 				int returnVal = fc.showSaveDialog(glue);
 				if (returnVal == JFileChooser.APPROVE_OPTION)
@@ -490,7 +485,7 @@ public class JSEAFrame extends JFrame implements ActionListener {
 				{
 					return;
 				}
-
+				
 				try
 				{
 					saveDataCSV(file);
@@ -501,20 +496,20 @@ public class JSEAFrame extends JFrame implements ActionListener {
 				}
 			}
 		};
-
+		
 		actionSaveReport = new FHAESAction("Save report", "report.png") {
-
+			
 			private static final long serialVersionUID = 1L;
-
+			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-
+				
 				if (jsea == null)
 					return;
-
+					
 				File file;
 				JFileChooser fc;
-
+				
 				// Open file chooser in last folder if possible
 				if (App.prefs.getPref(PrefKey.PREF_LAST_EXPORT_FOLDER, null) != null)
 				{
@@ -524,7 +519,7 @@ public class JSEAFrame extends JFrame implements ActionListener {
 				{
 					fc = new JFileChooser();
 				}
-
+				
 				// Set file filters
 				fc.setAcceptAllFileFilterUsed(false);
 				TXTFileFilter txtfilter = new TXTFileFilter();
@@ -533,7 +528,7 @@ public class JSEAFrame extends JFrame implements ActionListener {
 				fc.addChoosableFileFilter(pdffilter);
 				fc.setFileFilter(txtfilter);
 				FileFilter chosenFilter;
-
+				
 				// Show dialog and get specified file
 				int returnVal = fc.showSaveDialog(glue);
 				if (returnVal == JFileChooser.APPROVE_OPTION)
@@ -546,7 +541,7 @@ public class JSEAFrame extends JFrame implements ActionListener {
 				{
 					return;
 				}
-
+				
 				// Handle file type and extensions nicely
 				if (FilenameUtils.getExtension(file.getAbsolutePath()).equals(""))
 				{
@@ -567,7 +562,7 @@ public class JSEAFrame extends JFrame implements ActionListener {
 				{
 					chosenFilter = pdffilter;
 				}
-
+				
 				// If file already exists confirm overwrite
 				if (file.exists())
 				{
@@ -578,19 +573,20 @@ public class JSEAFrame extends JFrame implements ActionListener {
 								JOptionPane.ERROR_MESSAGE);
 						return;
 					}
-
-					int n = JOptionPane.showConfirmDialog(glue, "File: " + file.getName() + " already exists. "
-							+ "Would you like to overwrite it?", "Overwrite file?", JOptionPane.YES_NO_OPTION);
+					
+					int n = JOptionPane.showConfirmDialog(glue,
+							"File: " + file.getName() + " already exists. " + "Would you like to overwrite it?", "Overwrite file?",
+							JOptionPane.YES_NO_OPTION);
 					if (n != JOptionPane.YES_OPTION)
 					{
 						return;
 					}
 				}
-
+				
 				// Do save
 				try
 				{
-
+					
 					if (chosenFilter.equals(txtfilter))
 					{
 						saveReportTXT(file);
@@ -609,23 +605,23 @@ public class JSEAFrame extends JFrame implements ActionListener {
 					JOptionPane.showMessageDialog(glue, "Unable to save report.  Check log file.", "Warning", JOptionPane.ERROR_MESSAGE);
 					e.printStackTrace();
 				}
-
+				
 			}
 		};
-
+		
 		actionSaveChart = new FHAESAction("Save chart", "barchart.png") {
-
+			
 			private static final long serialVersionUID = 1L;
-
+			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-
+				
 				if (jsea == null)
 					return;
-
+					
 				File file;
 				JFileChooser fc;
-
+				
 				// Open file chooser in last folder if possible
 				if (App.prefs.getPref(PrefKey.PREF_LAST_EXPORT_FOLDER, null) != null)
 				{
@@ -635,7 +631,7 @@ public class JSEAFrame extends JFrame implements ActionListener {
 				{
 					fc = new JFileChooser();
 				}
-
+				
 				// Set file filters
 				fc.setAcceptAllFileFilterUsed(false);
 				PNGFilter pngfilter = new PNGFilter();
@@ -644,7 +640,7 @@ public class JSEAFrame extends JFrame implements ActionListener {
 				fc.addChoosableFileFilter(pdffilter);
 				fc.setFileFilter(pngfilter);
 				FileFilter chosenFilter;
-
+				
 				// Show dialog and get specified file
 				int returnVal = fc.showSaveDialog(glue);
 				if (returnVal == JFileChooser.APPROVE_OPTION)
@@ -657,7 +653,7 @@ public class JSEAFrame extends JFrame implements ActionListener {
 				{
 					return;
 				}
-
+				
 				// Handle file type and extensions nicely
 				if (FilenameUtils.getExtension(file.getAbsolutePath()).equals(""))
 				{
@@ -678,7 +674,7 @@ public class JSEAFrame extends JFrame implements ActionListener {
 				{
 					chosenFilter = pdffilter;
 				}
-
+				
 				// If file already exists confirm overwrite
 				if (file.exists())
 				{
@@ -689,27 +685,28 @@ public class JSEAFrame extends JFrame implements ActionListener {
 								JOptionPane.ERROR_MESSAGE);
 						return;
 					}
-
-					int n = JOptionPane.showConfirmDialog(glue, "File: " + file.getName() + " already exists. "
-							+ "Would you like to overwrite it?", "Overwrite file?", JOptionPane.YES_NO_OPTION);
+					
+					int n = JOptionPane.showConfirmDialog(glue,
+							"File: " + file.getName() + " already exists. " + "Would you like to overwrite it?", "Overwrite file?",
+							JOptionPane.YES_NO_OPTION);
 					if (n != JOptionPane.YES_OPTION)
 					{
 						return;
 					}
 				}
-
+				
 				// Do save
 				try
 				{
-
+					
 					if (chosenFilter.equals(pngfilter))
 					{
 						saveChartPNG(file);
-
+						
 					}
 					else if (chosenFilter.equals(pdffilter))
 					{
-
+						
 						saveChartPDF(file);
 					}
 					else
@@ -722,23 +719,23 @@ public class JSEAFrame extends JFrame implements ActionListener {
 					JOptionPane.showMessageDialog(glue, "Unable to save chart.  Check log file.", "Warning", JOptionPane.ERROR_MESSAGE);
 					e.printStackTrace();
 				}
-
+				
 			}
 		};
-
+		
 		actionCopy = new FHAESAction("Copy", "edit_copy.png") {
-
+			
 			private static final long serialVersionUID = 1L;
-
+			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-
+				
 				copyCurrentSelectionToClipboard();
 			}
 		};
-
+		
 	}
-
+	
 	/**
 	 * Save the data tables as XLS file
 	 * 
@@ -746,9 +743,9 @@ public class JSEAFrame extends JFrame implements ActionListener {
 	 * @throws IOException
 	 */
 	private void saveDataXLS(File file) throws IOException {
-
+	
 	}
-
+	
 	/**
 	 * Save the data tables as CSV file
 	 * 
@@ -756,18 +753,18 @@ public class JSEAFrame extends JFrame implements ActionListener {
 	 * @throws IOException
 	 */
 	private void saveDataCSV(File folder) throws IOException {
-
+		
 		File f = new File(folder.getAbsolutePath() + File.separator + "actual-table.csv");
 		PrintWriter out = new PrintWriter(f.getAbsoluteFile());
 		out.print(jsea.getActualTableText());
 		out.close();
-
+		
 		f = new File(folder.getAbsolutePath() + File.separator + "simulation-table.csv");
 		out = new PrintWriter(f.getAbsoluteFile());
 		out.print(jsea.getSimulationTableText());
 		out.close();
 	}
-
+	
 	/**
 	 * Save the report as a text file
 	 * 
@@ -775,11 +772,11 @@ public class JSEAFrame extends JFrame implements ActionListener {
 	 * @throws IOException
 	 */
 	private void saveReportTXT(File file) throws IOException {
-
+		
 		FileWriter pw = new FileWriter(file.getAbsoluteFile());
 		txtSummary.write(pw);
 	}
-
+	
 	/**
 	 * Save the report as a PDF
 	 * 
@@ -787,10 +784,10 @@ public class JSEAFrame extends JFrame implements ActionListener {
 	 * @throws IOException
 	 */
 	private void saveReportPDF(File file) throws IOException {
-
+		
 		jsea.savePDFReport(file.getAbsolutePath());
 	}
-
+	
 	/**
 	 * Save the chart to the specified file in PNG format
 	 * 
@@ -798,11 +795,11 @@ public class JSEAFrame extends JFrame implements ActionListener {
 	 * @throws IOException
 	 */
 	private void saveChartPNG(File file) throws IOException {
-
+		
 		log.debug("Saving chart as PNG file");
 		ChartUtilities.saveChartAsPNG(file, jsea.getChartList().get(segmentComboBox.getSelectedIndex()).getChart(), 1000, 500);
 	}
-
+	
 	/**
 	 * Save the chart to the specified file in PDF format
 	 * 
@@ -810,7 +807,7 @@ public class JSEAFrame extends JFrame implements ActionListener {
 	 * @throws IOException
 	 */
 	private void saveChartPDF(File file) throws IOException {
-
+		
 		log.debug("Saving chart as PDF file");
 		/*
 		 * OutputStream out = new BufferedOutputStream(new FileOutputStream(file)); JFreeChartManager.writeChartAsPDF(out,
@@ -818,46 +815,46 @@ public class JSEAFrame extends JFrame implements ActionListener {
 		 */
 		// TODO FIX ME!
 	}
-
+	
 	/**
 	 * Actually perform the Superposed Epoch Analysis
 	 */
 	private void runAnalysis() {
-
+		
 		// Create default segment if segmentation was selected but not defined
 		if (segmentationPanel.chkSegmentation.isSelected() && segmentationPanel.table.tableModel.getSegments().isEmpty())
 		{
 			int earliestYearInDataSet = chronologyYears.get(0);
 			int latestYearInDataSet = chronologyYears.get(chronologyYears.size() - 1);
-
+			
 			segmentationPanel.table.tableModel.addSegment(new SegmentModel(earliestYearInDataSet, latestYearInDataSet));
 			segmentationPanel.table.setEarliestYear(earliestYearInDataSet);
 			segmentationPanel.table.setLatestYear(latestYearInDataSet);
 		}
-
+		
 		// Run the analysis via the JSEAProgressDialog
 		new JSEAProgressDialog(this);
-
+		
 		try
 		{
 			if (jsea == null)
 				return;
-
+				
 			// Populate summary text field
 			this.txtSummary.setText(jsea.getReportText());
 			setScrollBarToTop();
-
+			
 			// Populate actual data table
 			tblActual.setModel(TableUtil.createTableModel(jsea.getActualTableText(), null));
 			tblActual.packAll();
-
+			
 			// Populate simulation data table
 			tblSimulation.setModel(TableUtil.createTableModel(jsea.getSimulationTableText(), null));
 			tblSimulation.packAll();
-
+			
 			// Populate chart panel
 			populateSegmentComboBoxAndDrawChart(segmentationPanel.table.tableModel);
-
+			
 			setAnalysisAvailable(true);
 		}
 		catch (Exception e)
@@ -875,14 +872,14 @@ public class JSEAFrame extends JFrame implements ActionListener {
 			setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 		}
 	}
-
+	
 	/**
 	 * Set up the GUI depending on whether the analysis results are available.
 	 * 
 	 * @param b
 	 */
 	private void setAnalysisAvailable(Boolean b) {
-
+		
 		actionCopy.setEnabled(b);
 		tabbedPane.setEnabled(b);
 		mnSave.setEnabled(b);
@@ -892,20 +889,20 @@ public class JSEAFrame extends JFrame implements ActionListener {
 		actionSaveReport.setEnabled(b);
 		actionChartProperties.setEnabled(b);
 	}
-
+	
 	/**
 	 * Setup the GUI components
 	 */
 	private void setupGui() {
-
+		
 		setTitle("jSEA - Superposed Epoch Analysis");
-
+		
 		getContentPane().setLayout(new MigLayout("", "[1200px,grow,fill]", "[][600px,grow,fill]"));
-
+		
 		initActions();
 		setupMenu();
 		setupToolbar();
-
+		
 		this.setIconImage(Builder.getApplicationIcon());
 		{
 			JSplitPane splitPane = new JSplitPane();
@@ -939,7 +936,7 @@ public class JSEAFrame extends JFrame implements ActionListener {
 					btnTimeSeriesFile.setMaximumSize(new Dimension(25, 25));
 					btnTimeSeriesFile.putClientProperty("JButton.buttonType", "segmentedTextured");
 					btnTimeSeriesFile.putClientProperty("JButton.segmentPosition", "middle");
-
+					
 					panel.add(btnTimeSeriesFile, "cell 2 0");
 				}
 				{
@@ -967,8 +964,8 @@ public class JSEAFrame extends JFrame implements ActionListener {
 			}
 			{
 				JPanel panel = new JPanel();
-				panel.setBorder(new TitledBorder(null, "Window, Simulation and Statistics", TitledBorder.LEADING, TitledBorder.TOP, null,
-						null));
+				panel.setBorder(
+						new TitledBorder(null, "Window, Simulation and Statistics", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 				contentPanel.add(panel, "cell 0 1,grow");
 				panel.setLayout(new MigLayout("", "[right][fill][10px:10px:10px][right][90.00,grow,fill]", "[grow][][][]"));
 				{
@@ -1054,7 +1051,7 @@ public class JSEAFrame extends JFrame implements ActionListener {
 				{
 					chkIncludeIncompleteWindow = new JCheckBox("");
 					new CheckBoxWrapper(chkIncludeIncompleteWindow, PrefKey.JSEA_INCLUDE_INCOMPLETE_WINDOW, false);
-
+					
 					panel.add(chkIncludeIncompleteWindow, "cell 1 3");
 				}
 				{
@@ -1071,7 +1068,7 @@ public class JSEAFrame extends JFrame implements ActionListener {
 				JPanel panel = new JPanel();
 				panel.setBorder(new TitledBorder(null, "Chart Options", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 				contentPanel.add(panel, "cell 0 2,grow");
-
+				
 				panel.setLayout(new MigLayout("", "[right][grow]", "[][]"));
 				{
 					JLabel lblTitleOfChart = new JLabel("Title of chart:");
@@ -1138,7 +1135,8 @@ public class JSEAFrame extends JFrame implements ActionListener {
 						{
 							JPanel panel = new JPanel();
 							splitPaneDataTables.setLeftComponent(panel);
-							panel.setBorder(new TitledBorder(null, "Actual key events", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+							panel.setBorder(
+									new TitledBorder(null, "Actual key events", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 							panel.setLayout(new MigLayout("", "[227.00px,grow,fill]", "[68.00px,grow,fill]"));
 							{
 								JScrollPane scrollPane = new JScrollPane();
@@ -1158,7 +1156,8 @@ public class JSEAFrame extends JFrame implements ActionListener {
 						{
 							JPanel panel = new JPanel();
 							splitPaneDataTables.setRightComponent(panel);
-							panel.setBorder(new TitledBorder(null, "Simulation results", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+							panel.setBorder(
+									new TitledBorder(null, "Simulation results", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 							panel.setLayout(new MigLayout("", "[grow,fill]", "[grow,fill]"));
 							{
 								JScrollPane scrollPane = new JScrollPane();
@@ -1185,9 +1184,10 @@ public class JSEAFrame extends JFrame implements ActionListener {
 					{
 						segmentComboBox = new JComboBox();
 						segmentComboBox.addItemListener(new ItemListener() {
-
+							
+							@Override
 							public void itemStateChanged(ItemEvent arg0) {
-
+								
 								if (segmentComboBox.getItemCount() > 0)
 								{
 									barChart = new JSEABarChart(jsea.getChartList().get(segmentComboBox.getSelectedIndex()));
@@ -1211,21 +1211,21 @@ public class JSEAFrame extends JFrame implements ActionListener {
 				}
 			}
 		}
-
+		
 		pack();
 		validateForm();
 		setAnalysisAvailable(false);
 		this.setSize(1040, 660);
 	}
-
+	
 	/**
 	 * Set up the year range GUI depending on whether the 'all years' checkbox is ticked
 	 */
 	private void setYearRangeGUI() {
-
+		
 		spnFirstYear.setEnabled(!chkAllYears.isSelected());
 		spnLastYear.setEnabled(!chkAllYears.isSelected());
-
+		
 		if (chronologyYears.size() > 1)
 		{
 			if (chkAllYears.isSelected())
@@ -1235,16 +1235,16 @@ public class JSEAFrame extends JFrame implements ActionListener {
 			}
 		}
 	}
-
+	
 	/**
 	 * Populates the segmentComboBox with the segments from the analysis.
 	 * 
 	 * @param tableModel
 	 */
 	private void populateSegmentComboBoxAndDrawChart(SegmentTableModel tableModel) {
-
+		
 		segmentComboBox.removeAllItems();
-
+		
 		if (segmentationPanel.chkSegmentation.isSelected())
 		{
 			// Populates the segmentComboBox according to the segments from the table
@@ -1255,7 +1255,7 @@ public class JSEAFrame extends JFrame implements ActionListener {
 					segmentComboBox.addItem(tableModel.getSegment(i).getFirstYear() + " - " + tableModel.getSegment(i).getLastYear());
 				}
 			}
-
+			
 			// Redraws the chart via the segmentComboBox's itemListener
 			segmentComboBox.setSelectedIndex(0);
 			segmentComboBox.setEnabled(true);
@@ -1272,19 +1272,19 @@ public class JSEAFrame extends JFrame implements ActionListener {
 			chartPanel.add(barChart, "cell 0 1 2 1,grow");
 			chartPanel.revalidate();
 			chartPanel.repaint();
-
+			
 			// Clear the segmentComboBox since there are no segments to choose from
 			segmentComboBox.setEnabled(false);
 			segmentComboBox.addItem(jsea.getFirstYearOfProcess() + " - " + jsea.getLastYearOfProcess());
 		}
-
+		
 		segmentComboBox.revalidate();
 		segmentComboBox.repaint();
 	}
-
+	
 	@Override
 	public void actionPerformed(ActionEvent event) {
-
+		
 		if (event.getActionCommand().equals("SegmentationMode"))
 		{
 			if (segmentationPanel.chkSegmentation.isSelected() && chronologyYears.size() > 1)
@@ -1307,7 +1307,7 @@ public class JSEAFrame extends JFrame implements ActionListener {
 			String lastVisitedFolder = App.prefs.getPref(PrefKey.PREF_LAST_READ_TIME_SERIES_FOLDER,
 					App.prefs.getPref(PrefKey.PREF_LAST_READ_FOLDER, null));
 			JFileChooser fc;
-
+			
 			if (lastVisitedFolder != null)
 			{
 				fc = new JFileChooser(lastVisitedFolder);
@@ -1316,22 +1316,22 @@ public class JSEAFrame extends JFrame implements ActionListener {
 			{
 				fc = new JFileChooser();
 			}
-
+			
 			fc.setMultiSelectionEnabled(false);
 			fc.setDialogTitle("Open file");
-
+			
 			fc.addChoosableFileFilter(new TXTFileFilter());
 			fc.setAcceptAllFileFilterUsed(false);
 			fc.setFileFilter(new CSVFileFilter());
-
+			
 			int returnVal = fc.showOpenDialog(this);
 			if (returnVal == JFileChooser.APPROVE_OPTION)
 			{
 				txtTimeSeriesFile.setText(fc.getSelectedFile().getAbsolutePath());
 				txtwrapper.updatePref();
-
+				
 				App.prefs.setPref(PrefKey.PREF_LAST_READ_TIME_SERIES_FOLDER, fc.getSelectedFile().getPath());
-
+				
 				if (parseTimeSeriesFile())
 				{
 					setYearRangeGUI();
@@ -1340,7 +1340,7 @@ public class JSEAFrame extends JFrame implements ActionListener {
 				{
 					txtTimeSeriesFile.setText("");
 				}
-
+				
 				validateForm();
 			}
 		}
@@ -1349,7 +1349,7 @@ public class JSEAFrame extends JFrame implements ActionListener {
 			String lastVisitedFolder = App.prefs.getPref(PrefKey.PREF_LAST_READ_EVENT_LIST_FOLDER,
 					App.prefs.getPref(PrefKey.PREF_LAST_READ_FOLDER, null));
 			JFileChooser fc;
-
+			
 			if (lastVisitedFolder != null)
 			{
 				fc = new JFileChooser(lastVisitedFolder);
@@ -1358,22 +1358,22 @@ public class JSEAFrame extends JFrame implements ActionListener {
 			{
 				fc = new JFileChooser();
 			}
-
+			
 			fc.setMultiSelectionEnabled(false);
 			fc.setDialogTitle("Open file");
-
+			
 			int returnVal = fc.showOpenDialog(this);
 			if (returnVal == JFileChooser.APPROVE_OPTION)
 			{
 				txtEventListFile.setText(fc.getSelectedFile().getAbsolutePath());
 				App.prefs.setPref(PrefKey.PREF_LAST_READ_EVENT_LIST_FOLDER, fc.getSelectedFile().getPath());
 				parseEventListFile();
-
+				
 				validateForm();
 			}
 		}
 	}
-
+	
 	/**
 	 * Read a text file and determine what the delimiter is. Checks to see which delimiter provides the most lines with the specified number
 	 * of items
@@ -1383,11 +1383,11 @@ public class JSEAFrame extends JFrame implements ActionListener {
 	 * @return
 	 */
 	private char getDelimiter(String filename, Integer countOfGoodItems) {
-
+		
 		Integer tabGoodLines = getGoodLineCount(filename, '\t', countOfGoodItems);
 		Integer commaGoodLines = getGoodLineCount(txtTimeSeriesFile.getText(), ',', countOfGoodItems);
 		Integer spaceGoodLines = getGoodLineCount(txtTimeSeriesFile.getText(), ' ', countOfGoodItems);
-
+		
 		if (tabGoodLines > commaGoodLines && tabGoodLines > spaceGoodLines)
 		{
 			return '\t';
@@ -1400,11 +1400,11 @@ public class JSEAFrame extends JFrame implements ActionListener {
 		{
 			return ' ';
 		}
-
+		
 		return '\t';
-
+		
 	}
-
+	
 	/**
 	 * Parse a delimited using the specified filename and delimiter are return how many lines contain the correct number of items
 	 * 
@@ -1414,7 +1414,7 @@ public class JSEAFrame extends JFrame implements ActionListener {
 	 * @return
 	 */
 	private Integer getGoodLineCount(String filename, char delimiter, Integer countOfGoodItems) {
-
+		
 		CSVReader reader;
 		Integer goodLines = 0;
 		try
@@ -1422,10 +1422,10 @@ public class JSEAFrame extends JFrame implements ActionListener {
 			reader = new CSVReader(new FileReader(filename), delimiter);
 			ArrayList fileContents = (ArrayList) reader.readAll();
 			reader.close();
-
+			
 			for (Object line : fileContents)
 			{
-
+				
 				String[] items = (String[]) line;
 				if (items == null)
 					continue;
@@ -1436,7 +1436,7 @@ public class JSEAFrame extends JFrame implements ActionListener {
 					goodLines++;
 				}
 			}
-
+			
 		}
 		catch (FileNotFoundException e)
 		{
@@ -1446,55 +1446,53 @@ public class JSEAFrame extends JFrame implements ActionListener {
 		{
 			e.printStackTrace();
 		}
-
+		
 		return goodLines;
 	}
-
+	
 	/**
 	 * Parse the events file to extract years with events
 	 * 
 	 * @return
 	 */
 	public Boolean parseEventListFile() {
-
+		
 		File f = new File(this.txtEventListFile.getText());
 		if (!f.exists())
 		{
 			log.error("Event list file does not exist");
 			return false;
 		}
-
+		
 		FileReader fr = null;
 		BufferedReader br = null;
 		String record = null;
-
+		
 		try
 		{
 			fr = new FileReader(txtEventListFile.getText());
 			br = new BufferedReader(fr);
-
+			
 			while ((record = br.readLine()) != null)
 			{
 				if (!record.contains("*"))
 				{
-
+					
 					try
 					{
 						events.add(new Integer(record));
 					}
 					catch (NumberFormatException e)
 					{
-						JOptionPane
-								.showMessageDialog(
-										this,
-										"The event file must contain a list of integer values after any comment lines.\nPlease check the file and try again.",
-										"Warning", JOptionPane.ERROR_MESSAGE);
+						JOptionPane.showMessageDialog(this,
+								"The event file must contain a list of integer values after any comment lines.\nPlease check the file and try again.",
+								"Warning", JOptionPane.ERROR_MESSAGE);
 						txtEventListFile.setText("");
 						fr.close();
 						br.close();
 						return false;
 					}
-
+					
 				}
 			}
 		}
@@ -1503,7 +1501,7 @@ public class JSEAFrame extends JFrame implements ActionListener {
 			JOptionPane.showMessageDialog(this, "Error reading events file.\nPlease check the file and try again.", "Warning",
 					JOptionPane.ERROR_MESSAGE);
 			txtEventListFile.setText("");
-
+			
 			return false;
 		}
 		finally
@@ -1517,28 +1515,28 @@ public class JSEAFrame extends JFrame implements ActionListener {
 			{
 				e.printStackTrace();
 			}
-
+			
 		}
-
+		
 		return true;
 	}
-
+	
 	/**
 	 * Parse the specified time series file
 	 */
 	public Boolean parseTimeSeriesFile() {
-
+		
 		chronologyYears = new ArrayList<Integer>();
 		chronologyActual = new ArrayList<Double>();
 		;
-
+		
 		File f = new File(this.txtTimeSeriesFile.getText());
 		if (!f.exists())
 		{
 			log.error("Event list file does not exist");
 			return false;
 		}
-
+		
 		CSVReader reader;
 		try
 		{
@@ -1547,9 +1545,9 @@ public class JSEAFrame extends JFrame implements ActionListener {
 			reader = new CSVReader(new FileReader(filename), delimiter);
 			ArrayList fileContents = (ArrayList) reader.readAll();
 			reader.close();
-
+			
 			int lineNumber = 0;
-
+			
 			for (Object line : fileContents)
 			{
 				lineNumber++;
@@ -1560,29 +1558,34 @@ public class JSEAFrame extends JFrame implements ActionListener {
 					continue;
 				if (items.length == 1)
 				{
-					JOptionPane.showMessageDialog(this, "Invalid number of items on line " + lineNumber
-							+ ". There should be only 2 items per line, whereas " + items.length + " was found.", "Invalid file",
-							JOptionPane.ERROR_MESSAGE);
+					JOptionPane
+							.showMessageDialog(
+									this, "Invalid number of items on line " + lineNumber
+											+ ". There should be only 2 items per line, whereas " + items.length + " was found.",
+									"Invalid file", JOptionPane.ERROR_MESSAGE);
 					return false;
 				}
 				if (items.length != 2)
 				{
-					JOptionPane.showMessageDialog(this, "Invalid number of items on line " + lineNumber
-							+ ". There should be only 2 items per line, whereas " + items.length + " were found.", "Invalid file",
-							JOptionPane.ERROR_MESSAGE);
+					JOptionPane
+							.showMessageDialog(
+									this, "Invalid number of items on line " + lineNumber
+											+ ". There should be only 2 items per line, whereas " + items.length + " were found.",
+									"Invalid file", JOptionPane.ERROR_MESSAGE);
 					return false;
 				}
-
+				
 				try
 				{
 					Integer year = Integer.parseInt(items[0].trim());
-
+					
 					if (chronologyYears.size() > 0)
 					{
 						if (!chronologyYears.get(chronologyYears.size() - 1).equals(year - 1))
 						{
-							JOptionPane.showMessageDialog(this, "Invalid year value on line number " + lineNumber
-									+ ". Years must be sequential.", "Invalid file", JOptionPane.ERROR_MESSAGE);
+							JOptionPane.showMessageDialog(this,
+									"Invalid year value on line number " + lineNumber + ". Years must be sequential.", "Invalid file",
+									JOptionPane.ERROR_MESSAGE);
 							return false;
 						}
 					}
@@ -1590,11 +1593,12 @@ public class JSEAFrame extends JFrame implements ActionListener {
 				}
 				catch (NumberFormatException e)
 				{
-					JOptionPane.showMessageDialog(this, "Invalid year value :" + StringUtils.rightPadWithTrim(items[0], 5)
-							+ "' on line number " + lineNumber, "Invalid file", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(this,
+							"Invalid year value :" + StringUtils.rightPadWithTrim(items[0], 5) + "' on line number " + lineNumber,
+							"Invalid file", JOptionPane.ERROR_MESSAGE);
 					return false;
 				}
-
+				
 				try
 				{
 					Double value = Double.parseDouble(items[1].trim());
@@ -1607,7 +1611,7 @@ public class JSEAFrame extends JFrame implements ActionListener {
 					return false;
 				}
 			}
-
+			
 		}
 		catch (FileNotFoundException e)
 		{
@@ -1617,30 +1621,31 @@ public class JSEAFrame extends JFrame implements ActionListener {
 		{
 			e.printStackTrace();
 		}
-
+		
 		return true;
 	}
-
+	
 	/**
 	 * Sets the value of the scroll bar to zero.
 	 */
 	private void setScrollBarToTop() {
-
+		
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
-
+			
+			@Override
 			public void run() {
-
+				
 				scrollPane.getHorizontalScrollBar().setValue(0);
 				scrollPane.getVerticalScrollBar().setValue(0);
 			}
 		});
 	}
-
+	
 	/**
 	 * Reset parameters to the default values
 	 */
 	public void setToDefault() {
-
+		
 		txtSummary.setText("");
 		tblActual = new JXTable();
 		tblSimulation = new JXTable();
@@ -1649,32 +1654,32 @@ public class JSEAFrame extends JFrame implements ActionListener {
 		chronologyActual = new ArrayList<Double>();
 		chronologyYears = new ArrayList<Integer>();
 		events = new ArrayList<Integer>();
-
+		
 		setAnalysisAvailable(false);
-
+		
 		txtTimeSeriesFile.setText("");
 		txtEventListFile.setText("");
-
+		
 		txtChartTitle.setText("Chart title");
 		txtYAxisLabel.setText("Y Axis");
-
+		
 		spnLagsPrior.setValue(6);
 		spnLagsAfter.setValue(4);
 		chkIncludeIncompleteWindow.setSelected(false);
 		spnSimulationsToRun.setValue(1000);
 		spnSeedNumber.setValue(30288);
 		cbxPValue.setSelectedIndex(0);
-
+		
 		segmentationPanel.chkSegmentation.setSelected(false);
-
+		
 		validateForm();
 	}
-
+	
 	/**
 	 * Check whether we have all the info we need to process
 	 */
 	private void validateForm() {
-
+		
 		log.debug("Validating form");
 		if (chronologyActual.size() > 0 && chronologyYears.size() > 0 && events.size() > 0 && txtTimeSeriesFile.getText() != null
 				&& txtEventListFile.getText() != null)
@@ -1686,7 +1691,7 @@ public class JSEAFrame extends JFrame implements ActionListener {
 			actionRun.setEnabled(false);
 		}
 	}
-
+	
 	/**
 	 * Show popup menu
 	 * 
@@ -1694,30 +1699,32 @@ public class JSEAFrame extends JFrame implements ActionListener {
 	 * @param popup
 	 */
 	private static void addPopup(Component component, final JPopupMenu popup) {
-
+		
 		component.addMouseListener(new MouseAdapter() {
-
+			
+			@Override
 			public void mousePressed(MouseEvent e) {
-
+				
 				if (e.isPopupTrigger())
 				{
 					showMenu(e);
 				}
 			}
-
+			
+			@Override
 			public void mouseReleased(MouseEvent e) {
-
+				
 				if (e.isPopupTrigger())
 				{
 					showMenu(e);
 				}
 			}
-
+			
 			private void showMenu(MouseEvent e) {
-
+				
 				popup.show(e.getComponent(), e.getX(), e.getY());
 			}
 		});
 	}
-
+	
 }

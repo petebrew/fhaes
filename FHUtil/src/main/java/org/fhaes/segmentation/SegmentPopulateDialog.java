@@ -1,22 +1,20 @@
-/*******************************************************************************
- * Copyright (C) 2014 Peter Brewer
+/**************************************************************************************************
+ * Fire History Analysis and Exploration System (FHAES), Copyright (C) 2015
  * 
- *     This program is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     (at your option) any later version.
+ * Contributors: Peter Brewer
  * 
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
+ * 		This program is free software: you can redistribute it and/or modify it under the terms of
+ * 		the GNU General Public License as published by the Free Software Foundation, either version
+ * 		3 of the License, or (at your option) any later version.
  * 
- *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
- *     Contributors:
- *     		Peter Brewer
- ******************************************************************************/
+ * 		This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * 		without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * 		See the GNU General Public License for more details.
+ * 
+ * 		You should have received a copy of the GNU General Public License along with this program.
+ * 		If not, see <http://www.gnu.org/licenses/>.
+ * 
+ *************************************************************************************************/
 package org.fhaes.segmentation;
 
 import java.awt.BorderLayout;
@@ -33,27 +31,27 @@ import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.border.EmptyBorder;
 
-import net.miginfocom.swing.MigLayout;
-
 import org.fhaes.util.Builder;
+
+import net.miginfocom.swing.MigLayout;
 
 /**
  * SegmentPopulateDialog Class.
  */
 public class SegmentPopulateDialog extends JDialog implements ActionListener {
-
+	
 	private static final long serialVersionUID = 1L;
 	private final JPanel contentPanel = new JPanel();
 	private JSpinner spnLength;
 	private JSpinner spnLag;
 	private JSpinner spnStartYear;
 	private boolean success = false;
-
+	
 	/**
 	 * Create the dialog.
 	 */
 	public SegmentPopulateDialog(Component parent, int firstyear) {
-
+		
 		this.setModal(true);
 		setBounds(100, 100, 281, 140);
 		setTitle("Generate segments");
@@ -108,34 +106,35 @@ public class SegmentPopulateDialog extends JDialog implements ActionListener {
 				buttonPane.add(btnCancel);
 			}
 		}
-
+		
 		pack();
 		this.setLocationRelativeTo(parent);
 		this.setVisible(true);
 	}
-
+	
 	public int getLength() {
-
+		
 		return (Integer) spnLength.getValue();
 	}
-
+	
 	public int getLag() {
-
+		
 		return (Integer) spnLag.getValue();
 	}
-
+	
 	public int getStartYear() {
-
+		
 		return (Integer) spnStartYear.getValue();
 	}
-
+	
 	public boolean isSuccessful() {
-
+		
 		return success;
 	}
-
+	
+	@Override
 	public void actionPerformed(ActionEvent evt) {
-
+		
 		if (evt.getActionCommand().equals("OK"))
 		{
 			success = true;
