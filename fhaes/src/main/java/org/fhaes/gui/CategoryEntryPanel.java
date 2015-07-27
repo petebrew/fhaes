@@ -17,6 +17,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JTree;
+import javax.swing.SwingConstants;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
 import javax.swing.event.TreeSelectionEvent;
@@ -58,6 +59,7 @@ public class CategoryEntryPanel extends JPanel {
 	private final CategoryEditor parentEditor;
 	private final FHSeries workingSeries;
 	private JTree categoryTree;
+	private boolean selectedNodeIsBeingEdited = false;
 	private DefaultTreeCellRenderer renderer = new DefaultTreeCellRenderer();
 	private ArrayList<FHCategoryEntry> categoryEntries = new ArrayList<FHCategoryEntry>();
 
@@ -119,14 +121,18 @@ public class CategoryEntryPanel extends JPanel {
 			@Override
 			public void mouseMoved(MouseEvent mouseEvent) {
 
-				int selectedRow = categoryTree.getRowForLocation(mouseEvent.getX(), mouseEvent.getY());
-				categoryTree.setSelectionRow(selectedRow);
+				if (!selectedNodeIsBeingEdited)
+				{
+					int selectedRow = categoryTree.getRowForLocation(mouseEvent.getX(), mouseEvent.getY());
+					categoryTree.setSelectionRow(selectedRow);
+				}
 			}
 		});
 		basePanel.add(categoryTree, BorderLayout.CENTER);
 
 		// Setup the add-new-category button
 		JButton btnAddNewCategory = new JButton(actionAddNewCategory);
+		btnAddNewCategory.setHorizontalAlignment(SwingConstants.LEFT);
 		basePanel.add(btnAddNewCategory, BorderLayout.SOUTH);
 
 		// Setup the popup menu
@@ -145,6 +151,10 @@ public class CategoryEntryPanel extends JPanel {
 				String nodeText = categoriesToAdd.get(i).getContent();
 				root.add(new DefaultMutableTreeNode(nodeText));
 			}
+		}
+		else
+		{
+			setLeafIconToTree();
 		}
 
 		// Perform initial repopulation of the category entries list
@@ -170,6 +180,7 @@ public class CategoryEntryPanel extends JPanel {
 				// Start editing the new node
 				TreePath pathToAddedNode = new TreePath(getChildNodeAtIndex(getRootNodeChildCount() - 1).getPath());
 				categoryTree.startEditingAtPath(pathToAddedNode);
+				selectedNodeIsBeingEdited = true;
 			}
 		};
 
@@ -221,9 +232,10 @@ public class CategoryEntryPanel extends JPanel {
 	/**
 	 * Clears row selection for the category tree.
 	 */
-	protected void clearTreeSelection() {
+	protected void clearTreeSelectionAndEditing() {
 
 		categoryTree.clearSelection();
+		categoryTree.getCellEditor().stopCellEditing();
 	}
 
 	/**
@@ -427,6 +439,7 @@ public class CategoryEntryPanel extends JPanel {
 		public void treeNodesChanged(TreeModelEvent e) {
 
 			refreshCategoryEntriesList();
+			selectedNodeIsBeingEdited = false;
 		}
 
 		@Override

@@ -213,7 +213,7 @@ public class CategoryEditor extends JDialog {
 	}
 
 	/**
-	 * Ensures that exactly one CategoryEntryPanel can be selected at any one time.
+	 * Ensures that exactly one CategoryEntryPanel entry can be selected at any given time.
 	 */
 	protected void refreshAfterNewSelection(CategoryEntryPanel selectedPanel) {
 
@@ -223,7 +223,7 @@ public class CategoryEditor extends JDialog {
 
 			if (!currentPanel.equals(selectedPanel))
 			{
-				currentPanel.clearTreeSelection();
+				currentPanel.clearTreeSelectionAndEditing();
 			}
 		}
 	}
