@@ -77,6 +77,7 @@ public class CategoryEntryPanel extends JPanel {
 	private final FHSeries workingSeries;
 	private JTree categoryTree;
 	private boolean selectedNodeIsBeingEdited = false;
+	private static boolean categoryTreeHasSelection = false;
 	private DefaultTreeCellRenderer renderer = new DefaultTreeCellRenderer();
 	private ArrayList<FHCategoryEntry> categoryEntries = new ArrayList<FHCategoryEntry>();
 	
@@ -413,7 +414,7 @@ public class CategoryEntryPanel extends JPanel {
 			@Override
 			public void mousePressed(MouseEvent e) {
 				
-				if (e.isPopupTrigger())
+				if (e.isPopupTrigger() && categoryTreeHasSelection)
 				{
 					showMenu(e);
 				}
@@ -422,7 +423,7 @@ public class CategoryEntryPanel extends JPanel {
 			@Override
 			public void mouseReleased(MouseEvent e) {
 				
-				if (e.isPopupTrigger())
+				if (e.isPopupTrigger() && categoryTreeHasSelection)
 				{
 					showMenu(e);
 				}
@@ -500,6 +501,16 @@ public class CategoryEntryPanel extends JPanel {
 		public void valueChanged(TreeSelectionEvent e) {
 			
 			notifyParentOfNewSelection();
+			
+			// Block popup menu if no nodes are currently selected
+			if ((DefaultMutableTreeNode) categoryTree.getLastSelectedPathComponent() == null)
+			{
+				categoryTreeHasSelection = false;
+			}
+			else
+			{
+				categoryTreeHasSelection = true;
+			}
 		}
 	}
 }
