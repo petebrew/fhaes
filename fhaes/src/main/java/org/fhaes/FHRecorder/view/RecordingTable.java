@@ -32,7 +32,7 @@ import org.fhaes.FHRecorder.model.FHX2_Recording;
 import org.fhaes.FHRecorder.model.FHX2_Sample;
 
 /**
- * GUI_RecordingTable Class. A class that is a table for holding the information regarding the recording years.
+ * RecordingTable Class. A class that is a table for holding the information regarding the recording years.
  * 
  * @author Brendan Compton, Dylan Jones, and Alex Richter
  */

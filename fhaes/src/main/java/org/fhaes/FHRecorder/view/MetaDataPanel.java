@@ -41,8 +41,10 @@ import org.fhaes.FHRecorder.controller.IOController;
 import org.fhaes.FHRecorder.model.FHX2_FileOptionalPart;
 import org.fhaes.FHRecorder.utility.LengthRestrictedDocument;
 import org.fhaes.FHRecorder.utility.MetaDataTextField;
-import org.fhaes.FHRecorder.view.FireHistoryRecorder.MessageType;
 import org.fhaes.components.HelpTipButton;
+import org.fhaes.feedback.FeedbackMessagePanel;
+import org.fhaes.feedback.FeedbackMessagePanel.FeedbackMessageID;
+import org.fhaes.feedback.FeedbackMessagePanel.FeedbackMessageType;
 import org.fhaes.help.LocalHelp;
 import org.fhaes.preferences.FHAESPreferences.PrefKey;
 import org.fhaes.preferences.wrappers.CheckBoxWrapper;
@@ -50,7 +52,7 @@ import org.fhaes.preferences.wrappers.CheckBoxWrapper;
 import net.miginfocom.swing.MigLayout;
 
 /**
- * GUI_MetaDataPanel Class. This class displays all of the meta data of a FHX2 file.
+ * MetaDataPanel Class. This class displays all of the meta data of a FHX2 file.
  * 
  * @author Alex Beatty, Clayton Bodendein, Kyle Hartmann, Scott Goble
  */
@@ -1871,15 +1873,14 @@ public class MetaDataPanel extends javax.swing.JPanel {
 		// Updates the status pane according to the compatibility of the above fields
 		if (numFieldsCompatible == ALL_FIELDS_COMPATIBLE)
 		{
-			if (StatusBarPanel.getCurrentMessageID() == StatusBarPanel.FHX2_META_DATA_FIELD_LENGTH_MESSAGE_ID)
-				FireHistoryRecorder.clearStatusBarMessage();
+			if (FeedbackMessagePanel.getCurrentMessageID() == FeedbackMessageID.FHX2_META_DATA_LENGTH_MESSAGE)
+				FireHistoryRecorder.clearFeedbackMessage();
 			return true;
 		}
 		else
 		{
-			FireHistoryRecorder.updateStatusBarMessage(MessageType.WARNING, Color.red,
-					StatusBarPanel.FHX2_META_DATA_FIELD_LENGTH_MESSAGE_ID,
-					"Cannot enforce length restrictions without losing data! Please revise the highlighted fields.");
+			FireHistoryRecorder.updateFeedbackMessage(FeedbackMessageType.WARNING, Color.red,
+					FeedbackMessageID.FHX2_META_DATA_LENGTH_MESSAGE, FeedbackMessageID.FHX2_META_DATA_LENGTH_MESSAGE.toString());
 			return false;
 		}
 	}
@@ -1889,8 +1890,8 @@ public class MetaDataPanel extends javax.swing.JPanel {
 	 */
 	private void resetTextBoxColors() {
 		
-		if (StatusBarPanel.getCurrentMessageID() == StatusBarPanel.FHX2_META_DATA_FIELD_LENGTH_MESSAGE_ID)
-			FireHistoryRecorder.clearStatusBarMessage();
+		if (FeedbackMessagePanel.getCurrentMessageID() == FeedbackMessageID.FHX2_META_DATA_LENGTH_MESSAGE)
+			FireHistoryRecorder.clearFeedbackMessage();
 			
 		siteNameText.setForeground(Color.black);
 		siteNameCountBox.setForeground(Color.black);

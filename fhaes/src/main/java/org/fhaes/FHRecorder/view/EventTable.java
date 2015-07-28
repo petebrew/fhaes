@@ -32,7 +32,7 @@ import org.fhaes.FHRecorder.model.FHX2_Event;
 import org.fhaes.FHRecorder.model.FHX2_Sample;
 
 /**
- * GUI_EventTable Class. Creates a table that holds all of the events for a sample. Each event also holds information regarding what type of
+ * EventTable Class. Creates a table that holds all of the events for a sample. Each event also holds information regarding what type of
  * injury occurred, which season it occurred during, the start year, and when an event finished recording.
  * 
  * @author Brendan Compton, Dylan Jones, and Alex Richter

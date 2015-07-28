@@ -44,12 +44,13 @@ import javax.swing.text.Highlighter;
 
 import org.fhaes.FHRecorder.controller.IOController;
 import org.fhaes.FHRecorder.utility.SampleErrorModel;
-import org.fhaes.FHRecorder.view.FireHistoryRecorder.MessageType;
+import org.fhaes.feedback.FeedbackMessagePanel.FeedbackMessageID;
+import org.fhaes.feedback.FeedbackMessagePanel.FeedbackMessageType;
 
 import net.miginfocom.swing.MigLayout;
 
 /**
- * GUI_ErrorDisplayPanel Class. This UI is used to address erroneous FHX2 files whenever they are attempted to be loaded.
+ * ErrorDisplayPanel Class. This UI is used to address erroneous FHX2 files whenever they are attempted to be loaded.
  * 
  * @author Josh Brogan, Jake Lokkesmoe, Chinmay Shah, Scott Goble
  */
@@ -264,7 +265,7 @@ public class ErrorDisplayPanel extends JPanel {
 		originalFileDisplayTextArea.setText(displayOriginal);
 		suggestedFileDisplayTextArea.setText(displaySuggested);
 		highlightErrorLines();
-		FireHistoryRecorder.updateStatusBarMessage(MessageType.WARNING, Color.red, StatusBarPanel.NO_SPECIFIED_MESSAGE_ID,
+		FireHistoryRecorder.updateFeedbackMessage(FeedbackMessageType.WARNING, Color.red, FeedbackMessageID.NO_SPECIFIED_MESSAGE_ID,
 				"A total of " + errors.size() + " errors were found while loading the file.");
 	}
 	

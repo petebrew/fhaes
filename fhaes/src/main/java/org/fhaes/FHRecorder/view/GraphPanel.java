@@ -41,7 +41,7 @@ import org.jfree.data.category.SlidingCategoryDataset;
 import net.miginfocom.swing.MigLayout;
 
 /**
- * GUI_GraphPanel Class. Displays graphs for color bars and other statistics.
+ * GraphPanel Class. Displays graphs for color bars and other statistics.
  * 
  * @author Cody Calhoun, Anthony Messerschmidt, & Seth Westphal
  */

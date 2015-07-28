@@ -58,7 +58,7 @@ import org.fhaes.util.Builder;
 import net.miginfocom.swing.MigLayout;
 
 /**
- * GUI_CustomizeDialog Class. This dialog box allows for the customization of the color bars in the summary and graphics tabs.
+ * CustomizeDialog Class. This dialog box allows for the customization of the color bars in the summary and graphics tabs.
  * 
  * @author Seth Westphal
  */

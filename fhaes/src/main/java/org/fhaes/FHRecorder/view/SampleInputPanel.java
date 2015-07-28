@@ -75,7 +75,7 @@ import org.slf4j.LoggerFactory;
 import net.miginfocom.swing.MigLayout;
 
 /**
- * GUI_SampleInputPanel Class. User interface for entering and managing fire history sample information.
+ * SampleInputPanel Class. User interface for entering and managing fire history sample information.
  * 
  * @author Alex Beatty, Clayton Bodendein, Kyle Hartmann, Scott Goble
  */

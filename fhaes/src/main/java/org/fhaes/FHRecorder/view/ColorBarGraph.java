@@ -38,7 +38,7 @@ import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.category.SlidingCategoryDataset;
 
 /**
- * GUI_ColorBarGraph Class. This is a graph that displays color bars.
+ * ColorBarGraph Class. This is a graph that displays color bars.
  * 
  * @author Seth Westphal
  */

@@ -31,10 +31,11 @@ import org.fhaes.FHRecorder.utility.ErrorTrackerInterface;
 import org.fhaes.FHRecorder.utility.SampleErrorModel;
 import org.fhaes.FHRecorder.view.EventTable;
 import org.fhaes.FHRecorder.view.FireHistoryRecorder;
-import org.fhaes.FHRecorder.view.FireHistoryRecorder.MessageType;
 import org.fhaes.FHRecorder.view.RecordingTable;
-import org.fhaes.FHRecorder.view.StatusBarPanel;
 import org.fhaes.exceptions.CompositeFileException;
+import org.fhaes.feedback.FeedbackMessagePanel;
+import org.fhaes.feedback.FeedbackMessagePanel.FeedbackMessageID;
+import org.fhaes.feedback.FeedbackMessagePanel.FeedbackMessageType;
 
 /**
  * FHX2_Sample Class. This class is used to represent a sample in the FHX2 data.
@@ -372,13 +373,13 @@ public class FHX2_Sample implements Serializable, ErrorTrackerInterface {
 		
 		if (inputName.length() > FileController.FHX2_MAX_SAMPLE_NAME_LENGTH && FileController.isEnforcingOldReqs())
 		{
-			FireHistoryRecorder.updateStatusBarMessage(MessageType.WARNING, Color.red, StatusBarPanel.FHX2_SAMPLE_NAME_LENGTH_MESSAGE_ID,
-					"Sample name is too long for the original FHX2 program requirements.");
+			FireHistoryRecorder.updateFeedbackMessage(FeedbackMessageType.WARNING, Color.red,
+					FeedbackMessageID.FHX2_SAMPLE_NAME_LENGTH_MESSAGE, FeedbackMessageID.FHX2_SAMPLE_NAME_LENGTH_MESSAGE.toString());
 			return "";
 		}
 		
-		if (StatusBarPanel.getCurrentMessageID() == StatusBarPanel.FHX2_SAMPLE_NAME_LENGTH_MESSAGE_ID)
-			FireHistoryRecorder.clearStatusBarMessage();
+		if (FeedbackMessagePanel.getCurrentMessageID() == FeedbackMessageID.FHX2_SAMPLE_NAME_LENGTH_MESSAGE)
+			FireHistoryRecorder.clearFeedbackMessage();
 			
 		return inputName;
 	}

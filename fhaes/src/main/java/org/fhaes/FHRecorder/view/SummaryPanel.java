@@ -54,7 +54,7 @@ import org.slf4j.LoggerFactory;
 import net.miginfocom.swing.MigLayout;
 
 /**
- * GUI_SummaryPanel Class.
+ * SummaryPanel Class.
  * 
  * @author Cody Calhoun, Anthony Messerschmidt and Seth Westphal
  */

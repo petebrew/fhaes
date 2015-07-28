@@ -34,13 +34,15 @@ import org.fhaes.FHRecorder.controller.IOController;
 import org.fhaes.FHRecorder.controller.SampleController;
 import org.fhaes.FHRecorder.model.FHX2_FileRequiredPart;
 import org.fhaes.FHRecorder.model.FHX2_Sample;
-import org.fhaes.FHRecorder.view.FireHistoryRecorder.MessageType;
+import org.fhaes.feedback.FeedbackMessagePanel;
+import org.fhaes.feedback.FeedbackMessagePanel.FeedbackMessageID;
+import org.fhaes.feedback.FeedbackMessagePanel.FeedbackMessageType;
 import org.fhaes.util.Builder;
 
 import net.miginfocom.swing.MigLayout;
 
 /**
- * GUI_NewSampleDialog Class. Form for creating a new sample.
+ * NewSampleDialog Class. Form for creating a new sample.
  * 
  * @author Alex Beatty, Clayton Bodendein, Kyle Hartmann, Scott Goble
  */
@@ -339,42 +341,42 @@ public class NewSampleDialog extends javax.swing.JDialog implements KeyListener 
 		
 		if (sampleNameTextBox.getText().length() < 3)
 		{
-			FireHistoryRecorder.updateStatusBarMessage(MessageType.WARNING, Color.red, StatusBarPanel.MINIMUM_SAMPLE_NAME_LENGTH_MESSAGE_ID,
-					"Sample name must be at least 3 characters in length.");
+			FireHistoryRecorder.updateFeedbackMessage(FeedbackMessageType.WARNING, Color.red,
+					FeedbackMessageID.MINIMUM_SAMPLE_NAME_LENGTH_MESSAGE, FeedbackMessageID.MINIMUM_SAMPLE_NAME_LENGTH_MESSAGE.toString());
 			sampleNameTextBox.setForeground(Color.red);
 		}
 		else if (sampleNameTextBox.getText().length() > FileController.FHX2_MAX_SAMPLE_NAME_LENGTH
 				&& FileController.isEnforcingOldReqs() == true)
 		{
-			FireHistoryRecorder.updateStatusBarMessage(MessageType.WARNING, Color.red, StatusBarPanel.NO_SPECIFIED_MESSAGE_ID,
+			FireHistoryRecorder.updateFeedbackMessage(FeedbackMessageType.WARNING, Color.red, FeedbackMessageID.NO_SPECIFIED_MESSAGE_ID,
 					"Sample name is too long for the original FHX2 program requirements.");
 			sampleNameTextBox.setForeground(Color.red);
 		}
 		else if ((Integer) firstYearSpinner.getValue() >= (Integer) lastYearSpinner.getValue())
 		{
-			FireHistoryRecorder.updateStatusBarMessage(MessageType.WARNING, Color.red, StatusBarPanel.NO_SPECIFIED_MESSAGE_ID,
+			FireHistoryRecorder.updateFeedbackMessage(FeedbackMessageType.WARNING, Color.red, FeedbackMessageID.NO_SPECIFIED_MESSAGE_ID,
 					"The first year of a sample cannot be after its last year.");
 			firstYearSpinner.setValue((Integer) lastYearSpinner.getValue() - 1);
 		}
 		else if ((Integer) firstYearSpinner.getValue() < 501 && FileController.isEnforcingOldReqs() == true)
 		{
-			FireHistoryRecorder.updateStatusBarMessage(MessageType.WARNING, Color.red, StatusBarPanel.NO_SPECIFIED_MESSAGE_ID,
+			FireHistoryRecorder.updateFeedbackMessage(FeedbackMessageType.WARNING, Color.red, FeedbackMessageID.NO_SPECIFIED_MESSAGE_ID,
 					"The original FHX2 program doesn't support years prior to 501BC.");
 		}
 		else if ((Integer) firstYearSpinner.getValue() > 2020 && FileController.isEnforcingOldReqs() == true)
 		{
-			FireHistoryRecorder.updateStatusBarMessage(MessageType.WARNING, Color.red, StatusBarPanel.NO_SPECIFIED_MESSAGE_ID,
+			FireHistoryRecorder.updateFeedbackMessage(FeedbackMessageType.WARNING, Color.red, FeedbackMessageID.NO_SPECIFIED_MESSAGE_ID,
 					"The original FHX2 program doesn't support years after 2020AD.");
 		}
 		else
 		{
-			if (StatusBarPanel.getCurrentMessageID() == StatusBarPanel.MINIMUM_SAMPLE_NAME_LENGTH_MESSAGE_ID)
+			if (FeedbackMessagePanel.getCurrentMessageID() == FeedbackMessageID.MINIMUM_SAMPLE_NAME_LENGTH_MESSAGE)
 			{
-				FireHistoryRecorder.clearStatusBarMessage();
+				FireHistoryRecorder.clearFeedbackMessage();
 			}
-			else if (StatusBarPanel.getCurrentMessageID() == StatusBarPanel.FHX2_SAMPLE_NAME_LENGTH_MESSAGE_ID)
+			else if (FeedbackMessagePanel.getCurrentMessageID() == FeedbackMessageID.FHX2_SAMPLE_NAME_LENGTH_MESSAGE)
 			{
-				FireHistoryRecorder.clearStatusBarMessage();
+				FireHistoryRecorder.clearFeedbackMessage();
 			}
 			
 			sample.setSampleName(sampleNameTextBox.getText());

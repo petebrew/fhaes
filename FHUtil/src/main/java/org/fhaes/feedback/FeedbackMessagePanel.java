@@ -15,7 +15,7 @@
  * 		If not, see <http://www.gnu.org/licenses/>.
  * 
  *************************************************************************************************/
-package org.fhaes.FHRecorder.view;
+package org.fhaes.feedback;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -27,7 +27,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EtchedBorder;
 
-import org.fhaes.FHRecorder.view.FireHistoryRecorder.MessageType;
 import org.fhaes.preferences.App;
 import org.fhaes.preferences.FHAESPreferences.PrefKey;
 import org.fhaes.util.Builder;
@@ -35,29 +34,63 @@ import org.fhaes.util.Builder;
 import net.miginfocom.swing.MigLayout;
 
 /**
- * GUI_StatusBarPanel Class.
+ * FeedbackMessagePanel Class.
  */
-public class StatusBarPanel extends JPanel {
+public class FeedbackMessagePanel extends JPanel {
 	
 	private static final long serialVersionUID = 1L;
 	
-	public static final int NO_SPECIFIED_MESSAGE_ID = -1;
-	public static final int FILE_SAVED_MESSAGE_ID = 0;
-	public static final int FHX2_SAMPLE_NAME_LENGTH_MESSAGE_ID = 1;
-	public static final int FHX2_META_DATA_FIELD_LENGTH_MESSAGE_ID = 2;
-	public static final int MINIMUM_SAMPLE_NAME_LENGTH_MESSAGE_ID = 3;
+	/**
+	 * This enumerator is used to determine the message-type of status pane messages.
+	 */
+	public enum FeedbackMessageType {
+		ERROR, WARNING, INFO;
+	}
 	
+	/**
+	 * Enumerators to represent the different types of column data.
+	 */
+	public enum FeedbackMessageID {
+		
+		NO_SPECIFIED_MESSAGE_ID(""),
+		
+		FILE_SAVED_MESSAGE("File was saved successfully"),
+		
+		FHX2_SAMPLE_NAME_LENGTH_MESSAGE("Sample name is too long for the original FHX2 program requirements."),
+		
+		FHX2_META_DATA_LENGTH_MESSAGE("Cannot enforce length restrictions without losing data! Please revise the highlighted fields."),
+		
+		MINIMUM_SAMPLE_NAME_LENGTH_MESSAGE("Sample name must be at least 3 characters in length.");
+		
+		// Declare local variables
+		private String message;
+		
+		// Constructor
+		FeedbackMessageID(String inMessage) {
+			
+			message = inMessage;
+		}
+		
+		@Override
+		public String toString() {
+			
+			return message;
+		}
+	}
+	
+	// Declare local GUI objects
 	private static JLabel statusMessageText;
 	protected JLabel statusMessageIcon;
 	private JButton dismissButton;
 	private JButton hideMessagesButton;
 	
-	private static Integer currentMessageID;
+	// Declare local variables
+	private static FeedbackMessageID currentMessageID = FeedbackMessageID.NO_SPECIFIED_MESSAGE_ID;
 	
 	/**
 	 * Creates new a GUI_StatusBarPanel.
 	 */
-	public StatusBarPanel() {
+	public FeedbackMessagePanel() {
 		
 		initComponents();
 	}
@@ -66,8 +99,6 @@ public class StatusBarPanel extends JPanel {
 	 * Initializes the GUI components.
 	 */
 	private void initComponents() {
-		
-		currentMessageID = NO_SPECIFIED_MESSAGE_ID;
 		
 		this.setVisible(false);
 		this.setBorder(new EtchedBorder(EtchedBorder.RAISED, null, null));
@@ -112,10 +143,12 @@ public class StatusBarPanel extends JPanel {
 	 * 
 	 * @param flagToToggle
 	 */
-	private void stopDisplayingMessage(int messageToToggle) {
+	private void stopDisplayingMessage(FeedbackMessageID messageToToggle) {
 		
-		if (messageToToggle == FILE_SAVED_MESSAGE_ID)
+		if (messageToToggle == FeedbackMessageID.FILE_SAVED_MESSAGE)
+		{
 			App.prefs.setPref(PrefKey.SHOW_FILE_SAVED_MESSAGE, "FALSE");
+		}
 	}
 	
 	/**
@@ -123,7 +156,7 @@ public class StatusBarPanel extends JPanel {
 	 * 
 	 * @return
 	 */
-	public static Integer getCurrentMessageID() {
+	public static FeedbackMessageID getCurrentMessageID() {
 		
 		return currentMessageID;
 	}
@@ -133,7 +166,7 @@ public class StatusBarPanel extends JPanel {
 	 */
 	public void clearStatusMessage() {
 		
-		currentMessageID = NO_SPECIFIED_MESSAGE_ID;
+		currentMessageID = FeedbackMessageID.NO_SPECIFIED_MESSAGE_ID;
 		statusMessageText.setText("");
 		this.setVisible(false);
 	}
@@ -141,7 +174,7 @@ public class StatusBarPanel extends JPanel {
 	/**
 	 * Updates the status bar message to the input message and shows the status bar panel.
 	 */
-	public void updateStatusMessage(MessageType messageType, Color inColor, Integer inID, String inText) {
+	public void updateStatusMessage(FeedbackMessageType messageType, Color inColor, FeedbackMessageID inID, String inText) {
 		
 		// Do not show the status bar message if any of the following conditions are met
 		if (inText == null || inText.length() == 0)
@@ -162,7 +195,7 @@ public class StatusBarPanel extends JPanel {
 			return;
 		}
 		
-		if (inID == FILE_SAVED_MESSAGE_ID)
+		if (inID == FeedbackMessageID.FILE_SAVED_MESSAGE)
 		{
 			if (App.prefs.getPref(PrefKey.SHOW_FILE_SAVED_MESSAGE, "TRUE").equals("FALSE"))
 			{
@@ -172,15 +205,15 @@ public class StatusBarPanel extends JPanel {
 		}
 		
 		// Display the appropriate icon on the status bar as determined by the messageType
-		if (messageType.equals(MessageType.ERROR))
+		if (messageType.equals(FeedbackMessageType.ERROR))
 		{
 			statusMessageIcon.setIcon(Builder.getImageIcon("delete.png"));
 		}
-		else if (messageType.equals(MessageType.INFO))
+		else if (messageType.equals(FeedbackMessageType.INFO))
 		{
 			statusMessageIcon.setIcon(Builder.getImageIcon("info.png"));
 		}
-		else if (messageType.equals(MessageType.WARNING))
+		else if (messageType.equals(FeedbackMessageType.WARNING))
 		{
 			statusMessageIcon.setIcon(Builder.getImageIcon("warning.png"));
 		}
@@ -190,7 +223,7 @@ public class StatusBarPanel extends JPanel {
 		}
 		
 		// Do not show the hideMessagesButton if the input message is not flagged
-		if (inID == NO_SPECIFIED_MESSAGE_ID)
+		if (inID == FeedbackMessageID.NO_SPECIFIED_MESSAGE_ID)
 		{
 			dismissButton.setVisible(false);
 			hideMessagesButton.setVisible(false);

@@ -25,7 +25,7 @@ import org.fhaes.FHRecorder.controller.IOController;
 import org.fhaes.FHRecorder.model.FHX2_FileOptionalPart;
 
 /**
- * GUI_CommentPanel Class. This UI is used to display and modify the additional comments block of the fhx2 file format.
+ * CommentPanel Class. This UI is used to display and modify the additional comments block of the fhx2 file format.
  * 
  * @author Alex Beatty, Clayton Bodendein, Kyle Hartmann, Scott Goble
  */

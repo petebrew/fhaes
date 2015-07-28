@@ -43,11 +43,14 @@ import org.fhaes.FHRecorder.controller.IOController;
 import org.fhaes.FHRecorder.controller.SampleController;
 import org.fhaes.FHRecorder.model.FHX2_File;
 import org.fhaes.exceptions.CompositeFileException;
+import org.fhaes.feedback.FeedbackMessagePanel;
+import org.fhaes.feedback.FeedbackMessagePanel.FeedbackMessageID;
+import org.fhaes.feedback.FeedbackMessagePanel.FeedbackMessageType;
 
 import net.miginfocom.swing.MigLayout;
 
 /**
- * GUI_FireHistoryRecorder Class.
+ * FireHistoryRecorder Class.
  * 
  * @author Alex Beatty, Clayton Bodendein, Kyle Hartmann, Scott Goble
  */
@@ -55,18 +58,11 @@ public class FireHistoryRecorder extends JDialog {
 	
 	private static final long serialVersionUID = 1L;
 	
-	/**
-	 * This enumerator is used to determine the message-type of status pane messages.
-	 */
-	public enum MessageType {
-		WARNING, ERROR, INFO;
-	}
-	
+	// Declare local constants
 	private final int SUMMARY_TAB_INDEX = 2;
 	private final int GRAPH_TAB_INDEX = 3;
 	
-	private static StatusBarPanel statusBarPanel;
-	
+	// Declare primary GUI panels
 	private SampleInputPanel sampleInput;
 	private MetaDataPanel metaDataPanel;
 	private CommentPanel commentPanel;
@@ -74,6 +70,7 @@ public class FireHistoryRecorder extends JDialog {
 	private GraphPanel graphPanel;
 	private ErrorDisplayPanel errorPanel;
 	
+	// Declare other GUI objects
 	private JTabbedPane tabbedPane;
 	private JPanel dataTab;
 	private JPanel metadataTab;
@@ -83,6 +80,10 @@ public class FireHistoryRecorder extends JDialog {
 	private JButton discardChangesButton;
 	private JButton closeButton;
 	
+	// Declare status bar panel
+	private static FeedbackMessagePanel feedbackMessagePanel;
+	
+	// Declare local variables
 	private boolean leftTabsSinceRedraw = true;
 	
 	/**
@@ -100,9 +101,8 @@ public class FireHistoryRecorder extends JDialog {
 	private void initComponents() {
 		
 		this.setModalityType(ModalityType.APPLICATION_MODAL);
-		
-		setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
-		addWindowListener(new WindowAdapter() {
+		this.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+		this.addWindowListener(new WindowAdapter() {
 			
 			@Override
 			public void windowClosing(WindowEvent e) {
@@ -111,16 +111,16 @@ public class FireHistoryRecorder extends JDialog {
 			}
 		});
 		
-		setMinimumSize(new Dimension(1000, 630));
-		setResizable(true);
+		this.setMinimumSize(new Dimension(1000, 630));
+		this.setResizable(true);
 		
-		getContentPane().setLayout(new MigLayout("hidemode 2", "[grow][][][]", "[][500:500,grow,fill][30:30:30,fill]"));
+		this.getContentPane().setLayout(new MigLayout("hidemode 2", "[grow][][][]", "[][500:500,grow,fill][30:30:30,fill]"));
 		
-		statusBarPanel = new StatusBarPanel();
-		getContentPane().add(statusBarPanel, "cell 0 0 4 1,grow");
+		feedbackMessagePanel = new FeedbackMessagePanel();
+		this.getContentPane().add(feedbackMessagePanel, "cell 0 0 4 1,grow");
 		
 		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
-		getContentPane().add(tabbedPane, "cell 0 1 4 1,grow");
+		this.getContentPane().add(tabbedPane, "cell 0 1 4 1,grow");
 		
 		dataTab = new JPanel();
 		dataTab.setBorder(new SoftBevelBorder(BevelBorder.LOWERED, null, null, null, null));
@@ -163,12 +163,14 @@ public class FireHistoryRecorder extends JDialog {
 					}
 				}
 				else
+				{
 					leftTabsSinceRedraw = true;
+				}
 			}
 		});
 		
 		saveButton = new JButton("Save");
-		getContentPane().add(saveButton, "cell 1 2,grow");
+		this.getContentPane().add(saveButton, "cell 1 2,grow");
 		saveButton.addActionListener(new ActionListener() {
 			
 			@Override
@@ -187,7 +189,7 @@ public class FireHistoryRecorder extends JDialog {
 		});
 		
 		closeButton = new JButton("Close");
-		getContentPane().add(closeButton, "cell 2 2,grow");
+		this.getContentPane().add(closeButton, "cell 2 2,grow");
 		closeButton.addActionListener(new ActionListener() {
 			
 			@Override
@@ -199,7 +201,7 @@ public class FireHistoryRecorder extends JDialog {
 		});
 		
 		discardChangesButton = new JButton("Discard changes");
-		getContentPane().add(discardChangesButton, "cell 3 2,grow");
+		this.getContentPane().add(discardChangesButton, "cell 3 2,grow");
 		discardChangesButton.addActionListener(new ActionListener() {
 			
 			@Override
@@ -210,7 +212,7 @@ public class FireHistoryRecorder extends JDialog {
 			}
 			
 		});
-		pack();
+		this.pack();
 	}
 	
 	/**
@@ -283,7 +285,8 @@ public class FireHistoryRecorder extends JDialog {
 			}
 		}
 		FileController.save();
-		updateStatusBarMessage(MessageType.INFO, Color.black, StatusBarPanel.FILE_SAVED_MESSAGE_ID, "File was saved successfully.");
+		updateFeedbackMessage(FeedbackMessageType.INFO, Color.black, FeedbackMessageID.FILE_SAVED_MESSAGE,
+				FeedbackMessageID.FILE_SAVED_MESSAGE.toString());
 	}
 	
 	/**
@@ -349,7 +352,7 @@ public class FireHistoryRecorder extends JDialog {
 		// file contains a data set that does not have a defined end year
 		if (FileController.wasLastYearDefinedInFile() == false)
 		{
-			updateStatusBarMessage(MessageType.INFO, Color.blue, StatusBarPanel.NO_SPECIFIED_MESSAGE_ID,
+			updateFeedbackMessage(FeedbackMessageType.INFO, Color.blue, FeedbackMessageID.NO_SPECIFIED_MESSAGE_ID,
 					"File contains valid data with an unformatted sample. A temporary sample has been generated using the boundaries of the data set.");
 		}
 		
@@ -358,7 +361,7 @@ public class FireHistoryRecorder extends JDialog {
 		{
 			if (!FileController.isFileNew())
 			{
-				updateStatusBarMessage(MessageType.WARNING, Color.red, StatusBarPanel.NO_SPECIFIED_MESSAGE_ID,
+				updateFeedbackMessage(FeedbackMessageType.WARNING, Color.red, FeedbackMessageID.NO_SPECIFIED_MESSAGE_ID,
 						"File contains invalid data or is not an FHX file. Saving will overwrite previous file contents.");
 			}
 		}
@@ -366,7 +369,7 @@ public class FireHistoryRecorder extends JDialog {
 		// file is properly formatted
 		else
 		{
-			clearStatusBarMessage();
+			clearFeedbackMessage();
 		}
 	}
 	
@@ -430,18 +433,18 @@ public class FireHistoryRecorder extends JDialog {
 	}
 	
 	/**
-	 * Clears the text in the status bar.
+	 * Clears the text in the feedback message panel.
 	 */
-	public static void clearStatusBarMessage() {
+	public static void clearFeedbackMessage() {
 		
-		statusBarPanel.clearStatusMessage();
+		feedbackMessagePanel.clearStatusMessage();
 	}
 	
 	/**
-	 * Updates the text in the status bar.
+	 * Updates the text in the feedback message panel.
 	 */
-	public static void updateStatusBarMessage(MessageType messageType, Color inColor, Integer inID, String inText) {
+	public static void updateFeedbackMessage(FeedbackMessageType messageType, Color inColor, FeedbackMessageID inID, String inText) {
 		
-		statusBarPanel.updateStatusMessage(messageType, inColor, inID, inText);
+		feedbackMessagePanel.updateStatusMessage(messageType, inColor, inID, inText);
 	}
 }

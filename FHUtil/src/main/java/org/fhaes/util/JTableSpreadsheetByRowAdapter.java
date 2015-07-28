@@ -75,11 +75,22 @@ public class JTableSpreadsheetByRowAdapter implements ActionListener {
 		return mainTable;
 	}
 	
+	/**
+	 * TODO
+	 * 
+	 * @param tbl
+	 */
 	public void setJTable(JTable tbl) {
 		
 		this.mainTable = tbl;
 	}
 	
+	/**
+	 * TODO
+	 * 
+	 * @param f
+	 * @throws IOException
+	 */
 	public void saveToCSV(File f) throws IOException {
 		
 		StringBuffer sbf = new StringBuffer();
@@ -108,9 +119,11 @@ public class JTableSpreadsheetByRowAdapter implements ActionListener {
 		}
 		
 		FileUtils.writeStringToFile(f, sbf.toString());
-		
 	}
 	
+	/**
+	 * TODO
+	 */
 	public void doCopy() {
 		
 		log.debug("doCopy() called");
@@ -154,12 +167,17 @@ public class JTableSpreadsheetByRowAdapter implements ActionListener {
 			}
 			sbf.append("\n");
 		}
+		
 		stsel = new StringSelection(sbf.toString());
 		system = Toolkit.getDefaultToolkit().getSystemClipboard();
 		system.setContents(stsel, stsel);
-		
 	}
 	
+	/**
+	 * TODO
+	 * 
+	 * @return
+	 */
 	public Integer getRowCountFromClipboard() {
 		
 		log.debug("Clipboard contents: " + system.getName());
@@ -190,30 +208,28 @@ public class JTableSpreadsheetByRowAdapter implements ActionListener {
 			}
 			
 			return lineCount;
-			
 		}
 		catch (UnsupportedFlavorException e)
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		catch (IOException e)
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
 		return null;
-		
 	}
 	
-	public void doPaste() {
+	/**
+	 * TODO
+	 */
+	public void doPaste() {}
 	
-	}
-	
-	public void doPasteAppend() {
-	
-	}
+	/**
+	 * TODO
+	 */
+	public void doPasteAppend() {}
 	
 	/**
 	 * This method is activated on the Keystrokes we are listening to in this implementation. Here it listens for Copy and Paste

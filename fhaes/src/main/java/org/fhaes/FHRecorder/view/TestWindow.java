@@ -37,7 +37,9 @@ import org.fhaes.util.Builder;
 import org.fhaes.util.Platform;
 
 /**
- * GUI_TestWindow Class.
+ * TestWindow Class.
+ * 
+ * @author Peter Brewer
  */
 public class TestWindow {
 	

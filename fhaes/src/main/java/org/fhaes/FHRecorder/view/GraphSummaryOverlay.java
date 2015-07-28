@@ -45,8 +45,8 @@ import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.category.SlidingCategoryDataset;
 
 /**
- * GUI_GraphSummaryOverlay Class. This is an overlay graph which includes # of events as a bar chart, # of recorders as a line graph, and #
- * of samples as a line graph.
+ * GraphSummaryOverlay Class. This is an overlay graph which includes # of events as a bar chart, # of recorders as a line graph, and # of
+ * samples as a line graph.
  * 
  * @author Cody Calhoun, Seth Westphal, Anthony Messerschmidt
  */
