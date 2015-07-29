@@ -33,7 +33,6 @@ import org.fhaes.FHRecorder.view.FireHistoryRecorder;
 import org.fhaes.FHRecorder.view.RecordingTable;
 import org.fhaes.enums.FeedbackMessageType;
 import org.fhaes.exceptions.CompositeFileException;
-import org.fhaes.feedback.FeedbackDictionaryManager.FeedbackDictionary;
 
 /**
  * FHX2_Sample Class. This class is used to represent a sample in the FHX2 data.
@@ -44,6 +43,10 @@ public class FHX2_Sample implements Serializable, ErrorTrackerInterface {
 	
 	private static final long serialVersionUID = 1L;
 	
+	// Declare public constants
+	public static final String FHX2_SAMPLE_NAME_LENGTH_MESSAGE = "Sample name is too long for the original FHX2 program requirements.";
+	
+	// Declare local variables
 	private String sampleName;
 	private int sampleFirstYear;
 	private int sampleLastYear;
@@ -51,10 +54,9 @@ public class FHX2_Sample implements Serializable, ErrorTrackerInterface {
 	private char closingChar; // last character in the sample that represents series data
 	private boolean pith;
 	private boolean bark;
-	
-	private ArrayList<SampleErrorModel> errors = new ArrayList<SampleErrorModel>();
 	private EventTable eventTable;
 	private RecordingTable recordingTable;
+	private ArrayList<SampleErrorModel> errors = new ArrayList<SampleErrorModel>();
 	
 	/**
 	 * Default Constructor for FHX2_Sample.
@@ -372,13 +374,12 @@ public class FHX2_Sample implements Serializable, ErrorTrackerInterface {
 		if (inputName.length() > FileController.FHX2_MAX_SAMPLE_NAME_LENGTH && FileController.isEnforcingOldReqs())
 		{
 			FireHistoryRecorder.getFeedbackMessagePanel().updateFeedbackMessage(FeedbackMessageType.WARNING,
-					FeedbackDictionary.FHX2_SAMPLE_NAME_LENGTH_MESSAGE.getMessage());
+					FHX2_SAMPLE_NAME_LENGTH_MESSAGE);
 					
 			return "";
 		}
 		
-		if (FireHistoryRecorder.getFeedbackMessagePanel().getCurrentMessage() == FeedbackDictionary.FHX2_SAMPLE_NAME_LENGTH_MESSAGE
-				.getMessage())
+		if (FireHistoryRecorder.getFeedbackMessagePanel().getCurrentMessage() == FHX2_SAMPLE_NAME_LENGTH_MESSAGE)
 		{
 			FireHistoryRecorder.getFeedbackMessagePanel().clearFeedbackMessage();
 		}

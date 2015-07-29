@@ -38,7 +38,8 @@ import org.fhaes.preferences.FHAESPreferences.PrefKey;
 import net.miginfocom.swing.MigLayout;
 
 /**
- * FeedbackMessagePanel Class.
+ * FeedbackMessagePanel Class. This class contains all GUI components and logic pertaining to the communication of informative messages
+ * between the FHAES software and the user.
  */
 public class FeedbackMessagePanel extends JPanel {
 	
@@ -93,7 +94,7 @@ public class FeedbackMessagePanel extends JPanel {
 	 */
 	public void updateFeedbackMessage(FeedbackMessageType messageType, String messageString) {
 		
-		PrefKey keyForCurrentMessage = FeedbackDictionaryManager.GetAssociatedKeyFromMessageText(messageString);
+		PrefKey keyForCurrentMessage = FeedbackPreferenceManager.GetAssociatedKeyFromMessageText(messageString);
 		boolean showThisFeedbackMessage = true;
 		
 		// Get the associated key value for this message, if it has one
@@ -115,21 +116,21 @@ public class FeedbackMessagePanel extends JPanel {
 				this.setVisible(true);
 				
 				// Only do the fade out animation if the message is of type info
-				if (messageType.toString() == "INFO")
+				if (messageType.toString() == FeedbackMessageType.INFO.toString())
 				{
-					autoHideDelayTimer.schedule(new AutoHideTask(), FIVE_SECOND_DELAY);
+					autoHideDelayTimer.schedule(new AutoHideMessageTask(), FIVE_SECOND_DELAY);
 				}
 			}
 		}
 	}
 	
 	/**
-	 * Prevents the feedback message panel from showing the current message in the future. This action is permanent until the 'reset all
-	 * feedback message preferences' button is pressed on the main window.
+	 * Prevents the FeedbackMessagePanel from showing the current message in the future. This action is permanent until the 'reset all
+	 * feedback message preferences' button is pressed on the MainWindow.
 	 */
 	public void stopShowingCurrentMessage() {
 		
-		PrefKey keyForCurrentMessage = FeedbackDictionaryManager.GetAssociatedKeyFromMessageText(getCurrentMessage());
+		PrefKey keyForCurrentMessage = FeedbackPreferenceManager.GetAssociatedKeyFromMessageText(getCurrentMessage());
 		
 		if (keyForCurrentMessage != null)
 		{
@@ -138,7 +139,7 @@ public class FeedbackMessagePanel extends JPanel {
 	}
 	
 	/**
-	 * Allows for the feedback message panel to have variable transparency.
+	 * Allows for the FeedbackMessagePanel to have variable transparency.
 	 * 
 	 * @param g
 	 */
@@ -152,7 +153,7 @@ public class FeedbackMessagePanel extends JPanel {
 	}
 	
 	/**
-	 * Repaints the feedback message panel.
+	 * Repaints the FeedbackMessagePanel.
 	 */
 	private void repaintFeedbackMessagePanel() {
 		
@@ -201,11 +202,12 @@ public class FeedbackMessagePanel extends JPanel {
 	}
 	
 	/**
-	 * AutoHideTask Class.
+	 * AutoHideMessageTask Class. This task performs the operations required to get the FeedbackMessagePanel to gradually fade out prior to
+	 * being hidden on the GUI.
 	 * 
 	 * @author Joshua Brogan
 	 */
-	class AutoHideTask extends TimerTask {
+	class AutoHideMessageTask extends TimerTask {
 		
 		// Declare local constants
 		private final int ONE_MILLISECOND = 1;

@@ -35,7 +35,6 @@ import org.fhaes.FHRecorder.controller.SampleController;
 import org.fhaes.FHRecorder.model.FHX2_FileRequiredPart;
 import org.fhaes.FHRecorder.model.FHX2_Sample;
 import org.fhaes.enums.FeedbackMessageType;
-import org.fhaes.feedback.FeedbackDictionaryManager.FeedbackDictionary;
 import org.fhaes.util.Builder;
 
 import net.miginfocom.swing.MigLayout;
@@ -49,6 +48,10 @@ public class NewSampleDialog extends javax.swing.JDialog implements KeyListener 
 	
 	private static final long serialVersionUID = 1L;
 	
+	// Declare local constants
+	private final String MINIMUM_SAMPLE_NAME_LENGTH_MESSAGE = "Sample name must be at least 3 characters in length.";
+	
+	// Declare GUI components
 	private JPanel buttonPanel;
 	private javax.swing.JCheckBox barkCheckBox;
 	private javax.swing.JButton cancelButton;
@@ -61,6 +64,7 @@ public class NewSampleDialog extends javax.swing.JDialog implements KeyListener 
 	private javax.swing.JSpinner firstYearSpinner;
 	private javax.swing.JSpinner lastYearSpinner;
 	
+	// Declare local variables
 	private FHX2_Sample sample;
 	private int index;
 	private int previousValueFYS; // previous value of first year spinner
@@ -341,7 +345,7 @@ public class NewSampleDialog extends javax.swing.JDialog implements KeyListener 
 		if (sampleNameTextBox.getText().length() < 3)
 		{
 			FireHistoryRecorder.getFeedbackMessagePanel().updateFeedbackMessage(FeedbackMessageType.WARNING,
-					FeedbackDictionary.MINIMUM_SAMPLE_NAME_LENGTH_MESSAGE.getMessage());
+					MINIMUM_SAMPLE_NAME_LENGTH_MESSAGE);
 					
 			sampleNameTextBox.setForeground(Color.red);
 		}
@@ -372,13 +376,11 @@ public class NewSampleDialog extends javax.swing.JDialog implements KeyListener 
 		}
 		else
 		{
-			if (FireHistoryRecorder.getFeedbackMessagePanel().getCurrentMessage() == FeedbackDictionary.MINIMUM_SAMPLE_NAME_LENGTH_MESSAGE
-					.getMessage())
+			if (FireHistoryRecorder.getFeedbackMessagePanel().getCurrentMessage() == MINIMUM_SAMPLE_NAME_LENGTH_MESSAGE)
 			{
 				FireHistoryRecorder.getFeedbackMessagePanel().clearFeedbackMessage();
 			}
-			else if (FireHistoryRecorder.getFeedbackMessagePanel().getCurrentMessage() == FeedbackDictionary.FHX2_SAMPLE_NAME_LENGTH_MESSAGE
-					.getMessage())
+			else if (FireHistoryRecorder.getFeedbackMessagePanel().getCurrentMessage() == FHX2_Sample.FHX2_SAMPLE_NAME_LENGTH_MESSAGE)
 			{
 				FireHistoryRecorder.getFeedbackMessagePanel().clearFeedbackMessage();
 			}
@@ -408,21 +410,21 @@ public class NewSampleDialog extends javax.swing.JDialog implements KeyListener 
 	 * The following are methods for handling when keys are pressed while this dialog has focus.
 	 */
 	@Override
-	public void keyTyped(KeyEvent ke) {
-	
-	}
+	public void keyTyped(KeyEvent ke) {}
 	
 	@Override
-	public void keyPressed(KeyEvent ke) {
-	
-	}
+	public void keyPressed(KeyEvent ke) {}
 	
 	@Override
 	public void keyReleased(KeyEvent ke) {
 		
 		if (sampleNameTextBox.getText() != null && sampleNameTextBox.getText().trim().length() > 0)
+		{
 			okButton.setEnabled(true);
+		}
 		else
+		{
 			okButton.setEnabled(false);
+		}
 	}
 }

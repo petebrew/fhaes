@@ -21,23 +21,17 @@ import org.fhaes.preferences.App;
 import org.fhaes.preferences.FHAESPreferences.PrefKey;
 
 /**
- * FeedbackDictionaryManager Class.
+ * FeedbackPreferenceManager Class. This class contains a 'dictionary' of feedback messages which have their own show/hide preferences as
+ * well as the necessary logic for managing those associated preference keys.
  */
-public class FeedbackDictionaryManager {
+public class FeedbackPreferenceManager {
 	
 	/**
-	 * This enum contains a set of simple feedback messages (i.e. messages that do not require special runtime information to be displayed).
+	 * This enum contains a set of feedback messages with show/hide preferences.
 	 */
 	public enum FeedbackDictionary {
 		
-		FHX2_META_DATA_LENGTH_MESSAGE("Cannot enforce length restrictions without losing data! Please revise the highlighted fields.",
-				null),
-				
-		FHX2_SAMPLE_NAME_LENGTH_MESSAGE("Sample name is too long for the original FHX2 program requirements.", null),
-		
-		FILE_SAVED_MESSAGE("File was saved successfully", PrefKey.SHOW_FILE_SAVED_MESSAGE),
-		
-		MINIMUM_SAMPLE_NAME_LENGTH_MESSAGE("Sample name must be at least 3 characters in length.", null);
+		FILE_SAVED_MESSAGE("File was saved successfully.", PrefKey.SHOW_FILE_SAVED_MESSAGE);
 		
 		// Declare local variables
 		private final String messageText;

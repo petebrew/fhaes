@@ -75,7 +75,7 @@ import org.fhaes.components.FHAESMenuItem;
 import org.fhaes.components.JToolBarButton;
 import org.fhaes.components.JToolBarToggleButton;
 import org.fhaes.exceptions.CompositeFileException;
-import org.fhaes.feedback.FeedbackDictionaryManager;
+import org.fhaes.feedback.FeedbackPreferenceManager;
 import org.fhaes.feedback.FeedbackMessagePanel;
 import org.fhaes.fhfilereader.FHCategoryReader;
 import org.fhaes.fhsamplesize.view.FHSampleSize;
@@ -2160,7 +2160,7 @@ public class MainWindow implements PrefsListener {
 			@Override
 			public void actionPerformed(ActionEvent event) {
 				
-				FeedbackDictionaryManager.ResetAllFeedbackMessagePrefs();
+				FeedbackPreferenceManager.ResetAllFeedbackMessagePrefs();
 			}
 		};
 	}

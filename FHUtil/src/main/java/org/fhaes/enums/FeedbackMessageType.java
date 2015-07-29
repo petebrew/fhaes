@@ -24,7 +24,7 @@ import javax.swing.Icon;
 import org.fhaes.util.Builder;
 
 /**
- * FeedbackMessageType Enum.
+ * FeedbackMessageType Enum. This enumeration contains the various types of communication which the FeedbackMessagePanel can display.
  */
 public enum FeedbackMessageType {
 	

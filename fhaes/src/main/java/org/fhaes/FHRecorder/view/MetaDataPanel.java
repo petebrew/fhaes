@@ -43,7 +43,6 @@ import org.fhaes.FHRecorder.utility.LengthRestrictedDocument;
 import org.fhaes.FHRecorder.utility.MetaDataTextField;
 import org.fhaes.components.HelpTipButton;
 import org.fhaes.enums.FeedbackMessageType;
-import org.fhaes.feedback.FeedbackDictionaryManager.FeedbackDictionary;
 import org.fhaes.help.LocalHelp;
 import org.fhaes.preferences.FHAESPreferences.PrefKey;
 import org.fhaes.preferences.wrappers.CheckBoxWrapper;
@@ -59,6 +58,10 @@ public class MetaDataPanel extends javax.swing.JPanel {
 	
 	private static final long serialVersionUID = 1L;
 	
+	// Declare string constants
+	private final String FHX2_META_DATA_LENGTH_MESSAGE = "Cannot enforce length restrictions without losing data! Please revise the highlighted fields.";
+	
+	// Declare integer constants
 	private final int TWO_CHARACTERS = 2;
 	private final int THREE_CHARACTERS = 3;
 	private final int FOUR_CHARACTERS = 4;
@@ -71,10 +74,10 @@ public class MetaDataPanel extends javax.swing.JPanel {
 	private final int THIRTY_CHARACTERS = 30;
 	private final int FORTY_CHARACTERS = 40;
 	private final int SEVENTY_CHARACTERS = 70;
-	
 	private final int ALL_FIELDS_COMPATIBLE = 29;
 	private final int DOCUMENT_LIMIT = 99999;
 	
+	// Declare GUI components
 	private MetaDataTextField areaSampledText;
 	private MetaDataTextField aspectText;
 	private MetaDataTextField collectionDateText;
@@ -195,11 +198,12 @@ public class MetaDataPanel extends javax.swing.JPanel {
 	private JTextField aspectCountBox;
 	private JTextField areaSampledCountBox;
 	private JTextField substrateCountBox;
-	
-	private FHX2_FileOptionalPart optionalData;
-	private boolean saveToData;
 	private JTextField latitudeCountBox;
 	private JTextField longitudeCountBox;
+	
+	// Declare local variables
+	private FHX2_FileOptionalPart optionalData;
+	private boolean saveToData;
 	
 	/**
 	 * Creates new form MetaDataPanel
@@ -1872,8 +1876,7 @@ public class MetaDataPanel extends javax.swing.JPanel {
 		// Updates the status pane according to the compatibility of the above fields
 		if (numFieldsCompatible == ALL_FIELDS_COMPATIBLE)
 		{
-			if (FireHistoryRecorder.getFeedbackMessagePanel().getCurrentMessage() == FeedbackDictionary.FHX2_META_DATA_LENGTH_MESSAGE
-					.getMessage())
+			if (FireHistoryRecorder.getFeedbackMessagePanel().getCurrentMessage() == FHX2_META_DATA_LENGTH_MESSAGE)
 			{
 				FireHistoryRecorder.getFeedbackMessagePanel().clearFeedbackMessage();
 			}
@@ -1882,9 +1885,7 @@ public class MetaDataPanel extends javax.swing.JPanel {
 		}
 		else
 		{
-			FireHistoryRecorder.getFeedbackMessagePanel().updateFeedbackMessage(FeedbackMessageType.WARNING,
-					FeedbackDictionary.FHX2_META_DATA_LENGTH_MESSAGE.getMessage());
-					
+			FireHistoryRecorder.getFeedbackMessagePanel().updateFeedbackMessage(FeedbackMessageType.WARNING, FHX2_META_DATA_LENGTH_MESSAGE);
 			return false;
 		}
 	}
@@ -1894,8 +1895,7 @@ public class MetaDataPanel extends javax.swing.JPanel {
 	 */
 	private void resetTextBoxColors() {
 		
-		if (FireHistoryRecorder.getFeedbackMessagePanel().getCurrentMessage() == FeedbackDictionary.FHX2_META_DATA_LENGTH_MESSAGE
-				.getMessage())
+		if (FireHistoryRecorder.getFeedbackMessagePanel().getCurrentMessage() == FHX2_META_DATA_LENGTH_MESSAGE)
 		{
 			FireHistoryRecorder.getFeedbackMessagePanel().clearFeedbackMessage();
 		}
