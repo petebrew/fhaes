@@ -75,8 +75,8 @@ import org.fhaes.components.FHAESMenuItem;
 import org.fhaes.components.JToolBarButton;
 import org.fhaes.components.JToolBarToggleButton;
 import org.fhaes.exceptions.CompositeFileException;
-import org.fhaes.feedback.FeedbackMessagePanel;
 import org.fhaes.feedback.FeedbackDictionaryManager;
+import org.fhaes.feedback.FeedbackMessagePanel;
 import org.fhaes.fhfilereader.FHCategoryReader;
 import org.fhaes.fhsamplesize.view.FHSampleSize;
 import org.fhaes.filefilter.CSVFileFilter;
@@ -132,9 +132,11 @@ public class MainWindow implements PrefsListener {
 	private static final ResourceBundle BUNDLE = ResourceBundle.getBundle("locale/locale"); // ResourceBundle.getBundle("org.fhaes.gui.locale"); //$NON-NLS-1$
 	private static final Logger log = LoggerFactory.getLogger(MainWindow.class);
 	
-	// Declare constant variables
-	private final int LARGE_DATASET_THRESHOLD = 250;
+	// Declare static constants
 	public static final Color macBGColor = new Color(237, 237, 237);
+	
+	// Declare local constants
+	private final int LARGE_DATASET_THRESHOLD = 250;
 	
 	// Declare GUI components
 	protected JFrame frame;
@@ -2151,7 +2153,7 @@ public class MainWindow implements PrefsListener {
 		};
 		actionPrefChangeAutoLoadCategories.putValue(Action.SELECTED_KEY, App.prefs.getBooleanPref(PrefKey.AUTO_LOAD_CATEGORIES, true));
 		
-		this.actionResetAllFeedbackMessagePrefs = new FHAESAction("Reset all feedback message prefs", "reset.png") {
+		this.actionResetAllFeedbackMessagePrefs = new FHAESAction("Reset all feedback message preferences", "reset.png") {
 			
 			private static final long serialVersionUID = 1L;
 			

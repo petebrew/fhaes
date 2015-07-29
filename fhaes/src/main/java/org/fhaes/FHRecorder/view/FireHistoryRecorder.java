@@ -43,8 +43,8 @@ import org.fhaes.FHRecorder.controller.SampleController;
 import org.fhaes.FHRecorder.model.FHX2_File;
 import org.fhaes.enums.FeedbackMessageType;
 import org.fhaes.exceptions.CompositeFileException;
-import org.fhaes.feedback.FeedbackMessagePanel;
 import org.fhaes.feedback.FeedbackDictionaryManager.FeedbackDictionary;
+import org.fhaes.feedback.FeedbackMessagePanel;
 
 import net.miginfocom.swing.MigLayout;
 

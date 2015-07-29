@@ -17,9 +17,14 @@
  *************************************************************************************************/
 package org.fhaes.feedback;
 
+import java.awt.AlphaComposite;
 import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -27,8 +32,8 @@ import javax.swing.JPanel;
 import javax.swing.border.EtchedBorder;
 
 import org.fhaes.enums.FeedbackMessageType;
-import org.fhaes.feedback.FeedbackDictionaryManager.FeedbackDictionary;
 import org.fhaes.preferences.App;
+import org.fhaes.preferences.FHAESPreferences.PrefKey;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -40,13 +45,17 @@ public class FeedbackMessagePanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 	
 	// Declare local constants
-	private final String EMPTY_MESSAGE_TEXT = "";
+	private final int FIVE_SECOND_DELAY = 5000;
+	private final float FULL_OPACITY = 1.0f;
+	
+	// Declare GUI components
+	private JLabel feedbackMessageText;
+	private JLabel feedbackMessageIcon;
+	private JButton hideMessagesButton;
+	private Timer autoHideDelayTimer;
 	
 	// Declare local variables
-	private static JLabel statusMessageText;
-	private JLabel statusMessageIcon;
-	private JButton dismissButton;
-	private JButton hideMessagesButton;
+	private float currentOpacity = FULL_OPACITY;
 	
 	/**
 	 * Creates new a FeedbackMessagePanel.
@@ -59,23 +68,11 @@ public class FeedbackMessagePanel extends JPanel {
 	/**
 	 * Gets the string text of the current message.
 	 * 
-	 * @return the text contained in statusMessageText
+	 * @return the string contained in feedbackMessageText
 	 */
 	public String getCurrentMessage() {
 		
-		return statusMessageText.getText();
-	}
-	
-	/**
-	 * Stops showing the specified feedback message. This action is permanent until the "reset all feedback message preferences" button is
-	 * pressed on the MainWindow.
-	 */
-	public void stopShowingMessage(FeedbackDictionary message) {
-		
-		if (message.getAssociatedKey() != null)
-		{
-			App.prefs.setBooleanPref(message.getAssociatedKey(), false);
-		}
+		return feedbackMessageText.getText();
 	}
 	
 	/**
@@ -83,9 +80,6 @@ public class FeedbackMessagePanel extends JPanel {
 	 */
 	public void clearFeedbackMessage() {
 		
-		statusMessageIcon.setIcon(FeedbackMessageType.INFO.getIcon());
-		statusMessageText.setForeground(FeedbackMessageType.INFO.getColor());
-		statusMessageText.setText("<html>" + EMPTY_MESSAGE_TEXT + "</html>");
 		this.setVisible(false);
 	}
 	
@@ -97,18 +91,70 @@ public class FeedbackMessagePanel extends JPanel {
 	 */
 	public void updateFeedbackMessage(FeedbackMessageType messageType, String messageString) {
 		
-		if (messageString == null || messageString.length() == 0)
+		PrefKey keyForCurrentMessage = FeedbackDictionaryManager.GetAssociatedKeyFromMessageText(messageString);
+		boolean showThisFeedbackMessage = true;
+		
+		// Get the associated key value for this message, if it has one
+		if (keyForCurrentMessage != null)
 		{
-			clearFeedbackMessage();
-			this.setVisible(false);
+			showThisFeedbackMessage = App.prefs.getBooleanPref(keyForCurrentMessage, true);
 		}
-		else
+		
+		// Do not show the feedback message if the user has preferred it to be hidden
+		if (showThisFeedbackMessage)
 		{
-			statusMessageIcon.setIcon(messageType.getIcon());
-			statusMessageText.setForeground(messageType.getColor());
-			statusMessageText.setText("<html>" + messageType.getPrefix() + messageString + "</html>");
-			this.setVisible(true);
+			// Do not try to show an empty message
+			if (messageString != null && messageString.length() != 0)
+			{
+				currentOpacity = FULL_OPACITY;
+				feedbackMessageIcon.setIcon(messageType.getDisplayIcon());
+				feedbackMessageText.setText(messageString);
+				this.setBackground(messageType.getBackgroundColor());
+				this.setVisible(true);
+				
+				// Only do the fade out animation if the message is of type info
+				if (messageType.toString() == "INFO")
+				{
+					autoHideDelayTimer.schedule(new AutoHideTask(), FIVE_SECOND_DELAY);
+				}
+			}
 		}
+	}
+	
+	/**
+	 * Prevents the feedback message panel from showing the current message in the future. This action is permanent until the 'reset all
+	 * feedback message preferences' button is pressed on the main window.
+	 */
+	public void stopShowingThisMessage() {
+		
+		PrefKey keyForCurrentMessage = FeedbackDictionaryManager.GetAssociatedKeyFromMessageText(getCurrentMessage());
+		
+		if (keyForCurrentMessage != null)
+		{
+			App.prefs.setBooleanPref(keyForCurrentMessage, false);
+		}
+	}
+	
+	/**
+	 * Allows for the feedback message panel to have variable transparency.
+	 * 
+	 * @param g
+	 */
+	@Override
+	public void paint(Graphics g) {
+		
+		Graphics2D g2 = (Graphics2D) g.create();
+		g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, currentOpacity));
+		super.paint(g2);
+		g2.dispose();
+	}
+	
+	/**
+	 * Repaints the feedback message panel.
+	 */
+	private void repaintFeedbackMessagePanel() {
+		
+		this.repaint();
 	}
 	
 	/**
@@ -117,48 +163,79 @@ public class FeedbackMessagePanel extends JPanel {
 	private void initGUI() {
 		
 		// Initialize settings for the panel itself
-		this.setVisible(false);
 		this.setBorder(new EtchedBorder(EtchedBorder.RAISED, null, null));
-		this.setLayout(new MigLayout("hidemode 2", "[][10px:10px:10px][grow][][]", "[grow]"));
+		this.setLayout(new MigLayout("hidemode 2", "[][10px:10px:10px][grow][10px:10px:10px][]", "[grow]"));
+		this.setVisible(false);
 		
 		// Setup the message icon
-		statusMessageIcon = new JLabel();
-		this.add(statusMessageIcon, "cell 0 0");
+		feedbackMessageIcon = new JLabel();
+		this.add(feedbackMessageIcon, "cell 0 0");
 		
 		// Setup the message textbox
-		statusMessageText = new JLabel(EMPTY_MESSAGE_TEXT);
-		statusMessageText.setBackground(null);
-		statusMessageText.setBorder(null);
-		statusMessageText.setFont(new Font("Dialog", Font.PLAIN, 14));
-		statusMessageText.setText("Some info or warning...");
-		this.add(statusMessageText, "cell 2 0,growx,aligny center");
+		feedbackMessageText = new JLabel();
+		feedbackMessageText.setBackground(null);
+		feedbackMessageText.setBorder(null);
+		feedbackMessageText.setFont(new Font("Dialog", Font.PLAIN, 14));
+		feedbackMessageText.setText("Some info or warning...");
+		this.add(feedbackMessageText, "cell 2 0,growx,aligny center");
 		
-		/*
-		 * DISMISS BUTTON
-		 */
-		dismissButton = new JButton("Dismiss");
-		dismissButton.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				
-				clearFeedbackMessage();
-			}
-		});
-		this.add(dismissButton, "cell 3 0,growx,aligny center");
+		// Initialize the auto-hide delay animation timer
+		autoHideDelayTimer = new Timer();
 		
 		/*
 		 * HIDE MESSAGES BUTTON
 		 */
-		hideMessagesButton = new JButton("Hide these Messages");
+		hideMessagesButton = new JButton("Hide these notifications");
 		hideMessagesButton.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				
+				stopShowingThisMessage();
 				clearFeedbackMessage();
 			}
 		});
 		this.add(hideMessagesButton, "cell 4 0,growx,aligny center");
+	}
+	
+	/**
+	 * AutoHideTask Class.
+	 * 
+	 * @author Joshua Brogan
+	 */
+	class AutoHideTask extends TimerTask {
+		
+		// Declare local constants
+		private final int TWO_HUNDRED_MILLISECONDS = 200;
+		private final float NO_OPACITY = 0.0f;
+		
+		@Override
+		public void run() {
+			
+			while (true)
+			{
+				// Handle the gradual fade-out of the feedback message panel
+				if (currentOpacity - 0.1f > NO_OPACITY)
+				{
+					currentOpacity = currentOpacity - 0.1f;
+					repaintFeedbackMessagePanel();
+				}
+				else
+				{
+					clearFeedbackMessage();
+					return;
+				}
+				
+				// Run this task every fifth of a second
+				try
+				{
+					Thread.sleep(TWO_HUNDRED_MILLISECONDS);
+				}
+				catch (InterruptedException ex)
+				{
+					Thread.currentThread().interrupt();
+				}
+			}
+		}
 	}
 }

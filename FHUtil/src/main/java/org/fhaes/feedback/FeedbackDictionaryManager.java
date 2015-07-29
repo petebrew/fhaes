@@ -76,6 +76,27 @@ public class FeedbackDictionaryManager {
 	}
 	
 	/**
+	 * Searches the feedback dictionary for a message which has text that matches the input string. If one is found, this method returns the
+	 * associated preference key for that message. Otherwise it will return null.
+	 * 
+	 * @param inText
+	 */
+	public static PrefKey GetAssociatedKeyFromMessageText(String inText) {
+		
+		FeedbackDictionary[] allFeedbackMessages = FeedbackDictionary.values();
+		
+		for (int i = 0; i < allFeedbackMessages.length; i++)
+		{
+			if (allFeedbackMessages[i].getMessage() == inText)
+			{
+				return allFeedbackMessages[i].getAssociatedKey();
+			}
+		}
+		
+		return null;
+	}
+	
+	/**
 	 * Resets all feedback message preferences so that every message is displayed on default.
 	 */
 	public static void ResetAllFeedbackMessagePrefs() {

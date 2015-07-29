@@ -28,19 +28,19 @@ import org.fhaes.util.Builder;
  */
 public enum FeedbackMessageType {
 	
-	INFO("INFO", Color.black, Builder.getImageIcon("info.png")),
+	INFO("INFO", new Color(204, 204, 255), Builder.getImageIcon("info.png")),
 	
-	WARNING("WARNING", Color.red, Builder.getImageIcon("warning.png")),
+	WARNING("WARNING", new Color(255, 255, 204), Builder.getImageIcon("warning.png")),
 	
-	ERROR("ERROR", Color.red, Builder.getImageIcon("delete.png"));
+	ERROR("ERROR", new Color(255, 204, 204), Builder.getImageIcon("delete.png"));
 	
 	// Declare local variables
-	private String messageString;
-	private Color messageColor;
-	private Icon messageIcon;
+	private String humanReadable;
+	private Color backgroundColor;
+	private Icon displayIcon;
 	
 	/**
-	 * Initialize the message string, color, and icon for the FeedbackMessageType.
+	 * Initialize the human-readable string, background color, and display icon for the FeedbackMessageType.
 	 * 
 	 * @param str
 	 * @param col
@@ -48,38 +48,39 @@ public enum FeedbackMessageType {
 	 */
 	FeedbackMessageType(String str, Color col, Icon ico) {
 		
-		messageString = str;
-		messageColor = col;
-		messageIcon = ico;
+		humanReadable = str;
+		backgroundColor = col;
+		displayIcon = ico;
 	}
 	
 	/**
-	 * Get the message color for this FeedbackMessageType.
+	 * Get the background color for this FeedbackMessageType.
 	 * 
-	 * @return messageColor
+	 * @return backgroundColor
 	 */
-	public Color getColor() {
+	public Color getBackgroundColor() {
 		
-		return messageColor;
+		return backgroundColor;
 	}
 	
 	/**
-	 * Get the message icon for this FeedbackMessageType.
+	 * Get the display icon for this FeedbackMessageType.
 	 * 
-	 * @return messageIcon
+	 * @return displayIcon
 	 */
-	public Icon getIcon() {
+	public Icon getDisplayIcon() {
 		
-		return messageIcon;
+		return displayIcon;
 	}
 	
 	/**
-	 * Get the message string prefix for this FeedbackMessageType.
+	 * Get the human-readable string name for this FeedbackMessageType.
 	 * 
-	 * @return messageString with a colon and space
+	 * @return humanReadable
 	 */
-	public String getPrefix() {
+	@Override
+	public String toString() {
 		
-		return messageString + ": ";
+		return humanReadable;
 	}
 }
