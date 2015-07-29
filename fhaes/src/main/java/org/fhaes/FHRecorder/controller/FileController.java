@@ -17,7 +17,6 @@
  *************************************************************************************************/
 package org.fhaes.FHRecorder.controller;
 
-import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -35,9 +34,8 @@ import javax.swing.JOptionPane;
 import org.fhaes.FHRecorder.utility.CustomOptions;
 import org.fhaes.FHRecorder.utility.YearSummary;
 import org.fhaes.FHRecorder.view.FireHistoryRecorder;
+import org.fhaes.enums.FeedbackMessageType;
 import org.fhaes.exceptions.CompositeFileException;
-import org.fhaes.feedback.FeedbackMessagePanel.FeedbackMessageID;
-import org.fhaes.feedback.FeedbackMessagePanel.FeedbackMessageType;
 import org.fhaes.filefilter.FHXFileFilter;
 import org.fhaes.preferences.App;
 import org.fhaes.preferences.FHAESPreferences.PrefKey;
@@ -278,13 +276,13 @@ public class FileController {
 		if (IOController.getFile().getRequiredPart().getNumSamples() > FileController.FHX2_MAX_NUMBER_OF_SAMPLES
 				&& FileController.isEnforcingOldReqs())
 		{
-			FireHistoryRecorder.updateFeedbackMessage(FeedbackMessageType.WARNING, Color.red, FeedbackMessageID.NO_SPECIFIED_MESSAGE_ID,
+			FireHistoryRecorder.getFeedbackMessagePanel().updateFeedbackMessage(FeedbackMessageType.WARNING,
 					"The current number of samples (" + IOController.getFile().getRequiredPart().getNumSamples()
 							+ ") exceeds the capabilities of the original FHX2 software (maximum of 254).");
 		}
 		else
 		{
-			FireHistoryRecorder.clearFeedbackMessage();
+			FireHistoryRecorder.getFeedbackMessagePanel().clearFeedbackMessage();
 		}
 	}
 	
@@ -296,13 +294,13 @@ public class FileController {
 		if (IOController.getFile().getRequiredPart().getDataSetFirstYear() < FileController.FHX2_YEAR_LOWER_BOUNDARY
 				&& FileController.isEnforcingOldReqs())
 		{
-			FireHistoryRecorder.updateFeedbackMessage(FeedbackMessageType.WARNING, Color.red, FeedbackMessageID.NO_SPECIFIED_MESSAGE_ID,
+			FireHistoryRecorder.getFeedbackMessagePanel().updateFeedbackMessage(FeedbackMessageType.WARNING,
 					"The earliest year in the dataset (" + IOController.getFile().getRequiredPart().getDataSetFirstYear()
 							+ ") is below the minimum supported year of FHX2 (1200).");
 		}
 		else
 		{
-			FireHistoryRecorder.clearFeedbackMessage();
+			FireHistoryRecorder.getFeedbackMessagePanel().clearFeedbackMessage();
 		}
 	}
 	
@@ -314,13 +312,13 @@ public class FileController {
 		if (IOController.getFile().getRequiredPart().getDataSetLastYear() > FileController.FHX2_YEAR_UPPER_BOUNDARY
 				&& FileController.isEnforcingOldReqs())
 		{
-			FireHistoryRecorder.updateFeedbackMessage(FeedbackMessageType.WARNING, Color.red, FeedbackMessageID.NO_SPECIFIED_MESSAGE_ID,
+			FireHistoryRecorder.getFeedbackMessagePanel().updateFeedbackMessage(FeedbackMessageType.WARNING,
 					"The latest year in the dataset (" + IOController.getFile().getRequiredPart().getDataSetLastYear()
 							+ ") is above the maximum supported year of FHX2 (2020).");
 		}
 		else
 		{
-			FireHistoryRecorder.clearFeedbackMessage();
+			FireHistoryRecorder.getFeedbackMessagePanel().clearFeedbackMessage();
 		}
 	}
 	
@@ -473,8 +471,8 @@ public class FileController {
 			fileName = selectedFile.getName();
 			if (selectedFile.getName().length() > FHX2_MAX_FILE_NAME_LENGTH && isEnforcingOldReqs() == true)
 			{
-				FireHistoryRecorder.updateFeedbackMessage(FeedbackMessageType.WARNING, Color.red,
-						FeedbackMessageID.NO_SPECIFIED_MESSAGE_ID, "File name is too long for the original FHX program requirements.");
+				FireHistoryRecorder.getFeedbackMessagePanel().updateFeedbackMessage(FeedbackMessageType.WARNING,
+						"File name is too long for the original FHX program requirements.");
 						
 				filePath = filePath.substring(0, filePath.length() - fileName.length());
 				fileName = fileName.substring(0, FHX2_MAX_FILE_NAME_LENGTH);
@@ -490,8 +488,8 @@ public class FileController {
 				fileName = selectedFile.getName();
 				if (selectedFile.getName().length() > FHX2_MAX_FILE_NAME_LENGTH && isEnforcingOldReqs() == true)
 				{
-					FireHistoryRecorder.updateFeedbackMessage(FeedbackMessageType.WARNING, Color.red,
-							FeedbackMessageID.NO_SPECIFIED_MESSAGE_ID, "File name is too long for the original FHX program requirements.");
+					FireHistoryRecorder.getFeedbackMessagePanel().updateFeedbackMessage(FeedbackMessageType.WARNING,
+							"File name is too long for the original FHX program requirements.");
 							
 					filePath = filePath.substring(0, filePath.length() - fileName.length());
 					fileName = fileName.substring(0, FHX2_MAX_FILE_NAME_LENGTH);

@@ -34,22 +34,45 @@ public enum LineStyle {
 	double firstCode = 1;
 	double secondCode = 0;
 	
+	/**
+	 * Initialize the firstCode and secondCode values for the LineStyle.
+	 * 
+	 * @param firstCode
+	 * @param secondCode
+	 */
 	LineStyle(double firstCode, double secondCode) {
 		
 		this.firstCode = firstCode;
 		this.secondCode = secondCode;
 	}
 	
+	/**
+	 * TODO
+	 * 
+	 * @return
+	 */
 	public String getCode() {
 		
 		return firstCode + "," + secondCode;
 	}
 	
+	/**
+	 * TODO
+	 * 
+	 * @param scale
+	 * @return
+	 */
 	public String getCode(int scale) {
 		
 		return (firstCode * scale) + "," + (secondCode * scale);
 	}
 	
+	/**
+	 * TODO
+	 * 
+	 * @param yrs
+	 * @return
+	 */
 	public String getCodeForChartYearCount(int yrs) {
 		
 		Double scale = (yrs / 500.0);
@@ -63,6 +86,12 @@ public enum LineStyle {
 		return (firstCode * scale) + "," + (secondCode * scale);
 	}
 	
+	/**
+	 * TODO
+	 * 
+	 * @param str
+	 * @return
+	 */
 	public static LineStyle fromString(String str) {
 		
 		if (str.equals(LineStyle.SOLID.toString()))

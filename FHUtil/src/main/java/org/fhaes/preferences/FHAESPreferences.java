@@ -105,8 +105,6 @@ public class FHAESPreferences {
 		
 		UPDATES_LATE_CHECKED("updatesLastChecked"),
 		
-		SHOW_FILE_SAVED_MESSAGE("showFileSavedMessage"),
-		
 		SCREEN_BOUNDS_X("screenBoundsX"),
 		
 		SCREEN_BOUNDS_Y("screenBoundsY"),
@@ -409,7 +407,15 @@ public class FHAESPreferences {
 		
 		CHART_FONT_BOLD("chartFontBold"),
 		
-		CHART_FONT_ITALIC("chartFontItalic");
+		CHART_FONT_ITALIC("chartFontItalic"),
+		
+		/**
+		 * 
+		 * FEEDBACK MESSAGE PREFERENCES
+		 * 
+		 */
+		
+		SHOW_FILE_SAVED_MESSAGE("showFileSavedMessage");
 		
 		/**
 		 * 
@@ -417,13 +423,24 @@ public class FHAESPreferences {
 		 * 
 		 */
 		
+		// Declare local variables
 		private final String key;
 		
-		private PrefKey(String key) {
+		/**
+		 * Initialize the preference key for the PrefKey.
+		 * 
+		 * @param inKeyValue
+		 */
+		private PrefKey(String inKeyValue) {
 			
-			this.key = key;
+			this.key = inKeyValue;
 		}
 		
+		/**
+		 * Get the preference key for this PrefKey.
+		 * 
+		 * @return key
+		 */
 		public String getValue() {
 			
 			return key;

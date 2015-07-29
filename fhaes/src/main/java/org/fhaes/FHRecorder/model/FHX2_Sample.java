@@ -17,7 +17,6 @@
  *************************************************************************************************/
 package org.fhaes.FHRecorder.model;
 
-import java.awt.Color;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Vector;
@@ -32,10 +31,9 @@ import org.fhaes.FHRecorder.utility.SampleErrorModel;
 import org.fhaes.FHRecorder.view.EventTable;
 import org.fhaes.FHRecorder.view.FireHistoryRecorder;
 import org.fhaes.FHRecorder.view.RecordingTable;
+import org.fhaes.enums.FeedbackMessageType;
 import org.fhaes.exceptions.CompositeFileException;
-import org.fhaes.feedback.FeedbackMessagePanel;
-import org.fhaes.feedback.FeedbackMessagePanel.FeedbackMessageID;
-import org.fhaes.feedback.FeedbackMessagePanel.FeedbackMessageType;
+import org.fhaes.feedback.PredefinedMessageManager.PredefinedMessage;
 
 /**
  * FHX2_Sample Class. This class is used to represent a sample in the FHX2 data.
@@ -373,14 +371,18 @@ public class FHX2_Sample implements Serializable, ErrorTrackerInterface {
 		
 		if (inputName.length() > FileController.FHX2_MAX_SAMPLE_NAME_LENGTH && FileController.isEnforcingOldReqs())
 		{
-			FireHistoryRecorder.updateFeedbackMessage(FeedbackMessageType.WARNING, Color.red,
-					FeedbackMessageID.FHX2_SAMPLE_NAME_LENGTH_MESSAGE, FeedbackMessageID.FHX2_SAMPLE_NAME_LENGTH_MESSAGE.toString());
+			FireHistoryRecorder.getFeedbackMessagePanel().updateFeedbackMessage(FeedbackMessageType.WARNING,
+					PredefinedMessage.FHX2_SAMPLE_NAME_LENGTH_MESSAGE.getMessage());
+					
 			return "";
 		}
 		
-		if (FeedbackMessagePanel.getCurrentMessageID() == FeedbackMessageID.FHX2_SAMPLE_NAME_LENGTH_MESSAGE)
-			FireHistoryRecorder.clearFeedbackMessage();
-			
+		if (FireHistoryRecorder.getFeedbackMessagePanel().getCurrentMessage() == PredefinedMessage.FHX2_SAMPLE_NAME_LENGTH_MESSAGE
+				.getMessage())
+		{
+			FireHistoryRecorder.getFeedbackMessagePanel().clearFeedbackMessage();
+		}
+		
 		return inputName;
 	}
 	

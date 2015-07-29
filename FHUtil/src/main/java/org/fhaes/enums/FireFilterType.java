@@ -27,24 +27,38 @@ public enum FireFilterType {
 	PERCENTAGE_OF_EVENTS("Percent scarred");
 	
 	// Declare local variables
-	private String humanreadable;
+	private String humanReadable;
 	
-	FireFilterType(String s) {
+	/**
+	 * Initialize the human-readable string for the FireFilterType.
+	 * 
+	 * @param str
+	 */
+	FireFilterType(String str) {
 		
-		humanreadable = s;
+		humanReadable = str;
 	}
 	
+	/**
+	 * Get the human-readable string name for this FireFilterType.
+	 */
 	@Override
 	public String toString() {
 		
-		return humanreadable;
+		return humanReadable;
 	}
 	
+	/**
+	 * Create a FireFilterType from a string name. If there is no FireFilterType that matches the string then null is returned.
+	 * 
+	 * @param name
+	 * @return
+	 */
 	public static FireFilterType fromName(String name) {
 		
 		for (FireFilterType type : FireFilterType.values())
 		{
-			if (type.humanreadable.equals(name))
+			if (type.humanReadable.equals(name))
 				return type;
 		}
 		

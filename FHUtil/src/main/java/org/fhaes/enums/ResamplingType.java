@@ -29,11 +29,16 @@ public enum ResamplingType {
 	WITHOUT_REPLACEMENT("Without replacement");
 	
 	// Declare local variables
-	private String humanreadable;
+	private String humanReadable;
 	
-	ResamplingType(String s) {
+	/**
+	 * Initialize the human-readable string for the ResamplingType.
+	 * 
+	 * @param str
+	 */
+	ResamplingType(String str) {
 		
-		humanreadable = s;
+		humanReadable = str;
 	}
 	
 	/**
@@ -42,7 +47,7 @@ public enum ResamplingType {
 	@Override
 	public String toString() {
 		
-		return humanreadable;
+		return humanReadable;
 	}
 	
 	/**
@@ -55,7 +60,7 @@ public enum ResamplingType {
 		
 		for (ResamplingType type : ResamplingType.values())
 		{
-			if (type.humanreadable.equals(name))
+			if (type.humanReadable.equals(name))
 				return type;
 		}
 		

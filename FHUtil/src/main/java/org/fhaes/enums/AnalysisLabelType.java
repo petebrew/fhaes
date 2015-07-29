@@ -18,7 +18,7 @@
 package org.fhaes.enums;
 
 /**
- * AnalysisLabelType Enum. Enumeration containing the options for how analyses should be labelled. Normally analyses are labelled using the
+ * AnalysisLabelType Enum. Enumeration containing the options for how analyses should be labeled. Normally analyses are labeled using the
  * file name for the input file, but you can also use site codes and site names too.
  * 
  * @author Peter Brewer
@@ -32,20 +32,25 @@ public enum AnalysisLabelType {
 	SITE_NAME("Site name");
 	
 	// Declare local variables
-	private String humanreadable;
+	private String humanReadable;
 	
-	AnalysisLabelType(String s) {
+	/**
+	 * Initialize the human-readable string for the AnalysisLabelType.
+	 * 
+	 * @param str
+	 */
+	AnalysisLabelType(String str) {
 		
-		humanreadable = s;
+		humanReadable = str;
 	}
 	
 	/**
-	 * Get the human readable string name for this AnalysisLabelType.
+	 * Get the human-readable string name for this AnalysisLabelType.
 	 */
 	@Override
 	public String toString() {
 		
-		return humanreadable;
+		return humanReadable;
 	}
 	
 	/**
@@ -58,7 +63,7 @@ public enum AnalysisLabelType {
 		
 		for (AnalysisLabelType type : AnalysisLabelType.values())
 		{
-			if (type.humanreadable.equals(name))
+			if (type.humanReadable.equals(name))
 				return type;
 		}
 		

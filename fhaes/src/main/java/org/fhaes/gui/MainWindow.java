@@ -75,6 +75,8 @@ import org.fhaes.components.FHAESMenuItem;
 import org.fhaes.components.JToolBarButton;
 import org.fhaes.components.JToolBarToggleButton;
 import org.fhaes.exceptions.CompositeFileException;
+import org.fhaes.feedback.FeedbackMessagePanel;
+import org.fhaes.feedback.PredefinedMessageManager;
 import org.fhaes.fhfilereader.FHCategoryReader;
 import org.fhaes.fhsamplesize.view.FHSampleSize;
 import org.fhaes.filefilter.CSVFileFilter;
@@ -176,7 +178,11 @@ public class MainWindow implements PrefsListener {
 	private FHAESAction actionShowQuickLaunch;
 	protected FHAESAction actionPrefChangeShowQuickLaunch;
 	private FHAESAction actionPrefChangeAutoLoadCategories;
+	private FHAESAction actionResetAllFeedbackMessagePrefs;
 	public static ChartActions chartActions;
+	
+	// Declare feedback message panel
+	private static FeedbackMessagePanel feedbackMessagePanel;
 	
 	// Declare local variables
 	private Boolean fileListListenerPaused = false;
@@ -1213,6 +1219,14 @@ public class MainWindow implements PrefsListener {
 	}
 	
 	/**
+	 * Gets the feedbackMessagePanel instance.
+	 */
+	public static FeedbackMessagePanel getFeedbackMessagePanel() {
+		
+		return feedbackMessagePanel;
+	}
+	
+	/**
 	 * Initialize the main frame.
 	 */
 	private void initGUI() {
@@ -1250,12 +1264,16 @@ public class MainWindow implements PrefsListener {
 		}
 		
 		fileListModel = new FileListModel();
+		frame.getContentPane().setLayout(new MigLayout("hidemode 2", "[grow]", "[][500:500,grow,fill]"));
+		
+		feedbackMessagePanel = new FeedbackMessagePanel();
+		frame.getContentPane().add(feedbackMessagePanel, "cell 0 0,alignx left,aligny top");
 		
 		splitPane = new JSplitPane();
 		splitPane.setResizeWeight(0);
 		splitPane.setOneTouchExpandable(true);
 		
-		frame.getContentPane().add(splitPane, BorderLayout.CENTER);
+		frame.getContentPane().add(splitPane, "cell 0 1,growx,aligny top");
 		
 		rightSplitPanel = new ReportPanel();
 		if (Platform.isOSX())
@@ -2132,6 +2150,17 @@ public class MainWindow implements PrefsListener {
 			}
 		};
 		actionPrefChangeAutoLoadCategories.putValue(Action.SELECTED_KEY, App.prefs.getBooleanPref(PrefKey.AUTO_LOAD_CATEGORIES, true));
+		
+		this.actionResetAllFeedbackMessagePrefs = new FHAESAction("Reset all feedback message prefs", "reset.png") {
+			
+			private static final long serialVersionUID = 1L;
+			
+			@Override
+			public void actionPerformed(ActionEvent event) {
+				
+				PredefinedMessageManager.ResetAllFeedbackMessagePrefs();
+			}
+		};
 	}
 	
 	/**
@@ -2302,6 +2331,8 @@ public class MainWindow implements PrefsListener {
 		
 		mnPreferences.add(new FHAESCheckBoxMenuItem(actionPrefChangeShowQuickLaunch));
 		mnPreferences.add(new FHAESCheckBoxMenuItem(actionPrefChangeAutoLoadCategories));
+		mnPreferences.addSeparator();
+		mnPreferences.add(new FHAESCheckBoxMenuItem(actionResetAllFeedbackMessagePrefs));
 		
 		/**
 		 * 

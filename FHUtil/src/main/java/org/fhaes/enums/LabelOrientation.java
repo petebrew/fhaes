@@ -29,34 +29,52 @@ public enum LabelOrientation {
 	ANGLED("Angled", 315);
 	
 	// Declare local variables
-	private String humanreadable;
+	private String humanReadable;
 	private int angle;
 	
-	LabelOrientation(String s, int angle) {
+	/**
+	 * Initialize the human-readable string and angle for the LabelOrientation.
+	 * 
+	 * @param str
+	 * @param angle
+	 */
+	LabelOrientation(String str, int angle) {
 		
-		humanreadable = s;
+		humanReadable = str;
 		this.angle = angle;
 	}
 	
+	/**
+	 * Get the human-readable string name for this LabelOrientation.
+	 */
 	@Override
 	public String toString() {
 		
-		return humanreadable;
+		return humanReadable;
 	}
 	
+	/**
+	 * Get the integer angle name for this LabelOrientation.
+	 */
+	public int getAngle() {
+		
+		return angle;
+	}
+	
+	/**
+	 * Create a LabelOrientation from a string name. If there is no LabelOrientation that matches the string then null is returned.
+	 * 
+	 * @param name
+	 * @return
+	 */
 	public static LabelOrientation fromName(String name) {
 		
 		for (LabelOrientation type : LabelOrientation.values())
 		{
-			if (type.humanreadable.toLowerCase().equals(name.toLowerCase()))
+			if (type.humanReadable.toLowerCase().equals(name.toLowerCase()))
 				return type;
 		}
 		
 		return null;
-	}
-	
-	public int getAngle() {
-		
-		return angle;
 	}
 }

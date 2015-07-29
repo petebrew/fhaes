@@ -42,9 +42,8 @@ import org.fhaes.FHRecorder.model.FHX2_FileOptionalPart;
 import org.fhaes.FHRecorder.utility.LengthRestrictedDocument;
 import org.fhaes.FHRecorder.utility.MetaDataTextField;
 import org.fhaes.components.HelpTipButton;
-import org.fhaes.feedback.FeedbackMessagePanel;
-import org.fhaes.feedback.FeedbackMessagePanel.FeedbackMessageID;
-import org.fhaes.feedback.FeedbackMessagePanel.FeedbackMessageType;
+import org.fhaes.enums.FeedbackMessageType;
+import org.fhaes.feedback.PredefinedMessageManager.PredefinedMessage;
 import org.fhaes.help.LocalHelp;
 import org.fhaes.preferences.FHAESPreferences.PrefKey;
 import org.fhaes.preferences.wrappers.CheckBoxWrapper;
@@ -1873,14 +1872,19 @@ public class MetaDataPanel extends javax.swing.JPanel {
 		// Updates the status pane according to the compatibility of the above fields
 		if (numFieldsCompatible == ALL_FIELDS_COMPATIBLE)
 		{
-			if (FeedbackMessagePanel.getCurrentMessageID() == FeedbackMessageID.FHX2_META_DATA_LENGTH_MESSAGE)
-				FireHistoryRecorder.clearFeedbackMessage();
+			if (FireHistoryRecorder.getFeedbackMessagePanel().getCurrentMessage() == PredefinedMessage.FHX2_META_DATA_LENGTH_MESSAGE
+					.getMessage())
+			{
+				FireHistoryRecorder.getFeedbackMessagePanel().clearFeedbackMessage();
+			}
+			
 			return true;
 		}
 		else
 		{
-			FireHistoryRecorder.updateFeedbackMessage(FeedbackMessageType.WARNING, Color.red,
-					FeedbackMessageID.FHX2_META_DATA_LENGTH_MESSAGE, FeedbackMessageID.FHX2_META_DATA_LENGTH_MESSAGE.toString());
+			FireHistoryRecorder.getFeedbackMessagePanel().updateFeedbackMessage(FeedbackMessageType.WARNING,
+					PredefinedMessage.FHX2_META_DATA_LENGTH_MESSAGE.getMessage());
+					
 			return false;
 		}
 	}
@@ -1890,9 +1894,12 @@ public class MetaDataPanel extends javax.swing.JPanel {
 	 */
 	private void resetTextBoxColors() {
 		
-		if (FeedbackMessagePanel.getCurrentMessageID() == FeedbackMessageID.FHX2_META_DATA_LENGTH_MESSAGE)
-			FireHistoryRecorder.clearFeedbackMessage();
-			
+		if (FireHistoryRecorder.getFeedbackMessagePanel().getCurrentMessage() == PredefinedMessage.FHX2_META_DATA_LENGTH_MESSAGE
+				.getMessage())
+		{
+			FireHistoryRecorder.getFeedbackMessagePanel().clearFeedbackMessage();
+		}
+		
 		siteNameText.setForeground(Color.black);
 		siteNameCountBox.setForeground(Color.black);
 		siteNameCountBox.setText("" + siteNameText.getText().length());

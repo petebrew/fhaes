@@ -31,24 +31,38 @@ public enum MiddleMetric {
 	WEIBULL_MEDIAN("Weibull median");
 	
 	// Declare local variables
-	private String humanreadable;
+	private String humanReadable;
 	
-	MiddleMetric(String s) {
+	/**
+	 * Initialize the human-readable string for the MiddleMetric.
+	 * 
+	 * @param str
+	 */
+	MiddleMetric(String str) {
 		
-		humanreadable = s;
+		humanReadable = str;
 	}
 	
+	/**
+	 * Get the human-readable string name for this MiddleMetric.
+	 */
 	@Override
 	public String toString() {
 		
-		return humanreadable;
+		return humanReadable;
 	}
 	
+	/**
+	 * Create a MiddleMetric from a string name. If there is no MiddleMetric that matches the string then null is returned.
+	 * 
+	 * @param name
+	 * @return
+	 */
 	public static MiddleMetric fromName(String name) {
 		
 		for (MiddleMetric type : MiddleMetric.values())
 		{
-			if (type.humanreadable.equals(name))
+			if (type.humanReadable.equals(name))
 				return type;
 		}
 		
