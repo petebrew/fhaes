@@ -43,8 +43,8 @@ import org.fhaes.FHRecorder.controller.SampleController;
 import org.fhaes.FHRecorder.model.FHX2_File;
 import org.fhaes.enums.FeedbackMessageType;
 import org.fhaes.exceptions.CompositeFileException;
-import org.fhaes.feedback.FeedbackPreferenceManager.FeedbackDictionary;
 import org.fhaes.feedback.FeedbackMessagePanel;
+import org.fhaes.feedback.FeedbackPreferenceManager.FeedbackDictionary;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -169,7 +169,6 @@ public class FireHistoryRecorder extends JDialog {
 		});
 		
 		saveButton = new JButton("Save");
-		this.getContentPane().add(saveButton, "cell 1 2,grow");
 		saveButton.addActionListener(new ActionListener() {
 			
 			@Override
@@ -186,9 +185,9 @@ public class FireHistoryRecorder extends JDialog {
 			}
 			
 		});
+		this.getContentPane().add(saveButton, "cell 1 2,growx,aligny center");
 		
 		closeButton = new JButton("Close");
-		this.getContentPane().add(closeButton, "cell 2 2,grow");
 		closeButton.addActionListener(new ActionListener() {
 			
 			@Override
@@ -198,9 +197,9 @@ public class FireHistoryRecorder extends JDialog {
 			}
 			
 		});
+		this.getContentPane().add(closeButton, "cell 2 2,growx,aligny center");
 		
 		discardChangesButton = new JButton("Discard changes");
-		this.getContentPane().add(discardChangesButton, "cell 3 2,grow");
 		discardChangesButton.addActionListener(new ActionListener() {
 			
 			@Override
@@ -211,6 +210,7 @@ public class FireHistoryRecorder extends JDialog {
 			}
 			
 		});
+		this.getContentPane().add(discardChangesButton, "cell 3 2,growx,aligny center");
 		this.pack();
 	}
 	
@@ -286,7 +286,7 @@ public class FireHistoryRecorder extends JDialog {
 		}
 		
 		FileController.save();
-		feedbackMessagePanel.updateFeedbackMessage(FeedbackMessageType.INFO, FeedbackDictionary.FILE_SAVED_MESSAGE.getMessage());
+		feedbackMessagePanel.updateFeedbackMessage(FeedbackMessageType.INFO, FeedbackDictionary.FHRECORDER_FILE_SAVED_MESSAGE.toString());
 	}
 	
 	/**

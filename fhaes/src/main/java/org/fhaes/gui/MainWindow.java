@@ -74,9 +74,10 @@ import org.fhaes.components.FHAESCheckBoxMenuItem;
 import org.fhaes.components.FHAESMenuItem;
 import org.fhaes.components.JToolBarButton;
 import org.fhaes.components.JToolBarToggleButton;
+import org.fhaes.enums.FeedbackMessageType;
 import org.fhaes.exceptions.CompositeFileException;
-import org.fhaes.feedback.FeedbackPreferenceManager;
 import org.fhaes.feedback.FeedbackMessagePanel;
+import org.fhaes.feedback.FeedbackPreferenceManager;
 import org.fhaes.fhfilereader.FHCategoryReader;
 import org.fhaes.fhsamplesize.view.FHSampleSize;
 import org.fhaes.filefilter.CSVFileFilter;
@@ -148,6 +149,7 @@ public class MainWindow implements PrefsListener {
 	protected ReportPanel rightSplitPanel;
 	private FileListModel fileListModel;
 	private FileDropTargetListener lstFiles;
+	private FeedbackMessagePanel feedbackMessagePanel;
 	
 	// Declare FHAES actions
 	public static FHAESAction actionFileExit;
@@ -182,9 +184,6 @@ public class MainWindow implements PrefsListener {
 	private FHAESAction actionPrefChangeAutoLoadCategories;
 	private FHAESAction actionResetAllFeedbackMessagePrefs;
 	public static ChartActions chartActions;
-	
-	// Declare feedback message panel
-	private static FeedbackMessagePanel feedbackMessagePanel;
 	
 	// Declare local variables
 	private Boolean fileListListenerPaused = false;
@@ -781,6 +780,13 @@ public class MainWindow implements PrefsListener {
 				fileListModel.addElement(new FHFile(savedFile.getAbsoluteFile()));
 			}
 			
+			// Reload the category file for this FHX file if it exists and if the auto-load preference is set
+			if (App.prefs.getBooleanPref(PrefKey.AUTO_LOAD_CATEGORIES, true))
+			{
+				FHFile currentFHFile = new FHFile(f);
+				openCategoryFile(new File(currentFHFile.getDefaultCategoryFilePath()));
+			}
+			
 			// Go ahead and force the GUI to update by selecting this file
 			handleFileListChanged();
 			handleFileSelectionChanged();
@@ -1223,7 +1229,7 @@ public class MainWindow implements PrefsListener {
 	/**
 	 * Gets the feedbackMessagePanel instance.
 	 */
-	public static FeedbackMessagePanel getFeedbackMessagePanel() {
+	public FeedbackMessagePanel getFeedbackMessagePanel() {
 		
 		return feedbackMessagePanel;
 	}
@@ -1269,7 +1275,7 @@ public class MainWindow implements PrefsListener {
 		frame.getContentPane().setLayout(new MigLayout("hidemode 2", "[grow]", "[][500:500,grow,fill]"));
 		
 		feedbackMessagePanel = new FeedbackMessagePanel();
-		frame.getContentPane().add(feedbackMessagePanel, "cell 0 0,alignx left,aligny top");
+		frame.getContentPane().add(feedbackMessagePanel, "cell 0 0,grow");
 		
 		splitPane = new JSplitPane();
 		splitPane.setResizeWeight(0);
@@ -1529,7 +1535,8 @@ public class MainWindow implements PrefsListener {
 				}
 				else
 				{
-					log.debug("Cannot edit categories for an invalid FHX file.");
+					feedbackMessagePanel.updateFeedbackMessage(FeedbackMessageType.ERROR,
+							"Cannot edit categories for an invalid FHX file.");
 				}
 			}
 		};

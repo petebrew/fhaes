@@ -32,6 +32,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 
+import org.fhaes.enums.FeedbackMessageType;
+import org.fhaes.feedback.FeedbackPreferenceManager.FeedbackDictionary;
 import org.fhaes.fhfilereader.FHCategoryReader;
 import org.fhaes.model.FHCategoryEntry;
 import org.fhaes.model.FHFile;
@@ -165,7 +167,7 @@ public class CategoryEditor extends JDialog {
 		this.setSize(800, 500);
 		this.setLocationRelativeTo(null);
 		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-		this.setTitle("Edit Categories for FHX file: " + workingFile.getFileNameWithoutExtension());
+		this.setTitle("Edit categories for FHX file: " + workingFile.getFileNameWithoutExtension());
 		
 		// Make sure to populate the entries before showing the dialog
 		refreshEntries();
@@ -273,6 +275,9 @@ public class CategoryEditor extends JDialog {
 			}
 			
 			writer.close();
+			
+			MainWindow.getInstance().getFeedbackMessagePanel().updateFeedbackMessage(FeedbackMessageType.INFO,
+					FeedbackDictionary.CATEGORY_FILE_SAVED_MESSAGE.toString());
 		}
 		catch (IOException ex)
 		{

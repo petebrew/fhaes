@@ -415,7 +415,9 @@ public class FHAESPreferences {
 		 * 
 		 */
 		
-		SHOW_FILE_SAVED_MESSAGE("showFileSavedMessage");
+		SHOW_CATEGORY_FILE_SAVED_MESSAGE("showCategoryFileSavedMessage"),
+		
+		SHOW_FHRECORDER_FILE_SAVED_MESSAGE("showFHRecorderFileSavedMessage");
 		
 		/**
 		 * 

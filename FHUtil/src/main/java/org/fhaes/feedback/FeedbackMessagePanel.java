@@ -26,6 +26,7 @@ import java.awt.event.ActionListener;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -46,9 +47,9 @@ public class FeedbackMessagePanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 	
 	// Declare local constants
-	private final int FIVE_SECOND_DELAY = 5000;
-	private final float FULL_OPACITY = 1.0f;
 	private final String BLANK_MESSAGE = "";
+	private final float FULL_OPACITY = 1.0f;
+	private final int EIGHT_SECOND_DELAY = 8000;
 	
 	// Declare GUI components
 	private JLabel feedbackMessageText;
@@ -58,6 +59,7 @@ public class FeedbackMessagePanel extends JPanel {
 	
 	// Declare local variables
 	private float currentOpacity = FULL_OPACITY;
+	private boolean updateMessageFired = false;
 	
 	/**
 	 * Creates new a FeedbackMessagePanel.
@@ -100,7 +102,12 @@ public class FeedbackMessagePanel extends JPanel {
 		// Get the associated key value for this message, if it has one
 		if (keyForCurrentMessage != null)
 		{
+			hideMessagesButton.setVisible(true);
 			showThisFeedbackMessage = App.prefs.getBooleanPref(keyForCurrentMessage, true);
+		}
+		else
+		{
+			hideMessagesButton.setVisible(false);
 		}
 		
 		// Do not show the feedback message if the user has preferred it to be hidden
@@ -110,15 +117,18 @@ public class FeedbackMessagePanel extends JPanel {
 			if (messageString != null && messageString.length() != 0)
 			{
 				currentOpacity = FULL_OPACITY;
+				updateMessageFired = true;
+				
 				feedbackMessageIcon.setIcon(messageType.getDisplayIcon());
 				feedbackMessageText.setText(messageString);
 				this.setBackground(messageType.getBackgroundColor());
 				this.setVisible(true);
 				
-				// Only do the fade out animation if the message is of type info
-				if (messageType.toString() == FeedbackMessageType.INFO.toString())
+				// Only do the fade out animation if the message is of type info or error
+				if (messageType.toString() != FeedbackMessageType.WARNING.toString())
 				{
-					autoHideDelayTimer.schedule(new AutoHideMessageTask(), FIVE_SECOND_DELAY);
+					// Start the auto-hide process after showing the message for five seconds
+					autoHideDelayTimer.schedule(new AutoHideMessageTask(), EIGHT_SECOND_DELAY);
 				}
 			}
 		}
@@ -177,7 +187,8 @@ public class FeedbackMessagePanel extends JPanel {
 		// Setup the message textbox
 		feedbackMessageText = new JLabel(BLANK_MESSAGE);
 		feedbackMessageText.setBackground(null);
-		feedbackMessageText.setBorder(null);
+		feedbackMessageText.setBorder(
+				BorderFactory.createCompoundBorder(feedbackMessageText.getBorder(), BorderFactory.createEmptyBorder(5, 0, 5, 0)));
 		feedbackMessageText.setFont(new Font("Dialog", Font.PLAIN, 14));
 		feedbackMessageText.setText("Some info or warning...");
 		this.add(feedbackMessageText, "cell 2 0,growx,aligny center");
@@ -216,13 +227,20 @@ public class FeedbackMessagePanel extends JPanel {
 		@Override
 		public void run() {
 			
+			updateMessageFired = false;
+			
 			while (true)
 			{
 				// Handle the gradual fade-out of the feedback message panel
-				if (currentOpacity - 0.1f > NO_OPACITY)
+				if (currentOpacity - 0.1f > NO_OPACITY && !updateMessageFired)
 				{
 					currentOpacity = currentOpacity - 0.001f;
 					repaintFeedbackMessagePanel();
+				}
+				else if (updateMessageFired)
+				{
+					currentOpacity = FULL_OPACITY;
+					return;
 				}
 				else
 				{

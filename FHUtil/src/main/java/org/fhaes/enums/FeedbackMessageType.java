@@ -32,7 +32,7 @@ public enum FeedbackMessageType {
 	
 	WARNING("WARNING", new Color(255, 255, 204), Builder.getImageIcon("warning.png")),
 	
-	ERROR("ERROR", new Color(255, 204, 204), Builder.getImageIcon("delete.png"));
+	ERROR("ERROR", new Color(255, 204, 204), Builder.getImageIcon("bad.png"));
 	
 	// Declare local variables
 	private String humanReadable;

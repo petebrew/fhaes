@@ -31,31 +31,23 @@ public class FeedbackPreferenceManager {
 	 */
 	public enum FeedbackDictionary {
 		
-		FILE_SAVED_MESSAGE("File was saved successfully.", PrefKey.SHOW_FILE_SAVED_MESSAGE);
+		CATEGORY_FILE_SAVED_MESSAGE("Category file was saved successfully.", PrefKey.SHOW_CATEGORY_FILE_SAVED_MESSAGE),
+		
+		FHRECORDER_FILE_SAVED_MESSAGE("FHX file was saved successfully.", PrefKey.SHOW_FHRECORDER_FILE_SAVED_MESSAGE);
 		
 		// Declare local variables
-		private final String messageText;
+		private final String humanReadable;
 		private final PrefKey associatedKey;
 		
 		/**
-		 * Initialize the message text and associated preference key for the feedback message.
+		 * Initialize the human-readable string and associated preference key for the feedback message.
 		 * 
 		 * @param message
 		 */
-		FeedbackDictionary(String message, PrefKey key) {
+		FeedbackDictionary(String str, PrefKey key) {
 			
-			messageText = message;
+			humanReadable = str;
 			associatedKey = key;
-		}
-		
-		/**
-		 * Get the message text for the feedback message.
-		 * 
-		 * @return messageText
-		 */
-		public String getMessage() {
-			
-			return messageText;
 		}
 		
 		/**
@@ -66,6 +58,17 @@ public class FeedbackPreferenceManager {
 		public PrefKey getAssociatedKey() {
 			
 			return associatedKey;
+		}
+		
+		/**
+		 * Get the human-readable string name for this feedback message.
+		 * 
+		 * @return humanReadable
+		 */
+		@Override
+		public String toString() {
+			
+			return humanReadable;
 		}
 	}
 	
@@ -81,7 +84,7 @@ public class FeedbackPreferenceManager {
 		
 		for (int i = 0; i < allFeedbackMessages.length; i++)
 		{
-			if (allFeedbackMessages[i].getMessage() == inText)
+			if (allFeedbackMessages[i].toString() == inText)
 			{
 				return allFeedbackMessages[i].getAssociatedKey();
 			}
@@ -95,6 +98,8 @@ public class FeedbackPreferenceManager {
 	 */
 	public static void ResetAllFeedbackMessagePrefs() {
 		
-		App.prefs.setBooleanPref(PrefKey.SHOW_FILE_SAVED_MESSAGE, true);
+		App.prefs.setBooleanPref(PrefKey.SHOW_CATEGORY_FILE_SAVED_MESSAGE, true);
+		
+		App.prefs.setBooleanPref(PrefKey.SHOW_FHRECORDER_FILE_SAVED_MESSAGE, true);
 	}
 }

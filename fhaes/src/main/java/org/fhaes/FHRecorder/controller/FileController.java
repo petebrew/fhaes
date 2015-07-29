@@ -333,8 +333,8 @@ public class FileController {
 		thePrimaryWindow.generateScreens(IOController.getFile());
 		filePath = null;
 		fileName = null;
-		isChangedSinceOpened = true;
-		isChangedSinceLastSave = true;
+		isChangedSinceOpened = false;
+		isChangedSinceLastSave = false;
 		setCorruptedState(false);
 		setIsNewFile(true);
 		enableCloseMenu();
@@ -427,7 +427,7 @@ public class FileController {
 	}
 	
 	/**
-	 * Saves the data stored in theFHX2File to a .fhx file at filepath.
+	 * Saves the data stored in theFHX2File as a FHX file at filePath.
 	 */
 	private static void doSaveFileFunctionality() {
 		
