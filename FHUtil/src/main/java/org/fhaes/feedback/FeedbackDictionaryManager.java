@@ -44,7 +44,7 @@ public class FeedbackDictionaryManager {
 		private final PrefKey associatedKey;
 		
 		/**
-		 * Initialize the message text for the feedback message.
+		 * Initialize the message text and associated preference key for the feedback message.
 		 * 
 		 * @param message
 		 */

@@ -47,6 +47,7 @@ public class FeedbackMessagePanel extends JPanel {
 	// Declare local constants
 	private final int FIVE_SECOND_DELAY = 5000;
 	private final float FULL_OPACITY = 1.0f;
+	private final String BLANK_MESSAGE = "";
 	
 	// Declare GUI components
 	private JLabel feedbackMessageText;
@@ -66,7 +67,7 @@ public class FeedbackMessagePanel extends JPanel {
 	}
 	
 	/**
-	 * Gets the string text of the current message.
+	 * Gets the text of the current message as a string.
 	 * 
 	 * @return the string contained in feedbackMessageText
 	 */
@@ -76,10 +77,11 @@ public class FeedbackMessagePanel extends JPanel {
 	}
 	
 	/**
-	 * Clears the feedback message and hides the FeedbackMessagePanel.
+	 * Clears the text of the current message and hides the FeedbackMessagePanel.
 	 */
 	public void clearFeedbackMessage() {
 		
+		feedbackMessageText.setText(BLANK_MESSAGE);
 		this.setVisible(false);
 	}
 	
@@ -125,7 +127,7 @@ public class FeedbackMessagePanel extends JPanel {
 	 * Prevents the feedback message panel from showing the current message in the future. This action is permanent until the 'reset all
 	 * feedback message preferences' button is pressed on the main window.
 	 */
-	public void stopShowingThisMessage() {
+	public void stopShowingCurrentMessage() {
 		
 		PrefKey keyForCurrentMessage = FeedbackDictionaryManager.GetAssociatedKeyFromMessageText(getCurrentMessage());
 		
@@ -172,7 +174,7 @@ public class FeedbackMessagePanel extends JPanel {
 		this.add(feedbackMessageIcon, "cell 0 0");
 		
 		// Setup the message textbox
-		feedbackMessageText = new JLabel();
+		feedbackMessageText = new JLabel(BLANK_MESSAGE);
 		feedbackMessageText.setBackground(null);
 		feedbackMessageText.setBorder(null);
 		feedbackMessageText.setFont(new Font("Dialog", Font.PLAIN, 14));
@@ -191,7 +193,7 @@ public class FeedbackMessagePanel extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				
-				stopShowingThisMessage();
+				stopShowingCurrentMessage();
 				clearFeedbackMessage();
 			}
 		});
@@ -206,7 +208,7 @@ public class FeedbackMessagePanel extends JPanel {
 	class AutoHideTask extends TimerTask {
 		
 		// Declare local constants
-		private final int TWO_HUNDRED_MILLISECONDS = 200;
+		private final int ONE_MILLISECOND = 1;
 		private final float NO_OPACITY = 0.0f;
 		
 		@Override
@@ -217,7 +219,7 @@ public class FeedbackMessagePanel extends JPanel {
 				// Handle the gradual fade-out of the feedback message panel
 				if (currentOpacity - 0.1f > NO_OPACITY)
 				{
-					currentOpacity = currentOpacity - 0.1f;
+					currentOpacity = currentOpacity - 0.001f;
 					repaintFeedbackMessagePanel();
 				}
 				else
@@ -229,7 +231,7 @@ public class FeedbackMessagePanel extends JPanel {
 				// Run this task every fifth of a second
 				try
 				{
-					Thread.sleep(TWO_HUNDRED_MILLISECONDS);
+					Thread.sleep(ONE_MILLISECOND);
 				}
 				catch (InterruptedException ex)
 				{
