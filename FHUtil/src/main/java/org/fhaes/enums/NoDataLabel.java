@@ -33,6 +33,11 @@ public enum NoDataLabel {
 	// Declare local variables
 	private Double value;
 	
+	/**
+	 * TODO
+	 * 
+	 * @param d
+	 */
 	NoDataLabel(Double d) {
 		
 		value = d;
@@ -50,6 +55,11 @@ public enum NoDataLabel {
 		return value.toString();
 	}
 	
+	/**
+	 * TODO
+	 * 
+	 * @return
+	 */
 	public Double toDouble() {
 		
 		return value;

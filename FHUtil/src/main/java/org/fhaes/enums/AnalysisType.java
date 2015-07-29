@@ -27,24 +27,38 @@ public enum AnalysisType {
 	SAMPLE("Sample");
 	
 	// Declare local variables
-	private String humanreadable;
+	private String humanReadable;
 	
-	AnalysisType(String s) {
+	/**
+	 * Initialize the human-readable string for the AnalysisType.
+	 * 
+	 * @param str
+	 */
+	AnalysisType(String str) {
 		
-		humanreadable = s;
+		humanReadable = str;
 	}
 	
+	/**
+	 * Get the human-readable string name for this AnalysisType.
+	 */
 	@Override
 	public String toString() {
 		
-		return humanreadable;
+		return humanReadable;
 	}
 	
+	/**
+	 * Create an AnalysisType from a string name. If there is no AnalysisType that matches the string then null is returned.
+	 * 
+	 * @param name
+	 * @return
+	 */
 	public static AnalysisType fromName(String name) {
 		
 		for (AnalysisType type : AnalysisType.values())
 		{
-			if (type.humanreadable.equals(name))
+			if (type.humanReadable.equals(name))
 				return type;
 		}
 		

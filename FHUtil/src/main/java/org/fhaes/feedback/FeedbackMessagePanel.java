@@ -17,7 +17,6 @@
  *************************************************************************************************/
 package org.fhaes.feedback;
 
-import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -27,9 +26,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EtchedBorder;
 
+import org.fhaes.enums.FeedbackMessageType;
+import org.fhaes.feedback.PredefinedMessageManager.PredefinedMessage;
 import org.fhaes.preferences.App;
-import org.fhaes.preferences.FHAESPreferences.PrefKey;
-import org.fhaes.util.Builder;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -40,203 +39,126 @@ public class FeedbackMessagePanel extends JPanel {
 	
 	private static final long serialVersionUID = 1L;
 	
-	/**
-	 * This enumerator is used to determine the message-type of status pane messages.
-	 */
-	public enum FeedbackMessageType {
-		ERROR, WARNING, INFO;
-	}
+	// Declare local constants
+	private final String EMPTY_MESSAGE_TEXT = "";
 	
-	/**
-	 * Enumerators to represent the different types of column data.
-	 */
-	public enum FeedbackMessageID {
-		
-		NO_SPECIFIED_MESSAGE_ID(""),
-		
-		FILE_SAVED_MESSAGE("File was saved successfully"),
-		
-		FHX2_SAMPLE_NAME_LENGTH_MESSAGE("Sample name is too long for the original FHX2 program requirements."),
-		
-		FHX2_META_DATA_LENGTH_MESSAGE("Cannot enforce length restrictions without losing data! Please revise the highlighted fields."),
-		
-		MINIMUM_SAMPLE_NAME_LENGTH_MESSAGE("Sample name must be at least 3 characters in length.");
-		
-		// Declare local variables
-		private String message;
-		
-		// Constructor
-		FeedbackMessageID(String inMessage) {
-			
-			message = inMessage;
-		}
-		
-		@Override
-		public String toString() {
-			
-			return message;
-		}
-	}
-	
-	// Declare local GUI objects
+	// Declare local variables
 	private static JLabel statusMessageText;
-	protected JLabel statusMessageIcon;
+	private JLabel statusMessageIcon;
 	private JButton dismissButton;
 	private JButton hideMessagesButton;
 	
-	// Declare local variables
-	private static FeedbackMessageID currentMessageID = FeedbackMessageID.NO_SPECIFIED_MESSAGE_ID;
-	
 	/**
-	 * Creates new a GUI_StatusBarPanel.
+	 * Creates new a FeedbackMessagePanel.
 	 */
 	public FeedbackMessagePanel() {
 		
-		initComponents();
+		initGUI();
+	}
+	
+	/**
+	 * Gets the string text of the current message.
+	 * 
+	 * @return the text contained in statusMessageText
+	 */
+	public String getCurrentMessage() {
+		
+		return statusMessageText.getText();
+	}
+	
+	/**
+	 * Stops showing the specified feedback message. This action is permanent until the "reset all feedback message preferences" button is
+	 * pressed on the MainWindow.
+	 */
+	public void stopShowingMessage(PredefinedMessage message) {
+		
+		if (message.getAssociatedKey() != null)
+		{
+			App.prefs.setBooleanPref(message.getAssociatedKey(), false);
+		}
+	}
+	
+	/**
+	 * Clears the feedback message and hides the FeedbackMessagePanel.
+	 */
+	public void clearFeedbackMessage() {
+		
+		statusMessageIcon.setIcon(FeedbackMessageType.INFO.getIcon());
+		statusMessageText.setForeground(FeedbackMessageType.INFO.getColor());
+		statusMessageText.setText("<html>" + EMPTY_MESSAGE_TEXT + "</html>");
+		this.setVisible(false);
+	}
+	
+	/**
+	 * Updates the feedback message according to the input and displays the FeedbackMessagePanel.
+	 * 
+	 * @param messageType
+	 * @param messageString
+	 */
+	public void updateFeedbackMessage(FeedbackMessageType messageType, String messageString) {
+		
+		if (messageString == null || messageString.length() == 0)
+		{
+			clearFeedbackMessage();
+			this.setVisible(false);
+		}
+		else
+		{
+			statusMessageIcon.setIcon(messageType.getIcon());
+			statusMessageText.setForeground(messageType.getColor());
+			statusMessageText.setText("<html>" + messageType.getPrefix() + messageString + "</html>");
+			this.setVisible(true);
+		}
 	}
 	
 	/**
 	 * Initializes the GUI components.
 	 */
-	private void initComponents() {
+	private void initGUI() {
 		
+		// Initialize settings for the panel itself
 		this.setVisible(false);
 		this.setBorder(new EtchedBorder(EtchedBorder.RAISED, null, null));
 		this.setLayout(new MigLayout("hidemode 2", "[][10px:10px:10px][grow][][]", "[grow]"));
 		
-		statusMessageIcon = new JLabel("");
+		// Setup the message icon
+		statusMessageIcon = new JLabel();
 		this.add(statusMessageIcon, "cell 0 0");
 		
-		statusMessageText = new JLabel();
-		statusMessageText.setText("Some info or warning");
+		// Setup the message textbox
+		statusMessageText = new JLabel(EMPTY_MESSAGE_TEXT);
 		statusMessageText.setBackground(null);
 		statusMessageText.setBorder(null);
 		statusMessageText.setFont(new Font("Dialog", Font.PLAIN, 14));
+		statusMessageText.setText("Some info or warning...");
 		this.add(statusMessageText, "cell 2 0,growx,aligny center");
 		
+		/*
+		 * DISMISS BUTTON
+		 */
 		dismissButton = new JButton("Dismiss");
 		dismissButton.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				
-				clearStatusMessage();
+				clearFeedbackMessage();
 			}
 		});
 		this.add(dismissButton, "cell 3 0,growx,aligny center");
 		
+		/*
+		 * HIDE MESSAGES BUTTON
+		 */
 		hideMessagesButton = new JButton("Hide these Messages");
 		hideMessagesButton.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				
-				stopDisplayingMessage(currentMessageID);
-				clearStatusMessage();
+				clearFeedbackMessage();
 			}
 		});
 		this.add(hideMessagesButton, "cell 4 0,growx,aligny center");
-	}
-	
-	/**
-	 * Stops the status bar from displaying a specific type of message.
-	 * 
-	 * @param flagToToggle
-	 */
-	private void stopDisplayingMessage(FeedbackMessageID messageToToggle) {
-		
-		if (messageToToggle == FeedbackMessageID.FILE_SAVED_MESSAGE)
-		{
-			App.prefs.setPref(PrefKey.SHOW_FILE_SAVED_MESSAGE, "FALSE");
-		}
-	}
-	
-	/**
-	 * Gets the special identifier of the current message.
-	 * 
-	 * @return
-	 */
-	public static FeedbackMessageID getCurrentMessageID() {
-		
-		return currentMessageID;
-	}
-	
-	/**
-	 * Clears the status bar message and hides the status bar panel.
-	 */
-	public void clearStatusMessage() {
-		
-		currentMessageID = FeedbackMessageID.NO_SPECIFIED_MESSAGE_ID;
-		statusMessageText.setText("");
-		this.setVisible(false);
-	}
-	
-	/**
-	 * Updates the status bar message to the input message and shows the status bar panel.
-	 */
-	public void updateStatusMessage(FeedbackMessageType messageType, Color inColor, FeedbackMessageID inID, String inText) {
-		
-		// Do not show the status bar message if any of the following conditions are met
-		if (inText == null || inText.length() == 0)
-		{
-			clearStatusMessage();
-			return;
-		}
-		
-		if (inID == null)
-		{
-			clearStatusMessage();
-			return;
-		}
-		
-		if (inColor == null)
-		{
-			clearStatusMessage();
-			return;
-		}
-		
-		if (inID == FeedbackMessageID.FILE_SAVED_MESSAGE)
-		{
-			if (App.prefs.getPref(PrefKey.SHOW_FILE_SAVED_MESSAGE, "TRUE").equals("FALSE"))
-			{
-				clearStatusMessage();
-				return;
-			}
-		}
-		
-		// Display the appropriate icon on the status bar as determined by the messageType
-		if (messageType.equals(FeedbackMessageType.ERROR))
-		{
-			statusMessageIcon.setIcon(Builder.getImageIcon("delete.png"));
-		}
-		else if (messageType.equals(FeedbackMessageType.INFO))
-		{
-			statusMessageIcon.setIcon(Builder.getImageIcon("info.png"));
-		}
-		else if (messageType.equals(FeedbackMessageType.WARNING))
-		{
-			statusMessageIcon.setIcon(Builder.getImageIcon("warning.png"));
-		}
-		else
-		{
-			statusMessageIcon.setIcon(null);
-		}
-		
-		// Do not show the hideMessagesButton if the input message is not flagged
-		if (inID == FeedbackMessageID.NO_SPECIFIED_MESSAGE_ID)
-		{
-			dismissButton.setVisible(false);
-			hideMessagesButton.setVisible(false);
-		}
-		else
-		{
-			dismissButton.setVisible(true);
-			hideMessagesButton.setVisible(true);
-		}
-		
-		currentMessageID = inID;
-		statusMessageText.setForeground(inColor);
-		statusMessageText.setText("<html>" + inText);
-		this.setVisible(true);
 	}
 }

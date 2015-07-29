@@ -58,30 +58,45 @@ public enum FHAESResult {
 	private String fullname;
 	private String shortname;
 	
+	/**
+	 * Initialize the full and short name strings for the FHAESResult.
+	 * 
+	 * @param fullname
+	 * @param shortname
+	 */
 	FHAESResult(String fullname, String shortname) {
 		
 		this.fullname = fullname;
 		this.shortname = shortname;
 	}
 	
+	/**
+	 * Get the human-readable string name for this FHAESResult.
+	 */
 	@Override
 	public String toString() {
 		
 		return fullname;
 	}
 	
+	/**
+	 * Get the full name for this FHAESResult.
+	 */
+	public String getFullName() {
+		
+		return fullname;
+	}
+
+	/**
+	 * Get the short name for this FHAESResult.
+	 */
 	public String getShortName() {
 		
 		return shortname;
 	}
 	
-	public String getFullName() {
-		
-		return fullname;
-	}
-	
 	/**
-	 * TODO
+	 * Create a FHAESResult from a full name. If there is no FHAESResult that matches the string then null is returned.
 	 * 
 	 * @param name
 	 * @return
@@ -98,7 +113,7 @@ public enum FHAESResult {
 	}
 	
 	/**
-	 * TODO
+	 * Create a FHAESResult from a short name. If there is no FHAESResult that matches the string then null is returned.
 	 * 
 	 * @param name
 	 * @return

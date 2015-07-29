@@ -29,24 +29,38 @@ public enum EventTypeToProcess {
 	FIRE_AND_INJURY_EVENT("Fire events and other indicators");
 	
 	// Declare local variables
-	private String humanreadable;
+	private String humanReadable;
 	
-	EventTypeToProcess(String s) {
+	/**
+	 * Initialize the human-readable string for the EventTypeToProcess.
+	 * 
+	 * @param str
+	 */
+	EventTypeToProcess(String str) {
 		
-		humanreadable = s;
+		humanReadable = str;
 	}
 	
+	/**
+	 * Get the human-readable string name for this EventTypeToProcess.
+	 */
 	@Override
 	public String toString() {
 		
-		return humanreadable;
+		return humanReadable;
 	}
 	
+	/**
+	 * Create an EventTypeToProcess from a string name. If there is no EventTypeToProcess that matches the string then null is returned.
+	 * 
+	 * @param name
+	 * @return
+	 */
 	public static EventTypeToProcess fromName(String name) {
 		
 		for (EventTypeToProcess type : EventTypeToProcess.values())
 		{
-			if (type.humanreadable.equals(name))
+			if (type.humanReadable.equals(name))
 				return type;
 		}
 		

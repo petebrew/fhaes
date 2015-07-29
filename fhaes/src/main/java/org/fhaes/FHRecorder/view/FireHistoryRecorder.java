@@ -18,7 +18,6 @@
 package org.fhaes.FHRecorder.view;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -42,10 +41,10 @@ import org.fhaes.FHRecorder.controller.FileController;
 import org.fhaes.FHRecorder.controller.IOController;
 import org.fhaes.FHRecorder.controller.SampleController;
 import org.fhaes.FHRecorder.model.FHX2_File;
+import org.fhaes.enums.FeedbackMessageType;
 import org.fhaes.exceptions.CompositeFileException;
 import org.fhaes.feedback.FeedbackMessagePanel;
-import org.fhaes.feedback.FeedbackMessagePanel.FeedbackMessageID;
-import org.fhaes.feedback.FeedbackMessagePanel.FeedbackMessageType;
+import org.fhaes.feedback.PredefinedMessageManager.PredefinedMessage;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -80,7 +79,7 @@ public class FireHistoryRecorder extends JDialog {
 	private JButton discardChangesButton;
 	private JButton closeButton;
 	
-	// Declare status bar panel
+	// Declare feedback message panel
 	private static FeedbackMessagePanel feedbackMessagePanel;
 	
 	// Declare local variables
@@ -269,6 +268,7 @@ public class FireHistoryRecorder extends JDialog {
 	private void doSave(java.awt.event.ActionEvent evt) throws CompositeFileException {
 		
 		updateOptionalData();
+		
 		if (FileController.isFileCorrupted())
 		{
 			BufferedReader br = new BufferedReader(new StringReader(errorPanel.getFixedFile()));
@@ -284,9 +284,9 @@ public class FireHistoryRecorder extends JDialog {
 				e.printStackTrace();
 			}
 		}
+		
 		FileController.save();
-		updateFeedbackMessage(FeedbackMessageType.INFO, Color.black, FeedbackMessageID.FILE_SAVED_MESSAGE,
-				FeedbackMessageID.FILE_SAVED_MESSAGE.toString());
+		feedbackMessagePanel.updateFeedbackMessage(FeedbackMessageType.INFO, PredefinedMessage.FILE_SAVED_MESSAGE.getMessage());
 	}
 	
 	/**
@@ -352,7 +352,7 @@ public class FireHistoryRecorder extends JDialog {
 		// file contains a data set that does not have a defined end year
 		if (FileController.wasLastYearDefinedInFile() == false)
 		{
-			updateFeedbackMessage(FeedbackMessageType.INFO, Color.blue, FeedbackMessageID.NO_SPECIFIED_MESSAGE_ID,
+			feedbackMessagePanel.updateFeedbackMessage(FeedbackMessageType.INFO,
 					"File contains valid data with an unformatted sample. A temporary sample has been generated using the boundaries of the data set.");
 		}
 		
@@ -361,7 +361,7 @@ public class FireHistoryRecorder extends JDialog {
 		{
 			if (!FileController.isFileNew())
 			{
-				updateFeedbackMessage(FeedbackMessageType.WARNING, Color.red, FeedbackMessageID.NO_SPECIFIED_MESSAGE_ID,
+				feedbackMessagePanel.updateFeedbackMessage(FeedbackMessageType.WARNING,
 						"File contains invalid data or is not an FHX file. Saving will overwrite previous file contents.");
 			}
 		}
@@ -369,7 +369,7 @@ public class FireHistoryRecorder extends JDialog {
 		// file is properly formatted
 		else
 		{
-			clearFeedbackMessage();
+			feedbackMessagePanel.clearFeedbackMessage();
 		}
 	}
 	
@@ -433,18 +433,10 @@ public class FireHistoryRecorder extends JDialog {
 	}
 	
 	/**
-	 * Clears the text in the feedback message panel.
+	 * Gets the feedbackMessagePanel instance.
 	 */
-	public static void clearFeedbackMessage() {
+	public static FeedbackMessagePanel getFeedbackMessagePanel() {
 		
-		feedbackMessagePanel.clearStatusMessage();
-	}
-	
-	/**
-	 * Updates the text in the feedback message panel.
-	 */
-	public static void updateFeedbackMessage(FeedbackMessageType messageType, Color inColor, FeedbackMessageID inID, String inText) {
-		
-		feedbackMessagePanel.updateStatusMessage(messageType, inColor, inID, inText);
+		return feedbackMessagePanel;
 	}
 }
