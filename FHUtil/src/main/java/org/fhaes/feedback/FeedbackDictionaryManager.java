@@ -21,14 +21,14 @@ import org.fhaes.preferences.App;
 import org.fhaes.preferences.FHAESPreferences.PrefKey;
 
 /**
- * PredefinedMessageManager Class.
+ * FeedbackDictionaryManager Class.
  */
-public class PredefinedMessageManager {
+public class FeedbackDictionaryManager {
 	
 	/**
-	 * This enum contains a set of predefined feedback messages which each are associated with their own show/hide preference key.
+	 * This enum contains a set of simple feedback messages (i.e. messages that do not require special runtime information to be displayed).
 	 */
-	public enum PredefinedMessage {
+	public enum FeedbackDictionary {
 		
 		FHX2_META_DATA_LENGTH_MESSAGE("Cannot enforce length restrictions without losing data! Please revise the highlighted fields.",
 				null),
@@ -44,18 +44,18 @@ public class PredefinedMessageManager {
 		private final PrefKey associatedKey;
 		
 		/**
-		 * Initialize the message text for the PredefinedMessage.
+		 * Initialize the message text for the feedback message.
 		 * 
 		 * @param message
 		 */
-		PredefinedMessage(String message, PrefKey key) {
+		FeedbackDictionary(String message, PrefKey key) {
 			
 			messageText = message;
 			associatedKey = key;
 		}
 		
 		/**
-		 * Get the message text for the PredefinedMessage.
+		 * Get the message text for the feedback message.
 		 * 
 		 * @return messageText
 		 */
@@ -65,7 +65,7 @@ public class PredefinedMessageManager {
 		}
 		
 		/**
-		 * Get the associated preference key for the PredefinedMessage.
+		 * Get the associated preference key for the feedback message.
 		 * 
 		 * @return associatedKey
 		 */

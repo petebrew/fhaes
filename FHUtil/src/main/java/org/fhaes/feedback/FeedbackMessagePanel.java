@@ -27,7 +27,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EtchedBorder;
 
 import org.fhaes.enums.FeedbackMessageType;
-import org.fhaes.feedback.PredefinedMessageManager.PredefinedMessage;
+import org.fhaes.feedback.FeedbackDictionaryManager.FeedbackDictionary;
 import org.fhaes.preferences.App;
 
 import net.miginfocom.swing.MigLayout;
@@ -70,7 +70,7 @@ public class FeedbackMessagePanel extends JPanel {
 	 * Stops showing the specified feedback message. This action is permanent until the "reset all feedback message preferences" button is
 	 * pressed on the MainWindow.
 	 */
-	public void stopShowingMessage(PredefinedMessage message) {
+	public void stopShowingMessage(FeedbackDictionary message) {
 		
 		if (message.getAssociatedKey() != null)
 		{

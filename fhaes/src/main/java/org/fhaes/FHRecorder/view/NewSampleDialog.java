@@ -35,7 +35,7 @@ import org.fhaes.FHRecorder.controller.SampleController;
 import org.fhaes.FHRecorder.model.FHX2_FileRequiredPart;
 import org.fhaes.FHRecorder.model.FHX2_Sample;
 import org.fhaes.enums.FeedbackMessageType;
-import org.fhaes.feedback.PredefinedMessageManager.PredefinedMessage;
+import org.fhaes.feedback.FeedbackDictionaryManager.FeedbackDictionary;
 import org.fhaes.util.Builder;
 
 import net.miginfocom.swing.MigLayout;
@@ -341,7 +341,7 @@ public class NewSampleDialog extends javax.swing.JDialog implements KeyListener 
 		if (sampleNameTextBox.getText().length() < 3)
 		{
 			FireHistoryRecorder.getFeedbackMessagePanel().updateFeedbackMessage(FeedbackMessageType.WARNING,
-					PredefinedMessage.MINIMUM_SAMPLE_NAME_LENGTH_MESSAGE.getMessage());
+					FeedbackDictionary.MINIMUM_SAMPLE_NAME_LENGTH_MESSAGE.getMessage());
 					
 			sampleNameTextBox.setForeground(Color.red);
 		}
@@ -372,12 +372,12 @@ public class NewSampleDialog extends javax.swing.JDialog implements KeyListener 
 		}
 		else
 		{
-			if (FireHistoryRecorder.getFeedbackMessagePanel().getCurrentMessage() == PredefinedMessage.MINIMUM_SAMPLE_NAME_LENGTH_MESSAGE
+			if (FireHistoryRecorder.getFeedbackMessagePanel().getCurrentMessage() == FeedbackDictionary.MINIMUM_SAMPLE_NAME_LENGTH_MESSAGE
 					.getMessage())
 			{
 				FireHistoryRecorder.getFeedbackMessagePanel().clearFeedbackMessage();
 			}
-			else if (FireHistoryRecorder.getFeedbackMessagePanel().getCurrentMessage() == PredefinedMessage.FHX2_SAMPLE_NAME_LENGTH_MESSAGE
+			else if (FireHistoryRecorder.getFeedbackMessagePanel().getCurrentMessage() == FeedbackDictionary.FHX2_SAMPLE_NAME_LENGTH_MESSAGE
 					.getMessage())
 			{
 				FireHistoryRecorder.getFeedbackMessagePanel().clearFeedbackMessage();

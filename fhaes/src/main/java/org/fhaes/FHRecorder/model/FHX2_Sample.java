@@ -33,7 +33,7 @@ import org.fhaes.FHRecorder.view.FireHistoryRecorder;
 import org.fhaes.FHRecorder.view.RecordingTable;
 import org.fhaes.enums.FeedbackMessageType;
 import org.fhaes.exceptions.CompositeFileException;
-import org.fhaes.feedback.PredefinedMessageManager.PredefinedMessage;
+import org.fhaes.feedback.FeedbackDictionaryManager.FeedbackDictionary;
 
 /**
  * FHX2_Sample Class. This class is used to represent a sample in the FHX2 data.
@@ -372,12 +372,12 @@ public class FHX2_Sample implements Serializable, ErrorTrackerInterface {
 		if (inputName.length() > FileController.FHX2_MAX_SAMPLE_NAME_LENGTH && FileController.isEnforcingOldReqs())
 		{
 			FireHistoryRecorder.getFeedbackMessagePanel().updateFeedbackMessage(FeedbackMessageType.WARNING,
-					PredefinedMessage.FHX2_SAMPLE_NAME_LENGTH_MESSAGE.getMessage());
+					FeedbackDictionary.FHX2_SAMPLE_NAME_LENGTH_MESSAGE.getMessage());
 					
 			return "";
 		}
 		
-		if (FireHistoryRecorder.getFeedbackMessagePanel().getCurrentMessage() == PredefinedMessage.FHX2_SAMPLE_NAME_LENGTH_MESSAGE
+		if (FireHistoryRecorder.getFeedbackMessagePanel().getCurrentMessage() == FeedbackDictionary.FHX2_SAMPLE_NAME_LENGTH_MESSAGE
 				.getMessage())
 		{
 			FireHistoryRecorder.getFeedbackMessagePanel().clearFeedbackMessage();

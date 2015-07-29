@@ -43,7 +43,7 @@ import org.fhaes.FHRecorder.utility.LengthRestrictedDocument;
 import org.fhaes.FHRecorder.utility.MetaDataTextField;
 import org.fhaes.components.HelpTipButton;
 import org.fhaes.enums.FeedbackMessageType;
-import org.fhaes.feedback.PredefinedMessageManager.PredefinedMessage;
+import org.fhaes.feedback.FeedbackDictionaryManager.FeedbackDictionary;
 import org.fhaes.help.LocalHelp;
 import org.fhaes.preferences.FHAESPreferences.PrefKey;
 import org.fhaes.preferences.wrappers.CheckBoxWrapper;
@@ -1872,7 +1872,7 @@ public class MetaDataPanel extends javax.swing.JPanel {
 		// Updates the status pane according to the compatibility of the above fields
 		if (numFieldsCompatible == ALL_FIELDS_COMPATIBLE)
 		{
-			if (FireHistoryRecorder.getFeedbackMessagePanel().getCurrentMessage() == PredefinedMessage.FHX2_META_DATA_LENGTH_MESSAGE
+			if (FireHistoryRecorder.getFeedbackMessagePanel().getCurrentMessage() == FeedbackDictionary.FHX2_META_DATA_LENGTH_MESSAGE
 					.getMessage())
 			{
 				FireHistoryRecorder.getFeedbackMessagePanel().clearFeedbackMessage();
@@ -1883,7 +1883,7 @@ public class MetaDataPanel extends javax.swing.JPanel {
 		else
 		{
 			FireHistoryRecorder.getFeedbackMessagePanel().updateFeedbackMessage(FeedbackMessageType.WARNING,
-					PredefinedMessage.FHX2_META_DATA_LENGTH_MESSAGE.getMessage());
+					FeedbackDictionary.FHX2_META_DATA_LENGTH_MESSAGE.getMessage());
 					
 			return false;
 		}
@@ -1894,7 +1894,7 @@ public class MetaDataPanel extends javax.swing.JPanel {
 	 */
 	private void resetTextBoxColors() {
 		
-		if (FireHistoryRecorder.getFeedbackMessagePanel().getCurrentMessage() == PredefinedMessage.FHX2_META_DATA_LENGTH_MESSAGE
+		if (FireHistoryRecorder.getFeedbackMessagePanel().getCurrentMessage() == FeedbackDictionary.FHX2_META_DATA_LENGTH_MESSAGE
 				.getMessage())
 		{
 			FireHistoryRecorder.getFeedbackMessagePanel().clearFeedbackMessage();

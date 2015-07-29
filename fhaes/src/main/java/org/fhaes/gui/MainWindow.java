@@ -76,7 +76,7 @@ import org.fhaes.components.JToolBarButton;
 import org.fhaes.components.JToolBarToggleButton;
 import org.fhaes.exceptions.CompositeFileException;
 import org.fhaes.feedback.FeedbackMessagePanel;
-import org.fhaes.feedback.PredefinedMessageManager;
+import org.fhaes.feedback.FeedbackDictionaryManager;
 import org.fhaes.fhfilereader.FHCategoryReader;
 import org.fhaes.fhsamplesize.view.FHSampleSize;
 import org.fhaes.filefilter.CSVFileFilter;
@@ -2158,7 +2158,7 @@ public class MainWindow implements PrefsListener {
 			@Override
 			public void actionPerformed(ActionEvent event) {
 				
-				PredefinedMessageManager.ResetAllFeedbackMessagePrefs();
+				FeedbackDictionaryManager.ResetAllFeedbackMessagePrefs();
 			}
 		};
 	}
@@ -2332,7 +2332,7 @@ public class MainWindow implements PrefsListener {
 		mnPreferences.add(new FHAESCheckBoxMenuItem(actionPrefChangeShowQuickLaunch));
 		mnPreferences.add(new FHAESCheckBoxMenuItem(actionPrefChangeAutoLoadCategories));
 		mnPreferences.addSeparator();
-		mnPreferences.add(new FHAESCheckBoxMenuItem(actionResetAllFeedbackMessagePrefs));
+		mnPreferences.add(new FHAESMenuItem(actionResetAllFeedbackMessagePrefs));
 		
 		/**
 		 * 

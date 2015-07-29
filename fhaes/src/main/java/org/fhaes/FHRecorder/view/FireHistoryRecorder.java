@@ -44,7 +44,7 @@ import org.fhaes.FHRecorder.model.FHX2_File;
 import org.fhaes.enums.FeedbackMessageType;
 import org.fhaes.exceptions.CompositeFileException;
 import org.fhaes.feedback.FeedbackMessagePanel;
-import org.fhaes.feedback.PredefinedMessageManager.PredefinedMessage;
+import org.fhaes.feedback.FeedbackDictionaryManager.FeedbackDictionary;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -286,7 +286,7 @@ public class FireHistoryRecorder extends JDialog {
 		}
 		
 		FileController.save();
-		feedbackMessagePanel.updateFeedbackMessage(FeedbackMessageType.INFO, PredefinedMessage.FILE_SAVED_MESSAGE.getMessage());
+		feedbackMessagePanel.updateFeedbackMessage(FeedbackMessageType.INFO, FeedbackDictionary.FILE_SAVED_MESSAGE.getMessage());
 	}
 	
 	/**

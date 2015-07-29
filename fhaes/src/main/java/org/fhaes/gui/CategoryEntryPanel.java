@@ -20,6 +20,7 @@ package org.fhaes.gui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -45,14 +46,14 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
-import net.miginfocom.swing.MigLayout;
-
 import org.fhaes.model.FHCategoryEntry;
 import org.fhaes.model.FHSeries;
 import org.fhaes.util.Builder;
 import org.fhaes.util.FHAESAction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import net.miginfocom.swing.MigLayout;
 
 /**
  * CategoryEntryPanel Class.
@@ -73,6 +74,8 @@ public class CategoryEntryPanel extends JPanel {
 	// Declare local constants
 	private final String DEFAULT_CATEGORY_VALUE = "default";
 	private final String DEFAULT_CONTENT_VALUE = "new category entry";
+	private final int TREE_NODE_EDITOR_HEIGHT = 30;
+	private final int TREE_NODE_EDITOR_WIDTH = 700;
 	
 	// Declare local variables
 	private final CategoryEditor parentEditor;
@@ -89,7 +92,7 @@ public class CategoryEntryPanel extends JPanel {
 	 * @param series
 	 */
 	public CategoryEntryPanel(CategoryEditor editor, FHSeries series) {
-	
+		
 		parentEditor = editor;
 		workingSeries = series;
 		initActions();
@@ -100,7 +103,7 @@ public class CategoryEntryPanel extends JPanel {
 	 * Handles initialization of the GUI components.
 	 */
 	private void initGUI() {
-	
+		
 		// Set the layout as a borderlayout so it looks nice in windowbuilder
 		this.setLayout(new BorderLayout(0, 0));
 		
@@ -111,6 +114,7 @@ public class CategoryEntryPanel extends JPanel {
 		
 		// Setup the tree cell editor for use in the category tree
 		JTextField textField = new JTextField();
+		textField.setPreferredSize(new Dimension(TREE_NODE_EDITOR_WIDTH, TREE_NODE_EDITOR_HEIGHT));
 		CategoryTreeCellEditor editor = new CategoryTreeCellEditor(textField);
 		
 		// Setup the tree renderer for displaying custom icons on the category tree
@@ -118,7 +122,7 @@ public class CategoryEntryPanel extends JPanel {
 		renderer.setOpenIcon(Builder.getImageIcon("tree.png"));
 		renderer.setLeafIcon(Builder.getImageIcon("node.png"));
 		
-		// Setup the category tree
+		// Setup the properties of the category tree
 		DefaultMutableTreeNode root = new DefaultMutableTreeNode(workingSeries.getTitle());
 		categoryTree = new JTree(root);
 		categoryTree.setCellEditor(editor);
@@ -132,14 +136,11 @@ public class CategoryEntryPanel extends JPanel {
 		categoryTree.addMouseMotionListener(new MouseMotionListener() {
 			
 			@Override
-			public void mouseDragged(MouseEvent mouseEvent) {
-			
-				// Do nothing!
-			}
+			public void mouseDragged(MouseEvent mouseEvent) {}
 			
 			@Override
 			public void mouseMoved(MouseEvent mouseEvent) {
-			
+				
 				if (!selectedNodeIsBeingEdited)
 				{
 					int selectedRow = categoryTree.getRowForLocation(mouseEvent.getX(), mouseEvent.getY());
@@ -186,14 +187,14 @@ public class CategoryEntryPanel extends JPanel {
 	 * Initialize the menu and toolbar actions.
 	 */
 	private void initActions() {
-	
+		
 		this.actionAddNewCategory = new FHAESAction("Add new category", "edit_add.png") {
 			
 			private static final long serialVersionUID = 1L;
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-			
+				
 				DefaultMutableTreeNode nodeToAdd = new DefaultMutableTreeNode(DEFAULT_CONTENT_VALUE);
 				
 				if (getRootNodeChildCount() > 0)
@@ -221,7 +222,7 @@ public class CategoryEntryPanel extends JPanel {
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-			
+				
 				try
 				{
 					DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) categoryTree.getLastSelectedPathComponent();
@@ -248,7 +249,7 @@ public class CategoryEntryPanel extends JPanel {
 	 * Updates the leaf icon to appear as a bullet. This is to account for when the tree contains at least one node.
 	 */
 	private void setLeafIconToBullet() {
-	
+		
 		renderer.setLeafIcon(Builder.getImageIcon("node.png"));
 	}
 	
@@ -256,7 +257,7 @@ public class CategoryEntryPanel extends JPanel {
 	 * Updates the leaf icon to appear as a tree. This is to account for when the tree contains no nodes.
 	 */
 	private void setLeafIconToTree() {
-	
+		
 		renderer.setLeafIcon(Builder.getImageIcon("tree.png"));
 	}
 	
@@ -264,7 +265,7 @@ public class CategoryEntryPanel extends JPanel {
 	 * Clears row selection for the category tree.
 	 */
 	protected void clearTreeSelectionAndEditing() {
-	
+		
 		categoryTree.clearSelection();
 		categoryTree.getCellEditor().stopCellEditing();
 	}
@@ -273,7 +274,7 @@ public class CategoryEntryPanel extends JPanel {
 	 * Collapses all rows on the category tree.
 	 */
 	protected void collapseAllEntries() {
-	
+		
 		// Must clear selection before collapsing rows, otherwise it does not behave correctly
 		categoryTree.clearSelection();
 		
@@ -287,7 +288,7 @@ public class CategoryEntryPanel extends JPanel {
 	 * Expands all rows on the category tree.
 	 */
 	protected void expandAllEntries() {
-	
+		
 		// Must clear selection before expanding rows, otherwise it does not behave correctly
 		categoryTree.clearSelection();
 		
@@ -303,7 +304,7 @@ public class CategoryEntryPanel extends JPanel {
 	 * @return an array list of the category entries contained in categoryTree
 	 */
 	protected ArrayList<FHCategoryEntry> getCategoryEntries() {
-	
+		
 		return categoryEntries;
 	}
 	
@@ -313,7 +314,7 @@ public class CategoryEntryPanel extends JPanel {
 	 * @return model of categoryTree
 	 */
 	private DefaultTreeModel getCategoryTreeModel() {
-	
+		
 		return (DefaultTreeModel) categoryTree.getModel();
 	}
 	
@@ -324,7 +325,7 @@ public class CategoryEntryPanel extends JPanel {
 	 * @return child node at index
 	 */
 	private DefaultMutableTreeNode getChildNodeAtIndex(int index) {
-	
+		
 		return (DefaultMutableTreeNode) categoryTree.getModel().getChild(getRootNode(), index);
 	}
 	
@@ -334,7 +335,7 @@ public class CategoryEntryPanel extends JPanel {
 	 * @return root node of categoryTree
 	 */
 	private DefaultMutableTreeNode getRootNode() {
-	
+		
 		return (DefaultMutableTreeNode) categoryTree.getModel().getRoot();
 	}
 	
@@ -344,7 +345,7 @@ public class CategoryEntryPanel extends JPanel {
 	 * @return number of children under the root node
 	 */
 	private int getRootNodeChildCount() {
-	
+		
 		return getRootNode().getChildCount();
 	}
 	
@@ -352,7 +353,7 @@ public class CategoryEntryPanel extends JPanel {
 	 * Notifies the parent category editor window that a new selection has been made on this panel's category tree.
 	 */
 	private void notifyParentOfNewSelection() {
-	
+		
 		parentEditor.refreshAfterNewSelection(this);
 	}
 	
@@ -360,7 +361,7 @@ public class CategoryEntryPanel extends JPanel {
 	 * Clears and repopulates the categoryEntries list from the tree. This method also ensures that all entries are in a valid format.
 	 */
 	private void refreshCategoryEntriesList() {
-	
+		
 		// Clear the list of category entries so that it may be refreshed
 		categoryEntries.clear();
 		
@@ -392,7 +393,7 @@ public class CategoryEntryPanel extends JPanel {
 	 * @return the category entry from the given index if it is valid, null otherwise
 	 */
 	private FHCategoryEntry validateEntryAtIndex(int index) {
-	
+		
 		String entryContent = getChildNodeAtIndex(index).getUserObject().toString();
 		
 		if (entryContent.contains(","))
@@ -410,12 +411,12 @@ public class CategoryEntryPanel extends JPanel {
 	 * @param popup
 	 */
 	private static void addPopup(Component component, final JPopupMenu popup) {
-	
+		
 		component.addMouseListener(new MouseAdapter() {
 			
 			@Override
 			public void mousePressed(MouseEvent e) {
-			
+				
 				if (e.isPopupTrigger() && categoryTreeHasSelection)
 				{
 					showMenu(e);
@@ -424,7 +425,7 @@ public class CategoryEntryPanel extends JPanel {
 			
 			@Override
 			public void mouseReleased(MouseEvent e) {
-			
+				
 				if (e.isPopupTrigger() && categoryTreeHasSelection)
 				{
 					showMenu(e);
@@ -432,7 +433,7 @@ public class CategoryEntryPanel extends JPanel {
 			}
 			
 			private void showMenu(MouseEvent e) {
-			
+				
 				popup.show(e.getComponent(), e.getX(), e.getY());
 			}
 		});
@@ -448,13 +449,13 @@ public class CategoryEntryPanel extends JPanel {
 		private static final long serialVersionUID = 1L;
 		
 		public CategoryTreeCellEditor(JTextField textField) {
-		
+			
 			super(textField);
 		}
 		
 		@Override
 		public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
-		
+			
 			return super.getTableCellEditorComponent(table, value, isSelected, row, column);
 		}
 	}
@@ -469,26 +470,26 @@ public class CategoryEntryPanel extends JPanel {
 		
 		@Override
 		public void treeNodesChanged(TreeModelEvent e) {
-		
+			
 			refreshCategoryEntriesList();
 			selectedNodeIsBeingEdited = false;
 		}
 		
 		@Override
 		public void treeNodesInserted(TreeModelEvent e) {
-		
+			
 			refreshCategoryEntriesList();
 		}
 		
 		@Override
 		public void treeNodesRemoved(TreeModelEvent e) {
-		
+			
 			refreshCategoryEntriesList();
 		}
 		
 		@Override
 		public void treeStructureChanged(TreeModelEvent e) {
-		
+			
 			refreshCategoryEntriesList();
 		}
 	}
@@ -502,7 +503,7 @@ public class CategoryEntryPanel extends JPanel {
 		
 		@Override
 		public void valueChanged(TreeSelectionEvent e) {
-		
+			
 			notifyParentOfNewSelection();
 			
 			// Block popup menu if no nodes are currently selected
