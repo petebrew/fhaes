@@ -46,7 +46,7 @@ public class FHSummary {
 	 * @param inputFileArray
 	 */
 	public FHSummary(FHFile[] inputFileArray) {
-		
+	
 		this.inputFileArray = inputFileArray;
 	}
 	
@@ -56,7 +56,7 @@ public class FHSummary {
 	 * @return
 	 */
 	public File getFilesSummaryAsCSVFile() {
-		
+	
 		String str = getFilesSummaryAsString();
 		
 		try
@@ -90,12 +90,11 @@ public class FHSummary {
 	 * @return
 	 */
 	public String getFilesSummaryAsString() {
-		
+	
 		EventTypeToProcess ettp = App.prefs.getEventTypePref(PrefKey.EVENT_TYPE_TO_PROCESS, EventTypeToProcess.FIRE_AND_INJURY_EVENT);
 		StringBuilder string = new StringBuilder();
 		
-		string.append(
-				"Filename,Site name,Site code,Series name,Sampling date,Lat,Lon,State,Country,First year,Last year,Has pith,Has bark,");
+		string.append("Filename,Site name,Site code,Series name,Sampling date,Lat,Lon,State,Country,First year,Last year,Has pith,Has bark,");
 		if (ettp.equals(EventTypeToProcess.FIRE_EVENT))
 		{
 			string.append("Fire event years,");
@@ -120,7 +119,7 @@ public class FHSummary {
 				
 				if (fhx.getNumberOfSeries() == 0)
 					continue;
-					
+				
 				String filename = file.getAbsoluteFile().getName();
 				int[] inneryearpith = fhx.getPithIndexPerSample();
 				int[] inneryear = fhx.getInnerMostperTree();
@@ -164,7 +163,7 @@ public class FHSummary {
 						
 						log.debug("Inconsistent first year in file " + filename + " series number " + i);
 						log.debug("outeryearbark value = " + outeryearbark[i]);
-						log.debug("outeryear value     = " + outeryear[i]);
+						log.debug("outeryear value elena    = " + outeryear[i]);
 						continue;
 					}
 					
