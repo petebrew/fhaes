@@ -22,9 +22,7 @@ package org.fhaes.enums;
  */
 public enum FeedbackDisplayProtocol {
 	
-	AUTO_HIDE, // Automatically hide the FeedbackMessagePanel after a specified period of time
+	AUTO_HIDE, // Automatically hide the FeedbackMessagePanel after a period of time
 	
-	MANUAL_HIDE, // Only hide the FeedbackMessagePanel after pressing the dismiss button
-	
-	PROGRAMATICALLY_HIDE; // Only hide the FeedbackMessagePanel after internally calling clearFeedbackMessage
+	MANUAL_HIDE; // Only hide the FeedbackMessagePanel after pressing the dismiss button
 }

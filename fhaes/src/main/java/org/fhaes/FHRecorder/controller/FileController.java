@@ -278,7 +278,7 @@ public class FileController {
 				&& FileController.isEnforcingOldReqs())
 		{
 			FireHistoryRecorder.getFeedbackMessagePanel().updateFeedbackMessage(FeedbackMessageType.WARNING,
-					FeedbackDisplayProtocol.PROGRAMATICALLY_HIDE,
+					FeedbackDisplayProtocol.MANUAL_HIDE,
 					"The current number of samples (" + IOController.getFile().getRequiredPart().getNumSamples()
 							+ ") exceeds the capabilities of the original FHX2 software (maximum of 254).");
 		}
@@ -297,7 +297,7 @@ public class FileController {
 				&& FileController.isEnforcingOldReqs())
 		{
 			FireHistoryRecorder.getFeedbackMessagePanel().updateFeedbackMessage(FeedbackMessageType.WARNING,
-					FeedbackDisplayProtocol.PROGRAMATICALLY_HIDE,
+					FeedbackDisplayProtocol.MANUAL_HIDE,
 					"The earliest year in the dataset (" + IOController.getFile().getRequiredPart().getDataSetFirstYear()
 							+ ") is below the minimum supported year of FHX2 (1200).");
 		}
@@ -316,7 +316,7 @@ public class FileController {
 				&& FileController.isEnforcingOldReqs())
 		{
 			FireHistoryRecorder.getFeedbackMessagePanel().updateFeedbackMessage(FeedbackMessageType.WARNING,
-					FeedbackDisplayProtocol.PROGRAMATICALLY_HIDE,
+					FeedbackDisplayProtocol.MANUAL_HIDE,
 					"The latest year in the dataset (" + IOController.getFile().getRequiredPart().getDataSetLastYear()
 							+ ") is above the maximum supported year of FHX2 (2020).");
 		}
@@ -476,7 +476,7 @@ public class FileController {
 			if (selectedFile.getName().length() > FHX2_MAX_FILE_NAME_LENGTH && isEnforcingOldReqs() == true)
 			{
 				FireHistoryRecorder.getFeedbackMessagePanel().updateFeedbackMessage(FeedbackMessageType.WARNING,
-						FeedbackDisplayProtocol.PROGRAMATICALLY_HIDE, "File name is too long for the original FHX program requirements.");
+						FeedbackDisplayProtocol.MANUAL_HIDE, "File name is too long for the original FHX program requirements.");
 						
 				filePath = filePath.substring(0, filePath.length() - fileName.length());
 				fileName = fileName.substring(0, FHX2_MAX_FILE_NAME_LENGTH);
@@ -493,8 +493,7 @@ public class FileController {
 				if (selectedFile.getName().length() > FHX2_MAX_FILE_NAME_LENGTH && isEnforcingOldReqs() == true)
 				{
 					FireHistoryRecorder.getFeedbackMessagePanel().updateFeedbackMessage(FeedbackMessageType.WARNING,
-							FeedbackDisplayProtocol.PROGRAMATICALLY_HIDE,
-							"File name is too long for the original FHX program requirements.");
+							FeedbackDisplayProtocol.MANUAL_HIDE, "File name is too long for the original FHX program requirements.");
 							
 					filePath = filePath.substring(0, filePath.length() - fileName.length());
 					fileName = fileName.substring(0, FHX2_MAX_FILE_NAME_LENGTH);

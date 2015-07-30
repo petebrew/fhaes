@@ -375,7 +375,7 @@ public class FHX2_Sample implements Serializable, ErrorTrackerInterface {
 		if (inputName.length() > FileController.FHX2_MAX_SAMPLE_NAME_LENGTH && FileController.isEnforcingOldReqs())
 		{
 			FireHistoryRecorder.getFeedbackMessagePanel().updateFeedbackMessage(FeedbackMessageType.WARNING,
-					FeedbackDisplayProtocol.PROGRAMATICALLY_HIDE, FHX2_SAMPLE_NAME_LENGTH_MESSAGE);
+					FeedbackDisplayProtocol.MANUAL_HIDE, FHX2_SAMPLE_NAME_LENGTH_MESSAGE);
 					
 			return "";
 		}

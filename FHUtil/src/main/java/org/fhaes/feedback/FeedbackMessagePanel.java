@@ -147,7 +147,7 @@ public class FeedbackMessagePanel extends JPanel {
 				currentOpacity = FULL_OPACITY;
 				this.setVisible(true);
 				
-				// Only do the fade out animation the display protocol is set to AUTO_HIDE
+				// Only do the fade out animation the display protocol is set to auto hide
 				if (displayProtocol == FeedbackDisplayProtocol.AUTO_HIDE)
 				{
 					// Start the auto-hide process after showing the message for five seconds
