@@ -56,7 +56,8 @@ public class FeedbackMessagePanel extends JPanel {
 	// Declare GUI components
 	private JTextArea feedbackMessageText;
 	private JLabel feedbackMessageIcon;
-	private JButton hideMessagesButton;
+	private JButton dismissMessageButton;
+	private JButton hideMessageButton;
 	private Timer autoHideDelayTimer;
 	private AutoHideMessageTask animationTask;
 	
@@ -95,6 +96,7 @@ public class FeedbackMessagePanel extends JPanel {
 	 * Updates the feedback message according to the input and displays the FeedbackMessagePanel.
 	 * 
 	 * @param messageType
+	 * @param displayProtocol
 	 * @param messageString
 	 */
 	public void updateFeedbackMessage(FeedbackMessageType messageType, FeedbackDisplayProtocol displayProtocol, String messageString) {
@@ -102,21 +104,32 @@ public class FeedbackMessagePanel extends JPanel {
 		PrefKey keyForCurrentMessage = FeedbackPreferenceManager.GetAssociatedKeyFromMessageText(messageString);
 		boolean showThisFeedbackMessage = true;
 		
-		// Get the associated key value for this message, if it has one
-		if (keyForCurrentMessage != null)
+		// Handle re-arrangement of the buttons if necessary
+		if (displayProtocol == FeedbackDisplayProtocol.MANUAL_HIDE && keyForCurrentMessage == null)
 		{
-			this.remove(feedbackMessageText);
-			this.add(feedbackMessageText, "cell 1 0,growx,aligny center");
-			
-			hideMessagesButton.setVisible(true);
-			showThisFeedbackMessage = App.prefs.getBooleanPref(keyForCurrentMessage, true);
+			dismissMessageButton.setVisible(true);
+			hideMessageButton.setVisible(false);
 		}
 		else
 		{
-			this.remove(feedbackMessageText);
-			this.add(feedbackMessageText, "cell 1 0 2 0,growx,aligny center");
-			
-			hideMessagesButton.setVisible(false);
+			// Get the associated key value for this message, if it has one
+			if (keyForCurrentMessage != null)
+			{
+				this.remove(feedbackMessageText);
+				this.add(feedbackMessageText, "cell 1 0,growx,aligny center");
+				
+				dismissMessageButton.setVisible(false);
+				hideMessageButton.setVisible(true);
+				showThisFeedbackMessage = App.prefs.getBooleanPref(keyForCurrentMessage, true);
+			}
+			else
+			{
+				this.remove(feedbackMessageText);
+				this.add(feedbackMessageText, "cell 1 0 3 0,growx,aligny center");
+				
+				dismissMessageButton.setVisible(false);
+				hideMessageButton.setVisible(false);
+			}
 		}
 		
 		// Do not show the feedback message if the user has preferred it to be hidden
@@ -195,7 +208,8 @@ public class FeedbackMessagePanel extends JPanel {
 		
 		// Initialize settings for the panel itself
 		this.setBorder(new EtchedBorder(EtchedBorder.RAISED, null, null));
-		this.setLayout(new MigLayout("hidemode 2,insets 0,gap 0 0", "[50:50:50,center][grow,fill][180:180:180]", "[55:55:55,grow,center]"));
+		this.setLayout(new MigLayout("hidemode 2,insets 0,gap 0 0", "[50:50:50,center][grow,fill][10:10:10][][center][10:10:10]",
+				"[55:55:55,grow,center]"));
 		this.setVisible(false);
 		
 		// Setup the message icon
@@ -216,10 +230,24 @@ public class FeedbackMessagePanel extends JPanel {
 		autoHideDelayTimer = new Timer();
 		
 		/*
-		 * HIDE MESSAGES BUTTON
+		 * DISMISS MESSAGE BUTTON
 		 */
-		hideMessagesButton = new JButton("Hide these notifications");
-		hideMessagesButton.addActionListener(new ActionListener() {
+		dismissMessageButton = new JButton("Dismiss this notification");
+		dismissMessageButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				
+				clearFeedbackMessage();
+			}
+		});
+		this.add(dismissMessageButton, "cell 3 0,alignx center,aligny center");
+		
+		/*
+		 * HIDE MESSAGE BUTTON
+		 */
+		hideMessageButton = new JButton("Hide these notifications");
+		hideMessageButton.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -228,7 +256,7 @@ public class FeedbackMessagePanel extends JPanel {
 				clearFeedbackMessage();
 			}
 		});
-		this.add(hideMessagesButton, "cell 2 0,alignx center,aligny center");
+		this.add(hideMessageButton, "cell 4 0,alignx center,aligny center");
 	}
 	
 	/**

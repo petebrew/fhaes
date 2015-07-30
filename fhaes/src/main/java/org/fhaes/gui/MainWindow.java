@@ -716,16 +716,19 @@ public class MainWindow implements PrefsListener {
 			if (n == JOptionPane.YES_OPTION)
 			{
 				FileController.setOverrideCompositeWarnings(true);
+				
 				try
 				{
 					FileController.importFile(f);
 				}
 				catch (CompositeFileException e)
 				{
-					JOptionPane.showMessageDialog(frame, "Composite file exception thrown despite trying to override", "Error",
-							JOptionPane.ERROR_MESSAGE);
+					feedbackMessagePanel.updateFeedbackMessage(FeedbackMessageType.ERROR, FeedbackDisplayProtocol.MANUAL_HIDE,
+							"Composite file exception thrown despite trying to override.");
+							
 					return;
 				}
+				
 				FileController.setOverrideCompositeWarnings(false);
 			}
 			else
@@ -738,7 +741,10 @@ public class MainWindow implements PrefsListener {
 		{
 			// Catch any other sort of error
 			frame.setCursor(Cursor.getDefaultCursor());
-			JOptionPane.showMessageDialog(frame, "Error opening file in FHRecorder.", "Error", JOptionPane.ERROR_MESSAGE);
+			
+			feedbackMessagePanel.updateFeedbackMessage(FeedbackMessageType.ERROR, FeedbackDisplayProtocol.MANUAL_HIDE,
+					"Error opening file in Fire History Recorder.");
+					
 			ex.printStackTrace();
 			return;
 		}
@@ -1194,8 +1200,9 @@ public class MainWindow implements PrefsListener {
 						}
 						else
 						{
-							JOptionPane.showMessageDialog(frame, "The file '" + file.getName() + "' does not exist", "File not found",
-									JOptionPane.ERROR_MESSAGE);
+							feedbackMessagePanel.updateFeedbackMessage(FeedbackMessageType.ERROR, FeedbackDisplayProtocol.AUTO_HIDE,
+									"The specified file '" + file.getName() + "' no longer exists.");
+									
 							updateRecentDocsMenu();
 						}
 					}
@@ -1563,7 +1570,7 @@ public class MainWindow implements PrefsListener {
 				}
 				
 				fc.setMultiSelectionEnabled(false);
-				fc.setDialogTitle("Open category file");
+				fc.setDialogTitle("Open category file...");
 				fc.setAcceptAllFileFilterUsed(false);
 				fc.setFileFilter(new CSVFileFilter());
 				
@@ -1862,7 +1869,7 @@ public class MainWindow implements PrefsListener {
 				
 				fc.setMultiSelectionEnabled(true);
 				fc.setFileFilter(new FHXFileFilter());
-				fc.setDialogTitle("Open file");
+				fc.setDialogTitle("Open file...");
 				
 				int returnVal = fc.showOpenDialog(frame);
 				if (returnVal != JFileChooser.APPROVE_OPTION)
@@ -1888,8 +1895,8 @@ public class MainWindow implements PrefsListener {
 				}
 				catch (Exception e)
 				{
-					JOptionPane.showMessageDialog(frame, "Error creating event file. See error log for more information.", "Error",
-							JOptionPane.ERROR_MESSAGE);
+					feedbackMessagePanel.updateFeedbackMessage(FeedbackMessageType.ERROR, FeedbackDisplayProtocol.MANUAL_HIDE,
+							"Error creating event file. See error log for more information.");
 							
 					e.printStackTrace();
 				}
@@ -1934,8 +1941,8 @@ public class MainWindow implements PrefsListener {
 				}
 				catch (Exception e)
 				{
-					JOptionPane.showMessageDialog(frame, "Error creating composite file. See error log for more information.", "Error",
-							JOptionPane.ERROR_MESSAGE);
+					feedbackMessagePanel.updateFeedbackMessage(FeedbackMessageType.ERROR, FeedbackDisplayProtocol.MANUAL_HIDE,
+							"Error creating composite file. See error log for more information.");
 							
 					e.printStackTrace();
 				}

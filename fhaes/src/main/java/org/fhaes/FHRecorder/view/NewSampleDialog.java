@@ -346,7 +346,7 @@ public class NewSampleDialog extends javax.swing.JDialog implements KeyListener 
 		if (sampleNameTextBox.getText().length() < 3)
 		{
 			FireHistoryRecorder.getFeedbackMessagePanel().updateFeedbackMessage(FeedbackMessageType.WARNING,
-					FeedbackDisplayProtocol.MANUAL_HIDE, MINIMUM_SAMPLE_NAME_LENGTH_MESSAGE);
+					FeedbackDisplayProtocol.PROGRAMATICALLY_HIDE, MINIMUM_SAMPLE_NAME_LENGTH_MESSAGE);
 					
 			sampleNameTextBox.setForeground(Color.red);
 		}
@@ -354,26 +354,26 @@ public class NewSampleDialog extends javax.swing.JDialog implements KeyListener 
 				&& FileController.isEnforcingOldReqs() == true)
 		{
 			FireHistoryRecorder.getFeedbackMessagePanel().updateFeedbackMessage(FeedbackMessageType.WARNING,
-					FeedbackDisplayProtocol.MANUAL_HIDE, "Sample name is too long for the original FHX2 program requirements.");
+					FeedbackDisplayProtocol.PROGRAMATICALLY_HIDE, "Sample name is too long for the original FHX2 program requirements.");
 					
 			sampleNameTextBox.setForeground(Color.red);
 		}
 		else if ((Integer) firstYearSpinner.getValue() >= (Integer) lastYearSpinner.getValue())
 		{
 			FireHistoryRecorder.getFeedbackMessagePanel().updateFeedbackMessage(FeedbackMessageType.WARNING,
-					FeedbackDisplayProtocol.MANUAL_HIDE, "The first year of a sample cannot be after its last year.");
+					FeedbackDisplayProtocol.PROGRAMATICALLY_HIDE, "The first year of a sample cannot be after its last year.");
 					
 			firstYearSpinner.setValue((Integer) lastYearSpinner.getValue() - 1);
 		}
 		else if ((Integer) firstYearSpinner.getValue() < 501 && FileController.isEnforcingOldReqs() == true)
 		{
 			FireHistoryRecorder.getFeedbackMessagePanel().updateFeedbackMessage(FeedbackMessageType.WARNING,
-					FeedbackDisplayProtocol.MANUAL_HIDE, "The original FHX2 program doesn't support years prior to 501BC.");
+					FeedbackDisplayProtocol.PROGRAMATICALLY_HIDE, "The original FHX2 program doesn't support years prior to 501BC.");
 		}
 		else if ((Integer) firstYearSpinner.getValue() > 2020 && FileController.isEnforcingOldReqs() == true)
 		{
 			FireHistoryRecorder.getFeedbackMessagePanel().updateFeedbackMessage(FeedbackMessageType.WARNING,
-					FeedbackDisplayProtocol.MANUAL_HIDE, "The original FHX2 program doesn't support years after 2020AD.");
+					FeedbackDisplayProtocol.PROGRAMATICALLY_HIDE, "The original FHX2 program doesn't support years after 2020AD.");
 		}
 		else
 		{

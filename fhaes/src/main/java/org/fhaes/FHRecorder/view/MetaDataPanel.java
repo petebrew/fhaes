@@ -1887,7 +1887,7 @@ public class MetaDataPanel extends javax.swing.JPanel {
 		else
 		{
 			FireHistoryRecorder.getFeedbackMessagePanel().updateFeedbackMessage(FeedbackMessageType.WARNING,
-					FeedbackDisplayProtocol.MANUAL_HIDE, FHX2_META_DATA_LENGTH_MESSAGE);
+					FeedbackDisplayProtocol.PROGRAMATICALLY_HIDE, FHX2_META_DATA_LENGTH_MESSAGE);
 					
 			return false;
 		}

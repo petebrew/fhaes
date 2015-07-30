@@ -84,7 +84,7 @@ public class FeedbackPreferenceManager {
 		
 		for (int i = 0; i < allFeedbackMessages.length; i++)
 		{
-			if (allFeedbackMessages[i].toString() == inText)
+			if (allFeedbackMessages[i].toString().equals(inText))
 			{
 				return allFeedbackMessages[i].getAssociatedKey();
 			}

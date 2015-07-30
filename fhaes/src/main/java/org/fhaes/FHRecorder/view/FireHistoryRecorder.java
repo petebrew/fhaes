@@ -355,7 +355,7 @@ public class FireHistoryRecorder extends JDialog {
 		// file contains a data set that does not have a defined end year
 		if (FileController.wasLastYearDefinedInFile() == false)
 		{
-			feedbackMessagePanel.updateFeedbackMessage(FeedbackMessageType.INFO, FeedbackDisplayProtocol.AUTO_HIDE,
+			feedbackMessagePanel.updateFeedbackMessage(FeedbackMessageType.INFO, FeedbackDisplayProtocol.MANUAL_HIDE,
 					"File contains valid data with an unformatted sample. A temporary sample has been generated using the boundaries of the data set.");
 		}
 		
