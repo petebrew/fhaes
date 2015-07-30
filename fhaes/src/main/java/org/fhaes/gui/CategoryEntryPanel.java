@@ -232,12 +232,12 @@ public class CategoryEntryPanel extends JPanel {
 				catch (IllegalArgumentException ex)
 				{
 					parentEditor.getFeedbackMessagePanel().updateFeedbackMessage(FeedbackMessageType.WARNING,
-							FeedbackDisplayProtocol.AUTO_HIDE, "Please use Fire History Recorder if you wish to modify the series name.");
+							FeedbackDisplayProtocol.AUTO_HIDE, "Please use Fire History Recorder if you wish to remove a series.");
 				}
 				catch (NullPointerException ex)
 				{
 					parentEditor.getFeedbackMessagePanel().updateFeedbackMessage(FeedbackMessageType.WARNING,
-							FeedbackDisplayProtocol.AUTO_HIDE, "Please use Fire History Recorder if you wish to modify the series name.");
+							FeedbackDisplayProtocol.AUTO_HIDE, "Please use Fire History Recorder if you wish to remove a series.");
 				}
 			}
 		};
@@ -374,14 +374,20 @@ public class CategoryEntryPanel extends JPanel {
 				currentEntry = validateEntryAtIndex(i);
 				
 				parentEditor.getFeedbackMessagePanel().updateFeedbackMessage(FeedbackMessageType.WARNING, FeedbackDisplayProtocol.AUTO_HIDE,
-						"Category entries must not contain any commas in order to be valid. All invalid entries have been reset to their default value.");
+						"Category entries must not contain any commas in order to be valid.\nAll invalid entries have been reset to their default value.");
 			}
 			
 			categoryEntries.add(currentEntry);
 		}
 		
 		// Make sure the root node still displays the correct series title
-		getRootNode().setUserObject(workingSeries.getTitle());
+		if (getRootNode().getUserObject().toString() != workingSeries.getTitle())
+		{
+			getRootNode().setUserObject(workingSeries.getTitle());
+			
+			parentEditor.getFeedbackMessagePanel().updateFeedbackMessage(FeedbackMessageType.WARNING, FeedbackDisplayProtocol.AUTO_HIDE,
+					"Please use Fire History Recorder if you wish to modify the series name.");
+		}
 		
 		// Make sure to expand all entries so that new node additions are shown
 		expandAllEntries();

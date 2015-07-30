@@ -30,6 +30,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
 import javax.swing.border.EtchedBorder;
 
 import org.fhaes.enums.FeedbackDisplayProtocol;
@@ -53,10 +54,11 @@ public class FeedbackMessagePanel extends JPanel {
 	private final int EIGHT_SECOND_DELAY = 8000;
 	
 	// Declare GUI components
-	private JLabel feedbackMessageText;
+	private JTextArea feedbackMessageText;
 	private JLabel feedbackMessageIcon;
 	private JButton hideMessagesButton;
 	private Timer autoHideDelayTimer;
+	private AutoHideMessageTask animationTask;
 	
 	// Declare local variables
 	private float currentOpacity = FULL_OPACITY;
@@ -103,11 +105,17 @@ public class FeedbackMessagePanel extends JPanel {
 		// Get the associated key value for this message, if it has one
 		if (keyForCurrentMessage != null)
 		{
+			this.remove(feedbackMessageText);
+			this.add(feedbackMessageText, "cell 1 0,growx,aligny center");
+			
 			hideMessagesButton.setVisible(true);
 			showThisFeedbackMessage = App.prefs.getBooleanPref(keyForCurrentMessage, true);
 		}
 		else
 		{
+			this.remove(feedbackMessageText);
+			this.add(feedbackMessageText, "cell 1 0 2 0,growx,aligny center");
+			
 			hideMessagesButton.setVisible(false);
 		}
 		
@@ -117,19 +125,28 @@ public class FeedbackMessagePanel extends JPanel {
 			// Do not try to show an empty message
 			if (messageString != null && messageString.length() != 0)
 			{
-				currentOpacity = FULL_OPACITY;
 				updateMessageFired = true;
 				
-				feedbackMessageIcon.setIcon(messageType.getDisplayIcon());
 				feedbackMessageText.setText(messageString);
+				feedbackMessageIcon.setIcon(messageType.getDisplayIcon());
 				this.setBackground(messageType.getBackgroundColor());
+				
+				currentOpacity = FULL_OPACITY;
 				this.setVisible(true);
 				
 				// Only do the fade out animation the display protocol is set to AUTO_HIDE
 				if (displayProtocol == FeedbackDisplayProtocol.AUTO_HIDE)
 				{
 					// Start the auto-hide process after showing the message for five seconds
-					autoHideDelayTimer.schedule(new AutoHideMessageTask(), EIGHT_SECOND_DELAY);
+					if (animationTask != null)
+					{
+						animationTask.cancel();
+						currentOpacity = FULL_OPACITY;
+						this.setVisible(true);
+					}
+					
+					animationTask = new AutoHideMessageTask();
+					autoHideDelayTimer.schedule(animationTask, EIGHT_SECOND_DELAY);
 				}
 			}
 		}
@@ -178,7 +195,7 @@ public class FeedbackMessagePanel extends JPanel {
 		
 		// Initialize settings for the panel itself
 		this.setBorder(new EtchedBorder(EtchedBorder.RAISED, null, null));
-		this.setLayout(new MigLayout("hidemode 2", "[][10px:10px:10px][grow][10px:10px:10px][]", "[grow]"));
+		this.setLayout(new MigLayout("hidemode 2,insets 0,gap 0 0", "[50:50:50,center][grow,fill][180:180:180]", "[55:55:55,grow,center]"));
 		this.setVisible(false);
 		
 		// Setup the message icon
@@ -186,13 +203,14 @@ public class FeedbackMessagePanel extends JPanel {
 		this.add(feedbackMessageIcon, "cell 0 0");
 		
 		// Setup the message textbox
-		feedbackMessageText = new JLabel(BLANK_MESSAGE);
+		feedbackMessageText = new JTextArea(BLANK_MESSAGE);
 		feedbackMessageText.setBackground(null);
-		feedbackMessageText.setBorder(
-				BorderFactory.createCompoundBorder(feedbackMessageText.getBorder(), BorderFactory.createEmptyBorder(5, 0, 5, 0)));
+		feedbackMessageText.setBorder(BorderFactory.createEmptyBorder());
 		feedbackMessageText.setFont(new Font("Dialog", Font.PLAIN, 14));
+		feedbackMessageText.setLineWrap(true);
+		feedbackMessageText.setWrapStyleWord(true);
 		feedbackMessageText.setText("Some info or warning...");
-		this.add(feedbackMessageText, "cell 2 0,growx,aligny center");
+		this.add(feedbackMessageText, "cell 1 0,growx,aligny center");
 		
 		// Initialize the auto-hide delay animation timer
 		autoHideDelayTimer = new Timer();
@@ -210,7 +228,7 @@ public class FeedbackMessagePanel extends JPanel {
 				clearFeedbackMessage();
 			}
 		});
-		this.add(hideMessagesButton, "cell 4 0,growx,aligny center");
+		this.add(hideMessagesButton, "cell 2 0,alignx center,aligny center");
 	}
 	
 	/**

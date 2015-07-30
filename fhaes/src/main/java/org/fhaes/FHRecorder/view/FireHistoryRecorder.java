@@ -100,8 +100,11 @@ public class FireHistoryRecorder extends JDialog {
 	 */
 	private void initComponents() {
 		
-		this.setModalityType(ModalityType.APPLICATION_MODAL);
 		this.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+		this.setModalityType(ModalityType.APPLICATION_MODAL);
+		this.setMinimumSize(new Dimension(1000, 700));
+		this.setResizable(true);
+		
 		this.addWindowListener(new WindowAdapter() {
 			
 			@Override
@@ -111,12 +114,8 @@ public class FireHistoryRecorder extends JDialog {
 			}
 		});
 		
-		this.setMinimumSize(new Dimension(1000, 630));
-		this.setResizable(true);
+		this.getContentPane().setLayout(new MigLayout("hidemode 2,insets 0", "[grow][][][][0:0:0]", "[][500:500,grow,fill][35:35:35]"));
 		
-		this.getContentPane()
-				.setLayout(new MigLayout("hidemode 2,insets 0", "[grow][][][][10:10:10]", "[][500:500,grow,fill][30:30:30][2:2:2]"));
-				
 		feedbackMessagePanel = new FeedbackMessagePanel();
 		this.getContentPane().add(feedbackMessagePanel, "cell 0 0 5 1,grow");
 		
@@ -187,7 +186,7 @@ public class FireHistoryRecorder extends JDialog {
 			}
 			
 		});
-		this.getContentPane().add(saveButton, "cell 1 2,grow");
+		this.getContentPane().add(saveButton, "cell 1 2,growx,aligny center");
 		
 		closeButton = new JButton("Close");
 		closeButton.addActionListener(new ActionListener() {
@@ -199,7 +198,7 @@ public class FireHistoryRecorder extends JDialog {
 			}
 			
 		});
-		this.getContentPane().add(closeButton, "cell 2 2,grow");
+		this.getContentPane().add(closeButton, "cell 2 2,growx,aligny center");
 		
 		discardChangesButton = new JButton("Discard changes");
 		discardChangesButton.addActionListener(new ActionListener() {
@@ -212,7 +211,7 @@ public class FireHistoryRecorder extends JDialog {
 			}
 			
 		});
-		this.getContentPane().add(discardChangesButton, "cell 3 2,grow");
+		this.getContentPane().add(discardChangesButton, "cell 3 2,growx,aligny center");
 		this.pack();
 	}
 	

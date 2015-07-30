@@ -77,7 +77,7 @@ public class CategoryEditor extends JDialog {
 	 */
 	private void initGUI() {
 		
-		this.getContentPane().setLayout(new MigLayout("hidemode 2,insets 0", "[794px,grow]", "[grow][grow,fill][]"));
+		this.getContentPane().setLayout(new MigLayout("hidemode 2,insets 0,gap 0 0", "[grow]", "[][grow,fill][]"));
 		
 		categoryListPanel = new JPanel();
 		categoryListPanel.setBackground(new Color(80, 80, 80));
