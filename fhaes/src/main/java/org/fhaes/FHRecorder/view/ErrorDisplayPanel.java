@@ -268,7 +268,7 @@ public class ErrorDisplayPanel extends JPanel {
 		highlightErrorLines();
 		
 		FireHistoryRecorder.getFeedbackMessagePanel().updateFeedbackMessage(FeedbackMessageType.WARNING,
-				FeedbackDisplayProtocol.STATE_DEPENDENT, "A total of " + errors.size() + " errors were found while loading the file.");
+				FeedbackDisplayProtocol.MANUAL_HIDE, "A total of " + errors.size() + " errors were found while loading the file.");
 	}
 	
 	/**

@@ -365,7 +365,7 @@ public class FireHistoryRecorder extends JDialog {
 		{
 			if (!FileController.isFileNew())
 			{
-				feedbackMessagePanel.updateFeedbackMessage(FeedbackMessageType.WARNING, FeedbackDisplayProtocol.STATE_DEPENDENT,
+				feedbackMessagePanel.updateFeedbackMessage(FeedbackMessageType.WARNING, FeedbackDisplayProtocol.MANUAL_HIDE,
 						"File contains invalid data or is not an FHX file. Saving will overwrite previous file contents.");
 			}
 		}

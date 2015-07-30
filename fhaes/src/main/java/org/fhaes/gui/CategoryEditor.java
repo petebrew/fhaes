@@ -17,7 +17,6 @@
  *************************************************************************************************/
 package org.fhaes.gui;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -34,6 +33,7 @@ import javax.swing.ScrollPaneConstants;
 
 import org.fhaes.enums.FeedbackDisplayProtocol;
 import org.fhaes.enums.FeedbackMessageType;
+import org.fhaes.feedback.FeedbackMessagePanel;
 import org.fhaes.feedback.FeedbackPreferenceManager.FeedbackDictionary;
 import org.fhaes.fhfilereader.FHCategoryReader;
 import org.fhaes.model.FHCategoryEntry;
@@ -59,6 +59,7 @@ public class CategoryEditor extends JDialog {
 	// Declare local variables
 	private final FHFile workingFile;
 	private JPanel categoryListPanel;
+	private FeedbackMessagePanel feedbackMessagePanel;
 	
 	/**
 	 * Initializes the dialog.
@@ -76,7 +77,7 @@ public class CategoryEditor extends JDialog {
 	 */
 	private void initGUI() {
 		
-		this.getContentPane().setLayout(new BorderLayout(0, 0));
+		this.getContentPane().setLayout(new MigLayout("hidemode 2,insets 0", "[794px,grow]", "[grow][grow,fill][]"));
 		
 		categoryListPanel = new JPanel();
 		categoryListPanel.setBackground(new Color(80, 80, 80));
@@ -87,12 +88,16 @@ public class CategoryEditor extends JDialog {
 		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		scrollPane.getVerticalScrollBar().setUnitIncrement(SCROLL_INCREMENT_AMOUNT);
+		
+		feedbackMessagePanel = new FeedbackMessagePanel();
+		getContentPane().add(feedbackMessagePanel, "cell 0 0,grow");
+		
 		scrollPane.setViewportView(categoryListPanel);
-		this.getContentPane().add(scrollPane, BorderLayout.CENTER);
+		this.getContentPane().add(scrollPane, "cell 0 1,grow");
 		
 		JPanel buttonPanel = new JPanel();
 		buttonPanel.setLayout(new MigLayout("", "[120:120][120:120][grow,fill][80:80][80:80]", "[30:30,fill]"));
-		this.getContentPane().add(buttonPanel, BorderLayout.SOUTH);
+		this.getContentPane().add(buttonPanel, "cell 0 2,growx,aligny top");
 		
 		/*
 		 * EXPAND ALL BUTTON
@@ -284,5 +289,13 @@ public class CategoryEditor extends JDialog {
 		{
 			ex.printStackTrace();
 		}
+	}
+	
+	/**
+	 * Gets the feedbackMessagePanel instance.
+	 */
+	protected FeedbackMessagePanel getFeedbackMessagePanel() {
+		
+		return feedbackMessagePanel;
 	}
 }

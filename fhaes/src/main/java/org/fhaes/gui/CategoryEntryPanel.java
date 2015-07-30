@@ -46,12 +46,12 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
+import org.fhaes.enums.FeedbackDisplayProtocol;
+import org.fhaes.enums.FeedbackMessageType;
 import org.fhaes.model.FHCategoryEntry;
 import org.fhaes.model.FHSeries;
 import org.fhaes.util.Builder;
 import org.fhaes.util.FHAESAction;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -63,9 +63,6 @@ import net.miginfocom.swing.MigLayout;
 public class CategoryEntryPanel extends JPanel {
 	
 	private static final long serialVersionUID = 1L;
-	
-	// Declare FHAES specialized objects
-	private static final Logger log = LoggerFactory.getLogger(CategoryEntryPanel.class);
 	
 	// Declare FHAES actions
 	private FHAESAction actionAddNewCategory;
@@ -129,7 +126,6 @@ public class CategoryEntryPanel extends JPanel {
 		categoryTree.setCellRenderer(renderer);
 		categoryTree.setEditable(true);
 		categoryTree.setInvokesStopCellEditing(true);
-		categoryTree.setToolTipText("Category entries must not contain any commas in order to be valid.");
 		categoryTree.getModel().addTreeModelListener(new CategoryTreeModelListener());
 		categoryTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
 		categoryTree.addTreeSelectionListener(new CategoryTreeSelectionListener());
@@ -235,11 +231,13 @@ public class CategoryEntryPanel extends JPanel {
 				}
 				catch (IllegalArgumentException ex)
 				{
-					log.debug("Cannot delete root node from category tree.");
+					parentEditor.getFeedbackMessagePanel().updateFeedbackMessage(FeedbackMessageType.WARNING,
+							FeedbackDisplayProtocol.AUTO_HIDE, "Please use Fire History Recorder if you wish to modify the series name.");
 				}
 				catch (NullPointerException ex)
 				{
-					log.debug("Cannot delete root node from category tree.");
+					parentEditor.getFeedbackMessagePanel().updateFeedbackMessage(FeedbackMessageType.WARNING,
+							FeedbackDisplayProtocol.AUTO_HIDE, "Please use Fire History Recorder if you wish to modify the series name.");
 				}
 			}
 		};
@@ -374,6 +372,9 @@ public class CategoryEntryPanel extends JPanel {
 			{
 				getChildNodeAtIndex(i).setUserObject(DEFAULT_CONTENT_VALUE);
 				currentEntry = validateEntryAtIndex(i);
+				
+				parentEditor.getFeedbackMessagePanel().updateFeedbackMessage(FeedbackMessageType.WARNING, FeedbackDisplayProtocol.AUTO_HIDE,
+						"Category entries must not contain any commas in order to be valid. All invalid entries have been reset to their default value.");
 			}
 			
 			categoryEntries.add(currentEntry);
