@@ -44,6 +44,7 @@ import javax.swing.text.Highlighter;
 
 import org.fhaes.FHRecorder.controller.IOController;
 import org.fhaes.FHRecorder.utility.SampleErrorModel;
+import org.fhaes.enums.FeedbackDisplayProtocol;
 import org.fhaes.enums.FeedbackMessageType;
 
 import net.miginfocom.swing.MigLayout;
@@ -267,7 +268,7 @@ public class ErrorDisplayPanel extends JPanel {
 		highlightErrorLines();
 		
 		FireHistoryRecorder.getFeedbackMessagePanel().updateFeedbackMessage(FeedbackMessageType.WARNING,
-				"A total of " + errors.size() + " errors were found while loading the file.");
+				FeedbackDisplayProtocol.STATE_DEPENDENT, "A total of " + errors.size() + " errors were found while loading the file.");
 	}
 	
 	/**

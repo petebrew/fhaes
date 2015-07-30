@@ -41,6 +41,7 @@ import org.fhaes.FHRecorder.controller.FileController;
 import org.fhaes.FHRecorder.controller.IOController;
 import org.fhaes.FHRecorder.controller.SampleController;
 import org.fhaes.FHRecorder.model.FHX2_File;
+import org.fhaes.enums.FeedbackDisplayProtocol;
 import org.fhaes.enums.FeedbackMessageType;
 import org.fhaes.exceptions.CompositeFileException;
 import org.fhaes.feedback.FeedbackMessagePanel;
@@ -113,13 +114,14 @@ public class FireHistoryRecorder extends JDialog {
 		this.setMinimumSize(new Dimension(1000, 630));
 		this.setResizable(true);
 		
-		this.getContentPane().setLayout(new MigLayout("hidemode 2", "[grow][][][]", "[][500:500,grow,fill][30:30:30,fill]"));
-		
+		this.getContentPane()
+				.setLayout(new MigLayout("hidemode 2,insets 0", "[grow][][][][10:10:10]", "[][500:500,grow,fill][30:30:30][2:2:2]"));
+				
 		feedbackMessagePanel = new FeedbackMessagePanel();
-		this.getContentPane().add(feedbackMessagePanel, "cell 0 0 4 1,grow");
+		this.getContentPane().add(feedbackMessagePanel, "cell 0 0 5 1,grow");
 		
 		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
-		this.getContentPane().add(tabbedPane, "cell 0 1 4 1,grow");
+		this.getContentPane().add(tabbedPane, "cell 0 1 5 1,grow");
 		
 		dataTab = new JPanel();
 		dataTab.setBorder(new SoftBevelBorder(BevelBorder.LOWERED, null, null, null, null));
@@ -185,7 +187,7 @@ public class FireHistoryRecorder extends JDialog {
 			}
 			
 		});
-		this.getContentPane().add(saveButton, "cell 1 2,growx,aligny center");
+		this.getContentPane().add(saveButton, "cell 1 2,grow");
 		
 		closeButton = new JButton("Close");
 		closeButton.addActionListener(new ActionListener() {
@@ -197,7 +199,7 @@ public class FireHistoryRecorder extends JDialog {
 			}
 			
 		});
-		this.getContentPane().add(closeButton, "cell 2 2,growx,aligny center");
+		this.getContentPane().add(closeButton, "cell 2 2,grow");
 		
 		discardChangesButton = new JButton("Discard changes");
 		discardChangesButton.addActionListener(new ActionListener() {
@@ -210,7 +212,7 @@ public class FireHistoryRecorder extends JDialog {
 			}
 			
 		});
-		this.getContentPane().add(discardChangesButton, "cell 3 2,growx,aligny center");
+		this.getContentPane().add(discardChangesButton, "cell 3 2,grow");
 		this.pack();
 	}
 	
@@ -286,7 +288,9 @@ public class FireHistoryRecorder extends JDialog {
 		}
 		
 		FileController.save();
-		feedbackMessagePanel.updateFeedbackMessage(FeedbackMessageType.INFO, FeedbackDictionary.FHRECORDER_FILE_SAVED_MESSAGE.toString());
+		
+		feedbackMessagePanel.updateFeedbackMessage(FeedbackMessageType.INFO, FeedbackDisplayProtocol.AUTO_HIDE,
+				FeedbackDictionary.FHRECORDER_FILE_SAVED_MESSAGE.toString());
 	}
 	
 	/**
@@ -352,7 +356,7 @@ public class FireHistoryRecorder extends JDialog {
 		// file contains a data set that does not have a defined end year
 		if (FileController.wasLastYearDefinedInFile() == false)
 		{
-			feedbackMessagePanel.updateFeedbackMessage(FeedbackMessageType.INFO,
+			feedbackMessagePanel.updateFeedbackMessage(FeedbackMessageType.INFO, FeedbackDisplayProtocol.AUTO_HIDE,
 					"File contains valid data with an unformatted sample. A temporary sample has been generated using the boundaries of the data set.");
 		}
 		
@@ -361,7 +365,7 @@ public class FireHistoryRecorder extends JDialog {
 		{
 			if (!FileController.isFileNew())
 			{
-				feedbackMessagePanel.updateFeedbackMessage(FeedbackMessageType.WARNING,
+				feedbackMessagePanel.updateFeedbackMessage(FeedbackMessageType.WARNING, FeedbackDisplayProtocol.STATE_DEPENDENT,
 						"File contains invalid data or is not an FHX file. Saving will overwrite previous file contents.");
 			}
 		}

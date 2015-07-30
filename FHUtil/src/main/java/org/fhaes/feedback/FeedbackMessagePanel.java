@@ -32,6 +32,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EtchedBorder;
 
+import org.fhaes.enums.FeedbackDisplayProtocol;
 import org.fhaes.enums.FeedbackMessageType;
 import org.fhaes.preferences.App;
 import org.fhaes.preferences.FHAESPreferences.PrefKey;
@@ -94,7 +95,7 @@ public class FeedbackMessagePanel extends JPanel {
 	 * @param messageType
 	 * @param messageString
 	 */
-	public void updateFeedbackMessage(FeedbackMessageType messageType, String messageString) {
+	public void updateFeedbackMessage(FeedbackMessageType messageType, FeedbackDisplayProtocol displayProtocol, String messageString) {
 		
 		PrefKey keyForCurrentMessage = FeedbackPreferenceManager.GetAssociatedKeyFromMessageText(messageString);
 		boolean showThisFeedbackMessage = true;
@@ -124,8 +125,8 @@ public class FeedbackMessagePanel extends JPanel {
 				this.setBackground(messageType.getBackgroundColor());
 				this.setVisible(true);
 				
-				// Only do the fade out animation if the message is of type info or error
-				if (messageType.toString() != FeedbackMessageType.WARNING.toString())
+				// Only do the fade out animation the display protocol is set to AUTO_HIDE
+				if (displayProtocol == FeedbackDisplayProtocol.AUTO_HIDE)
 				{
 					// Start the auto-hide process after showing the message for five seconds
 					autoHideDelayTimer.schedule(new AutoHideMessageTask(), EIGHT_SECOND_DELAY);

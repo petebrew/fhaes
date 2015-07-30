@@ -42,6 +42,7 @@ import org.fhaes.FHRecorder.model.FHX2_FileOptionalPart;
 import org.fhaes.FHRecorder.utility.LengthRestrictedDocument;
 import org.fhaes.FHRecorder.utility.MetaDataTextField;
 import org.fhaes.components.HelpTipButton;
+import org.fhaes.enums.FeedbackDisplayProtocol;
 import org.fhaes.enums.FeedbackMessageType;
 import org.fhaes.help.LocalHelp;
 import org.fhaes.preferences.FHAESPreferences.PrefKey;
@@ -1885,7 +1886,9 @@ public class MetaDataPanel extends javax.swing.JPanel {
 		}
 		else
 		{
-			FireHistoryRecorder.getFeedbackMessagePanel().updateFeedbackMessage(FeedbackMessageType.WARNING, FHX2_META_DATA_LENGTH_MESSAGE);
+			FireHistoryRecorder.getFeedbackMessagePanel().updateFeedbackMessage(FeedbackMessageType.WARNING,
+					FeedbackDisplayProtocol.STATE_DEPENDENT, FHX2_META_DATA_LENGTH_MESSAGE);
+					
 			return false;
 		}
 	}

@@ -28,27 +28,24 @@ import org.fhaes.util.Builder;
  */
 public enum FeedbackMessageType {
 	
-	INFO("INFO", new Color(204, 204, 255), Builder.getImageIcon("info.png")),
+	INFO(new Color(204, 204, 255), Builder.getImageIcon("info.png")),
 	
-	WARNING("WARNING", new Color(255, 255, 204), Builder.getImageIcon("warning.png")),
+	WARNING(new Color(255, 255, 204), Builder.getImageIcon("warning.png")),
 	
-	ERROR("ERROR", new Color(255, 204, 204), Builder.getImageIcon("bad.png"));
+	ERROR(new Color(255, 204, 204), Builder.getImageIcon("bad.png"));
 	
 	// Declare local variables
-	private String humanReadable;
 	private Color backgroundColor;
 	private Icon displayIcon;
 	
 	/**
-	 * Initialize the human-readable string, background color, and display icon for the FeedbackMessageType.
+	 * Initialize the background color, and display icon for the FeedbackMessageType.
 	 * 
-	 * @param str
 	 * @param col
 	 * @param ico
 	 */
-	FeedbackMessageType(String str, Color col, Icon ico) {
+	FeedbackMessageType(Color col, Icon ico) {
 		
-		humanReadable = str;
 		backgroundColor = col;
 		displayIcon = ico;
 	}
@@ -71,16 +68,5 @@ public enum FeedbackMessageType {
 	public Icon getDisplayIcon() {
 		
 		return displayIcon;
-	}
-	
-	/**
-	 * Get the human-readable string name for this FeedbackMessageType.
-	 * 
-	 * @return humanReadable
-	 */
-	@Override
-	public String toString() {
-		
-		return humanReadable;
 	}
 }

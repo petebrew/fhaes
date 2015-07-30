@@ -74,6 +74,7 @@ import org.fhaes.components.FHAESCheckBoxMenuItem;
 import org.fhaes.components.FHAESMenuItem;
 import org.fhaes.components.JToolBarButton;
 import org.fhaes.components.JToolBarToggleButton;
+import org.fhaes.enums.FeedbackDisplayProtocol;
 import org.fhaes.enums.FeedbackMessageType;
 import org.fhaes.exceptions.CompositeFileException;
 import org.fhaes.feedback.FeedbackMessagePanel;
@@ -1242,17 +1243,18 @@ public class MainWindow implements PrefsListener {
 		logviewer = new Log4JViewer();
 		log.debug("Initializing FHAES application");
 		
-		frame.setIconImage(Builder.getApplicationIcon());
-		frame.setTitle(BUNDLE.getString("MainWindow.frame.title")); //$NON-NLS-1$
-		
+		// Setup properties for the main frame
+		frame.getContentPane().setLayout(new MigLayout("hidemode 2,insets 0", "[700:700,grow]", "[][500:500,grow,fill]"));
 		frame.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+		frame.setIconImage(Builder.getApplicationIcon());
+		frame.setMinimumSize(new Dimension(800, 600));
+		frame.setTitle(BUNDLE.getString("MainWindow.frame.title")); //$NON-NLS-1$
 		frame.addWindowListener(new WindowAdapter() {
 			
 			@Override
 			public void windowClosing(WindowEvent e) {
 				
 				// Save frame size and position on close
-				
 				Rectangle bounds = frame.getBounds();
 				App.prefs.setIntPref(PrefKey.SCREEN_BOUNDS_X, ((Double) bounds.getX()).intValue());
 				App.prefs.setIntPref(PrefKey.SCREEN_BOUNDS_Y, ((Double) bounds.getY()).intValue());
@@ -1272,7 +1274,6 @@ public class MainWindow implements PrefsListener {
 		}
 		
 		fileListModel = new FileListModel();
-		frame.getContentPane().setLayout(new MigLayout("hidemode 2", "[grow]", "[][500:500,grow,fill]"));
 		
 		feedbackMessagePanel = new FeedbackMessagePanel();
 		frame.getContentPane().add(feedbackMessagePanel, "cell 0 0,grow");
@@ -1535,7 +1536,7 @@ public class MainWindow implements PrefsListener {
 				}
 				else
 				{
-					feedbackMessagePanel.updateFeedbackMessage(FeedbackMessageType.ERROR,
+					feedbackMessagePanel.updateFeedbackMessage(FeedbackMessageType.ERROR, FeedbackDisplayProtocol.AUTO_HIDE,
 							"Cannot edit categories for an invalid FHX file.");
 				}
 			}

@@ -32,6 +32,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 
+import org.fhaes.enums.FeedbackDisplayProtocol;
 import org.fhaes.enums.FeedbackMessageType;
 import org.fhaes.feedback.FeedbackPreferenceManager.FeedbackDictionary;
 import org.fhaes.fhfilereader.FHCategoryReader;
@@ -277,7 +278,7 @@ public class CategoryEditor extends JDialog {
 			writer.close();
 			
 			MainWindow.getInstance().getFeedbackMessagePanel().updateFeedbackMessage(FeedbackMessageType.INFO,
-					FeedbackDictionary.CATEGORY_FILE_SAVED_MESSAGE.toString());
+					FeedbackDisplayProtocol.AUTO_HIDE, FeedbackDictionary.CATEGORY_FILE_SAVED_MESSAGE.toString());
 		}
 		catch (IOException ex)
 		{
