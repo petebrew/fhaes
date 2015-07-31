@@ -13,7 +13,7 @@ The repository contains several modules:
 
 FHAES is open source software and we actively encourage collaboration and assistance from others in the community.  There is always lots to do, even for people with little or no programming experience.  Please get in touch with the development team as we'd love to hear from you.
 
-### Development environment
+## Development environment
 
 The IDE of choice of the main FHAES developers is [Eclipse](http://www.eclipse.org). There are many other IDEs around and there is no reason you can't use them instead.  Either way, the following instructions will hopefully be of use.  We have successfully developed FHAES on Mac, Windows and Linux computers.  The methods for setting up are almost identical.  
 
@@ -32,7 +32,7 @@ The FHAES project is the main application that most users use to access the func
 To launch FHAES from within Eclipse you will need to go to  ```Run > Run Java application```.  Create a new run configuration with the main class set to 'org.fhaes.gui.MainWindow'.       
 
 
-### Dependencies
+## Dependencies
 FHAES is built with Maven.  One of the main benefits of Maven is that it handles dependencies efficiently.  All the libraries that FHAES relies upon are configured within the Maven pom.xml file and installed seamlessly as part of the build process. Maven handles transient dependencies (i.e. dependencies of dependencies) automatically.  Therefore if a developer knows he needs the functions within a particular library, he simply needs to supply the details of this library without having to worry about the other libraries that this new library is in turn dependent on.  Maven also manages versions efficiently.  If a library is dependent on a particular version of another library this is specified within the Maven build mechanism.  This means it is much easier to keep dependencies up-to-date without having to worry about the cascading issues that upgrades often have.  In short, Maven is intended to save developers from `JAR hell'.
 
 For the record, FHAES currently depends upon the libraries listed in the table below.  The table also specifies the licenses that these libraries are made available under.
@@ -59,9 +59,8 @@ For the record, FHAES currently depends upon the libraries listed in the table b
 |SwingX | LGPL |
 |TridasJLib | Apache 2.0 |
 
-TODO TABLES
 
-### Multimedia resources
+## Multimedia resources
 
 FHAES includes infrastructure for multimedia resources such as icons and images within the Maven resource folder `src/main/resources' of the FHUtil module.  The icons are accessed via the static Builder class.  This has various accessor functions which take the filename and return the icon itself or a URI of the icon from within the Jar.
 
@@ -93,7 +92,7 @@ where MyClass is the name of the current class.  Then you can log messages simpl
 Before managed logging was introduced to FHAES, debugging was often handled through the use of System.out and System.err messages.  To ensure that these messages are not lost we use another package called SysOutOverSLF4J.  This redirects messages sent to System.out and System.err to the logging system.  This is a temporary solution so when working on older classes, please take the time to transition these older calls to the proper logging calls.  We can then remove the need for SysOutOverSLF4J.
 
 
-### Preferences
+## Preferences
 
 It is helpful to remember certain user preferences e.g. last folder opened etc so that they don't have to do tasks repeatedly.  This is achieved through the use of the FHAESPreferences class.  This stores preferences in a specific place on the users computer depending on the operating system they are using.  For instance in Windows preferences are stored in the registry and in Linux they are stored in a hidden file within the users home folder.
 
@@ -112,7 +111,7 @@ FHAESPreferences.getPref(PrefKey.PREFKEY, "default value");
 When you get a preference the second parameter contains the default value to return if no preference is found. There are a number of variations on the setPref and getPref functions which ensure the data type of the preference you are saving/retrieving e.g. setIntPref, setBooleanPref etc.  
 
 
-### Build script
+## Build script
 
 FHAES is built using Maven and is controlled through the pom.xml file stored in the base of the FHAES source code.  It would be possible to distribute FHAES as an executable JAR file, however, we we have chosen to also produce native installers for the major platforms.  This gives us the opportunity to tightly integrate FHAES into the users operating system making it behave more like the native applications they are used to using.  For instance, it means that we can associate the .FHX file extension in Windows with FHAES enabling users to double click on files and have them open automatically.  It also means the application has its own icon rather than the generic Java coffee icon.  In MacOSX it also means the menu bar is placed at the top of the screen rather than in the window.
 
@@ -124,7 +123,7 @@ While you develop, Maven should automatically build FHAES for you in the backgro
 
 
 
-### Creating native installers
+## Creating native installers
 
 A pragmatic decision was made to use the closed source Install4J install for packaging.  Although an open source tool is preferable (NSIS was used for some time), Install4J is the only tool we've found that gives us the one click package and coding signing for all three target platforms (Windows, OSX and Linux).  Install4J is a commercial tool although the distributing company (EJ Technologies) provides free licenses to approved open source projects.  The lead developed (Peter Brewer) has license keys to run Install4J for FHAES.  The drawback with this approach is that only Peter can produce the final releases.
 
@@ -132,7 +131,7 @@ Install4J includes a GUI application for generating and editing the configuratio
 
 
 
-### Code signing
+## Code signing
 
 From Windows Vista and MacOSX 10.7 (Lion) onwards code signing has become important.  Windows applications that are not signed result in terrifying warning messages, and in OSX by default they cannot even be run.  The idea behind code signing is that it provides some level of security for the user as code signing certificates can be revoked if an application is deemed to be malicious.  
 
@@ -155,7 +154,7 @@ The graphical interfaces in FHAES have mostly been designed using the Google Win
 
 
 
-### Writing documentation
+## Writing documentation
 
 The documentation in FHAES is written in the well established typesetting language {\LaTeXe}.  {\LaTeX} is a great tool for producing high quality documentation with a good structure and style.  Unlike standard WYSIWYG (what you see is what you get) word processing applications like Microsoft Word, {\LaTeX} uses simple plain text code to layout a document so that it is often described as WYSIWYM (what you see is what you mean)!  The style of a {\LaTeX} document is handled separated enabling the author to concentrate on content.  By removing the possibility for authors to tinker with font sizes etc, {\LaTeX} forces you to create clear, well structured documents.  For further details see the [LaTeX Wikibook](http://en.wikibooks.org/wiki/LaTeX/).
 
@@ -163,7 +162,7 @@ The documentation in FHAES is written in the well established typesetting langua
 
 
 
-### Making a new release
+## Making a new release
 Making a new release should be a relatively quick and simply process, but there are still a few things to remember:
 
  * Make sure this documentation is up-to-date. 
