@@ -79,11 +79,13 @@ To alter the way these appenders are configured you need to edit the log4j.xml f
 
 Using the logging framework is very simple.  Just define a Logger as a static variable in your class like this:
 
- ```private final static Logger log = LoggerFactory.getLogger(MyClass.class);```
+ ```Java
+ private final static Logger log = LoggerFactory.getLogger(MyClass.class);
+ ```
  
 where MyClass is the name of the current class.  Then you can log messages simply by calling:
  
- ```
+ ```Java
  log.warn('My message')
  log.debug('My message') 
  ```
@@ -96,12 +98,16 @@ Before managed logging was introduced to FHAES, debugging was often handled thro
 It is helpful to remember certain user preferences e.g. last folder opened etc so that they don't have to do tasks repeatedly.  This is achieved through the use of the FHAESPreferences class.  This stores preferences in a specific place on the users computer depending on the operating system they are using.  For instance in Windows preferences are stored in the registry and in Linux they are stored in a hidden file within the users home folder.
 
 The preferences are accessed from the static member as follows:
-```\code{FHAESPreferences.setPref(PrefKey.PREFKEY, "value");}```
+```Java
+FHAESPreferences.setPref(PrefKey.PREFKEY, "value");
+```
 
 where PrefKey.PREFKEY is an enum containing a unique string to identify the preference, and the second value is the string value to set.  
 
 To retrieve a preference, you use a similar syntax:
-```\code{FHAESPreferences.getPref(PrefKey.PREFKEY, "default value");}```
+```Java
+FHAESPreferences.getPref(PrefKey.PREFKEY, "default value");
+```
 
 When you get a preference the second parameter contains the default value to return if no preference is found. There are a number of variations on the setPref and getPref functions which ensure the data type of the preference you are saving/retrieving e.g. setIntPref, setBooleanPref etc.  
 
