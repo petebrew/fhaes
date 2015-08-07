@@ -43,7 +43,7 @@ import javax.swing.text.DefaultHighlighter;
 import javax.swing.text.Highlighter;
 
 import org.fhaes.FHRecorder.controller.IOController;
-import org.fhaes.FHRecorder.utility.SampleErrorModel;
+import org.fhaes.FHRecorder.util.SampleErrorModel;
 import org.fhaes.enums.FeedbackDisplayProtocol;
 import org.fhaes.enums.FeedbackMessageType;
 

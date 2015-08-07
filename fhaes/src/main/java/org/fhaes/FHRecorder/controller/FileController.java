@@ -31,8 +31,8 @@ import java.util.List;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
-import org.fhaes.FHRecorder.utility.CustomOptions;
-import org.fhaes.FHRecorder.utility.YearSummary;
+import org.fhaes.FHRecorder.util.CustomOptions;
+import org.fhaes.FHRecorder.util.YearSummary;
 import org.fhaes.FHRecorder.view.FireHistoryRecorder;
 import org.fhaes.enums.FeedbackDisplayProtocol;
 import org.fhaes.enums.FeedbackMessageType;

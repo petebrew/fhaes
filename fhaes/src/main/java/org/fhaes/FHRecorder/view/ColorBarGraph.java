@@ -22,9 +22,9 @@ import java.awt.Font;
 import java.util.List;
 
 import org.fhaes.FHRecorder.controller.FileController;
-import org.fhaes.FHRecorder.utility.CustomOptions;
-import org.fhaes.FHRecorder.utility.CustomOptions.DataItem;
-import org.fhaes.FHRecorder.utility.YearSummary;
+import org.fhaes.FHRecorder.util.CustomOptions;
+import org.fhaes.FHRecorder.util.YearSummary;
+import org.fhaes.FHRecorder.util.CustomOptions.DataItem;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;

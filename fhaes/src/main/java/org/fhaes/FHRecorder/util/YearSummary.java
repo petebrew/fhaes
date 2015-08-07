@@ -15,7 +15,7 @@
  * 		If not, see <http://www.gnu.org/licenses/>.
  * 
  *************************************************************************************************/
-package org.fhaes.FHRecorder.utility;
+package org.fhaes.FHRecorder.util;
 
 import org.fhaes.FHRecorder.model.FHX2_Event;
 import org.fhaes.FHRecorder.model.FHX2_FileRequiredPart;

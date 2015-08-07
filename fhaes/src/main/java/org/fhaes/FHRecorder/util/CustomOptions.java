@@ -15,7 +15,7 @@
  * 		If not, see <http://www.gnu.org/licenses/>.
  * 
  *************************************************************************************************/
-package org.fhaes.FHRecorder.utility;
+package org.fhaes.FHRecorder.util;
 
 import java.awt.Color;
 import java.util.ArrayList;

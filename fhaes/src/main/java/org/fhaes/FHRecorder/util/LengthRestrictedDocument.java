@@ -15,57 +15,52 @@
  * 		If not, see <http://www.gnu.org/licenses/>.
  * 
  *************************************************************************************************/
-package org.fhaes.FHRecorder.utility;
+package org.fhaes.FHRecorder.util;
 
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-
-import javax.swing.JTextField;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.PlainDocument;
 
 /**
- * MetaDataTextField Class. This class is a specialized type of text field that will be used to display meta data.
+ * LengthRestrictedDocument Class. The source code for this class was found at
+ * http://stackoverflow.com/questions/13075564/limiting-length-of-input-in-jtextfield-is-not-working.
  * 
- * @author beattya
+ * @author Duncan Jones
  */
-public class MetaDataTextField extends JTextField implements KeyListener, FocusListener {
+public final class LengthRestrictedDocument extends PlainDocument {
 	
 	private static final long serialVersionUID = 1L;
+	private final int limit;
 	
 	/**
-	 * Constructor for MetaDataTextField.
+	 * Constructor for LengthRestrictedDocument.
+	 * 
+	 * @param limit - length limit of document
 	 */
-	public MetaDataTextField() {
+	public LengthRestrictedDocument(int limit) {
 		
-		this.addKeyListener(this);
-		this.addFocusListener(this);
+		super();
+		this.limit = limit;
 	}
 	
+	// Overrides the insertString method of Document
+	// @param offs offset
+	// @param str string
+	// @param a set of attributes
+	
+	/**
+	 * Overrides the insertString method of Document.
+	 * 
+	 * @param offs offset
+	 * @param str string
+	 * @param a set of attributes
+	 */
 	@Override
-	public void keyPressed(KeyEvent e) {
+	public void insertString(int offs, String str, AttributeSet a) throws BadLocationException {
 		
-		if (e.getKeyChar() == KeyEvent.VK_ENTER)
-			this.transferFocus();
-	}
-	
-	@Override
-	public void keyReleased(KeyEvent e) {
-	
-	}
-	
-	@Override
-	public void keyTyped(KeyEvent e) {
-	
-	}
-	
-	@Override
-	public void focusGained(FocusEvent fe) {
-	
-	}
-	
-	@Override
-	public void focusLost(FocusEvent fe) {
-	
+		if (limit == 0 || getLength() + str.length() <= limit)
+		{
+			super.insertString(offs, str, a);
+		}
 	}
 }

@@ -39,8 +39,8 @@ import javax.swing.table.TableCellRenderer;
 
 import org.codehaus.plexus.util.FileUtils;
 import org.fhaes.FHRecorder.controller.FileController;
-import org.fhaes.FHRecorder.utility.ColorBar;
-import org.fhaes.FHRecorder.utility.YearSummary;
+import org.fhaes.FHRecorder.util.ColorBar;
+import org.fhaes.FHRecorder.util.YearSummary;
 import org.fhaes.filefilter.CSVFileFilter;
 import org.fhaes.filefilter.TXTFileFilter;
 import org.fhaes.preferences.App;

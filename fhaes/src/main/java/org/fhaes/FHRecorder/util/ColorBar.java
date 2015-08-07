@@ -15,14 +15,14 @@
  * 		If not, see <http://www.gnu.org/licenses/>.
  * 
  *************************************************************************************************/
-package org.fhaes.FHRecorder.utility;
+package org.fhaes.FHRecorder.util;
 
 import java.util.List;
 
 import javax.swing.BorderFactory;
 
 import org.fhaes.FHRecorder.controller.FileController;
-import org.fhaes.FHRecorder.utility.CustomOptions.DataItem;
+import org.fhaes.FHRecorder.util.CustomOptions.DataItem;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;

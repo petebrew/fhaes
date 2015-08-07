@@ -49,10 +49,10 @@ import javax.swing.ListSelectionModel;
 import javax.swing.TransferHandler;
 
 import org.fhaes.FHRecorder.controller.FileController;
-import org.fhaes.FHRecorder.utility.ColorBar;
-import org.fhaes.FHRecorder.utility.CustomOptions;
-import org.fhaes.FHRecorder.utility.CustomOptions.DataItem;
-import org.fhaes.FHRecorder.utility.YearSummary;
+import org.fhaes.FHRecorder.util.ColorBar;
+import org.fhaes.FHRecorder.util.CustomOptions;
+import org.fhaes.FHRecorder.util.YearSummary;
+import org.fhaes.FHRecorder.util.CustomOptions.DataItem;
 import org.fhaes.util.Builder;
 
 import net.miginfocom.swing.MigLayout;

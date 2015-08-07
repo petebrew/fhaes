@@ -25,8 +25,8 @@ import java.awt.geom.AffineTransform;
 import java.util.List;
 
 import org.fhaes.FHRecorder.controller.FileController;
-import org.fhaes.FHRecorder.utility.NumericCategoryAxis;
-import org.fhaes.FHRecorder.utility.YearSummary;
+import org.fhaes.FHRecorder.util.NumericCategoryAxis;
+import org.fhaes.FHRecorder.util.YearSummary;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.CategoryAxis;

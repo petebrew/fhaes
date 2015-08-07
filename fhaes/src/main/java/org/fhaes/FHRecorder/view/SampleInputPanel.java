@@ -67,7 +67,7 @@ import org.fhaes.FHRecorder.controller.RecordingController;
 import org.fhaes.FHRecorder.controller.SampleController;
 import org.fhaes.FHRecorder.model.FHX2_FileRequiredPart;
 import org.fhaes.FHRecorder.model.FHX2_Sample;
-import org.fhaes.FHRecorder.utility.SampleSorters;
+import org.fhaes.FHRecorder.util.SampleSorters;
 import org.fhaes.util.Builder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

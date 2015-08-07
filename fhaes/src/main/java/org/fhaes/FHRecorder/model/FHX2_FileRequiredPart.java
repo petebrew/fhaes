@@ -27,8 +27,8 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import org.fhaes.FHRecorder.controller.FileController;
-import org.fhaes.FHRecorder.utility.ErrorTrackerInterface;
-import org.fhaes.FHRecorder.utility.SampleErrorModel;
+import org.fhaes.FHRecorder.util.ErrorTrackerInterface;
+import org.fhaes.FHRecorder.util.SampleErrorModel;
 
 /**
  * FHX2_FileRequiredPart Class. This class contains the required part of the FHX file data. This includes samples, events, and recording

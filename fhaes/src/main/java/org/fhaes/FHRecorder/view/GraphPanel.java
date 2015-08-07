@@ -32,8 +32,8 @@ import javax.swing.JButton;
 import javax.swing.JScrollBar;
 
 import org.fhaes.FHRecorder.controller.FileController;
-import org.fhaes.FHRecorder.utility.NumericCategoryAxis;
-import org.fhaes.FHRecorder.utility.YearSummary;
+import org.fhaes.FHRecorder.util.NumericCategoryAxis;
+import org.fhaes.FHRecorder.util.YearSummary;
 import org.fhaes.util.Builder;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.data.category.SlidingCategoryDataset;

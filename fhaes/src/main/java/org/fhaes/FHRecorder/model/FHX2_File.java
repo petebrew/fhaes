@@ -20,8 +20,8 @@ package org.fhaes.FHRecorder.model;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-import org.fhaes.FHRecorder.utility.ErrorTrackerInterface;
-import org.fhaes.FHRecorder.utility.SampleErrorModel;
+import org.fhaes.FHRecorder.util.ErrorTrackerInterface;
+import org.fhaes.FHRecorder.util.SampleErrorModel;
 
 /**
  * FHX2_File Class. This class contains both the optional and required parts of the FHX file.
