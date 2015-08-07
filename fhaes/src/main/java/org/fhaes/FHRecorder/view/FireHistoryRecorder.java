@@ -91,128 +91,7 @@ public class FireHistoryRecorder extends JDialog {
 	 */
 	public FireHistoryRecorder() {
 		
-		initComponents();
-		this.setTitle(FileController.progName);
-	}
-	
-	/**
-	 * Initializes the GUI components of GUI_FireHistoryRecorder.
-	 */
-	private void initComponents() {
-		
-		this.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
-		this.setModalityType(ModalityType.APPLICATION_MODAL);
-		this.setMinimumSize(new Dimension(1000, 700));
-		this.setResizable(true);
-		
-		this.addWindowListener(new WindowAdapter() {
-			
-			@Override
-			public void windowClosing(WindowEvent e) {
-				
-				closeAfterRunningChecks();
-			}
-		});
-		
-		this.getContentPane().setLayout(new MigLayout("hidemode 2,insets 0", "[grow][][][][0:0:0]", "[][500:500,grow,fill][35:35:35]"));
-		
-		feedbackMessagePanel = new FeedbackMessagePanel();
-		this.getContentPane().add(feedbackMessagePanel, "cell 0 0 5 1,grow");
-		
-		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
-		this.getContentPane().add(tabbedPane, "cell 0 1 5 1,grow");
-		
-		dataTab = new JPanel();
-		dataTab.setBorder(new SoftBevelBorder(BevelBorder.LOWERED, null, null, null, null));
-		metadataTab = new JPanel();
-		metadataTab.setBorder(new SoftBevelBorder(BevelBorder.LOWERED, null, null, null, null));
-		summaryTab = new JPanel();
-		summaryTab.setBorder(new SoftBevelBorder(BevelBorder.LOWERED, null, null, null, null));
-		graphsTab = new JPanel();
-		graphsTab.setBorder(new SoftBevelBorder(BevelBorder.LOWERED, null, null, null, null));
-		
-		dataTab.setLayout(new BorderLayout());
-		metadataTab.setLayout(new BorderLayout());
-		summaryTab.setLayout(new BorderLayout());
-		graphsTab.setLayout(new BorderLayout());
-		
-		tabbedPane.addTab("Data", null, dataTab, null);
-		tabbedPane.addTab("Metadata", null, metadataTab, null);
-		tabbedPane.addTab("Summary", null, summaryTab, null);
-		tabbedPane.addTab("Graphs", null, graphsTab, null);
-		
-		tabbedPane.addChangeListener(new ChangeListener() {
-			
-			// this refreshes the summary and graph tabs whenever they are selected in the window
-			@Override
-			public void stateChanged(ChangeEvent e) {
-				
-				if (tabbedPane.getSelectedIndex() == SUMMARY_TAB_INDEX || tabbedPane.getSelectedIndex() == GRAPH_TAB_INDEX)
-				{
-					if (leftTabsSinceRedraw)
-					{
-						IOController.getFile().getRequiredPart().calculateFirstYear();
-						IOController.getFile().getRequiredPart().calculateLastYear();
-						
-						generateScreens(IOController.getFile());
-						sampleInput.redrawSampleDataPanel(SampleController.getSelectedSampleIndex());
-						summaryPanel.refreshTable();
-						graphPanel.refreshCharts(false);
-						
-						leftTabsSinceRedraw = false;
-					}
-				}
-				else
-				{
-					leftTabsSinceRedraw = true;
-				}
-			}
-		});
-		
-		saveButton = new JButton("Save");
-		saveButton.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				
-				try
-				{
-					doSave(e);
-				}
-				catch (CompositeFileException ex)
-				{
-					ex.printStackTrace();
-				}
-			}
-			
-		});
-		this.getContentPane().add(saveButton, "cell 1 2,growx,aligny center");
-		
-		closeButton = new JButton("Close");
-		closeButton.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				
-				closeAfterRunningChecks();
-			}
-			
-		});
-		this.getContentPane().add(closeButton, "cell 2 2,growx,aligny center");
-		
-		discardChangesButton = new JButton("Discard changes");
-		discardChangesButton.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				
-				FileController.filePath = null;
-				setVisible(false);
-			}
-			
-		});
-		this.getContentPane().add(discardChangesButton, "cell 3 2,growx,aligny center");
-		this.pack();
+		initGUI();
 	}
 	
 	/**
@@ -223,6 +102,7 @@ public class FireHistoryRecorder extends JDialog {
 		if (FileController.isChangedSinceLastSave())
 		{
 			Object[] options = { "Save", "Close without saving", "Cancel" };
+			
 			int n = JOptionPane.showOptionDialog(FileController.thePrimaryWindow, "Save changes to file before closing?", "Confirm",
 					JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[2]);
 					
@@ -242,6 +122,7 @@ public class FireHistoryRecorder extends JDialog {
 				return;
 			}
 		}
+		
 		setVisible(false);
 	}
 	
@@ -441,5 +322,127 @@ public class FireHistoryRecorder extends JDialog {
 	public static FeedbackMessagePanel getFeedbackMessagePanel() {
 		
 		return feedbackMessagePanel;
+	}
+	
+	/**
+	 * Initializes the GUI.
+	 */
+	private void initGUI() {
+		
+		this.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+		this.setModalityType(ModalityType.APPLICATION_MODAL);
+		this.setMinimumSize(new Dimension(1000, 700));
+		this.setResizable(true);
+		
+		this.addWindowListener(new WindowAdapter() {
+			
+			@Override
+			public void windowClosing(WindowEvent e) {
+				
+				closeAfterRunningChecks();
+			}
+		});
+		
+		this.getContentPane().setLayout(new MigLayout("hidemode 2,insets 0", "[grow][][][][0:0:0]", "[][500:500,grow,fill][35:35:35]"));
+		
+		feedbackMessagePanel = new FeedbackMessagePanel();
+		this.getContentPane().add(feedbackMessagePanel, "cell 0 0 5 1,grow");
+		
+		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+		this.getContentPane().add(tabbedPane, "cell 0 1 5 1,grow");
+		
+		dataTab = new JPanel();
+		dataTab.setBorder(new SoftBevelBorder(BevelBorder.LOWERED, null, null, null, null));
+		metadataTab = new JPanel();
+		metadataTab.setBorder(new SoftBevelBorder(BevelBorder.LOWERED, null, null, null, null));
+		summaryTab = new JPanel();
+		summaryTab.setBorder(new SoftBevelBorder(BevelBorder.LOWERED, null, null, null, null));
+		graphsTab = new JPanel();
+		graphsTab.setBorder(new SoftBevelBorder(BevelBorder.LOWERED, null, null, null, null));
+		
+		dataTab.setLayout(new BorderLayout());
+		metadataTab.setLayout(new BorderLayout());
+		summaryTab.setLayout(new BorderLayout());
+		graphsTab.setLayout(new BorderLayout());
+		
+		tabbedPane.addTab("Data", null, dataTab, null);
+		tabbedPane.addTab("Metadata", null, metadataTab, null);
+		tabbedPane.addTab("Summary", null, summaryTab, null);
+		tabbedPane.addTab("Graphs", null, graphsTab, null);
+		
+		tabbedPane.addChangeListener(new ChangeListener() {
+			
+			// this refreshes the summary and graph tabs whenever they are selected in the window
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				
+				if (tabbedPane.getSelectedIndex() == SUMMARY_TAB_INDEX || tabbedPane.getSelectedIndex() == GRAPH_TAB_INDEX)
+				{
+					if (leftTabsSinceRedraw)
+					{
+						IOController.getFile().getRequiredPart().calculateFirstYear();
+						IOController.getFile().getRequiredPart().calculateLastYear();
+						
+						generateScreens(IOController.getFile());
+						sampleInput.redrawSampleDataPanel(SampleController.getSelectedSampleIndex());
+						summaryPanel.refreshTable();
+						graphPanel.refreshCharts(false);
+						
+						leftTabsSinceRedraw = false;
+					}
+				}
+				else
+				{
+					leftTabsSinceRedraw = true;
+				}
+			}
+		});
+		
+		saveButton = new JButton("Save");
+		saveButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				try
+				{
+					doSave(e);
+				}
+				catch (CompositeFileException ex)
+				{
+					ex.printStackTrace();
+				}
+			}
+			
+		});
+		this.getContentPane().add(saveButton, "cell 1 2,growx,aligny center");
+		
+		closeButton = new JButton("Close");
+		closeButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				
+				closeAfterRunningChecks();
+			}
+			
+		});
+		this.getContentPane().add(closeButton, "cell 2 2,growx,aligny center");
+		
+		discardChangesButton = new JButton("Discard changes");
+		discardChangesButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				
+				FileController.filePath = null;
+				setVisible(false);
+			}
+			
+		});
+		
+		this.getContentPane().add(discardChangesButton, "cell 3 2,growx,aligny center");
+		this.pack();
+		this.setTitle(FileController.progName);
 	}
 }

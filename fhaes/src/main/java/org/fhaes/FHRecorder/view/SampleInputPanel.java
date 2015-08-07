@@ -30,7 +30,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.text.ParseException;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
@@ -43,7 +42,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
-import javax.swing.JSpinner;
 import javax.swing.JSplitPane;
 import javax.swing.JTextField;
 import javax.swing.JViewport;
@@ -58,7 +56,6 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.text.NumberFormatter;
 
 import org.fhaes.FHRecorder.controller.EventController;
 import org.fhaes.FHRecorder.controller.FileController;
@@ -81,10 +78,12 @@ import net.miginfocom.swing.MigLayout;
  */
 public class SampleInputPanel extends javax.swing.JPanel implements ChangeListener, PropertyChangeListener {
 	
-	private static final Logger log = LoggerFactory.getLogger(SampleInputPanel.class);
-	
 	private static final long serialVersionUID = 1L;;
 	
+	// Declare FHAES logger
+	private static final Logger log = LoggerFactory.getLogger(SampleInputPanel.class);
+	
+	// Declare sort options
 	public static final int MANUAL_SORTING = 0;
 	public static final int NAME_ASCENDING = 1;
 	public static final int NAME_DESCENDING = 2;
@@ -93,9 +92,14 @@ public class SampleInputPanel extends javax.swing.JPanel implements ChangeListen
 	public static final int LAST_YEAR_ASCENDING = 5;
 	public static final int LAST_YEAR_DESCENDING = 6;
 	
+	// Declare local constants
+	private final int STEP_SIZE = 1;
+	
+	// Declare event and recording tables
 	private EventTable eventTable;
 	private RecordingTable recordingTable;
 	
+	// Declare GUI components
 	private javax.swing.JButton deleteSampleButton;
 	private javax.swing.JMenuItem jMenuItem1;
 	private javax.swing.JMenuItem jMenuItem2;
@@ -114,8 +118,6 @@ public class SampleInputPanel extends javax.swing.JPanel implements ChangeListen
 	private JPanel sampleNameContainer;
 	private JLabel sampleNameLabel;
 	private JTextField sampleNameTextBox;
-	private JSpinner firstYearSpinner;
-	private JSpinner lastYearSpinner;
 	private JLabel firstYearLabel;
 	private JLabel lastYearLabel;
 	private FHX2_FileRequiredPart inReqPart;
@@ -130,6 +132,8 @@ public class SampleInputPanel extends javax.swing.JPanel implements ChangeListen
 	private JButton deleteRecordingButton;
 	private JButton consolidateButton;
 	private JButton autoPopulateButton;
+	private BCADYearSpinner firstYearSpinner;
+	private BCADYearSpinner lastYearSpinner;
 	
 	@SuppressWarnings("rawtypes")
 	protected JList sampleListBox;
@@ -139,9 +143,7 @@ public class SampleInputPanel extends javax.swing.JPanel implements ChangeListen
 	private static JCheckBox pithCheckBox;
 	private static JCheckBox barkCheckBox;
 	
-	private int previousValueFYS; // previous value of first year spinner
-	private int previousValueLYS; // previous value of last year spinner
-	
+	// Declare local variables
 	private boolean justUpdatedFYS = false;
 	private boolean justUpdatedLYS = false;
 	private boolean firstTimeLoading = true;
@@ -151,11 +153,11 @@ public class SampleInputPanel extends javax.swing.JPanel implements ChangeListen
 	private boolean done;
 	
 	/**
-	 * Constructor for SampleinputPanel
+	 * Constructor for SampleinputPanel.
 	 */
 	public SampleInputPanel() {
 		
-		initComponents();
+		initGUI();
 	}
 	
 	/**
@@ -166,17 +168,638 @@ public class SampleInputPanel extends javax.swing.JPanel implements ChangeListen
 	public SampleInputPanel(FHX2_FileRequiredPart inReqPart) {
 		
 		this.inReqPart = inReqPart;
-		initComponents();
+		initGUI();
 		redrawSampleListPanel();
 		headerPanel.setVisible(false);
 		inReqPart.addChangeListener(this);
 	}
 	
 	/**
-	 * Initializes the GUI components.
+	 * Automatically populate the recording years, either from the first event or the beginning of the sample depending on input from the
+	 * user.
+	 * 
+	 * @param evt
+	 */
+	private void autoPopulateButtonActionPerformed(ActionEvent evt) {
+		
+		String[] options = { "From first event", "From beginning of sample" };
+		
+		String res = (String) JOptionPane.showInputDialog(this,
+				"Note that auto-populating the recording years will remove any\n" + "existing recording entries."
+						+ "\n\nSelect where recording should begin:",
+				"Auto populate recordings", JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+				
+		if (res != options[0] && res != options[1])
+			return;
+			
+		// Remove any existing records
+		if (recordingTable != null)
+			RecordingController.deleteAllRecordingsButNotEvents();
+			
+		// Start recording at first event
+		if (res == options[0])
+			RecordingController.addRecordingFromFirstEventToEnd();
+			
+		// Start recording from beginning of sample
+		else
+			RecordingController.addRecordingFromBeginningToEnd();
+	}
+	
+	/**
+	 * Generates the header panel and the components it contains.
+	 */
+	private void createSampleHeaderPanel() {
+		
+		sampleNameContainer = new JPanel();
+		sampleNameContainer.setBorder(new MatteBorder(0, 0, 1, 0, new Color(128, 128, 128)));
+		headerPanel.add(sampleNameContainer, BorderLayout.NORTH);
+		sampleNameContainer.setLayout(new MigLayout("insets 0",
+				"[:2:2][right][150,grow][1:10:10,grow,shrinkprio 200][][][][1:10:10,grow,shrinkprio 200][][][][:2:2]", "[40:40:40]"));
+				
+		sampleNameLabel = new JLabel("Sample Name:");
+		sampleNameContainer.add(sampleNameLabel, "cell 1 0,alignx right,aligny baseline");
+		
+		sampleNameTextBox = new JTextField();
+		sampleNameContainer.add(sampleNameTextBox, "cell 2 0,growx,aligny center");
+		sampleNameTextBox.setColumns(10);
+		sampleNameTextBox.addFocusListener(new java.awt.event.FocusAdapter() {
+			
+			@Override
+			public void focusLost(java.awt.event.FocusEvent evt) {
+				
+				updateSampleNameInData();
+			}
+		});
+		sampleNameTextBox.addKeyListener(new KeyListener() {
+			
+			@Override
+			public void keyPressed(KeyEvent evt) {
+				
+				if (evt.getKeyCode() == KeyEvent.VK_ENTER)
+					updateSampleNameInData();
+			}
+			
+			@Override
+			public void keyReleased(KeyEvent evt) {}
+			
+			@Override
+			public void keyTyped(KeyEvent evt) {}
+		});
+		
+		firstYearSpinner = new BCADYearSpinner();
+		firstYearSpinner.setModel(new SpinnerNumberModel(FileController.CURRENT_YEAR - 1, FileController.EARLIEST_ALLOWED_YEAR,
+				FileController.CURRENT_YEAR - 1, STEP_SIZE));
+				
+		// Updates the first year of the sample when the value is changed
+		firstYearSpinner.addChangeListener(new ChangeListener() {
+			
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				
+				if (!selectedSampleIndexChanged && !justUpdatedFYS)
+				{
+					justUpdatedFYS = true;
+					
+					// Handle the zero case in all possible situations
+					if (firstYearSpinner.getValueAsInteger() == 0 && firstYearSpinner.getPreviousValue() == 1)
+					{
+						firstYearSpinner.setValue(-1);
+					}
+					else if (firstYearSpinner.getValueAsInteger() == 0 && firstYearSpinner.getPreviousValue() == -1)
+					{
+						firstYearSpinner.setValue(1);
+					}
+					else if (firstYearSpinner.getValueAsInteger() == 0)
+					{
+						firstYearSpinner.setValue(1);
+					}
+					// If spinner year is moved above or equal to the last year spinner's value
+					else if (firstYearSpinner.getValueAsInteger() >= lastYearSpinner.getValueAsInteger())
+					{
+						firstYearSpinner.setValue(firstYearSpinner.getPreviousValue());
+						return;
+					}
+					// If spinner year is moved up to the year past an event year
+					else if (SampleController.selectedSampleHasEvents())
+					{
+						if (firstYearSpinner.getValueAsInteger() > SampleController.getYearOfFirstEventInSelectedSample())
+						{
+							firstYearSpinner.setValue(firstYearSpinner.getPreviousValue());
+							return;
+						}
+					}
+					
+					// Apply the change to the sample
+					SampleController.changeSampleFirstYear(firstYearSpinner.getValueAsInteger());
+					redrawSampleDataPanel(sampleListBox.getSelectedIndex());
+					firstYearSpinner.updatePreviousValue();
+				}
+				
+				justUpdatedFYS = false;
+			}
+		});
+		
+		firstYearLabel = new JLabel("First Year:");
+		sampleNameContainer.add(firstYearLabel, "cell 4 0,alignx right,aligny baseline");
+		sampleNameContainer.add(firstYearSpinner, "cell 5 0,growx,aligny center");
+		
+		lastYearSpinner = new BCADYearSpinner();
+		lastYearSpinner.setModel(new SpinnerNumberModel(FileController.CURRENT_YEAR, FileController.EARLIEST_ALLOWED_YEAR,
+				FileController.CURRENT_YEAR, STEP_SIZE));
+				
+		// Updates the last year of the sample when the value is changed
+		lastYearSpinner.addChangeListener(new ChangeListener() {
+			
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				
+				if (!selectedSampleIndexChanged && !justUpdatedLYS)
+				{
+					justUpdatedLYS = true;
+					
+					// Handle the zero case in all possible situations
+					if (lastYearSpinner.getValueAsInteger() == 0 && lastYearSpinner.getPreviousValue() == 1)
+					{
+						lastYearSpinner.setValue(-1);
+					}
+					else if (lastYearSpinner.getValueAsInteger() == 0 && lastYearSpinner.getPreviousValue() == -1)
+					{
+						lastYearSpinner.setValue(1);
+					}
+					else if (lastYearSpinner.getValueAsInteger() == 0)
+					{
+						lastYearSpinner.setValue(1);
+					}
+					// If spinner year is moved below or equal to the first year spinner's value
+					else if (lastYearSpinner.getValueAsInteger() <= firstYearSpinner.getValueAsInteger())
+					{
+						lastYearSpinner.setValue(lastYearSpinner.getPreviousValue());
+						return;
+					}
+					// If spinner year is moved down to the year past an event year
+					else if (SampleController.selectedSampleHasEvents())
+					{
+						if (lastYearSpinner.getValueAsInteger() < SampleController.getYearOfLastEventInSelectedSample())
+						{
+							lastYearSpinner.setValue(lastYearSpinner.getPreviousValue());
+							return;
+						}
+					}
+					
+					// Apply the change to the sample
+					SampleController.changeSampleLastYear(lastYearSpinner.getValueAsInteger());
+					redrawSampleDataPanel(sampleListBox.getSelectedIndex());
+					lastYearSpinner.updatePreviousValue();
+				}
+				justUpdatedLYS = false;
+			}
+		});
+		
+		lastYearLabel = new JLabel("Last Year:");
+		sampleNameContainer.add(lastYearLabel, "cell 8 0,alignx right,aligny baseline");
+		sampleNameContainer.add(lastYearSpinner, "cell 9 0,growx,aligny center");
+		
+		pithCheckBox = new JCheckBox();
+		pithCheckBox.setText("Pith");
+		pithCheckBox.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent evt) {
+				
+				SampleController.setSamplePith(pithCheckBox.isSelected());
+			}
+		});
+		
+		sampleNameContainer.add(pithCheckBox, "cell 6 0,alignx left,aligny baseline");
+		
+		barkCheckBox = new javax.swing.JCheckBox();
+		barkCheckBox.setText("Bark");
+		barkCheckBox.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent evt) {
+				
+				SampleController.setSampleBark(barkCheckBox.isSelected());
+			}
+		});
+		
+		sampleNameContainer.add(barkCheckBox, "cell 10 0,alignx left,aligny baseline");
+	}
+	
+	/**
+	 * Handles when the "New Sample" button is clicked.
+	 * 
+	 * @param evt
+	 */
+	private void newSampleButtonActionPerformed(java.awt.event.ActionEvent evt) {
+		
+		NewSampleDialog editDialog = new NewSampleDialog(new java.awt.Frame(), -1);
+		editDialog.setVisible(true);
+		
+		// Update the selected index so that the new sample is the one that is displayed
+		sampleListBox.setSelectedIndex(IOController.getFile().getRequiredPart().getNumSamples() - 1);
+		
+		FileController.checkIfNumSamplesExceedsFHX2Reqs();
+		
+		needToRefreshPanel = true;
+		handleUpdatedIndex();
+	}
+	
+	/**
+	 * Handles when the "Delete Sample" button is clicked.
+	 * 
+	 * @param evt
+	 */
+	private void deleteSampleButtonActionPerformed(java.awt.event.ActionEvent evt) {
+		
+		if (sampleListBox.getModel().getSize() > 0)
+		{
+			SampleController.deleteSample();
+			
+			if (IOController.getFile().getRequiredPart().getNumSamples() > 0)
+				sampleListBox.setSelectedIndex(0);
+			else
+				sampleListBox.setSelectedIndex(-1);
+				
+			FileController.checkIfNumSamplesExceedsFHX2Reqs();
+			
+			needToRefreshPanel = true;
+			handleUpdatedIndex();
+		}
+	}
+	
+	/**
+	 * Handles when the "Add Event" button is clicked.
+	 * 
+	 * @param evt
+	 */
+	private void addEventButtonActionPerformed(ActionEvent evt) {
+		
+		if (eventTable != null)
+		{
+			if (recordingTable.getNumOfRecordings() == 0 || eventTable.getNumOfEvents() == recordingTable.getMaxNumOfEvents())
+			{
+				RecordingController.addNewRecording();
+				EventController.addNewEvent();
+				setCheckBoxEnabledValues();
+			}
+			else if (eventTable.getNumOfEvents() < recordingTable.getMaxNumOfEvents())
+			{
+				EventController.addNewEvent();
+				setCheckBoxEnabledValues();
+			}
+		}
+	}
+	
+	/**
+	 * Handles when the "Delete Event" button is clicked.
+	 * 
+	 * @param evt
+	 */
+	private void deleteEventButtonActionPerformed(ActionEvent evt) {
+		
+		if (eventTable != null)
+		{
+			int row = eventTable.getSelectedRow();
+			if (row > -1)
+			{
+				EventController.deleteEvent(row);
+				setCheckBoxEnabledValues();
+			}
+		}
+	}
+	
+	/**
+	 * Handles when the "Add Recording" button is clicked.
+	 * 
+	 * @param evt
+	 */
+	private void addRecordingButtonActionPerformed(ActionEvent evt) {
+		
+		if (recordingTable != null)
+		{
+			RecordingController.addNewRecording();
+			setCheckBoxEnabledValues();
+		}
+	}
+	
+	/**
+	 * Handles when the "Delete Recording" button is clicked.
+	 * 
+	 * @param evt
+	 */
+	private void deleteRecordingButtonActionPerformed(ActionEvent evt) {
+		
+		if (recordingTable != null)
+		{
+			int row = recordingTable.getSelectedRow();
+			if (row > -1)
+			{
+				RecordingController.deleteRecording(row);
+				setCheckBoxEnabledValues();
+			}
+		}
+	}
+	
+	/**
+	 * Handles when the "Merge Recordings" button is clicked.
+	 * 
+	 * @param evt
+	 */
+	private void mergeRecordingsButtonActionPerformed(ActionEvent evt) {
+		
+		IOController.getFile().getRequiredPart().getSample(SampleController.getSelectedSampleIndex()).getRecordingTable()
+				.mergeOverlappingRecordings();
+	}
+	
+	/**
+	 * Updates the text that is displayed on the border of the event panel.
+	 * 
+	 * @param text
+	 */
+	private void setEventBorderText(String text) {
+		
+		sampleDataPanel.setBorder(
+				new TitledBorder(new LineBorder(new Color(171, 173, 179)), text, TitledBorder.LEADING, TitledBorder.TOP, null, null));
+	}
+	
+	/**
+	 * Sets the index of the sortByComboBox according to the input index.
+	 * 
+	 * @param index
+	 */
+	public void setSortByComboBoxValue(int index) {
+		
+		sortByComboBox.setSelectedIndex(index);
+	}
+	
+	/**
+	 * Updates the border text according to the name of the sample that is currently loaded.
+	 * 
+	 * @param name
+	 */
+	private void displaySampleName(String name) {
+		
+		if (name.equals(""))
+		{
+			sampleNameTextBox.setText("");
+			setEventBorderText("No sample data to display:");
+		}
+		else
+		{
+			sampleNameTextBox.setText(name);
+			setEventBorderText("Data contained within the sample: " + name);
+		}
+	}
+	
+	/**
+	 * Updates the progress bar whenever the PropertyChangeEvent is triggered.
+	 */
+	@Override
+	public void propertyChange(PropertyChangeEvent evt) {
+		
+		if (!done)
+		{
+			int progress = task.getProgress();
+			progressBar.setValue(progress);
+		}
+		else
+			progressBar.setValue(100);
+	}
+	
+	/**
+	 * Updates the sample name in the data.
+	 */
+	@SuppressWarnings("unchecked")
+	private void updateSampleNameInData() {
+		
+		SampleController.changeSampleName(sampleNameTextBox.getText());
+		displaySampleName(sampleNameTextBox.getText());
+		
+		@SuppressWarnings("rawtypes")
+		DefaultListModel model = (DefaultListModel) this.sampleListBox.getModel();
+		model.set(sampleListBox.getSelectedIndex(), sampleListBox.getSelectedValue());
+	}
+	
+	/**
+	 * Repaints the sample list.
+	 */
+	@SuppressWarnings("unchecked")
+	public void redrawSampleListPanel() {
+		
+		FHX2_Sample selected = (FHX2_Sample) sampleListBox.getSelectedValue();
+		@SuppressWarnings("rawtypes")
+		DefaultListModel model = (DefaultListModel) this.sampleListBox.getModel();
+		
+		if (model != null)
+			model.clear();
+		for (FHX2_Sample s : this.inReqPart.getSampleList())
+			model.addElement(s);
+			
+		try
+		{
+			sampleListBox.setSelectedValue(selected, true);
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Repaints the header, event, and recording panels.
+	 * 
+	 * @param selectedSampleIndex
+	 */
+	public void redrawSampleDataPanel(int selectedSampleIndex) {
+		
+		displaySampleName("");
+		if (selectedSampleIndex > -1)
+		{
+			FHX2_Sample selectedSample = this.inReqPart.getSample(selectedSampleIndex);
+			if (selectedSample != null)
+			{
+				sampleDataPanel.add(progressBarContainer, BorderLayout.SOUTH);
+				progressBar.setValue(0);
+				
+				displaySampleName(selectedSample.getSampleName());
+				
+				setCheckBoxEnabledValues();
+				
+				firstYearSpinner.setValue(selectedSample.getSampleFirstYear());
+				lastYearSpinner.setValue(selectedSample.getSampleLastYear());
+				
+				firstYearSpinner.updatePreviousValue();
+				lastYearSpinner.updatePreviousValue();
+				
+				selectedSampleIndexChanged = false;
+				setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+				
+				task = new DrawEventPanelTask(selectedSample);
+				task.addPropertyChangeListener(this);
+				task.execute();
+				
+				eventTable = selectedSample.getEventTable();
+				recordingTable = selectedSample.getRecordingTable();
+				
+				eventScrollPane.setViewportView(eventTable);
+				recordingScrollPane.setViewportView(recordingTable);
+				
+				enableAndShowDataPanelComponents();
+				deleteSampleButton.setEnabled(true);
+			}
+			else
+				disableAndHideDataPanelComponents();
+		}
+		else
+		{
+			disableAndHideDataPanelComponents();
+			deleteSampleButton.setEnabled(false);
+		}
+		revalidate();
+		repaint();
+	}
+	
+	/**
+	 * Enables or disables the pith and bark check-boxes according to whether or not the sample starts or ends with an event.
+	 */
+	public static void setCheckBoxEnabledValues() {
+		
+		FHX2_Sample selectedSample = IOController.getFile().getRequiredPart().getSample(SampleController.getSelectedSampleIndex());
+		
+		if (!selectedSample.sampleStartsWithEvent())
+		{
+			pithCheckBox.setSelected(selectedSample.hasPith());
+			pithCheckBox.setEnabled(true);
+		}
+		else
+		{
+			pithCheckBox.setSelected(false);
+			pithCheckBox.setEnabled(false);
+		}
+		
+		if (!selectedSample.sampleEndsWithEvent())
+		{
+			barkCheckBox.setSelected(selectedSample.hasBark());
+			barkCheckBox.setEnabled(true);
+		}
+		else
+		{
+			barkCheckBox.setSelected(false);
+			barkCheckBox.setEnabled(false);
+		}
+	}
+	
+	/**
+	 * Enables and shows specific components on the sampleDataPanel.
+	 */
+	private void enableAndShowDataPanelComponents() {
+		
+		headerPanel.setVisible(true);
+		eventTable.setVisible(true);
+		recordingTable.setVisible(true);
+		
+		addEventButton.setEnabled(true);
+		deleteEventButton.setEnabled(true);
+		addRecordingButton.setEnabled(true);
+		deleteRecordingButton.setEnabled(true);
+		consolidateButton.setEnabled(true);
+		autoPopulateButton.setEnabled(true);
+		
+		sortByComboBox.setEnabled(true);
+		if (sortByComboBox.getSelectedIndex() == MANUAL_SORTING)
+		{
+			if (IOController.getFile().getRequiredPart().getNumSamples() < 2)
+			{
+				moveDownButton.setEnabled(false);
+				moveUpButton.setEnabled(false);
+			}
+			else if (sampleListBox.getSelectedIndex() == 0)
+			{
+				moveDownButton.setEnabled(true);
+				moveUpButton.setEnabled(false);
+			}
+			else if (sampleListBox.getSelectedIndex() == IOController.getFile().getRequiredPart().getNumSamples() - 1)
+			{
+				moveDownButton.setEnabled(false);
+				moveUpButton.setEnabled(true);
+			}
+			else if (sampleListBox.getSelectedIndex() > -1)
+			{
+				moveDownButton.setEnabled(true);
+				moveUpButton.setEnabled(true);
+			}
+		}
+	}
+	
+	/**
+	 * Disables and hides specific components on the sampleDataPanel.
+	 */
+	private void disableAndHideDataPanelComponents() {
+		
+		try
+		{
+			headerPanel.setVisible(false);
+			eventTable.setVisible(false);
+			recordingTable.setVisible(false);
+		}
+		catch (NullPointerException e)
+		{
+			log.warn("NPE when trying to hide components of the SampleInput panel");
+		}
+		
+		addEventButton.setEnabled(false);
+		deleteEventButton.setEnabled(false);
+		addRecordingButton.setEnabled(false);
+		deleteRecordingButton.setEnabled(false);
+		consolidateButton.setEnabled(false);
+		autoPopulateButton.setEnabled(false);
+		
+		sortByComboBox.setEnabled(false);
+		moveDownButton.setEnabled(false);
+		moveUpButton.setEnabled(false);
+	}
+	
+	/**
+	 * TODO
+	 */
+	private void handleUpdatedIndex() {
+		
+		int index = sampleListBox.getSelectedIndex();
+		if (index != SampleController.getSelectedSampleIndex() || needToRefreshPanel || firstTimeLoading)
+		{
+			if (firstTimeLoading)
+			{
+				eventTable = new EventTable(new FHX2_Sample());
+				recordingTable = new RecordingTable(new FHX2_Sample());
+				firstTimeLoading = false;
+			}
+			ignoreEventsFlag = true;
+			selectedSampleIndexChanged = true;
+			SampleController.setSelectedSampleIndex(index);
+			redrawSampleDataPanel(index);
+			ignoreEventsFlag = false;
+			needToRefreshPanel = false;
+		}
+	}
+	
+	/**
+	 * TODO
+	 */
+	@Override
+	public void stateChanged(ChangeEvent e) {
+		
+		if (ignoreEventsFlag)
+			return;
+			
+		redrawSampleListPanel();
+	}
+	
+	/**
+	 * Initializes the GUI.
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private void initComponents() {
+	private void initGUI() {
 		
 		jPopupMenu1 = new javax.swing.JPopupMenu();
 		jMenuItem1 = new javax.swing.JMenuItem();
@@ -505,722 +1128,7 @@ public class SampleInputPanel extends javax.swing.JPanel implements ChangeListen
 	}
 	
 	/**
-	 * Automatically populate the recording years, either from the first event or the beginning of the sample depending on input from the
-	 * user
-	 * 
-	 * @param evt
-	 */
-	private void autoPopulateButtonActionPerformed(ActionEvent evt) {
-		
-		String[] options = { "From first event", "From beginning of sample" };
-		
-		String res = (String) JOptionPane.showInputDialog(this,
-				"Note that auto-populating the recording years will remove any\n" + "existing recording entries."
-						+ "\n\nSelect where recording should begin:",
-				"Auto populate recordings", JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
-				
-		if (res != options[0] && res != options[1])
-			return;
-			
-		// Remove any existing records
-		if (recordingTable != null)
-			RecordingController.deleteAllRecordingsButNotEvents();
-			
-		// Start recording at first event
-		if (res == options[0])
-			RecordingController.addRecordingFromFirstEventToEnd();
-			
-		// Start recording from beginning of sample
-		else
-			RecordingController.addRecordingFromBeginningToEnd();
-	}
-	
-	/**
-	 * Generates the header panel and the components it contains.
-	 */
-	private void createSampleHeaderPanel() {
-		
-		sampleNameContainer = new JPanel();
-		sampleNameContainer.setBorder(new MatteBorder(0, 0, 1, 0, new Color(128, 128, 128)));
-		headerPanel.add(sampleNameContainer, BorderLayout.NORTH);
-		sampleNameContainer.setLayout(new MigLayout("insets 0",
-				"[:2:2][right][150,grow][1:10:10,grow,shrinkprio 200][][][][1:10:10,grow,shrinkprio 200][][][][:2:2]", "[40:40:40]"));
-				
-		sampleNameLabel = new JLabel("Sample Name:");
-		sampleNameContainer.add(sampleNameLabel, "cell 1 0,alignx right,aligny baseline");
-		
-		sampleNameTextBox = new JTextField();
-		sampleNameContainer.add(sampleNameTextBox, "cell 2 0,growx,aligny center");
-		sampleNameTextBox.setColumns(10);
-		sampleNameTextBox.addFocusListener(new java.awt.event.FocusAdapter() {
-			
-			@Override
-			public void focusLost(java.awt.event.FocusEvent evt) {
-				
-				updateSampleNameInData();
-			}
-		});
-		sampleNameTextBox.addKeyListener(new KeyListener() {
-			
-			@Override
-			public void keyPressed(KeyEvent evt) {
-				
-				if (evt.getKeyCode() == KeyEvent.VK_ENTER)
-					updateSampleNameInData();
-			}
-			
-			@Override
-			public void keyReleased(KeyEvent evt) {
-			
-			}
-			
-			@Override
-			public void keyTyped(KeyEvent evt) {
-			
-			}
-		});
-		
-		firstYearSpinner = new javax.swing.JSpinner();
-		firstYearSpinner.setModel(new SpinnerNumberModel(FileController.CURRENT_YEAR - 1, FileController.EARLIEST_ALLOWED_YEAR,
-				FileController.CURRENT_YEAR - 1, 1));
-		firstYearSpinner.setEditor(new JSpinner.NumberEditor(firstYearSpinner, "#####"));
-		
-		((NumberFormatter) ((JSpinner.NumberEditor) firstYearSpinner.getEditor()).getTextField().getFormatter()).setAllowsInvalid(false);
-		
-		// Workaround to enable manual editing of spinner
-		((JSpinner.DefaultEditor) firstYearSpinner.getEditor()).getTextField().setFocusTraversalKeysEnabled(false);
-		((JSpinner.DefaultEditor) firstYearSpinner.getEditor()).getTextField().addKeyListener(new KeyListener() {
-			
-			@Override
-			public void keyPressed(KeyEvent evt) {
-				
-				if (evt.getKeyChar() == KeyEvent.VK_BACK_SPACE)
-				{
-					((JSpinner.DefaultEditor) firstYearSpinner.getEditor()).getTextField().selectAll();
-					evt.consume();
-				}
-				else if (evt.getKeyChar() == KeyEvent.VK_PLUS)
-				{
-					((JSpinner.DefaultEditor) firstYearSpinner.getEditor()).getTextField().select(0, 0);
-					int currentSpinnerValue = (Integer) ((JSpinner.DefaultEditor) firstYearSpinner.getEditor()).getTextField().getValue();
-					if (currentSpinnerValue < 0)
-						currentSpinnerValue = currentSpinnerValue * -1;
-					evt.consume();
-				}
-				else if (evt.getKeyChar() == KeyEvent.VK_MINUS)
-				{
-					((JSpinner.DefaultEditor) firstYearSpinner.getEditor()).getTextField().select(0, 0);
-					int currentSpinnerValue = (Integer) ((JSpinner.DefaultEditor) firstYearSpinner.getEditor()).getTextField().getValue();
-					if (currentSpinnerValue > 0)
-						currentSpinnerValue = currentSpinnerValue * -1;
-					evt.consume();
-				}
-			}
-			
-			@Override
-			public void keyReleased(KeyEvent evt) {
-			
-			}
-			
-			@Override
-			public void keyTyped(KeyEvent evt) {
-				
-				if (evt.getKeyChar() == KeyEvent.VK_TAB || evt.getKeyChar() == KeyEvent.VK_ENTER)
-				{
-					try
-					{
-						((JSpinner.DefaultEditor) firstYearSpinner.getEditor()).getTextField().commitEdit();
-						pithCheckBox.requestFocusInWindow();
-					}
-					catch (ParseException e)
-					{
-					}
-				}
-			}
-		});
-		
-		// Updates the first year of the sample when the value is changed
-		firstYearSpinner.addChangeListener(new ChangeListener() {
-			
-			@Override
-			public void stateChanged(ChangeEvent e) {
-				
-				if (!selectedSampleIndexChanged && !justUpdatedFYS)
-				{
-					justUpdatedFYS = true;
-					
-					if ((Integer) firstYearSpinner.getValue() == 0 && previousValueFYS == 1)
-						firstYearSpinner.setValue(-1);
-					else if ((Integer) firstYearSpinner.getValue() == 0 && previousValueFYS == -1)
-						firstYearSpinner.setValue(1);
-					else if ((Integer) firstYearSpinner.getValue() == 0)
-						firstYearSpinner.setValue(1);
-					// if spinner year is moved above or equal to the last year spinner's value
-					else if ((Integer) firstYearSpinner.getValue() >= (Integer) lastYearSpinner.getValue())
-					{
-						firstYearSpinner.setValue(previousValueFYS);
-						return;
-					}
-					// if spinner year is moved up to the year past an event year
-					else if (SampleController.selectedSampleHasEvents())
-					{
-						if ((Integer) firstYearSpinner.getValue() > SampleController.getYearOfFirstEventInSelectedSample())
-						{
-							firstYearSpinner.setValue(previousValueFYS);
-							return;
-						}
-					}
-					SampleController.changeSampleFirstYear((Integer) firstYearSpinner.getValue());
-					redrawSampleDataPanel(sampleListBox.getSelectedIndex());
-					previousValueFYS = (Integer) firstYearSpinner.getValue();
-				}
-				justUpdatedFYS = false;
-			}
-		});
-		
-		firstYearLabel = new JLabel("First Year:");
-		sampleNameContainer.add(firstYearLabel, "cell 4 0,alignx right,aligny baseline");
-		sampleNameContainer.add(firstYearSpinner, "cell 5 0,growx,aligny center");
-		
-		lastYearSpinner = new javax.swing.JSpinner();
-		lastYearSpinner.setModel(
-				new SpinnerNumberModel(FileController.CURRENT_YEAR, FileController.EARLIEST_ALLOWED_YEAR, FileController.CURRENT_YEAR, 1));
-		lastYearSpinner.setEditor(new JSpinner.NumberEditor(lastYearSpinner, "#####"));
-		
-		((NumberFormatter) ((JSpinner.NumberEditor) lastYearSpinner.getEditor()).getTextField().getFormatter()).setAllowsInvalid(false);
-		
-		// Workaround to enable manual editing of spinner
-		((JSpinner.DefaultEditor) lastYearSpinner.getEditor()).getTextField().setFocusTraversalKeysEnabled(false);
-		((JSpinner.DefaultEditor) lastYearSpinner.getEditor()).getTextField().addKeyListener(new KeyListener() {
-			
-			@Override
-			public void keyPressed(KeyEvent evt) {
-				
-				if (evt.getKeyChar() == KeyEvent.VK_BACK_SPACE)
-				{
-					((JSpinner.DefaultEditor) lastYearSpinner.getEditor()).getTextField().selectAll();
-					evt.consume();
-				}
-				else if (evt.getKeyChar() == KeyEvent.VK_PLUS)
-				{
-					((JSpinner.DefaultEditor) lastYearSpinner.getEditor()).getTextField().select(0, 0);
-					int currentSpinnerValue = (Integer) ((JSpinner.DefaultEditor) lastYearSpinner.getEditor()).getTextField().getValue();
-					if (currentSpinnerValue < 0)
-						currentSpinnerValue = currentSpinnerValue * -1;
-					evt.consume();
-				}
-				else if (evt.getKeyChar() == KeyEvent.VK_MINUS)
-				{
-					((JSpinner.DefaultEditor) lastYearSpinner.getEditor()).getTextField().select(0, 0);
-					int currentSpinnerValue = (Integer) ((JSpinner.DefaultEditor) lastYearSpinner.getEditor()).getTextField().getValue();
-					if (currentSpinnerValue > 0)
-						currentSpinnerValue = currentSpinnerValue * -1;
-					evt.consume();
-				}
-			}
-			
-			@Override
-			public void keyReleased(KeyEvent evt) {
-			
-			}
-			
-			@Override
-			public void keyTyped(KeyEvent evt) {
-				
-				if (evt.getKeyChar() == KeyEvent.VK_TAB || evt.getKeyChar() == KeyEvent.VK_ENTER)
-				{
-					try
-					{
-						((JSpinner.DefaultEditor) lastYearSpinner.getEditor()).getTextField().commitEdit();
-						barkCheckBox.requestFocusInWindow();
-					}
-					catch (ParseException e)
-					{
-					}
-				}
-			}
-		});
-		
-		// Updates the first year of the sample when the value is changed
-		lastYearSpinner.addChangeListener(new ChangeListener() {
-			
-			@Override
-			public void stateChanged(ChangeEvent e) {
-				
-				if (!selectedSampleIndexChanged && !justUpdatedLYS)
-				{
-					justUpdatedLYS = true;
-					
-					if ((Integer) lastYearSpinner.getValue() == 0 && previousValueLYS == 1)
-						lastYearSpinner.setValue(-1);
-					else if ((Integer) lastYearSpinner.getValue() == 0 && previousValueLYS == -1)
-						lastYearSpinner.setValue(1);
-					else if ((Integer) lastYearSpinner.getValue() == 0)
-						lastYearSpinner.setValue(1);
-					// if spinner year is moved below or equal to the first year spinner's value
-					else if ((Integer) lastYearSpinner.getValue() <= (Integer) firstYearSpinner.getValue())
-					{
-						lastYearSpinner.setValue(previousValueLYS);
-						return;
-					}
-					// if spinner year is moved down to the year past an event year
-					else if (SampleController.selectedSampleHasEvents())
-					{
-						if ((Integer) lastYearSpinner.getValue() < SampleController.getYearOfLastEventInSelectedSample())
-						{
-							lastYearSpinner.setValue(previousValueLYS);
-							return;
-						}
-					}
-					SampleController.changeSampleLastYear((Integer) lastYearSpinner.getValue());
-					redrawSampleDataPanel(sampleListBox.getSelectedIndex());
-					previousValueLYS = (Integer) lastYearSpinner.getValue();
-				}
-				justUpdatedLYS = false;
-			}
-		});
-		
-		lastYearLabel = new JLabel("Last Year:");
-		sampleNameContainer.add(lastYearLabel, "cell 8 0,alignx right,aligny baseline");
-		sampleNameContainer.add(lastYearSpinner, "cell 9 0,growx,aligny center");
-		
-		pithCheckBox = new JCheckBox();
-		pithCheckBox.setText("Pith");
-		pithCheckBox.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent evt) {
-				
-				SampleController.setSamplePith(pithCheckBox.isSelected());
-			}
-		});
-		
-		sampleNameContainer.add(pithCheckBox, "cell 6 0,alignx left,aligny baseline");
-		
-		barkCheckBox = new javax.swing.JCheckBox();
-		barkCheckBox.setText("Bark");
-		barkCheckBox.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent evt) {
-				
-				SampleController.setSampleBark(barkCheckBox.isSelected());
-			}
-		});
-		
-		sampleNameContainer.add(barkCheckBox, "cell 10 0,alignx left,aligny baseline");
-	}
-	
-	/**
-	 * Handles when the "New Sample" button is clicked.
-	 * 
-	 * @param evt
-	 */
-	private void newSampleButtonActionPerformed(java.awt.event.ActionEvent evt) {
-		
-		NewSampleDialog editDialog = new NewSampleDialog(new java.awt.Frame(), -1);
-		editDialog.setVisible(true);
-		
-		// Update the selected index so that the new sample is the one that is displayed
-		sampleListBox.setSelectedIndex(IOController.getFile().getRequiredPart().getNumSamples() - 1);
-		
-		FileController.checkIfNumSamplesExceedsFHX2Reqs();
-		
-		needToRefreshPanel = true;
-		handleUpdatedIndex();
-	}
-	
-	/**
-	 * Handles when the "Delete Sample" button is clicked.
-	 * 
-	 * @param evt
-	 */
-	private void deleteSampleButtonActionPerformed(java.awt.event.ActionEvent evt) {
-		
-		if (sampleListBox.getModel().getSize() > 0)
-		{
-			SampleController.deleteSample();
-			
-			if (IOController.getFile().getRequiredPart().getNumSamples() > 0)
-				sampleListBox.setSelectedIndex(0);
-			else
-				sampleListBox.setSelectedIndex(-1);
-				
-			FileController.checkIfNumSamplesExceedsFHX2Reqs();
-			
-			needToRefreshPanel = true;
-			handleUpdatedIndex();
-		}
-	}
-	
-	/**
-	 * Handles when the "Add Event" button is clicked.
-	 * 
-	 * @param evt
-	 */
-	private void addEventButtonActionPerformed(ActionEvent evt) {
-		
-		if (eventTable != null)
-		{
-			if (recordingTable.getNumOfRecordings() == 0 || eventTable.getNumOfEvents() == recordingTable.getMaxNumOfEvents())
-			{
-				RecordingController.addNewRecording();
-				EventController.addNewEvent();
-				setCheckBoxEnabledValues();
-			}
-			else if (eventTable.getNumOfEvents() < recordingTable.getMaxNumOfEvents())
-			{
-				EventController.addNewEvent();
-				setCheckBoxEnabledValues();
-			}
-		}
-	}
-	
-	/**
-	 * Handles when the "Delete Event" button is clicked.
-	 * 
-	 * @param evt
-	 */
-	private void deleteEventButtonActionPerformed(ActionEvent evt) {
-		
-		if (eventTable != null)
-		{
-			int row = eventTable.getSelectedRow();
-			if (row > -1)
-			{
-				EventController.deleteEvent(row);
-				setCheckBoxEnabledValues();
-			}
-		}
-	}
-	
-	/**
-	 * Handles when the "Add Recording" button is clicked.
-	 * 
-	 * @param evt
-	 */
-	private void addRecordingButtonActionPerformed(ActionEvent evt) {
-		
-		if (recordingTable != null)
-		{
-			RecordingController.addNewRecording();
-			setCheckBoxEnabledValues();
-		}
-	}
-	
-	/**
-	 * Handles when the "Delete Recording" button is clicked.
-	 * 
-	 * @param evt
-	 */
-	private void deleteRecordingButtonActionPerformed(ActionEvent evt) {
-		
-		if (recordingTable != null)
-		{
-			int row = recordingTable.getSelectedRow();
-			if (row > -1)
-			{
-				RecordingController.deleteRecording(row);
-				setCheckBoxEnabledValues();
-			}
-		}
-	}
-	
-	/**
-	 * Handles when the "Merge Recordings" button is clicked.
-	 * 
-	 * @param evt
-	 */
-	private void mergeRecordingsButtonActionPerformed(ActionEvent evt) {
-		
-		IOController.getFile().getRequiredPart().getSample(SampleController.getSelectedSampleIndex()).getRecordingTable()
-				.mergeOverlappingRecordings();
-	}
-	
-	/**
-	 * Updates the text that is displayed on the border of the event panel.
-	 * 
-	 * @param text
-	 */
-	private void setEventBorderText(String text) {
-		
-		sampleDataPanel.setBorder(
-				new TitledBorder(new LineBorder(new Color(171, 173, 179)), text, TitledBorder.LEADING, TitledBorder.TOP, null, null));
-	}
-	
-	/**
-	 * Sets the index of the sortByComboBox according to the input index.
-	 * 
-	 * @param index
-	 */
-	public void setSortByComboBoxValue(int index) {
-		
-		sortByComboBox.setSelectedIndex(index);
-	}
-	
-	/**
-	 * Updates the border text according to the name of the sample that is currently loaded.
-	 * 
-	 * @param name
-	 */
-	private void displaySampleName(String name) {
-		
-		if (name.equals(""))
-		{
-			sampleNameTextBox.setText("");
-			setEventBorderText("No sample data to display:");
-		}
-		else
-		{
-			sampleNameTextBox.setText(name);
-			setEventBorderText("Data contained within the sample: " + name);
-		}
-	}
-	
-	/**
-	 * Updates the progress bar whenever the PropertyChangeEvent is triggered.
-	 */
-	@Override
-	public void propertyChange(PropertyChangeEvent evt) {
-		
-		if (!done)
-		{
-			int progress = task.getProgress();
-			progressBar.setValue(progress);
-		}
-		else
-			progressBar.setValue(100);
-	}
-	
-	/**
-	 * Updates the sample name in the data.
-	 */
-	@SuppressWarnings("unchecked")
-	private void updateSampleNameInData() {
-		
-		SampleController.changeSampleName(sampleNameTextBox.getText());
-		displaySampleName(sampleNameTextBox.getText());
-		
-		@SuppressWarnings("rawtypes")
-		DefaultListModel model = (DefaultListModel) this.sampleListBox.getModel();
-		model.set(sampleListBox.getSelectedIndex(), sampleListBox.getSelectedValue());
-	}
-	
-	/**
-	 * Repaints the sample list.
-	 */
-	@SuppressWarnings("unchecked")
-	public void redrawSampleListPanel() {
-		
-		FHX2_Sample selected = (FHX2_Sample) sampleListBox.getSelectedValue();
-		@SuppressWarnings("rawtypes")
-		DefaultListModel model = (DefaultListModel) this.sampleListBox.getModel();
-		
-		if (model != null)
-			model.clear();
-		for (FHX2_Sample s : this.inReqPart.getSampleList())
-			model.addElement(s);
-			
-		try
-		{
-			sampleListBox.setSelectedValue(selected, true);
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-	}
-	
-	/**
-	 * Repaints the header, event, and recording panels.
-	 * 
-	 * @param selectedSampleIndex
-	 */
-	public void redrawSampleDataPanel(int selectedSampleIndex) {
-		
-		displaySampleName("");
-		if (selectedSampleIndex > -1)
-		{
-			FHX2_Sample selectedSample = this.inReqPart.getSample(selectedSampleIndex);
-			if (selectedSample != null)
-			{
-				sampleDataPanel.add(progressBarContainer, BorderLayout.SOUTH);
-				progressBar.setValue(0);
-				
-				displaySampleName(selectedSample.getSampleName());
-				
-				setCheckBoxEnabledValues();
-				
-				firstYearSpinner.setValue(selectedSample.getSampleFirstYear());
-				lastYearSpinner.setValue(selectedSample.getSampleLastYear());
-				
-				previousValueFYS = (Integer) firstYearSpinner.getValue();
-				previousValueLYS = (Integer) lastYearSpinner.getValue();
-				
-				selectedSampleIndexChanged = false;
-				setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-				
-				task = new DrawEventPanelTask(selectedSample);
-				task.addPropertyChangeListener(this);
-				task.execute();
-				
-				eventTable = selectedSample.getEventTable();
-				recordingTable = selectedSample.getRecordingTable();
-				
-				eventScrollPane.setViewportView(eventTable);
-				recordingScrollPane.setViewportView(recordingTable);
-				
-				enableAndShowDataPanelComponents();
-				deleteSampleButton.setEnabled(true);
-			}
-			else
-				disableAndHideDataPanelComponents();
-		}
-		else
-		{
-			disableAndHideDataPanelComponents();
-			deleteSampleButton.setEnabled(false);
-		}
-		revalidate();
-		repaint();
-	}
-	
-	/**
-	 * Enables or disables the pith and bark check-boxes according to whether or not the sample starts or ends with an event.
-	 */
-	public static void setCheckBoxEnabledValues() {
-		
-		FHX2_Sample selectedSample = IOController.getFile().getRequiredPart().getSample(SampleController.getSelectedSampleIndex());
-		
-		if (!selectedSample.sampleStartsWithEvent())
-		{
-			pithCheckBox.setSelected(selectedSample.hasPith());
-			pithCheckBox.setEnabled(true);
-		}
-		else
-		{
-			pithCheckBox.setSelected(false);
-			pithCheckBox.setEnabled(false);
-		}
-		
-		if (!selectedSample.sampleEndsWithEvent())
-		{
-			barkCheckBox.setSelected(selectedSample.hasBark());
-			barkCheckBox.setEnabled(true);
-		}
-		else
-		{
-			barkCheckBox.setSelected(false);
-			barkCheckBox.setEnabled(false);
-		}
-	}
-	
-	/**
-	 * Enables and shows specific components on the sampleDataPanel.
-	 */
-	private void enableAndShowDataPanelComponents() {
-		
-		headerPanel.setVisible(true);
-		eventTable.setVisible(true);
-		recordingTable.setVisible(true);
-		
-		addEventButton.setEnabled(true);
-		deleteEventButton.setEnabled(true);
-		addRecordingButton.setEnabled(true);
-		deleteRecordingButton.setEnabled(true);
-		consolidateButton.setEnabled(true);
-		autoPopulateButton.setEnabled(true);
-		
-		sortByComboBox.setEnabled(true);
-		if (sortByComboBox.getSelectedIndex() == MANUAL_SORTING)
-		{
-			if (IOController.getFile().getRequiredPart().getNumSamples() < 2)
-			{
-				moveDownButton.setEnabled(false);
-				moveUpButton.setEnabled(false);
-			}
-			else if (sampleListBox.getSelectedIndex() == 0)
-			{
-				moveDownButton.setEnabled(true);
-				moveUpButton.setEnabled(false);
-			}
-			else if (sampleListBox.getSelectedIndex() == IOController.getFile().getRequiredPart().getNumSamples() - 1)
-			{
-				moveDownButton.setEnabled(false);
-				moveUpButton.setEnabled(true);
-			}
-			else if (sampleListBox.getSelectedIndex() > -1)
-			{
-				moveDownButton.setEnabled(true);
-				moveUpButton.setEnabled(true);
-			}
-		}
-	}
-	
-	/**
-	 * Disables and hides specific components on the sampleDataPanel.
-	 */
-	private void disableAndHideDataPanelComponents() {
-		
-		try
-		{
-			headerPanel.setVisible(false);
-			eventTable.setVisible(false);
-			recordingTable.setVisible(false);
-		}
-		catch (NullPointerException e)
-		{
-			log.warn("NPE when trying to hide components of the SampleInput panel");
-		}
-		
-		addEventButton.setEnabled(false);
-		deleteEventButton.setEnabled(false);
-		addRecordingButton.setEnabled(false);
-		deleteRecordingButton.setEnabled(false);
-		consolidateButton.setEnabled(false);
-		autoPopulateButton.setEnabled(false);
-		
-		sortByComboBox.setEnabled(false);
-		moveDownButton.setEnabled(false);
-		moveUpButton.setEnabled(false);
-	}
-	
-	/**
-	 * TODO
-	 */
-	private void handleUpdatedIndex() {
-		
-		int index = sampleListBox.getSelectedIndex();
-		if (index != SampleController.getSelectedSampleIndex() || needToRefreshPanel || firstTimeLoading)
-		{
-			if (firstTimeLoading)
-			{
-				eventTable = new EventTable(new FHX2_Sample());
-				recordingTable = new RecordingTable(new FHX2_Sample());
-				firstTimeLoading = false;
-			}
-			ignoreEventsFlag = true;
-			selectedSampleIndexChanged = true;
-			SampleController.setSelectedSampleIndex(index);
-			redrawSampleDataPanel(index);
-			ignoreEventsFlag = false;
-			needToRefreshPanel = false;
-		}
-	}
-	
-	/**
-	 * TODO
-	 */
-	@Override
-	public void stateChanged(ChangeEvent e) {
-		
-		if (ignoreEventsFlag)
-			return;
-		redrawSampleListPanel();
-	}
-	
-	/**
-	 * TODO
+	 * DrawEventPanelTask Class.
 	 */
 	private class DrawEventPanelTask extends SwingWorker<ScrollViewport, Object> {
 		
@@ -1296,7 +1204,7 @@ public class SampleInputPanel extends javax.swing.JPanel implements ChangeListen
 	}
 	
 	/**
-	 * TODO
+	 * ScrollViewport Class.
 	 */
 	private class ScrollViewport extends JViewport implements Scrollable {
 		
