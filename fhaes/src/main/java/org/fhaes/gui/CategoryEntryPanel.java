@@ -451,7 +451,7 @@ public class CategoryEntryPanel extends JPanel {
 	 * 
 	 * @author Joshua Brogan
 	 */
-	class CategoryTreeCellEditor extends DefaultCellEditor {
+	private class CategoryTreeCellEditor extends DefaultCellEditor {
 		
 		private static final long serialVersionUID = 1L;
 		
@@ -473,7 +473,7 @@ public class CategoryEntryPanel extends JPanel {
 	 * 
 	 * @author Joshua Brogan
 	 */
-	class CategoryTreeModelListener implements TreeModelListener {
+	private class CategoryTreeModelListener implements TreeModelListener {
 		
 		@Override
 		public void treeNodesChanged(TreeModelEvent e) {
@@ -506,7 +506,7 @@ public class CategoryEntryPanel extends JPanel {
 	 * 
 	 * @author Joshua Brogan
 	 */
-	class CategoryTreeSelectionListener implements TreeSelectionListener {
+	private class CategoryTreeSelectionListener implements TreeSelectionListener {
 		
 		@Override
 		public void valueChanged(TreeSelectionEvent e) {

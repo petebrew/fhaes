@@ -40,8 +40,12 @@ public class FHX2_FileRequiredPart implements Serializable, ChangeListener, Erro
 	
 	private static final long serialVersionUID = 1L;
 	
+	// Declare local constants
+	private static final int MINIMUM_ID_LENGTH = 3;
+	
+	// Declare local variables
 	private List<FHX2_Sample> sampleList;
-	private int idLength; // idlength is the number of lines used to display the sample name
+	private int idLength;
 	private int dataSetFirstYear;
 	private int dataSetLastYear;
 	
@@ -51,9 +55,11 @@ public class FHX2_FileRequiredPart implements Serializable, ChangeListener, Erro
 	 */
 	public FHX2_FileRequiredPart() {
 		
-		idLength = 3;
-		dataSetFirstYear = 0;
-		dataSetLastYear = 0;
+		// idLength is the number of lines used to display the sample name
+		idLength = MINIMUM_ID_LENGTH;
+		
+		dataSetFirstYear = FileController.CURRENT_YEAR - 1;
+		dataSetLastYear = FileController.CURRENT_YEAR;
 		sampleList = new LinkedList<FHX2_Sample>();
 	}
 	
@@ -70,14 +76,16 @@ public class FHX2_FileRequiredPart implements Serializable, ChangeListener, Erro
 	
 	/**
 	 * Sets the length of the unique sample identifier. Ensuring that 3 lines are left for the sample name and updating the idlength for
-	 * larger idlength.
+	 * larger idLength.
 	 * 
 	 * @param idLength
 	 */
 	public void setIDLength(int idLength) {
 		
-		if (idLength >= 3)
+		if (idLength >= MINIMUM_ID_LENGTH)
+		{
 			this.idLength = idLength;
+		}
 	}
 	
 	/**
@@ -222,7 +230,8 @@ public class FHX2_FileRequiredPart implements Serializable, ChangeListener, Erro
 	 */
 	public void calculateIDLength() {
 		
-		idLength = 3;
+		idLength = MINIMUM_ID_LENGTH;
+		
 		for (int i = 0; i < sampleList.size(); i++)
 			if (idLength < sampleList.get(i).getSampleName().length())
 				idLength = sampleList.get(i).getSampleName().length();
@@ -236,11 +245,18 @@ public class FHX2_FileRequiredPart implements Serializable, ChangeListener, Erro
 		if (sampleList.size() > 0)
 		{
 			int newFirstYear = FileController.CURRENT_YEAR;
+			
 			for (int i = 0; i < sampleList.size(); i++)
 				if (newFirstYear > sampleList.get(i).getSampleFirstYear())
 					newFirstYear = sampleList.get(i).getSampleFirstYear();
+					
 			dataSetFirstYear = newFirstYear;
 		}
+		else
+		{
+			dataSetFirstYear = FileController.CURRENT_YEAR - 1;
+		}
+		
 		FileController.checkIfYearLowerBoundaryIsWithinFHX2Reqs();
 	}
 	
@@ -252,11 +268,18 @@ public class FHX2_FileRequiredPart implements Serializable, ChangeListener, Erro
 		if (sampleList.size() > 0)
 		{
 			int newLastYear = FileController.EARLIEST_ALLOWED_YEAR;
+			
 			for (int i = 0; i < sampleList.size(); i++)
 				if (newLastYear < sampleList.get(i).getSampleLastYear())
 					newLastYear = sampleList.get(i).getSampleLastYear();
+					
 			dataSetLastYear = newLastYear;
 		}
+		else
+		{
+			dataSetLastYear = FileController.CURRENT_YEAR;
+		}
+		
 		FileController.checkIfYearUpperBoundaryIsWithinFHX2Reqs();
 	}
 	
@@ -298,6 +321,9 @@ public class FHX2_FileRequiredPart implements Serializable, ChangeListener, Erro
 		listeners.remove(l);
 	}
 	
+	/**
+	 * TODO
+	 */
 	@SuppressWarnings("unchecked")
 	private void fireSampleEvent() {
 		

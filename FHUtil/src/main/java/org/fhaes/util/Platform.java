@@ -62,7 +62,7 @@ public class Platform {
 			}
 			catch (Exception e)
 			{
-				log.warn("Error setting Nimbus look at feel");
+				log.warn("Error setting Nimbus look and feel.");
 			}
 		}
 		else
@@ -111,6 +111,7 @@ public class Platform {
 		}
 		catch (URISyntaxException e1)
 		{
+			// Do nothing!
 		}
 	}
 }

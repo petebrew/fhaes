@@ -265,7 +265,7 @@ public class FeedbackMessagePanel extends JPanel {
 	 * 
 	 * @author Joshua Brogan
 	 */
-	class AutoHideMessageTask extends TimerTask {
+	private class AutoHideMessageTask extends TimerTask {
 		
 		// Declare local constants
 		private final int ONE_MILLISECOND = 1;

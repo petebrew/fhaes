@@ -21,6 +21,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.Frame;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -38,8 +39,10 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
@@ -47,7 +50,6 @@ import javax.swing.JTextField;
 import javax.swing.JViewport;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.Scrollable;
-import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingWorker;
 import javax.swing.border.LineBorder;
 import javax.swing.border.MatteBorder;
@@ -91,9 +93,6 @@ public class SampleInputPanel extends javax.swing.JPanel implements ChangeListen
 	public static final int FIRST_YEAR_DESCENDING = 4;
 	public static final int LAST_YEAR_ASCENDING = 5;
 	public static final int LAST_YEAR_DESCENDING = 6;
-	
-	// Declare local constants
-	private final int STEP_SIZE = 1;
 	
 	// Declare event and recording tables
 	private EventTable eventTable;
@@ -144,8 +143,6 @@ public class SampleInputPanel extends javax.swing.JPanel implements ChangeListen
 	private static JCheckBox barkCheckBox;
 	
 	// Declare local variables
-	private boolean justUpdatedFYS = false;
-	private boolean justUpdatedLYS = false;
 	private boolean firstTimeLoading = true;
 	private boolean ignoreEventsFlag = false;
 	private boolean needToRefreshPanel = false;
@@ -246,9 +243,8 @@ public class SampleInputPanel extends javax.swing.JPanel implements ChangeListen
 			public void keyTyped(KeyEvent evt) {}
 		});
 		
-		firstYearSpinner = new BCADYearSpinner();
-		firstYearSpinner.setModel(new SpinnerNumberModel(FileController.CURRENT_YEAR - 1, FileController.EARLIEST_ALLOWED_YEAR,
-				FileController.CURRENT_YEAR - 1, STEP_SIZE));
+		firstYearSpinner = new BCADYearSpinner(FileController.CURRENT_YEAR - 1, FileController.EARLIEST_ALLOWED_YEAR,
+				FileController.CURRENT_YEAR - 1);
 				
 		// Updates the first year of the sample when the value is changed
 		firstYearSpinner.addChangeListener(new ChangeListener() {
@@ -256,27 +252,12 @@ public class SampleInputPanel extends javax.swing.JPanel implements ChangeListen
 			@Override
 			public void stateChanged(ChangeEvent e) {
 				
-				if (!selectedSampleIndexChanged && !justUpdatedFYS)
+				if (!selectedSampleIndexChanged)
 				{
-					justUpdatedFYS = true;
-					
-					// Handle the zero case in all possible situations
-					if (firstYearSpinner.getValueAsInteger() == 0 && firstYearSpinner.getPreviousValue() == 1)
-					{
-						firstYearSpinner.setValue(-1);
-					}
-					else if (firstYearSpinner.getValueAsInteger() == 0 && firstYearSpinner.getPreviousValue() == -1)
-					{
-						firstYearSpinner.setValue(1);
-					}
-					else if (firstYearSpinner.getValueAsInteger() == 0)
-					{
-						firstYearSpinner.setValue(1);
-					}
 					// If spinner year is moved above or equal to the last year spinner's value
-					else if (firstYearSpinner.getValueAsInteger() >= lastYearSpinner.getValueAsInteger())
+					if (firstYearSpinner.getValueAsInteger() >= lastYearSpinner.getValueAsInteger())
 					{
-						firstYearSpinner.setValue(firstYearSpinner.getPreviousValue());
+						firstYearSpinner.setValue(firstYearSpinner.getMostRecentValue());
 						return;
 					}
 					// If spinner year is moved up to the year past an event year
@@ -284,7 +265,7 @@ public class SampleInputPanel extends javax.swing.JPanel implements ChangeListen
 					{
 						if (firstYearSpinner.getValueAsInteger() > SampleController.getYearOfFirstEventInSelectedSample())
 						{
-							firstYearSpinner.setValue(firstYearSpinner.getPreviousValue());
+							firstYearSpinner.setValue(firstYearSpinner.getMostRecentValue());
 							return;
 						}
 					}
@@ -292,10 +273,7 @@ public class SampleInputPanel extends javax.swing.JPanel implements ChangeListen
 					// Apply the change to the sample
 					SampleController.changeSampleFirstYear(firstYearSpinner.getValueAsInteger());
 					redrawSampleDataPanel(sampleListBox.getSelectedIndex());
-					firstYearSpinner.updatePreviousValue();
 				}
-				
-				justUpdatedFYS = false;
 			}
 		});
 		
@@ -303,9 +281,8 @@ public class SampleInputPanel extends javax.swing.JPanel implements ChangeListen
 		sampleNameContainer.add(firstYearLabel, "cell 4 0,alignx right,aligny baseline");
 		sampleNameContainer.add(firstYearSpinner, "cell 5 0,growx,aligny center");
 		
-		lastYearSpinner = new BCADYearSpinner();
-		lastYearSpinner.setModel(new SpinnerNumberModel(FileController.CURRENT_YEAR, FileController.EARLIEST_ALLOWED_YEAR,
-				FileController.CURRENT_YEAR, STEP_SIZE));
+		lastYearSpinner = new BCADYearSpinner(FileController.CURRENT_YEAR, FileController.EARLIEST_ALLOWED_YEAR,
+				FileController.CURRENT_YEAR);
 				
 		// Updates the last year of the sample when the value is changed
 		lastYearSpinner.addChangeListener(new ChangeListener() {
@@ -313,27 +290,12 @@ public class SampleInputPanel extends javax.swing.JPanel implements ChangeListen
 			@Override
 			public void stateChanged(ChangeEvent e) {
 				
-				if (!selectedSampleIndexChanged && !justUpdatedLYS)
+				if (!selectedSampleIndexChanged)
 				{
-					justUpdatedLYS = true;
-					
-					// Handle the zero case in all possible situations
-					if (lastYearSpinner.getValueAsInteger() == 0 && lastYearSpinner.getPreviousValue() == 1)
-					{
-						lastYearSpinner.setValue(-1);
-					}
-					else if (lastYearSpinner.getValueAsInteger() == 0 && lastYearSpinner.getPreviousValue() == -1)
-					{
-						lastYearSpinner.setValue(1);
-					}
-					else if (lastYearSpinner.getValueAsInteger() == 0)
-					{
-						lastYearSpinner.setValue(1);
-					}
 					// If spinner year is moved below or equal to the first year spinner's value
-					else if (lastYearSpinner.getValueAsInteger() <= firstYearSpinner.getValueAsInteger())
+					if (lastYearSpinner.getValueAsInteger() <= firstYearSpinner.getValueAsInteger())
 					{
-						lastYearSpinner.setValue(lastYearSpinner.getPreviousValue());
+						lastYearSpinner.setValue(lastYearSpinner.getMostRecentValue());
 						return;
 					}
 					// If spinner year is moved down to the year past an event year
@@ -341,7 +303,7 @@ public class SampleInputPanel extends javax.swing.JPanel implements ChangeListen
 					{
 						if (lastYearSpinner.getValueAsInteger() < SampleController.getYearOfLastEventInSelectedSample())
 						{
-							lastYearSpinner.setValue(lastYearSpinner.getPreviousValue());
+							lastYearSpinner.setValue(lastYearSpinner.getMostRecentValue());
 							return;
 						}
 					}
@@ -349,9 +311,7 @@ public class SampleInputPanel extends javax.swing.JPanel implements ChangeListen
 					// Apply the change to the sample
 					SampleController.changeSampleLastYear(lastYearSpinner.getValueAsInteger());
 					redrawSampleDataPanel(sampleListBox.getSelectedIndex());
-					lastYearSpinner.updatePreviousValue();
 				}
-				justUpdatedLYS = false;
 			}
 		});
 		
@@ -391,13 +351,25 @@ public class SampleInputPanel extends javax.swing.JPanel implements ChangeListen
 	 * 
 	 * @param evt
 	 */
-	private void newSampleButtonActionPerformed(java.awt.event.ActionEvent evt) {
+	private void newSampleButtonActionPerformed(ActionEvent evt) {
 		
-		NewSampleDialog editDialog = new NewSampleDialog(new java.awt.Frame(), -1);
-		editDialog.setVisible(true);
+		NewSampleDialog createNewSampleDialog = new NewSampleDialog(new Frame());
+		createNewSampleDialog.setVisible(true);
 		
 		// Update the selected index so that the new sample is the one that is displayed
-		sampleListBox.setSelectedIndex(IOController.getFile().getRequiredPart().getNumSamples() - 1);
+		if (IOController.getFile().getRequiredPart().getNumSamples() > 0)
+		{
+			sampleListBox.setSelectedIndex(IOController.getFile().getRequiredPart().getNumSamples() - 1);
+			
+			FHX2_Sample newlyAddedSample = IOController.getFile().getRequiredPart().getSample(SampleController.getSelectedSampleIndex());
+			firstYearSpinner.setValue(newlyAddedSample.getSampleFirstYear());
+			lastYearSpinner.setValue(newlyAddedSample.getSampleLastYear());
+		}
+		else
+		{
+			firstYearSpinner.setValue(IOController.getFile().getRequiredPart().getDataSetFirstYear());
+			lastYearSpinner.setValue(IOController.getFile().getRequiredPart().getDataSetLastYear());
+		}
 		
 		FileController.checkIfNumSamplesExceedsFHX2Reqs();
 		
@@ -410,7 +382,7 @@ public class SampleInputPanel extends javax.swing.JPanel implements ChangeListen
 	 * 
 	 * @param evt
 	 */
-	private void deleteSampleButtonActionPerformed(java.awt.event.ActionEvent evt) {
+	private void deleteSampleButtonActionPerformed(ActionEvent evt) {
 		
 		if (sampleListBox.getModel().getSize() > 0)
 		{
@@ -629,8 +601,8 @@ public class SampleInputPanel extends javax.swing.JPanel implements ChangeListen
 				firstYearSpinner.setValue(selectedSample.getSampleFirstYear());
 				lastYearSpinner.setValue(selectedSample.getSampleLastYear());
 				
-				firstYearSpinner.updatePreviousValue();
-				lastYearSpinner.updatePreviousValue();
+				firstYearSpinner.updateMostRecentValue();
+				lastYearSpinner.updateMostRecentValue();
 				
 				selectedSampleIndexChanged = false;
 				setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
@@ -801,9 +773,9 @@ public class SampleInputPanel extends javax.swing.JPanel implements ChangeListen
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private void initGUI() {
 		
-		jPopupMenu1 = new javax.swing.JPopupMenu();
-		jMenuItem1 = new javax.swing.JMenuItem();
-		jMenuItem2 = new javax.swing.JMenuItem();
+		jPopupMenu1 = new JPopupMenu();
+		jMenuItem1 = new JMenuItem();
+		jMenuItem2 = new JMenuItem();
 		
 		jMenuItem1.setText("jMenuItem1");
 		jPopupMenu1.add(jMenuItem1);
@@ -811,7 +783,7 @@ public class SampleInputPanel extends javax.swing.JPanel implements ChangeListen
 		jMenuItem2.setText("jMenuItem2");
 		jPopupMenu1.add(jMenuItem2);
 		
-		setMinimumSize(new java.awt.Dimension(790, 450));
+		setMinimumSize(new Dimension(790, 450));
 		setPreferredSize(new Dimension(1024, 768));
 		addComponentListener(new java.awt.event.ComponentAdapter() {
 			

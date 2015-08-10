@@ -161,6 +161,9 @@ public class Log4JViewer extends JDialog {
 		this.setLocationRelativeTo(null);
 	}
 	
+	/**
+	 * TODO
+	 */
 	private void scrollToBottom() {
 		
 		JScrollBar vertical = scrollPane.getVerticalScrollBar();
@@ -168,6 +171,9 @@ public class Log4JViewer extends JDialog {
 		
 	}
 	
+	/**
+	 * TODO
+	 */
 	public static void showLogViewer() {
 		
 		Log4JViewer viewer = new Log4JViewer();

@@ -35,7 +35,7 @@ import org.slf4j.LoggerFactory;
  */
 public class FHCategoryReader {
 	
-	// Declare FHAES specialized objects
+	// Declare logger
 	private static final Logger log = LoggerFactory.getLogger(FHCategoryReader.class);
 	
 	// Declare header constants

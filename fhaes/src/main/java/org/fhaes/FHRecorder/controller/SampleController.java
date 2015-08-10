@@ -30,6 +30,10 @@ import org.fhaes.FHRecorder.view.MetaDataPanel;
  */
 public class SampleController {
 	
+	// Declare local constants
+	public static final int NO_SAMPLES_IN_FILE = -1;
+	
+	// Declare local variables
 	private static int selectedSampleIndex;
 	
 	/**
@@ -53,7 +57,7 @@ public class SampleController {
 		int numSamples = reqTemp.getNumSamples();
 		if (numSamples == 0)
 		{
-			selectedSampleIndex = -1;
+			selectedSampleIndex = NO_SAMPLES_IN_FILE;
 		}
 		else if (i > -1 && i < numSamples)
 		{
@@ -181,30 +185,15 @@ public class SampleController {
 	}
 	
 	/**
-	 * Updates the currently selected sample with the information from inSample.
+	 * Saves a new sample to the FHX file.
 	 * 
-	 * @param index
 	 * @param inSample
 	 */
-	public static void saveSample(int index, FHX2_Sample inSample) {
+	public static void saveNewSample(FHX2_Sample inSample) {
 		
-		if (index > -1)
-		{
-			FHX2_Sample temp = IOController.getFile().getRequiredPart().getSample(index);
-			temp.setSampleName(inSample.getSampleName());
-			temp.setSampleFirstYear(inSample.getSampleFirstYear());
-			temp.setPith(inSample.hasPith());
-			temp.setSampleLastYear(inSample.getSampleLastYear());
-			temp.setBark(inSample.hasBark());
-			
-			// used as a trigger to redraw samplePanel
-			setSelectedSampleIndex(getSelectedSampleIndex());
-		}
-		else
-		{
-			IOController.getFile().getRequiredPart().addSample(inSample);
-			setSelectedSampleIndex(IOController.getFile().getRequiredPart().getNumSamples());
-		}
+		IOController.getFile().getRequiredPart().addSample(inSample);
+		setSelectedSampleIndex(IOController.getFile().getRequiredPart().getNumSamples());
+		
 		MetaDataPanel.updateNumSamplesField();
 		
 		IOController.getFile().getRequiredPart().calculateFirstYear();
