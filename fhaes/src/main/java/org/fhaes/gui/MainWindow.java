@@ -130,7 +130,7 @@ public class MainWindow implements PrefsListener {
 	// Make static instance of MainWindow - this is a Singleton object
 	private static MainWindow instanceOfMainWindow = null;
 	
-	// Declare FHAES specialized objects
+	// Declare bundle and logger
 	private static final ResourceBundle BUNDLE = ResourceBundle.getBundle("locale/locale"); // ResourceBundle.getBundle("org.fhaes.gui.locale"); //$NON-NLS-1$
 	private static final Logger log = LoggerFactory.getLogger(MainWindow.class);
 	

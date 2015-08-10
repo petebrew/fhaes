@@ -39,10 +39,7 @@ public class GoldFishPanel extends JPanel implements PrefsListener {
 	
 	private static final long serialVersionUID = 1L;
 	
-	// Declare FHAES specialized objects
 	private static final Logger log = LoggerFactory.getLogger(GoldFishPanel.class);
-	
-	// Declare local variables
 	private JTextArea textArea;
 	
 	/**

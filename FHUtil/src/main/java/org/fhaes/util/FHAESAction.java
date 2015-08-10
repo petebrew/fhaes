@@ -38,6 +38,9 @@ public class FHAESAction extends AbstractAction {
 	
 	private static final long serialVersionUID = 1L;
 	
+	// Declare logger
+	private static final Logger log = LoggerFactory.getLogger(FHAESAction.class);
+	
 	// This allows us to gracefully handle booleans
 	protected static final String SELECTED_KEY = "fhaes.selected";
 	
@@ -46,9 +49,6 @@ public class FHAESAction extends AbstractAction {
 	
 	// Toggle button adapters associated with this class
 	protected ArrayList<ButtonSelectionActionAdapter> buttonAdapters;
-	
-	// Declare FHAES specialized objects
-	private static final Logger log = LoggerFactory.getLogger(FHAESAction.class);
 	
 	// Declare local constants
 	private final int SHORT_NAME_MAX_LENGTH = 13;

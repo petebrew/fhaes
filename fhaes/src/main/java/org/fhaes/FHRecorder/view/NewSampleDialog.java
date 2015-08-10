@@ -17,22 +17,29 @@
  *************************************************************************************************/
 package org.fhaes.FHRecorder.view;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.FlowLayout;
+import java.awt.Dimension;
+import java.awt.Frame;
+import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.text.ParseException;
 
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JSpinner;
-import javax.swing.SpinnerNumberModel;
+import javax.swing.JTextField;
+import javax.swing.WindowConstants;
+import javax.swing.border.BevelBorder;
+import javax.swing.border.SoftBevelBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import org.fhaes.FHRecorder.controller.FileController;
 import org.fhaes.FHRecorder.controller.IOController;
 import org.fhaes.FHRecorder.controller.SampleController;
-import org.fhaes.FHRecorder.model.FHX2_FileRequiredPart;
 import org.fhaes.FHRecorder.model.FHX2_Sample;
 import org.fhaes.enums.FeedbackDisplayProtocol;
 import org.fhaes.enums.FeedbackMessageType;
@@ -45,295 +52,167 @@ import net.miginfocom.swing.MigLayout;
  * 
  * @author Alex Beatty, Clayton Bodendein, Kyle Hartmann, Scott Goble
  */
-public class NewSampleDialog extends javax.swing.JDialog implements KeyListener {
+public class NewSampleDialog extends JDialog implements KeyListener {
 	
 	private static final long serialVersionUID = 1L;
 	
 	// Declare local constants
 	private final String MINIMUM_SAMPLE_NAME_LENGTH_MESSAGE = "Sample name must be at least 3 characters in length.";
+	private final int MINIMUM_SAMPLE_NAME_LENGTH = 3;
+	private final int OLD_FHAES_MAXIMUM_YEAR = 2020;
+	private final int OLD_FHAES_MINIMUM_YEAR = 501;
 	
 	// Declare GUI components
+	private JPanel basePanel;
 	private JPanel buttonPanel;
-	private javax.swing.JCheckBox barkCheckBox;
-	private javax.swing.JButton cancelButton;
-	private javax.swing.JButton okButton;
-	private javax.swing.JLabel sampleNameLabel;
-	private javax.swing.JLabel firstYearLabel;
-	private javax.swing.JLabel lastYearLabel;
-	private javax.swing.JCheckBox pithCheckBox;
-	private javax.swing.JTextField sampleNameTextBox;
-	private javax.swing.JSpinner firstYearSpinner;
-	private javax.swing.JSpinner lastYearSpinner;
-	
-	// Declare local variables
-	private FHX2_Sample sample;
-	private int index;
-	private int previousValueFYS; // previous value of first year spinner
-	private int previousValueLYS; // previous value of last year spinner
+	private JCheckBox barkCheckBox;
+	private JButton cancelButton;
+	private JButton okButton;
+	private JLabel sampleNameLabel;
+	private JLabel firstYearLabel;
+	private JLabel lastYearLabel;
+	private JCheckBox pithCheckBox;
+	private JTextField sampleNameTextBox;
+	private BCADYearSpinner firstYearSpinner;
+	private BCADYearSpinner lastYearSpinner;
 	
 	/**
 	 * Creates new form NewSampleDialog.
 	 * 
-	 * @param parent parent of form
-	 * @param modal
-	 * @param inIndex Index of sample
+	 * @param parent, the parent of this form
 	 */
-	public NewSampleDialog(java.awt.Frame parent, int inIndex) {
+	public NewSampleDialog(Frame parent) {
 		
-		super(parent);
+		int firstYearToSet = FileController.CURRENT_YEAR - 1;
+		int lastYearToSet = FileController.CURRENT_YEAR;
 		
-		initComponents();
-		
-		index = inIndex;
-		if (index > -1)
-			sample = IOController.getFile().getRequiredPart().getSample(index);
-		else
+		if (SampleController.getSelectedSampleIndex() != SampleController.NO_SAMPLES_IN_FILE)
 		{
-			FHX2_FileRequiredPart temp = IOController.getFile().getRequiredPart();
-			sample = new FHX2_Sample(temp.getDataSetFirstYear(), temp.getDataSetLastYear());
+			firstYearToSet = IOController.getFile().getRequiredPart().getDataSetFirstYear();
+			lastYearToSet = IOController.getFile().getRequiredPart().getDataSetLastYear();
 		}
 		
-		postInitialization();
+		initGUI(firstYearToSet, lastYearToSet);
+		
 		this.setLocationRelativeTo(parent);
-		this.setIconImage(Builder.getApplicationIcon());
+		this.pack();
+		this.repaint();
 	}
 	
 	/**
-	 * Initializes the GUI components.
+	 * Initializes the GUI.
+	 * 
+	 * @param firstYearToSet
+	 * @param lastYearToSet
 	 */
-	private void initComponents() {
+	private void initGUI(int firstYearToSet, int lastYearToSet) {
 		
+		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+		this.setIconImage(Builder.getApplicationIcon());
+		this.setMinimumSize(new Dimension(320, 150));
 		this.setModalityType(ModalityType.APPLICATION_MODAL);
+		this.setResizable(false);
+		this.setTitle("New Sample");
 		
-		sampleNameLabel = new javax.swing.JLabel();
-		sampleNameTextBox = new javax.swing.JTextField();
-		firstYearLabel = new javax.swing.JLabel();
-		pithCheckBox = new javax.swing.JCheckBox();
-		lastYearLabel = new javax.swing.JLabel();
-		barkCheckBox = new javax.swing.JCheckBox();
+		this.getContentPane().setLayout(new BorderLayout(0, 0));
 		
-		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+		basePanel = new JPanel();
+		basePanel.setBorder(new SoftBevelBorder(BevelBorder.LOWERED, null, null, null, null));
+		basePanel.setLayout(new MigLayout("insets 2", "[90:90:90,grow,right][100,grow][81px]", "[28:28:28][28:28:28][28:28:28][grow,top]"));
+		this.getContentPane().add(basePanel, BorderLayout.NORTH);
 		
+		sampleNameLabel = new JLabel();
 		sampleNameLabel.setText("Sample name:");
+		basePanel.add(sampleNameLabel, "cell 0 0,alignx right,aligny center");
+		
+		sampleNameTextBox = new JTextField();
 		sampleNameTextBox.addKeyListener(this);
+		basePanel.add(sampleNameTextBox, "cell 1 0 2 1,grow");
+		
+		firstYearLabel = new JLabel();
 		firstYearLabel.setText("First year:");
-		pithCheckBox.setText("Pith");
-		lastYearLabel.setText("Last year:");
-		barkCheckBox.setText("Bark");
+		basePanel.add(firstYearLabel, "cell 0 1,alignx right,aligny center");
 		
-		firstYearSpinner = new javax.swing.JSpinner();
-		firstYearSpinner.setModel(new SpinnerNumberModel(FileController.CURRENT_YEAR - 1, FileController.EARLIEST_ALLOWED_YEAR,
-				FileController.CURRENT_YEAR - 1, 1));
-		firstYearSpinner.setEditor(new JSpinner.NumberEditor(firstYearSpinner, "#####"));
-		
-		// Workaround to enable manual editing of spinner
-		((JSpinner.DefaultEditor) firstYearSpinner.getEditor()).getTextField().setFocusTraversalKeysEnabled(false);
-		((JSpinner.DefaultEditor) firstYearSpinner.getEditor()).getTextField().addKeyListener(new KeyListener() {
-			
-			@Override
-			public void keyPressed(KeyEvent evt) {
-			
-			}
-			
-			@Override
-			public void keyReleased(KeyEvent evt) {
-			
-			}
-			
-			@Override
-			public void keyTyped(KeyEvent evt) {
-				
-				if (evt.getKeyChar() == KeyEvent.VK_TAB || evt.getKeyChar() == KeyEvent.VK_ENTER)
-				{
-					try
-					{
-						((JSpinner.DefaultEditor) firstYearSpinner.getEditor()).getTextField().commitEdit();
-						pithCheckBox.requestFocusInWindow();
-					}
-					catch (ParseException e)
-					{
-					}
-				}
-				else if (evt.getKeyChar() == KeyEvent.VK_BACK_SPACE)
-				{
-					((JSpinner.DefaultEditor) firstYearSpinner.getEditor()).getTextField().selectAll();
-					evt.consume();
-				}
-				else if (evt.getKeyChar() == KeyEvent.VK_PLUS)
-				{
-					((JSpinner.DefaultEditor) firstYearSpinner.getEditor()).getTextField().select(0, 0);
-					int currentSpinnerValue = (Integer) ((JSpinner.DefaultEditor) firstYearSpinner.getEditor()).getTextField().getValue();
-					if (currentSpinnerValue < 0)
-						currentSpinnerValue = currentSpinnerValue * -1;
-					evt.consume();
-				}
-				else if (evt.getKeyChar() == KeyEvent.VK_MINUS)
-				{
-					((JSpinner.DefaultEditor) firstYearSpinner.getEditor()).getTextField().select(0, 0);
-					int currentSpinnerValue = (Integer) ((JSpinner.DefaultEditor) firstYearSpinner.getEditor()).getTextField().getValue();
-					if (currentSpinnerValue > 0)
-						currentSpinnerValue = currentSpinnerValue * -1;
-					evt.consume();
-				}
-			}
-		});
-		
+		firstYearSpinner = new BCADYearSpinner(firstYearToSet, FileController.EARLIEST_ALLOWED_YEAR, FileController.CURRENT_YEAR - 1);
 		firstYearSpinner.addChangeListener(new ChangeListener() {
 			
 			@Override
 			public void stateChanged(ChangeEvent e) {
 				
-				if ((Integer) firstYearSpinner.getValue() == 0 && previousValueFYS == 1)
-					firstYearSpinner.setValue(-1);
-				else if ((Integer) firstYearSpinner.getValue() == 0 && previousValueFYS == -1)
-					firstYearSpinner.setValue(1);
-				else if ((Integer) firstYearSpinner.getValue() == 0)
-					firstYearSpinner.setValue(1);
-				else if ((Integer) firstYearSpinner.getValue() >= (Integer) lastYearSpinner.getValue())
-					firstYearSpinner.setValue(previousValueFYS);
-				previousValueFYS = (Integer) firstYearSpinner.getValue();
-			}
-		});
-		
-		lastYearSpinner = new javax.swing.JSpinner();
-		lastYearSpinner.setModel(
-				new SpinnerNumberModel(FileController.CURRENT_YEAR, FileController.EARLIEST_ALLOWED_YEAR, FileController.CURRENT_YEAR, 1));
-		lastYearSpinner.setEditor(new JSpinner.NumberEditor(lastYearSpinner, "#####"));
-		
-		// Workaround to enable manual editing of spinner
-		((JSpinner.DefaultEditor) lastYearSpinner.getEditor()).getTextField().setFocusTraversalKeysEnabled(false);
-		((JSpinner.DefaultEditor) lastYearSpinner.getEditor()).getTextField().addKeyListener(new KeyListener() {
-			
-			@Override
-			public void keyPressed(KeyEvent evt) {
-			
-			}
-			
-			@Override
-			public void keyReleased(KeyEvent evt) {
-			
-			}
-			
-			@Override
-			public void keyTyped(KeyEvent evt) {
+				// If spinner year is moved above or equal to the last year spinner's value
+				if (firstYearSpinner.getValueAsInteger() >= lastYearSpinner.getValueAsInteger())
+				{
+					firstYearSpinner.setValue(firstYearSpinner.getMostRecentValue());
+				}
 				
-				if (evt.getKeyChar() == KeyEvent.VK_TAB || evt.getKeyChar() == KeyEvent.VK_ENTER)
-				{
-					try
-					{
-						((JSpinner.DefaultEditor) lastYearSpinner.getEditor()).getTextField().commitEdit();
-						barkCheckBox.requestFocusInWindow();
-					}
-					catch (ParseException e)
-					{
-					}
-				}
-				else if (evt.getKeyChar() == KeyEvent.VK_BACK_SPACE)
-				{
-					((JSpinner.DefaultEditor) lastYearSpinner.getEditor()).getTextField().selectAll();
-					evt.consume();
-				}
-				else if (evt.getKeyChar() == KeyEvent.VK_PLUS)
-				{
-					((JSpinner.DefaultEditor) lastYearSpinner.getEditor()).getTextField().select(0, 0);
-					int currentSpinnerValue = (Integer) ((JSpinner.DefaultEditor) lastYearSpinner.getEditor()).getTextField().getValue();
-					if (currentSpinnerValue < 0)
-						currentSpinnerValue = currentSpinnerValue * -1;
-					evt.consume();
-				}
-				else if (evt.getKeyChar() == KeyEvent.VK_MINUS)
-				{
-					((JSpinner.DefaultEditor) lastYearSpinner.getEditor()).getTextField().select(0, 0);
-					int currentSpinnerValue = (Integer) ((JSpinner.DefaultEditor) lastYearSpinner.getEditor()).getTextField().getValue();
-					if (currentSpinnerValue > 0)
-						currentSpinnerValue = currentSpinnerValue * -1;
-					evt.consume();
-				}
+				firstYearSpinner.updateMostRecentValue();
 			}
 		});
+		basePanel.add(firstYearSpinner, "cell 1 1,grow");
 		
+		pithCheckBox = new JCheckBox();
+		pithCheckBox.setText("Pith");
+		basePanel.add(pithCheckBox, "cell 2 1,alignx left,aligny center");
+		
+		lastYearLabel = new JLabel();
+		lastYearLabel.setText("Last year:");
+		basePanel.add(lastYearLabel, "cell 0 2,alignx right,aligny center");
+		
+		lastYearSpinner = new BCADYearSpinner(lastYearToSet, FileController.EARLIEST_ALLOWED_YEAR, FileController.CURRENT_YEAR);
 		lastYearSpinner.addChangeListener(new ChangeListener() {
 			
 			@Override
 			public void stateChanged(ChangeEvent e) {
 				
-				if ((Integer) lastYearSpinner.getValue() == 0 && previousValueLYS == 1)
-					lastYearSpinner.setValue(-1);
-				else if ((Integer) lastYearSpinner.getValue() == 0 && previousValueLYS == -1)
-					lastYearSpinner.setValue(1);
-				else if ((Integer) lastYearSpinner.getValue() == 0)
-					lastYearSpinner.setValue(1);
-				else if ((Integer) lastYearSpinner.getValue() <= (Integer) firstYearSpinner.getValue())
-					lastYearSpinner.setValue(previousValueLYS);
-				previousValueLYS = (Integer) lastYearSpinner.getValue();
+				// If spinner year is moved below or equal to the first year spinner's value
+				if (lastYearSpinner.getValueAsInteger() <= firstYearSpinner.getValueAsInteger())
+				{
+					lastYearSpinner.setValue(lastYearSpinner.getMostRecentValue());
+				}
+				
+				lastYearSpinner.updateMostRecentValue();
 			}
 		});
+		basePanel.add(lastYearSpinner, "cell 1 2,grow");
 		
-		setTitle("New Sample");
-		setIconImage(Builder.getApplicationIcon());
-		pack();
-	}
-	
-	/**
-	 * Components to be initialized after initComponents().
-	 */
-	private void postInitialization() {
-		
-		if (sample.getSampleFirstYear() == 0)
-			sample.setSampleFirstYear(FileController.CURRENT_YEAR - 1);
-			
-		if (sample.getSampleLastYear() == 0)
-			sample.setSampleLastYear(FileController.CURRENT_YEAR);
-			
-		firstYearSpinner.setValue(sample.getSampleFirstYear());
-		lastYearSpinner.setValue(sample.getSampleLastYear());
-		
-		previousValueFYS = (Integer) firstYearSpinner.getValue();
-		previousValueLYS = (Integer) lastYearSpinner.getValue();
-		
-		barkCheckBox.setSelected(sample.hasBark());
-		pithCheckBox.setSelected(sample.hasPith());
-		sampleNameTextBox.setText(sample.getSampleName());
-		
-		getContentPane().setLayout(new MigLayout("insets 0", "[:2:2][right][93.00px,grow][81px][:2:2]", "[:2:2][19px][20px][20px][]"));
-		getContentPane().add(lastYearLabel, "cell 1 3,alignx right,aligny center");
-		getContentPane().add(firstYearLabel, "cell 1 2,alignx right,aligny center");
-		getContentPane().add(sampleNameLabel, "cell 1 1,alignx right,aligny center");
-		getContentPane().add(barkCheckBox, "cell 3 3,alignx left,aligny center");
-		getContentPane().add(pithCheckBox, "cell 3 2,alignx left,aligny center");
-		getContentPane().add(sampleNameTextBox, "cell 2 1 2 1,growx,aligny center");
-		getContentPane().add(firstYearSpinner, "cell 2 2,growx,aligny center");
-		getContentPane().add(lastYearSpinner, "cell 2 3,growx,aligny center");
+		barkCheckBox = new JCheckBox();
+		barkCheckBox.setText("Bark");
+		basePanel.add(barkCheckBox, "cell 2 2,alignx left,aligny center");
 		
 		buttonPanel = new JPanel();
-		FlowLayout fl_buttonPanel = (FlowLayout) buttonPanel.getLayout();
-		fl_buttonPanel.setAlignment(FlowLayout.RIGHT);
-		getContentPane().add(buttonPanel, "cell 0 4 5 1,grow");
+		buttonPanel.setLayout(new MigLayout("insets 0", "[grow][80:80:80][80:80:80]", "[30:30:30,grow,fill]"));
+		this.getContentPane().add(buttonPanel, BorderLayout.SOUTH);
 		
-		okButton = new javax.swing.JButton();
+		/*
+		 * OK BUTTON
+		 */
+		okButton = new JButton();
 		okButton.setText("OK");
 		okButton.setEnabled(false);
-		buttonPanel.add(okButton);
 		okButton.addActionListener(new java.awt.event.ActionListener() {
 			
 			@Override
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
+			public void actionPerformed(ActionEvent evt) {
 				
-				confirmButtonActionPerformed(evt);
+				handleOkButtonPressed(evt);
 			}
 		});
-		cancelButton = new javax.swing.JButton();
+		buttonPanel.add(okButton, "cell 1 0,growx,aligny center");
+		
+		/*
+		 * CANCEL BUTTON
+		 */
+		cancelButton = new JButton();
 		cancelButton.setText("Cancel");
-		buttonPanel.add(cancelButton);
 		cancelButton.addActionListener(new java.awt.event.ActionListener() {
 			
 			@Override
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
+			public void actionPerformed(ActionEvent evt) {
 				
-				cancelButtonActionPerformed(evt);
+				handleCancelButtonPressed(evt);
 			}
 		});
-		pack();
+		buttonPanel.add(cancelButton, "cell 2 0,growx,aligny center");
 	}
 	
 	/**
@@ -341,12 +220,12 @@ public class NewSampleDialog extends javax.swing.JDialog implements KeyListener 
 	 * 
 	 * @param evt
 	 */
-	private void confirmButtonActionPerformed(java.awt.event.ActionEvent evt) {
+	private void handleOkButtonPressed(ActionEvent evt) {
 		
-		if (sampleNameTextBox.getText().length() < 3)
+		if (sampleNameTextBox.getText().length() < MINIMUM_SAMPLE_NAME_LENGTH)
 		{
 			FireHistoryRecorder.getFeedbackMessagePanel().updateFeedbackMessage(FeedbackMessageType.WARNING,
-					FeedbackDisplayProtocol.MANUAL_HIDE, MINIMUM_SAMPLE_NAME_LENGTH_MESSAGE);
+					FeedbackDisplayProtocol.AUTO_HIDE, MINIMUM_SAMPLE_NAME_LENGTH_MESSAGE);
 					
 			sampleNameTextBox.setForeground(Color.red);
 		}
@@ -354,26 +233,26 @@ public class NewSampleDialog extends javax.swing.JDialog implements KeyListener 
 				&& FileController.isEnforcingOldReqs() == true)
 		{
 			FireHistoryRecorder.getFeedbackMessagePanel().updateFeedbackMessage(FeedbackMessageType.WARNING,
-					FeedbackDisplayProtocol.MANUAL_HIDE, "Sample name is too long for the original FHX2 program requirements.");
+					FeedbackDisplayProtocol.AUTO_HIDE, "Sample name is too long for the original FHX2 program requirements.");
 					
 			sampleNameTextBox.setForeground(Color.red);
 		}
-		else if ((Integer) firstYearSpinner.getValue() >= (Integer) lastYearSpinner.getValue())
+		else if (firstYearSpinner.getValueAsInteger() >= lastYearSpinner.getValueAsInteger())
 		{
 			FireHistoryRecorder.getFeedbackMessagePanel().updateFeedbackMessage(FeedbackMessageType.WARNING,
-					FeedbackDisplayProtocol.MANUAL_HIDE, "The first year of a sample cannot be after its last year.");
+					FeedbackDisplayProtocol.AUTO_HIDE, "The first year of a sample cannot be after its last year.");
 					
-			firstYearSpinner.setValue((Integer) lastYearSpinner.getValue() - 1);
+			firstYearSpinner.setValue(lastYearSpinner.getValueAsInteger() - 1);
 		}
-		else if ((Integer) firstYearSpinner.getValue() < 501 && FileController.isEnforcingOldReqs() == true)
+		else if (firstYearSpinner.getValueAsInteger() < OLD_FHAES_MINIMUM_YEAR && FileController.isEnforcingOldReqs() == true)
 		{
 			FireHistoryRecorder.getFeedbackMessagePanel().updateFeedbackMessage(FeedbackMessageType.WARNING,
-					FeedbackDisplayProtocol.MANUAL_HIDE, "The original FHX2 program doesn't support years prior to 501BC.");
+					FeedbackDisplayProtocol.AUTO_HIDE, "The original FHX2 program doesn't support years prior to 501BC.");
 		}
-		else if ((Integer) firstYearSpinner.getValue() > 2020 && FileController.isEnforcingOldReqs() == true)
+		else if (firstYearSpinner.getValueAsInteger() > OLD_FHAES_MAXIMUM_YEAR && FileController.isEnforcingOldReqs() == true)
 		{
 			FireHistoryRecorder.getFeedbackMessagePanel().updateFeedbackMessage(FeedbackMessageType.WARNING,
-					FeedbackDisplayProtocol.MANUAL_HIDE, "The original FHX2 program doesn't support years after 2020AD.");
+					FeedbackDisplayProtocol.AUTO_HIDE, "The original FHX2 program doesn't support years after 2020AD.");
 		}
 		else
 		{
@@ -386,13 +265,15 @@ public class NewSampleDialog extends javax.swing.JDialog implements KeyListener 
 				FireHistoryRecorder.getFeedbackMessagePanel().clearFeedbackMessage();
 			}
 			
+			FHX2_Sample sample = new FHX2_Sample();
+			
 			sample.setSampleName(sampleNameTextBox.getText());
-			sample.setSampleFirstYear((Integer) firstYearSpinner.getValue());
-			sample.setSampleLastYear((Integer) lastYearSpinner.getValue());
+			sample.setSampleFirstYear(firstYearSpinner.getValueAsInteger());
+			sample.setSampleLastYear(lastYearSpinner.getValueAsInteger());
 			sample.setBark(barkCheckBox.isSelected());
 			sample.setPith(pithCheckBox.isSelected());
 			
-			SampleController.saveSample(index, sample);
+			SampleController.saveNewSample(sample);
 			this.setVisible(false);
 		}
 	}
@@ -402,7 +283,7 @@ public class NewSampleDialog extends javax.swing.JDialog implements KeyListener 
 	 * 
 	 * @param evt
 	 */
-	private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {
+	private void handleCancelButtonPressed(ActionEvent evt) {
 		
 		this.setVisible(false);
 	}

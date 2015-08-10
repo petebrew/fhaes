@@ -59,6 +59,8 @@ public class FireHistoryRecorder extends JDialog {
 	private static final long serialVersionUID = 1L;
 	
 	// Declare local constants
+	private final int DATA_TAB_INDEX = 0;
+	private final int METADATA_TAB_INDEX = 1;
 	private final int SUMMARY_TAB_INDEX = 2;
 	private final int GRAPH_TAB_INDEX = 3;
 	
@@ -205,7 +207,7 @@ public class FireHistoryRecorder extends JDialog {
 	}
 	
 	/**
-	 * TODO
+	 * Refreshes all tab-panels with the most recent information.
 	 */
 	public void showInput() {
 		
@@ -220,9 +222,9 @@ public class FireHistoryRecorder extends JDialog {
 			tabbedPane.addTab("Errors", null, errorPanel, null);
 			tabbedPane.setSelectedComponent(errorPanel);
 			tabbedPane.setEnabled(false);
-			
 			errorPanel.setEnabled(false);
 			errorPanel.setScrollBarsToTop();
+			
 			FileController.setIsChangedSinceLastSave(false);
 			FileController.setIsChangedSinceOpened(true);
 		}
@@ -258,19 +260,19 @@ public class FireHistoryRecorder extends JDialog {
 	}
 	
 	/**
-	 * TODO
+	 * Displays the data tab.
 	 */
 	public void showInfo() {
 		
-		this.tabbedPane.setSelectedIndex(1);
+		this.tabbedPane.setSelectedIndex(DATA_TAB_INDEX);
 	}
 	
 	/**
-	 * TODO
+	 * Displays the metadata tab.
 	 */
 	public void showComments() {
 		
-		this.tabbedPane.setSelectedIndex(2);
+		this.tabbedPane.setSelectedIndex(METADATA_TAB_INDEX);
 	}
 	
 	/**
@@ -308,7 +310,7 @@ public class FireHistoryRecorder extends JDialog {
 	}
 	
 	/**
-	 * TODO
+	 * Saves the metadata and comments to the FHX file.
 	 */
 	private void updateOptionalData() {
 		
@@ -440,9 +442,9 @@ public class FireHistoryRecorder extends JDialog {
 			}
 			
 		});
-		
 		this.getContentPane().add(discardChangesButton, "cell 3 2,growx,aligny center");
-		this.pack();
+		
 		this.setTitle(FileController.progName);
+		this.pack();
 	}
 }

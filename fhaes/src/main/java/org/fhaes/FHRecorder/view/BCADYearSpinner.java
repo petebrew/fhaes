@@ -18,8 +18,10 @@
 package org.fhaes.FHRecorder.view;
 
 import java.awt.Dimension;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.text.ParseException;
 
-import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.text.NumberFormatter;
 
@@ -53,13 +55,23 @@ public class BCADYearSpinner extends javax.swing.JSpinner {
 	}
 	
 	/**
+	 * Gets the number editor for the spinner.
+	 * 
+	 * @return the spinner's number editor
+	 */
+	private NumberEditor getNumberEditor() {
+		
+		return (NumberEditor) this.getEditor();
+	}
+	
+	/**
 	 * Gets the number formatter for the spinner.
 	 * 
 	 * @return the spinner's number formatter
 	 */
 	private NumberFormatter getNumberFormatter() {
 		
-		return ((NumberFormatter) ((JSpinner.NumberEditor) this.getEditor()).getTextField().getFormatter());
+		return ((NumberFormatter) this.getNumberEditor().getTextField().getFormatter());
 	}
 	
 	/**
@@ -97,14 +109,45 @@ public class BCADYearSpinner extends javax.swing.JSpinner {
 	 */
 	private void initGUI(int initialValue, int minimumValue, int maximumValue) {
 		
+		// Assign the initial value to the spinner BEFORE setting up the custom model
+		this.setValue(initialValue);
+		
+		// Setup the rest of the properties for the spinner
 		this.getNumberFormatter().setAllowsInvalid(false);
 		this.getNumberFormatter().setCommitsOnValidEdit(true);
-		this.setEditor(new JSpinner.NumberEditor(this, NUMBER_EDITOR_FORMAT));
+		this.setEditor(new NumberEditor(this, NUMBER_EDITOR_FORMAT));
 		this.setMinimumSize(new Dimension(SPINNER_WIDTH, SPINNER_HEIGHT));
 		this.setModel(new BCADYearSpinnerModel(initialValue, minimumValue, maximumValue));
 		
 		// Make sure to initialize the most recent value of the spinner
 		updateMostRecentValue();
+		
+		// Workaround to enable keyboard-based interaction with the spinner
+		this.getNumberEditor().getTextField().setFocusTraversalKeysEnabled(false);
+		this.getNumberEditor().getTextField().addKeyListener(new KeyListener() {
+			
+			@Override
+			public void keyPressed(KeyEvent evt) {}
+			
+			@Override
+			public void keyReleased(KeyEvent evt) {}
+			
+			@Override
+			public void keyTyped(KeyEvent evt) {
+				
+				if (evt.getKeyChar() == KeyEvent.VK_TAB || evt.getKeyChar() == KeyEvent.VK_ENTER)
+				{
+					try
+					{
+						getNumberEditor().getTextField().commitEdit();
+					}
+					catch (ParseException ex)
+					{
+						// Do nothing!
+					}
+				}
+			}
+		});
 	}
 	
 	/**

@@ -138,6 +138,11 @@ public class FileController {
 		return isCorrupted;
 	}
 	
+	/**
+	 * TODO
+	 * 
+	 * @return
+	 */
 	public static Boolean isFileNew() {
 		
 		return isNewFile;
@@ -196,6 +201,11 @@ public class FileController {
 		lastYearDefinedInFile = inValue;
 	}
 	
+	/**
+	 * TODO
+	 * 
+	 * @param b
+	 */
 	protected static void setIsNewFile(Boolean b) {
 		
 		isNewFile = b;
@@ -425,9 +435,13 @@ public class FileController {
 	public static void save() {
 		
 		if (filePath == null)
+		{
 			saveAs();
+		}
 		else
+		{
 			doSaveFileFunctionality();
+		}
 	}
 	
 	/**
@@ -439,8 +453,10 @@ public class FileController {
 		try
 		{
 			if (!saveFile.exists())
+			{
 				saveFile.createNewFile();
-				
+			}
+			
 			FileWriter fw = new FileWriter(saveFile.getAbsoluteFile());
 			BufferedWriter bw = new BufferedWriter(fw);
 			
@@ -450,6 +466,8 @@ public class FileController {
 			setTitleName(progName + " - " + fileName);
 			isChangedSinceLastSave = false;
 			isChangedSinceOpened = true;
+			
+			setIsNewFile(false);
 		}
 		catch (IOException e)
 		{

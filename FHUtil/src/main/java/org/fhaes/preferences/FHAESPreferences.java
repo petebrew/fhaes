@@ -59,7 +59,7 @@ import org.slf4j.LoggerFactory;
  */
 public class FHAESPreferences {
 	
-	// Declare FHAES specialized objects
+	// Declare preferences and logger
 	private static Preferences prefs = Preferences.userNodeForPackage(FHAESPreferences.class);
 	private static final Logger log = LoggerFactory.getLogger(FHAESPreferences.class);
 	
