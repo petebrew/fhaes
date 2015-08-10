@@ -25,6 +25,9 @@ import java.awt.Frame;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
@@ -82,7 +85,7 @@ import net.miginfocom.swing.MigLayout;
  * 
  * @author Alex Beatty, Clayton Bodendein, Kyle Hartmann, Scott Goble
  */
-public class SampleInputPanel extends javax.swing.JPanel implements ChangeListener, PropertyChangeListener {
+public class SampleInputPanel extends JPanel implements ChangeListener, PropertyChangeListener {
 	
 	private static final long serialVersionUID = 1L;;
 	
@@ -228,7 +231,7 @@ public class SampleInputPanel extends javax.swing.JPanel implements ChangeListen
 		sampleNameTextBox = new JTextField();
 		sampleNameTextBox.setColumns(10);
 		sampleNameTextBox.setDocument(new LengthRestrictedDocument(MAXIMUM_SAMPLE_NAME_LENGTH));
-		sampleNameTextBox.addFocusListener(new java.awt.event.FocusAdapter() {
+		sampleNameTextBox.addFocusListener(new FocusAdapter() {
 			
 			@Override
 			public void focusLost(FocusEvent evt) {
@@ -339,10 +342,9 @@ public class SampleInputPanel extends javax.swing.JPanel implements ChangeListen
 				SampleController.setSamplePith(pithCheckBox.isSelected());
 			}
 		});
-		
 		sampleNameContainer.add(pithCheckBox, "cell 6 0,alignx left,aligny baseline");
 		
-		barkCheckBox = new javax.swing.JCheckBox();
+		barkCheckBox = new JCheckBox();
 		barkCheckBox.setText("Bark");
 		barkCheckBox.addActionListener(new ActionListener() {
 			
@@ -352,7 +354,6 @@ public class SampleInputPanel extends javax.swing.JPanel implements ChangeListen
 				SampleController.setSampleBark(barkCheckBox.isSelected());
 			}
 		});
-		
 		sampleNameContainer.add(barkCheckBox, "cell 10 0,alignx left,aligny baseline");
 	}
 	
@@ -756,7 +757,7 @@ public class SampleInputPanel extends javax.swing.JPanel implements ChangeListen
 	}
 	
 	/**
-	 * TODO
+	 * Handles updating of the SampleInputPanel's internal control flags when the selected sample index is changed.
 	 */
 	private void handleUpdatedIndex() {
 		
@@ -779,7 +780,7 @@ public class SampleInputPanel extends javax.swing.JPanel implements ChangeListen
 	}
 	
 	/**
-	 * TODO
+	 * Redraws the sample list panel unless the ignore events flag is set.
 	 */
 	@Override
 	public void stateChanged(ChangeEvent e) {
@@ -808,10 +809,10 @@ public class SampleInputPanel extends javax.swing.JPanel implements ChangeListen
 		
 		setMinimumSize(new Dimension(790, 450));
 		setPreferredSize(new Dimension(1024, 768));
-		addComponentListener(new java.awt.event.ComponentAdapter() {
+		addComponentListener(new ComponentAdapter() {
 			
 			@Override
-			public void componentShown(java.awt.event.ComponentEvent evt) {
+			public void componentShown(ComponentEvent evt) {
 				
 				newSampleButton.requestFocusInWindow();
 			}
@@ -832,9 +833,12 @@ public class SampleInputPanel extends javax.swing.JPanel implements ChangeListen
 		sampleListPanel.setLayout(new MigLayout("insets 2", "[27.00,grow,left]", "[:35:35,top][grow,fill][:35:35,top]"));
 		
 		buttonsPanel = new JPanel();
-		sampleListPanel.add(buttonsPanel, "cell 0 0,grow");
 		buttonsPanel.setLayout(new MigLayout("insets 0", "[50:50:50][50:50:50][grow][50:50:50][50:50:50]", "[:35:35,center]"));
+		sampleListPanel.add(buttonsPanel, "cell 0 0,grow");
 		
+		/*
+		 * MOVE DOWN BUTTON
+		 */
 		moveDownButton = new JButton();
 		moveDownButton.setEnabled(false);
 		moveDownButton.setIcon(Builder.getImageIcon("go_down.png"));
@@ -854,9 +858,11 @@ public class SampleInputPanel extends javax.swing.JPanel implements ChangeListen
 			}
 			
 		});
-		
 		buttonsPanel.add(moveDownButton, "cell 0 0,grow");
 		
+		/*
+		 * MOVE UP BUTTON
+		 */
 		moveUpButton = new JButton();
 		moveUpButton.setEnabled(false);
 		moveUpButton.setIcon(Builder.getImageIcon("go_up.png"));
@@ -875,34 +881,40 @@ public class SampleInputPanel extends javax.swing.JPanel implements ChangeListen
 			}
 			
 		});
-		
 		buttonsPanel.add(moveUpButton, "cell 1 0,grow");
-		newSampleButton = new javax.swing.JButton();
-		buttonsPanel.add(newSampleButton, "cell 3 0,grow");
+		
+		/*
+		 * NEW SAMPLE BUTTON
+		 */
+		newSampleButton = new JButton();
 		newSampleButton.setIcon(Builder.getImageIcon("edit_add.png"));
 		newSampleButton.setToolTipText("Add new sample to this data set");
-		newSampleButton.addActionListener(new java.awt.event.ActionListener() {
+		newSampleButton.addActionListener(new ActionListener() {
 			
 			@Override
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
+			public void actionPerformed(ActionEvent evt) {
 				
 				newSampleButtonActionPerformed(evt);
 			}
 		});
+		buttonsPanel.add(newSampleButton, "cell 3 0,grow");
 		
-		deleteSampleButton = new javax.swing.JButton();
-		buttonsPanel.add(deleteSampleButton, "cell 4 0,grow");
+		/*
+		 * DELETE SAMPLE BUTTON
+		 */
+		deleteSampleButton = new JButton();
 		deleteSampleButton.setEnabled(false);
 		deleteSampleButton.setIcon(Builder.getImageIcon("delete.png"));
 		deleteSampleButton.setToolTipText("Delete selected sample from data set");
-		deleteSampleButton.addActionListener(new java.awt.event.ActionListener() {
+		deleteSampleButton.addActionListener(new ActionListener() {
 			
 			@Override
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
+			public void actionPerformed(ActionEvent evt) {
 				
 				deleteSampleButtonActionPerformed(evt);
 			}
 		});
+		buttonsPanel.add(deleteSampleButton, "cell 4 0,grow");
 		
 		sampleScrollPane = new JScrollPane();
 		sampleListPanel.add(sampleScrollPane, "cell 0 1,grow");
@@ -1004,22 +1016,27 @@ public class SampleInputPanel extends javax.swing.JPanel implements ChangeListen
 		sampleDataPanel.add(headerPanel, "cell 0 0 5 0,growx,aligny top");
 		headerPanel.setLayout(new BorderLayout(0, 0));
 		
+		/*
+		 * ADD EVENT BUTTON
+		 */
 		addEventButton = new JButton();
 		addEventButton.setEnabled(false);
 		addEventButton.setText("Add Event");
 		addEventButton.setIcon(Builder.getImageIcon("edit_add.png"));
 		addEventButton.setToolTipText("Add an event to the selected sample");
-		addEventButton.addActionListener(new java.awt.event.ActionListener() {
+		addEventButton.addActionListener(new ActionListener() {
 			
 			@Override
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
+			public void actionPerformed(ActionEvent evt) {
 				
 				addEventButtonActionPerformed(evt);
 			}
 		});
-		
 		sampleDataPanel.add(addEventButton, "cell 3 1,grow");
 		
+		/*
+		 * DELETE EVENT BUTTON
+		 */
 		deleteEventButton = new JButton();
 		deleteEventButton.setEnabled(false);
 		deleteEventButton.setText("Delete Event");
@@ -1033,16 +1050,17 @@ public class SampleInputPanel extends javax.swing.JPanel implements ChangeListen
 				deleteEventButtonActionPerformed(evt);
 			}
 		});
-		
 		sampleDataPanel.add(deleteEventButton, "cell 4 1,grow");
 		
 		eventScrollPane = new JScrollPane();
 		eventScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		eventScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		eventScrollPane.setViewportView(eventTable);
-		
 		sampleDataPanel.add(eventScrollPane, "cell 0 2 5 1,grow");
 		
+		/*
+		 * ADD RECORDING BUTTON
+		 */
 		addRecordingButton = new JButton();
 		addRecordingButton.setEnabled(false);
 		addRecordingButton.setText("Add Recording");
@@ -1056,7 +1074,11 @@ public class SampleInputPanel extends javax.swing.JPanel implements ChangeListen
 				addRecordingButtonActionPerformed(evt);
 			}
 		});
+		sampleDataPanel.add(addRecordingButton, "cell 3 3,grow");
 		
+		/*
+		 * CONSOLIDATE BUTTON
+		 */
 		consolidateButton = new JButton();
 		consolidateButton.setEnabled(false);
 		consolidateButton.setText("Consolidate");
@@ -1070,9 +1092,11 @@ public class SampleInputPanel extends javax.swing.JPanel implements ChangeListen
 				mergeRecordingsButtonActionPerformed(evt);
 			}
 		});
-		
 		sampleDataPanel.add(consolidateButton, "cell 0 3,grow");
 		
+		/*
+		 * AUTO POPULATE BUTTON
+		 */
 		autoPopulateButton = new JButton("Auto Populate");
 		autoPopulateButton.setEnabled(false);
 		autoPopulateButton.setToolTipText("Automatically create recordings records");
@@ -1086,10 +1110,11 @@ public class SampleInputPanel extends javax.swing.JPanel implements ChangeListen
 			}
 			
 		});
-		
 		sampleDataPanel.add(autoPopulateButton, "cell 1 3,grow");
-		sampleDataPanel.add(addRecordingButton, "cell 3 3,grow");
 		
+		/*
+		 * DELETE RECORDING BUTTON
+		 */
 		deleteRecordingButton = new JButton();
 		deleteRecordingButton.setEnabled(false);
 		deleteRecordingButton.setText("Delete Recording");
@@ -1103,7 +1128,6 @@ public class SampleInputPanel extends javax.swing.JPanel implements ChangeListen
 				deleteRecordingButtonActionPerformed(evt);
 			}
 		});
-		
 		sampleDataPanel.add(deleteRecordingButton, "cell 4 3,grow");
 		
 		recordingScrollPane = new JScrollPane();
@@ -1131,7 +1155,7 @@ public class SampleInputPanel extends javax.swing.JPanel implements ChangeListen
 		ScrollViewport viewPort;
 		
 		/**
-		 * TODO
+		 * Initializes a new DrawEventPanelTask.
 		 * 
 		 * @param sample
 		 */
@@ -1143,7 +1167,7 @@ public class SampleInputPanel extends javax.swing.JPanel implements ChangeListen
 		}
 		
 		/**
-		 * TODO
+		 * The operations to be performed once the task completes.
 		 */
 		@Override
 		public void done() {
@@ -1157,7 +1181,7 @@ public class SampleInputPanel extends javax.swing.JPanel implements ChangeListen
 		}
 		
 		/**
-		 * TODO
+		 * The operations to be performed while the task is executing.
 		 */
 		@Override
 		protected ScrollViewport doInBackground() throws Exception {
@@ -1191,12 +1215,12 @@ public class SampleInputPanel extends javax.swing.JPanel implements ChangeListen
 						eventIndex++;
 						hasMoreEvents = eventIndex < selectedSample.getNumOfEvents();
 					}
-					
 				}
 				
 				setProgress(((year - selectedSample.getSampleFirstYear()) * 100)
 						/ (selectedSample.getSampleLastYear() - selectedSample.getSampleFirstYear()));
 			}
+			
 			return viewPort;
 		}
 	}

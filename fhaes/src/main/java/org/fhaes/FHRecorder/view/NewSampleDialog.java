@@ -22,6 +22,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
@@ -189,7 +190,7 @@ public class NewSampleDialog extends JDialog implements KeyListener {
 		okButton = new JButton();
 		okButton.setText("OK");
 		okButton.setEnabled(false);
-		okButton.addActionListener(new java.awt.event.ActionListener() {
+		okButton.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent evt) {
@@ -197,14 +198,14 @@ public class NewSampleDialog extends JDialog implements KeyListener {
 				handleOkButtonPressed(evt);
 			}
 		});
-		buttonPanel.add(okButton, "cell 1 0,growx,aligny center");
+		buttonPanel.add(okButton, "cell 1 0,grow");
 		
 		/*
 		 * CANCEL BUTTON
 		 */
 		cancelButton = new JButton();
 		cancelButton.setText("Cancel");
-		cancelButton.addActionListener(new java.awt.event.ActionListener() {
+		cancelButton.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent evt) {
@@ -212,7 +213,7 @@ public class NewSampleDialog extends JDialog implements KeyListener {
 				handleCancelButtonPressed(evt);
 			}
 		});
-		buttonPanel.add(cancelButton, "cell 2 0,growx,aligny center");
+		buttonPanel.add(cancelButton, "cell 2 0,grow");
 	}
 	
 	/**

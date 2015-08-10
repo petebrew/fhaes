@@ -87,6 +87,7 @@ public class FireHistoryRecorder extends JDialog {
 	
 	// Declare local variables
 	private boolean leftTabsSinceRedraw = true;
+	private JPanel buttonPanel;
 	
 	/**
 	 * Creates new form PrimaryWindow.
@@ -345,13 +346,13 @@ public class FireHistoryRecorder extends JDialog {
 			}
 		});
 		
-		this.getContentPane().setLayout(new MigLayout("hidemode 2,insets 0", "[grow][][][][0:0:0]", "[][500:500,grow,fill][35:35:35]"));
+		this.getContentPane().setLayout(new MigLayout("hidemode 2,insets 0", "[grow][0:0:0]", "[][500:500,grow,fill][35:35:35,grow]"));
 		
 		feedbackMessagePanel = new FeedbackMessagePanel();
-		this.getContentPane().add(feedbackMessagePanel, "cell 0 0 5 1,grow");
+		this.getContentPane().add(feedbackMessagePanel, "cell 0 0 2 1,grow");
 		
 		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
-		this.getContentPane().add(tabbedPane, "cell 0 1 5 1,grow");
+		this.getContentPane().add(tabbedPane, "cell 0 1 2 1,grow");
 		
 		dataTab = new JPanel();
 		dataTab.setBorder(new SoftBevelBorder(BevelBorder.LOWERED, null, null, null, null));
@@ -400,6 +401,10 @@ public class FireHistoryRecorder extends JDialog {
 			}
 		});
 		
+		buttonPanel = new JPanel();
+		buttonPanel.setLayout(new MigLayout("insets 0", "[grow][80:80:80][80:80:80][130:130:130]", "[30:30:30,grow,fill]"));
+		getContentPane().add(buttonPanel, "cell 0 2,grow");
+		
 		saveButton = new JButton("Save");
 		saveButton.addActionListener(new ActionListener() {
 			
@@ -417,7 +422,7 @@ public class FireHistoryRecorder extends JDialog {
 			}
 			
 		});
-		this.getContentPane().add(saveButton, "cell 1 2,growx,aligny center");
+		buttonPanel.add(saveButton, "cell 1 0,grow");
 		
 		closeButton = new JButton("Close");
 		closeButton.addActionListener(new ActionListener() {
@@ -429,7 +434,7 @@ public class FireHistoryRecorder extends JDialog {
 			}
 			
 		});
-		this.getContentPane().add(closeButton, "cell 2 2,growx,aligny center");
+		buttonPanel.add(closeButton, "cell 2 0,grow");
 		
 		discardChangesButton = new JButton("Discard changes");
 		discardChangesButton.addActionListener(new ActionListener() {
@@ -442,7 +447,7 @@ public class FireHistoryRecorder extends JDialog {
 			}
 			
 		});
-		this.getContentPane().add(discardChangesButton, "cell 3 2,growx,aligny center");
+		buttonPanel.add(discardChangesButton, "cell 3 0,grow");
 		
 		this.setTitle(FileController.progName);
 		this.pack();
