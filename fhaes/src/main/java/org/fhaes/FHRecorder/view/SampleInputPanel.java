@@ -25,6 +25,7 @@ import java.awt.Frame;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
@@ -66,7 +67,10 @@ import org.fhaes.FHRecorder.controller.RecordingController;
 import org.fhaes.FHRecorder.controller.SampleController;
 import org.fhaes.FHRecorder.model.FHX2_FileRequiredPart;
 import org.fhaes.FHRecorder.model.FHX2_Sample;
+import org.fhaes.FHRecorder.util.LengthRestrictedDocument;
 import org.fhaes.FHRecorder.util.SampleSorters;
+import org.fhaes.enums.FeedbackDisplayProtocol;
+import org.fhaes.enums.FeedbackMessageType;
 import org.fhaes.util.Builder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -85,7 +89,12 @@ public class SampleInputPanel extends javax.swing.JPanel implements ChangeListen
 	// Declare FHAES logger
 	private static final Logger log = LoggerFactory.getLogger(SampleInputPanel.class);
 	
-	// Declare sort options
+	// Declare local constants
+	public static final String MINIMUM_SAMPLE_NAME_LENGTH_MESSAGE = "Sample name must be at least 3 characters in length.";
+	public static final int MAXIMUM_SAMPLE_NAME_LENGTH = 30;
+	public static final int MINIMUM_SAMPLE_NAME_LENGTH = 3;
+	
+	// Declare sort option constants
 	public static final int MANUAL_SORTING = 0;
 	public static final int NAME_ASCENDING = 1;
 	public static final int NAME_DESCENDING = 2;
@@ -99,11 +108,11 @@ public class SampleInputPanel extends javax.swing.JPanel implements ChangeListen
 	private RecordingTable recordingTable;
 	
 	// Declare GUI components
-	private javax.swing.JButton deleteSampleButton;
-	private javax.swing.JMenuItem jMenuItem1;
-	private javax.swing.JMenuItem jMenuItem2;
-	private javax.swing.JPopupMenu jPopupMenu1;
-	private javax.swing.JButton newSampleButton;
+	private JButton deleteSampleButton;
+	private JMenuItem jMenuItem1;
+	private JMenuItem jMenuItem2;
+	private JPopupMenu jPopupMenu1;
+	private JButton newSampleButton;
 	private JPanel sampleListPanel;
 	private JPanel sampleDataPanel;
 	private JSplitPane splitPane;
@@ -217,12 +226,12 @@ public class SampleInputPanel extends javax.swing.JPanel implements ChangeListen
 		sampleNameContainer.add(sampleNameLabel, "cell 1 0,alignx right,aligny baseline");
 		
 		sampleNameTextBox = new JTextField();
-		sampleNameContainer.add(sampleNameTextBox, "cell 2 0,growx,aligny center");
 		sampleNameTextBox.setColumns(10);
+		sampleNameTextBox.setDocument(new LengthRestrictedDocument(MAXIMUM_SAMPLE_NAME_LENGTH));
 		sampleNameTextBox.addFocusListener(new java.awt.event.FocusAdapter() {
 			
 			@Override
-			public void focusLost(java.awt.event.FocusEvent evt) {
+			public void focusLost(FocusEvent evt) {
 				
 				updateSampleNameInData();
 			}
@@ -242,6 +251,7 @@ public class SampleInputPanel extends javax.swing.JPanel implements ChangeListen
 			@Override
 			public void keyTyped(KeyEvent evt) {}
 		});
+		sampleNameContainer.add(sampleNameTextBox, "cell 2 0,growx,aligny center");
 		
 		firstYearSpinner = new BCADYearSpinner(FileController.CURRENT_YEAR - 1, FileController.EARLIEST_ALLOWED_YEAR,
 				FileController.CURRENT_YEAR - 1);
@@ -545,12 +555,25 @@ public class SampleInputPanel extends javax.swing.JPanel implements ChangeListen
 	@SuppressWarnings("unchecked")
 	private void updateSampleNameInData() {
 		
-		SampleController.changeSampleName(sampleNameTextBox.getText());
-		displaySampleName(sampleNameTextBox.getText());
-		
-		@SuppressWarnings("rawtypes")
-		DefaultListModel model = (DefaultListModel) this.sampleListBox.getModel();
-		model.set(sampleListBox.getSelectedIndex(), sampleListBox.getSelectedValue());
+		if (sampleNameTextBox.getText().length() < MINIMUM_SAMPLE_NAME_LENGTH)
+		{
+			FireHistoryRecorder.getFeedbackMessagePanel().updateFeedbackMessage(FeedbackMessageType.WARNING,
+					FeedbackDisplayProtocol.MANUAL_HIDE, MINIMUM_SAMPLE_NAME_LENGTH_MESSAGE);
+					
+			sampleNameTextBox.setForeground(Color.RED);
+		}
+		else
+		{
+			SampleController.changeSampleName(sampleNameTextBox.getText());
+			displaySampleName(sampleNameTextBox.getText());
+			
+			@SuppressWarnings("rawtypes")
+			DefaultListModel model = (DefaultListModel) this.sampleListBox.getModel();
+			model.set(sampleListBox.getSelectedIndex(), sampleListBox.getSelectedValue());
+			
+			FireHistoryRecorder.getFeedbackMessagePanel().clearFeedbackMessage();
+			sampleNameTextBox.setForeground(Color.BLACK);
+		}
 	}
 	
 	/**
@@ -1150,7 +1173,9 @@ public class SampleInputPanel extends javax.swing.JPanel implements ChangeListen
 			for (int year = selectedSample.getSampleFirstYear(); year <= selectedSample.getSampleLastYear(); year++)
 			{
 				if (year == 0)
+				{
 					continue;
+				}
 				else
 				{
 					if (hasMoreRecording && selectedSample.getRecording(recordingIndex).containsYear(year))
@@ -1168,6 +1193,7 @@ public class SampleInputPanel extends javax.swing.JPanel implements ChangeListen
 					}
 					
 				}
+				
 				setProgress(((year - selectedSample.getSampleFirstYear()) * 100)
 						/ (selectedSample.getSampleLastYear() - selectedSample.getSampleFirstYear()));
 			}
@@ -1180,10 +1206,14 @@ public class SampleInputPanel extends javax.swing.JPanel implements ChangeListen
 	 */
 	private class ScrollViewport extends JViewport implements Scrollable {
 		
-		private static final long serialVersionUID = -895599170681795117L;
+		private static final long serialVersionUID = 1L;
+		
+		// Declare local constants
+		private static final int SCROLL_BLOCK_INCREMENT_AMOUNT = 30;
+		private static final int SCROLL_UNIT_INCREMENT_AMOUNT = 1;
 		
 		/**
-		 * TODO
+		 * Overrides the scrollable viewport size with its preferred size.
 		 */
 		@Override
 		public Dimension getPreferredScrollableViewportSize() {
@@ -1192,16 +1222,25 @@ public class SampleInputPanel extends javax.swing.JPanel implements ChangeListen
 		}
 		
 		/**
-		 * TODO
+		 * Sets the scroll block increment amount according to the constant.
 		 */
 		@Override
 		public int getScrollableBlockIncrement(Rectangle visibleRect, int orientation, int direction) {
 			
-			return 30;
+			return SCROLL_BLOCK_INCREMENT_AMOUNT;
 		}
 		
 		/**
-		 * TODO
+		 * Sets the scroll unit increment amount according to the constant.
+		 */
+		@Override
+		public int getScrollableUnitIncrement(Rectangle visibleRect, int orientation, int direction) {
+			
+			return SCROLL_UNIT_INCREMENT_AMOUNT;
+		}
+		
+		/**
+		 * Ensures that the viewport height is not tracked.
 		 */
 		@Override
 		public boolean getScrollableTracksViewportHeight() {
@@ -1210,21 +1249,12 @@ public class SampleInputPanel extends javax.swing.JPanel implements ChangeListen
 		}
 		
 		/**
-		 * TODO
+		 * Ensures that the viewport width is tracked.
 		 */
 		@Override
 		public boolean getScrollableTracksViewportWidth() {
 			
 			return true;
-		}
-		
-		/**
-		 * TODO
-		 */
-		@Override
-		public int getScrollableUnitIncrement(Rectangle visibleRect, int orientation, int direction) {
-			
-			return 1;
 		}
 	}
 }

@@ -161,6 +161,13 @@ public class FeedbackMessagePanel extends JPanel {
 					animationTask = new AutoHideMessageTask();
 					autoHideDelayTimer.schedule(animationTask, EIGHT_SECOND_DELAY);
 				}
+				else
+				{
+					if (animationTask != null)
+					{
+						animationTask.cancel();
+					}
+				}
 			}
 		}
 	}

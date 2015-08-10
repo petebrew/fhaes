@@ -43,11 +43,6 @@ public final class LengthRestrictedDocument extends PlainDocument {
 		this.limit = limit;
 	}
 	
-	// Overrides the insertString method of Document
-	// @param offs offset
-	// @param str string
-	// @param a set of attributes
-	
 	/**
 	 * Overrides the insertString method of Document.
 	 * 

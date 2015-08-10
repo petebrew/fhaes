@@ -235,14 +235,14 @@ public class FireHistoryRecorder extends JDialog {
 			tabbedPane.remove(errorPanel);
 		}
 		
-		// file contains a data set that does not have a defined end year
+		// File contains a data set that does not have a defined ending year
 		if (FileController.wasLastYearDefinedInFile() == false)
 		{
 			feedbackMessagePanel.updateFeedbackMessage(FeedbackMessageType.INFO, FeedbackDisplayProtocol.MANUAL_HIDE,
 					"File contains valid data with an unformatted sample. A temporary sample has been generated using the boundaries of the data set.");
 		}
 		
-		// file either has bad data or is not an FHX file
+		// File either has bad data or is not an FHX file
 		else if (IOController.getFile().fileHasNoValidData())
 		{
 			if (!FileController.isFileNew())
@@ -252,7 +252,7 @@ public class FireHistoryRecorder extends JDialog {
 			}
 		}
 		
-		// file is properly formatted
+		// File is properly formatted
 		else
 		{
 			feedbackMessagePanel.clearFeedbackMessage();

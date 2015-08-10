@@ -41,6 +41,7 @@ import org.fhaes.FHRecorder.controller.FileController;
 import org.fhaes.FHRecorder.controller.IOController;
 import org.fhaes.FHRecorder.controller.SampleController;
 import org.fhaes.FHRecorder.model.FHX2_Sample;
+import org.fhaes.FHRecorder.util.LengthRestrictedDocument;
 import org.fhaes.enums.FeedbackDisplayProtocol;
 import org.fhaes.enums.FeedbackMessageType;
 import org.fhaes.util.Builder;
@@ -57,10 +58,8 @@ public class NewSampleDialog extends JDialog implements KeyListener {
 	private static final long serialVersionUID = 1L;
 	
 	// Declare local constants
-	private final String MINIMUM_SAMPLE_NAME_LENGTH_MESSAGE = "Sample name must be at least 3 characters in length.";
-	private final int MINIMUM_SAMPLE_NAME_LENGTH = 3;
-	private final int OLD_FHAES_MAXIMUM_YEAR = 2020;
-	private final int OLD_FHAES_MINIMUM_YEAR = 501;
+	private final int OLD_FHX_MAXIMUM_YEAR = 2020;
+	private final int OLD_FHX_MINIMUM_YEAR = 501;
 	
 	// Declare GUI components
 	private JPanel basePanel;
@@ -109,7 +108,7 @@ public class NewSampleDialog extends JDialog implements KeyListener {
 		
 		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		this.setIconImage(Builder.getApplicationIcon());
-		this.setMinimumSize(new Dimension(320, 150));
+		this.setMinimumSize(new Dimension(350, 150));
 		this.setModalityType(ModalityType.APPLICATION_MODAL);
 		this.setResizable(false);
 		this.setTitle("New Sample");
@@ -127,6 +126,7 @@ public class NewSampleDialog extends JDialog implements KeyListener {
 		
 		sampleNameTextBox = new JTextField();
 		sampleNameTextBox.addKeyListener(this);
+		sampleNameTextBox.setDocument(new LengthRestrictedDocument(SampleInputPanel.MAXIMUM_SAMPLE_NAME_LENGTH));
 		basePanel.add(sampleNameTextBox, "cell 1 0 2 1,grow");
 		
 		firstYearLabel = new JLabel();
@@ -222,12 +222,12 @@ public class NewSampleDialog extends JDialog implements KeyListener {
 	 */
 	private void handleOkButtonPressed(ActionEvent evt) {
 		
-		if (sampleNameTextBox.getText().length() < MINIMUM_SAMPLE_NAME_LENGTH)
+		if (sampleNameTextBox.getText().length() < SampleInputPanel.MINIMUM_SAMPLE_NAME_LENGTH)
 		{
 			FireHistoryRecorder.getFeedbackMessagePanel().updateFeedbackMessage(FeedbackMessageType.WARNING,
-					FeedbackDisplayProtocol.AUTO_HIDE, MINIMUM_SAMPLE_NAME_LENGTH_MESSAGE);
+					FeedbackDisplayProtocol.AUTO_HIDE, SampleInputPanel.MINIMUM_SAMPLE_NAME_LENGTH_MESSAGE);
 					
-			sampleNameTextBox.setForeground(Color.red);
+			sampleNameTextBox.setForeground(Color.RED);
 		}
 		else if (sampleNameTextBox.getText().length() > FileController.FHX2_MAX_SAMPLE_NAME_LENGTH
 				&& FileController.isEnforcingOldReqs() == true)
@@ -235,38 +235,27 @@ public class NewSampleDialog extends JDialog implements KeyListener {
 			FireHistoryRecorder.getFeedbackMessagePanel().updateFeedbackMessage(FeedbackMessageType.WARNING,
 					FeedbackDisplayProtocol.AUTO_HIDE, "Sample name is too long for the original FHX2 program requirements.");
 					
-			sampleNameTextBox.setForeground(Color.red);
+			sampleNameTextBox.setForeground(Color.RED);
 		}
-		else if (firstYearSpinner.getValueAsInteger() >= lastYearSpinner.getValueAsInteger())
-		{
-			FireHistoryRecorder.getFeedbackMessagePanel().updateFeedbackMessage(FeedbackMessageType.WARNING,
-					FeedbackDisplayProtocol.AUTO_HIDE, "The first year of a sample cannot be after its last year.");
-					
-			firstYearSpinner.setValue(lastYearSpinner.getValueAsInteger() - 1);
-		}
-		else if (firstYearSpinner.getValueAsInteger() < OLD_FHAES_MINIMUM_YEAR && FileController.isEnforcingOldReqs() == true)
+		else if (firstYearSpinner.getValueAsInteger() < OLD_FHX_MINIMUM_YEAR && FileController.isEnforcingOldReqs() == true)
 		{
 			FireHistoryRecorder.getFeedbackMessagePanel().updateFeedbackMessage(FeedbackMessageType.WARNING,
 					FeedbackDisplayProtocol.AUTO_HIDE, "The original FHX2 program doesn't support years prior to 501BC.");
+					
+			sampleNameTextBox.setForeground(Color.BLACK);
 		}
-		else if (firstYearSpinner.getValueAsInteger() > OLD_FHAES_MAXIMUM_YEAR && FileController.isEnforcingOldReqs() == true)
+		else if (firstYearSpinner.getValueAsInteger() > OLD_FHX_MAXIMUM_YEAR && FileController.isEnforcingOldReqs() == true)
 		{
 			FireHistoryRecorder.getFeedbackMessagePanel().updateFeedbackMessage(FeedbackMessageType.WARNING,
 					FeedbackDisplayProtocol.AUTO_HIDE, "The original FHX2 program doesn't support years after 2020AD.");
+					
+			sampleNameTextBox.setForeground(Color.BLACK);
 		}
 		else
 		{
-			if (FireHistoryRecorder.getFeedbackMessagePanel().getCurrentMessage() == MINIMUM_SAMPLE_NAME_LENGTH_MESSAGE)
-			{
-				FireHistoryRecorder.getFeedbackMessagePanel().clearFeedbackMessage();
-			}
-			else if (FireHistoryRecorder.getFeedbackMessagePanel().getCurrentMessage() == FHX2_Sample.FHX2_SAMPLE_NAME_LENGTH_MESSAGE)
-			{
-				FireHistoryRecorder.getFeedbackMessagePanel().clearFeedbackMessage();
-			}
+			FireHistoryRecorder.getFeedbackMessagePanel().clearFeedbackMessage();
 			
 			FHX2_Sample sample = new FHX2_Sample();
-			
 			sample.setSampleName(sampleNameTextBox.getText());
 			sample.setSampleFirstYear(firstYearSpinner.getValueAsInteger());
 			sample.setSampleLastYear(lastYearSpinner.getValueAsInteger());
