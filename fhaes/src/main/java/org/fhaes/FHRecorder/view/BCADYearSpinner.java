@@ -17,17 +17,10 @@
  *************************************************************************************************/
 package org.fhaes.FHRecorder.view;
 
-import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 
-import javax.swing.JButton;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
-import javax.swing.plaf.basic.BasicSpinnerUI;
 import javax.swing.text.NumberFormatter;
 
 /**
@@ -45,7 +38,7 @@ public class BCADYearSpinner extends javax.swing.JSpinner {
 	private final int SPINNER_WIDTH = 82;
 	
 	// Declare local variables
-	private Integer previousValue;
+	private Integer mostRecentValue;
 	
 	/**
 	 * Constructs a new BCADYearSpinner.
@@ -80,20 +73,19 @@ public class BCADYearSpinner extends javax.swing.JSpinner {
 	}
 	
 	/**
-	 * Gets the spinner's previous value.
+	 * Gets the spinner's most recently displayed value.
 	 */
-	@Override
-	public Integer getPreviousValue() {
+	public Integer getMostRecentValue() {
 		
-		return previousValue;
+		return mostRecentValue;
 	}
 	
 	/**
-	 * Updates the spinner's previous value with the spinner's current value.
+	 * Updates the spinner's most recently displayed value with the spinner's current value.
 	 */
-	public void updatePreviousValue() {
+	public void updateMostRecentValue() {
 		
-		previousValue = getValueAsInteger();
+		mostRecentValue = getValueAsInteger();
 	}
 	
 	/**
@@ -110,35 +102,9 @@ public class BCADYearSpinner extends javax.swing.JSpinner {
 		this.setEditor(new JSpinner.NumberEditor(this, NUMBER_EDITOR_FORMAT));
 		this.setMinimumSize(new Dimension(SPINNER_WIDTH, SPINNER_HEIGHT));
 		this.setModel(new BCADYearSpinnerModel(initialValue, minimumValue, maximumValue));
-		this.setUI(new BCADSpinnerUI(this));
 		
-		// Workaround to block keyboard editing of the spinner
-		((JSpinner.DefaultEditor) this.getEditor()).getTextField().setFocusTraversalKeysEnabled(false);
-		((JSpinner.DefaultEditor) this.getEditor()).getTextField().addKeyListener(new KeyListener() {
-			
-			@Override
-			public void keyPressed(KeyEvent evt) {
-				
-				if (evt.getKeyCode() == KeyEvent.VK_UP || evt.getKeyCode() == KeyEvent.VK_KP_UP)
-				{
-					evt.consume();
-				}
-				else if (evt.getKeyCode() == KeyEvent.VK_DOWN || evt.getKeyCode() == KeyEvent.VK_KP_DOWN)
-				{
-					evt.consume();
-				}
-			}
-			
-			@Override
-			public void keyReleased(KeyEvent evt) {}
-			
-			@Override
-			public void keyTyped(KeyEvent evt) {}
-			
-		});
-		
-		// Make sure to initialize the previous value of the spinner
-		updatePreviousValue();
+		// Make sure to initialize the most recent value of the spinner
+		updateMostRecentValue();
 	}
 	
 	/**
@@ -244,45 +210,10 @@ public class BCADYearSpinner extends javax.swing.JSpinner {
 			{
 				super.setValue(-1);
 			}
-			else if ((Integer) object == 0 && currentValue == 0)
-			{
-				super.setValue(getPreviousValue());
-			}
 			else
 			{
 				super.setValue(object);
 			}
-		}
-	}
-	
-	/**
-	 * BCADSpinnerUI Class. Manual workaround for spinner bug which causes the down-arrow to not fire state-changed events.
-	 */
-	private class BCADSpinnerUI extends BasicSpinnerUI {
-		
-		// Declare local variables
-		private BCADYearSpinner parent;
-		
-		public BCADSpinnerUI(BCADYearSpinner spinner) {
-			
-			parent = spinner;
-		}
-		
-		@Override
-		protected Component createPreviousButton() {
-			
-			JButton spinnerDownButton = (JButton) super.createPreviousButton();
-			spinnerDownButton.addActionListener(new ActionListener() {
-				
-				@Override
-				public void actionPerformed(ActionEvent ae) {
-					
-					Object previousValue = parent.getModel().getPreviousValue();
-					parent.getModel().setValue(previousValue);
-				}
-			});
-			
-			return spinnerDownButton;
 		}
 	}
 }
