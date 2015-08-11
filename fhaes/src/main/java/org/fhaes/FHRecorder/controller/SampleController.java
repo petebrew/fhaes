@@ -55,6 +55,7 @@ public class SampleController {
 		
 		FHX2_FileRequiredPart reqTemp = IOController.getFile().getRequiredPart();
 		int numSamples = reqTemp.getNumSamples();
+		
 		if (numSamples == 0)
 		{
 			selectedSampleIndex = NO_SAMPLES_IN_FILE;
@@ -83,6 +84,7 @@ public class SampleController {
 	public static int getYearOfFirstEventInSelectedSample() {
 		
 		FHX2_Sample currentSample = IOController.getFile().getRequiredPart().getSample(getSelectedSampleIndex());
+		
 		if (currentSample.getNumOfEvents() != 0)
 		{
 			int minIndex = 0;
@@ -92,7 +94,10 @@ public class SampleController {
 			return currentSample.getEvent(minIndex).getEventYear();
 		}
 		else
-			return FileController.EARLIEST_ALLOWED_YEAR;
+		{
+			// Return a value that is outside of the valid year range so that there is no erroneous behavior
+			return FileController.EARLIEST_ALLOWED_YEAR - 1;
+		}
 	}
 	
 	/**
@@ -103,6 +108,7 @@ public class SampleController {
 	public static int getYearOfLastEventInSelectedSample() {
 		
 		FHX2_Sample currentSample = IOController.getFile().getRequiredPart().getSample(getSelectedSampleIndex());
+		
 		if (currentSample.getNumOfEvents() != 0)
 		{
 			int maxIndex = 0;
@@ -112,7 +118,10 @@ public class SampleController {
 			return currentSample.getEvent(maxIndex).getEventYear();
 		}
 		else
-			return FileController.CURRENT_YEAR;
+		{
+			// Return a value that is outside of the valid year range so that there is no erroneous behavior
+			return FileController.CURRENT_YEAR + 1;
+		}
 	}
 	
 	/**
