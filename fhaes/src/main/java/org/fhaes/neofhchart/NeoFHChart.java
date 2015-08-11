@@ -63,12 +63,17 @@ import org.slf4j.LoggerFactory;
 public class NeoFHChart extends JPanel implements PrefsListener {
 	
 	private static final long serialVersionUID = 1L;
-	private static final Logger log = LoggerFactory.getLogger(NeoFHChart.class);
-	protected boolean paneActive = false;
 	
+	// Declare logger
+	private static final Logger log = LoggerFactory.getLogger(NeoFHChart.class);
+	
+	// Declare GUI components
 	private JLabel lblLoading;
 	public JSVGCanvas svgCanvas = new JSVGCanvas();
 	protected FireChartSVG currentChart;
+	
+	// Declare local variables
+	protected boolean paneActive = false;
 	
 	@SuppressWarnings("unused")
 	private HashMap<String, FireChartSVG> chartMap = new HashMap<String, FireChartSVG>();
