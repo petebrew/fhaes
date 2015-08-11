@@ -134,10 +134,11 @@ public class MainWindow implements PrefsListener {
 	private static final ResourceBundle BUNDLE = ResourceBundle.getBundle("locale/locale"); // ResourceBundle.getBundle("org.fhaes.gui.locale"); //$NON-NLS-1$
 	private static final Logger log = LoggerFactory.getLogger(MainWindow.class);
 	
-	// Declare static constants
-	public static final Color macBGColor = new Color(237, 237, 237);
+	// Declare public constants
+	public static final Color MAC_BACKGROUND_COLOR = new Color(237, 237, 237);
 	
 	// Declare local constants
+	private static final int INDEX_REPRESENTING_NO_FILES = -1;
 	private static final int LARGE_DATASET_THRESHOLD = 250;
 	private static final int MANUALLY_SORT_FILES = 8;
 	
@@ -954,22 +955,55 @@ public class MainWindow implements PrefsListener {
 	public void prefChanged(PrefsEvent e) {
 		
 		log.debug("Preference change for key " + e.getPref() + " picked up by MainWindow");
+		boolean doSetFileOperation = true;
 		
-		// Repaint file list if event type has changed as icons will need updating
 		if (e.getPref().equals(PrefKey.EVENT_TYPE_TO_PROCESS))
 		{
+			// Repaint file list if event type has changed as icons will need updating
 			repaintFileList();
 		}
-		
-		// Update the document list menu
-		if (e.getPref().equals(PrefKey.RECENT_DOCUMENT_LIST))
+		else if (e.getPref().equals(PrefKey.RECENT_DOCUMENT_LIST))
 		{
-			this.updateRecentDocsMenu();
+			// Update the document list menu
+			updateRecentDocsMenu();
+			
+			// Also mark the setFile operation to false since it does not need to be performed
+			doSetFileOperation = false;
+		}
+		else if (e.getPref().equals(PrefKey.PREF_LAST_READ_FOLDER))
+		{
+			// Handle this prefKey change by marking the setFile operation to false
+			doSetFileOperation = false;
+		}
+		else if (e.getPref().equals(PrefKey.SCREEN_BOUNDS_X))
+		{
+			// Handle this prefKey change by marking the setFile operation to false
+			doSetFileOperation = false;
+		}
+		else if (e.getPref().equals(PrefKey.SCREEN_BOUNDS_Y))
+		{
+			// Handle this prefKey change by marking the setFile operation to false
+			doSetFileOperation = false;
+		}
+		else if (e.getPref().equals(PrefKey.SCREEN_WIDTH))
+		{
+			// Handle this prefKey change by marking the setFile operation to false
+			doSetFileOperation = false;
+		}
+		else if (e.getPref().equals(PrefKey.SCREEN_HEIGHT))
+		{
+			// Handle this prefKey change by marking the setFile operation to false
+			doSetFileOperation = false;
+		}
+		else if (e.getPref().equals(PrefKey.SCREEN_MAXIMIZED))
+		{
+			// Handle this prefKey change by marking the setFile operation to false
+			doSetFileOperation = false;
 		}
 		
-		// Select current file in list again to update reports
-		if (this.fhxFileList.getSelectedIndex() != -1)
+		if (this.fhxFileList.getSelectedIndex() != INDEX_REPRESENTING_NO_FILES && doSetFileOperation)
 		{
+			// Select current file in list again to update reports
 			this.rightSplitPanel.setFile((FHFile) this.fhxFileList.getSelectedValue());
 		}
 	}
@@ -1022,8 +1056,10 @@ public class MainWindow implements PrefsListener {
 	private void handleFileListChanged() {
 		
 		if (fileListListenerPaused)
+		{
 			return;
-			
+		}
+		
 		boolean isFileListPopulated = fileListModel.getSize() > 0;
 		
 		// Enabled/Disable buttons depending
@@ -1044,14 +1080,17 @@ public class MainWindow implements PrefsListener {
 		
 		// If list is empty set file to null
 		if (!isFileListPopulated)
+		{
 			this.rightSplitPanel.setFile(null);
-			
+		}
+		
 		this.rightSplitPanel.setFiles(fileListModel.getValidFileListWithEvents());
 		
 		if (isFileListPopulated)
 		{
 			log.debug("Current selected file index : " + fhxFileList.getSelectedIndex());
-			if (this.fhxFileList.getSelectedIndex() == -1)
+			
+			if (this.fhxFileList.getSelectedIndex() == INDEX_REPRESENTING_NO_FILES)
 			{
 				this.fhxFileList.setSelectedIndex(0);
 			}
@@ -1295,13 +1334,13 @@ public class MainWindow implements PrefsListener {
 		
 		rightSplitPanel = new ReportPanel();
 		if (Platform.isOSX())
-			rightSplitPanel.setBackground(macBGColor);
+			rightSplitPanel.setBackground(MAC_BACKGROUND_COLOR);
 			
 		splitPane.setRightComponent(rightSplitPanel);
 		
 		leftSplitPanel = new JPanel();
 		if (Platform.isOSX())
-			leftSplitPanel.setBackground(macBGColor);
+			leftSplitPanel.setBackground(MAC_BACKGROUND_COLOR);
 		leftSplitPanel.setMinimumSize(new Dimension(200, 200));
 		splitPane.setLeftComponent(leftSplitPanel);
 		leftSplitPanel.setLayout(new BorderLayout(0, 0));
@@ -1359,7 +1398,7 @@ public class MainWindow implements PrefsListener {
 				}
 				else
 				{
-					fhxFileList.setSelectedIndex(-1);
+					fhxFileList.setSelectedIndex(INDEX_REPRESENTING_NO_FILES);
 					rightSplitPanel.setFile(null);
 				}
 			}
@@ -1415,7 +1454,7 @@ public class MainWindow implements PrefsListener {
 		
 		JPanel panel = new JPanel();
 		if (Platform.isOSX())
-			panel.setBackground(macBGColor);
+			panel.setBackground(MAC_BACKGROUND_COLOR);
 			
 		leftSplitPanel.add(panel, BorderLayout.SOUTH);
 		panel.setLayout(new MigLayout("", "[][grow]", "[]"));
@@ -1483,10 +1522,10 @@ public class MainWindow implements PrefsListener {
 		if (Platform.isOSX())
 		{
 			MacUtils.makeWindowLeopardStyle(frame.getRootPane());
-			frame.setBackground(macBGColor);
-			splitPane.setBackground(macBGColor);
-			rightSplitPanel.setBackground(macBGColor);
-			leftSplitPanel.setBackground(macBGColor);
+			frame.setBackground(MAC_BACKGROUND_COLOR);
+			splitPane.setBackground(MAC_BACKGROUND_COLOR);
+			rightSplitPanel.setBackground(MAC_BACKGROUND_COLOR);
+			leftSplitPanel.setBackground(MAC_BACKGROUND_COLOR);
 		}
 		
 		frame.pack();

@@ -84,7 +84,7 @@ public class MapPanel extends JPanel implements JMapViewerEventListener {
 		
 		holder = new JPanel();
 		if (Platform.isOSX())
-			holder.setBackground(MainWindow.macBGColor);
+			holder.setBackground(MainWindow.MAC_BACKGROUND_COLOR);
 			
 		holder.setLayout(new BorderLayout(0, 0));
 		initGUI();
@@ -98,7 +98,7 @@ public class MapPanel extends JPanel implements JMapViewerEventListener {
 		
 		holder = new JPanel();
 		if (Platform.isOSX())
-			holder.setBackground(MainWindow.macBGColor);
+			holder.setBackground(MainWindow.MAC_BACKGROUND_COLOR);
 			
 		holder.setLayout(new BorderLayout(0, 0));
 		initGUI();
@@ -184,7 +184,7 @@ public class MapPanel extends JPanel implements JMapViewerEventListener {
 		this.removeAll();
 		setLayout(new BorderLayout(0, 0));
 		if (Platform.isOSX())
-			setBackground(MainWindow.macBGColor);
+			setBackground(MainWindow.MAC_BACKGROUND_COLOR);
 			
 		treeMap = new JMapViewerTree("Zones");
 		fhaesSites = treeMap.addLayer("Sites");
@@ -202,19 +202,19 @@ public class MapPanel extends JPanel implements JMapViewerEventListener {
 		
 		JPanel panel = new JPanel();
 		if (Platform.isOSX())
-			panel.setBackground(MainWindow.macBGColor);
+			panel.setBackground(MainWindow.MAC_BACKGROUND_COLOR);
 			
 		JPanel panelTop = new JPanel();
 		if (Platform.isOSX())
-			panelTop.setBackground(MainWindow.macBGColor);
+			panelTop.setBackground(MainWindow.MAC_BACKGROUND_COLOR);
 			
 		JPanel panelBottom = new JPanel();
 		if (Platform.isOSX())
-			panelBottom.setBackground(MainWindow.macBGColor);
+			panelBottom.setBackground(MainWindow.MAC_BACKGROUND_COLOR);
 			
 		JPanel helpPanel = new JPanel();
 		if (Platform.isOSX())
-			helpPanel.setBackground(MainWindow.macBGColor);
+			helpPanel.setBackground(MainWindow.MAC_BACKGROUND_COLOR);
 			
 		DefaultMapController mapController = new DefaultMapController(treeMap.getViewer());
 		mapController.setMovementMouseButton(MouseEvent.BUTTON1);

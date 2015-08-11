@@ -537,7 +537,7 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 		
 		setLayout(new BorderLayout(0, 0));
 		if (Platform.isOSX())
-			setBackground(MainWindow.macBGColor);
+			setBackground(MainWindow.MAC_BACKGROUND_COLOR);
 			
 		ImageIcon iconTable = Builder.getImageIcon("table16.png");
 		// ImageIcon iconChart = Builder.getImageIcon("chart16.png");
@@ -791,7 +791,7 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 		
 		splitPane = new JSplitPane();
 		if (Platform.isOSX())
-			splitPane.setBackground(MainWindow.macBGColor);
+			splitPane.setBackground(MainWindow.MAC_BACKGROUND_COLOR);
 			
 		splitPane.setResizeWeight(0.9);
 		add(splitPane, BorderLayout.CENTER);
@@ -850,9 +850,9 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 		
 		// OSX Style hack
 		if (Platform.isOSX())
-			panelResult.setBackground(MainWindow.macBGColor);
+			panelResult.setBackground(MainWindow.MAC_BACKGROUND_COLOR);
 		if (Platform.isOSX())
-			scrollPane.setBackground(MainWindow.macBGColor);
+			scrollPane.setBackground(MainWindow.MAC_BACKGROUND_COLOR);
 			
 		// Expand all nodes
 		for (int i = 0; i < treeResults.getRowCount(); i++)

@@ -749,7 +749,7 @@ public class JSEAFrame extends JFrame implements ActionListener {
 	/**
 	 * Save the data tables as CSV file
 	 * 
-	 * @param file
+	 * @param folder
 	 * @throws IOException
 	 */
 	private void saveDataCSV(File folder) throws IOException {

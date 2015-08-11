@@ -30,7 +30,7 @@ import org.fhaes.FHRecorder.view.MetaDataPanel;
  */
 public class SampleController {
 	
-	// Declare local constants
+	// Declare public constants
 	public static final int INDEX_REPRESENTING_NO_SAMPLES = -1;
 	
 	// Declare local variables

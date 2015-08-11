@@ -66,8 +66,14 @@ import org.slf4j.LoggerFactory;
 public class ReportPanel extends JPanel implements PrefsListener {
 	
 	private static final long serialVersionUID = 1L;
+	
+	// Declare logger
 	private static final Logger log = LoggerFactory.getLogger(ReportPanel.class);
 	
+	// Declare local constants
+	private static final int FIVE_MEGABYTE_LENGTH = 5242880;
+	
+	// Declare GUI components
 	private JTabbedPane tabbedPane;
 	protected JTextArea txtSummary;
 	protected JTextArea txtFHX;
@@ -81,8 +87,9 @@ public class ReportPanel extends JPanel implements PrefsListener {
 	protected MapPanel panelMap;
 	protected NeoFHChart panelChart;
 	
-	private ArrayList<FHFile> files;
-	private FHFile file;
+	// Declare local variables
+	private ArrayList<FHFile> fhxFiles;
+	private FHFile fhxFile;
 	
 	/**
 	 * Create the panel.
@@ -91,180 +98,6 @@ public class ReportPanel extends JPanel implements PrefsListener {
 		
 		initActions();
 		initGUI();
-	}
-	
-	/**
-	 * Initialize the main GUI components.
-	 */
-	public void initGUI() {
-		
-		App.prefs.addPrefsListener(this);
-		if (Platform.isOSX())
-			setBackground(MainWindow.macBGColor);
-			
-		setLayout(new BorderLayout(0, 0));
-		JPanel panelRight = new JPanel();
-		if (Platform.isOSX())
-			panelRight.setBackground(MainWindow.macBGColor);
-			
-		add(panelRight, BorderLayout.CENTER);
-		panelRight.setLayout(new BorderLayout(0, 0));
-		
-		// Create tabbed pane for holding reports
-		tabbedPane = new JTabbedPane(JTabbedPane.BOTTOM);
-		if (Platform.isOSX())
-			tabbedPane.setBackground(MainWindow.macBGColor);
-			
-		panelRight.add(tabbedPane);
-		
-		// Create FHX viewer tab
-		JPanel panelFHX = new JPanel();
-		if (Platform.isOSX())
-			panelFHX.setBackground(MainWindow.macBGColor);
-			
-		panelFHX.setToolTipText("Original FHX file contents");
-		tabbedPane.addTab("File Viewer  ", Builder.getImageIcon("fileviewer.png"), panelFHX, null);
-		panelFHX.setLayout(new BorderLayout(0, 0));
-		
-		JPanel fhxButtonPanel = new JPanel();
-		if (Platform.isOSX())
-			fhxButtonPanel.setBackground(MainWindow.macBGColor);
-			
-		fhxButtonPanel.setLayout(new BorderLayout());
-		errorMessage = new JTextArea();
-		errorMessage.setEditable(false);
-		errorMessage.setLineWrap(true);
-		errorMessage.setWrapStyleWord(true);
-		errorMessage.setVisible(false);
-		errorMessage.setForeground(Color.RED);
-		
-		btnEditFile = new JButton();
-		btnEditFile.setVisible(false);
-		btnEditFile.setAction(MainWindow.getInstance().actionEditFile);
-		btnEditFile.setIcon(Builder.getImageIcon("bad.png"));
-		btnEditFile.setText("Fix errors");
-		
-		fhxButtonPanel.add(btnEditFile, BorderLayout.EAST);
-		fhxButtonPanel.add(errorMessage, BorderLayout.CENTER);
-		panelFHX.add(fhxButtonPanel, BorderLayout.NORTH);
-		
-		JScrollPane scrollPaneFHX = new JScrollPane();
-		if (Platform.isOSX())
-			scrollPaneFHX.setBackground(MainWindow.macBGColor);
-			
-		panelFHX.add(scrollPaneFHX, BorderLayout.CENTER);
-		
-		txtFHX = new JTextArea();
-		
-		txtFHX.setFont(new Font("Monospaced", Font.PLAIN, 12));
-		scrollPaneFHX.setViewportView(txtFHX);
-		TextLineNumber tln = new TextLineNumber(txtFHX);
-		scrollPaneFHX.setRowHeaderView(tln);
-		txtFHX.setEditable(false);
-		
-		// Create popup menu for file viewer
-		JMenuItem mntmSelectAll5 = new JMenuItem(actionSelectAll);
-		JMenuItem mntmCopy5 = new JMenuItem(actionCopy);
-		JPopupMenu popupSummary5 = new JPopupMenu();
-		addPopup(txtFHX, popupSummary5);
-		JMenuItem mntmEditFile = new JMenuItem(MainWindow.getInstance().actionEditFile);
-		popupSummary5.add(mntmEditFile);
-		popupSummary5.add(mntmSelectAll5);
-		popupSummary5.add(mntmCopy5);
-		
-		// Create Summary tab
-		JPanel panelSummary = new JPanel();
-		if (Platform.isOSX())
-			panelSummary.setBackground(MainWindow.macBGColor);
-			
-		tabbedPane.addTab("File summary  ", Builder.getImageIcon("info.png"), panelSummary, null);
-		panelSummary.setLayout(new BorderLayout(0, 0));
-		
-		JPanel summaryButtonPanel = new JPanel();
-		if (Platform.isOSX())
-			summaryButtonPanel.setBackground(MainWindow.macBGColor);
-		panelSummary.add(summaryButtonPanel, BorderLayout.NORTH);
-		
-		JScrollPane scrollPaneSummary = new JScrollPane();
-		if (Platform.isOSX())
-			scrollPaneSummary.setBackground(MainWindow.macBGColor);
-		panelSummary.add(scrollPaneSummary, BorderLayout.CENTER);
-		
-		txtSummary = new JTextArea();
-		txtSummary.setEditable(false);
-		txtSummary.setText("REPORT/n \n FORMAT REPORT FOR FILE: uscdp001.FHX\n\tThis Report was created on: Sat May 18 12:48:23 MDT");
-		txtSummary.setFont(new Font("Monospaced", Font.PLAIN, 12));
-		scrollPaneSummary.setViewportView(txtSummary);
-		
-		// Create popup menu for summary
-		JMenuItem mntmSelectAll = new JMenuItem(actionSelectAll);
-		JMenuItem mntmCopy = new JMenuItem(actionCopy);
-		JPopupMenu popupSummary = new JPopupMenu();
-		addPopup(txtSummary, popupSummary);
-		popupSummary.add(mntmSelectAll);
-		popupSummary.add(mntmCopy);
-		
-		// Report Panel
-		panelResults = new AnalysisResultsPanel();
-		if (Platform.isOSX())
-			panelResults.setBackground(MainWindow.macBGColor);
-		tabbedPane.addTab("Analysis ", Builder.getImageIcon("results.png"), panelResults, null);
-		
-		JPanel resultsButtonPanel = new JPanel();
-		if (Platform.isOSX())
-			resultsButtonPanel.setBackground(MainWindow.macBGColor);
-		panelResults.add(resultsButtonPanel, BorderLayout.NORTH);
-		
-		JButton btnConfig = new JButton(actionParamConfig);
-		btnConfig.setToolTipText(actionParamConfig.getToolTipText());
-		resultsButtonPanel.add(btnConfig);
-		
-		JButton btnHelp = new JButton(actionResultsHelp);
-		btnHelp.setToolTipText(actionResultsHelp.getToolTipText());
-		actionResultsHelp.setEnabled(false);
-		resultsButtonPanel.add(btnHelp);
-		
-		// Create popup menu for results panel
-		JMenuItem mntmSelectAll4 = new JMenuItem(actionSelectAll);
-		JMenuItem mntmCopy4 = new JMenuItem(actionCopy);
-		JPopupMenu popupResults = new JPopupMenu();
-		addPopup(panelResults.table, popupResults);
-		popupResults.add(mntmSelectAll4);
-		popupResults.add(mntmCopy4);
-		
-		// Map Panel
-		panelMap = new MapPanel();
-		if (Platform.isOSX())
-			panelMap.setBackground(MainWindow.macBGColor);
-		tabbedPane.addTab("Map  ", Builder.getImageIcon("map.png"), panelMap, null);
-		
-		panelChart = new NeoFHChart();
-		MainWindow.chartActions = new ChartActions(panelChart);
-		tabbedPane.addTab("Chart  ", Builder.getImageIcon("chart.png"), panelChart, null);
-		
-		// Popup menu for chart display
-		JPopupMenu popupMenu = new JPopupMenu();
-		addPopup(panelChart.svgCanvas, popupMenu);
-		
-		JCheckBoxMenuItem btnIndex = new JCheckBoxMenuItem(MainWindow.chartActions.actionShowIndexPlot);
-		JCheckBoxMenuItem btnChronology = new JCheckBoxMenuItem(MainWindow.chartActions.actionShowChronologyPlot);
-		JCheckBoxMenuItem btnComposite = new JCheckBoxMenuItem(MainWindow.chartActions.actionCompositePlot);
-		JCheckBoxMenuItem btnShowLegend = new JCheckBoxMenuItem(MainWindow.chartActions.actionShowLegend);
-		JMenuItem btnChartProperties = new JMenuItem(MainWindow.chartActions.actionShowChartProperties);
-		JMenuItem btnZoomIn = new JMenuItem(MainWindow.chartActions.actionZoomIn);
-		JMenuItem btnZoomOut = new JMenuItem(MainWindow.chartActions.actionZoomOut);
-		JMenuItem btnZoomReset = new JMenuItem(MainWindow.chartActions.actionZoomReset);
-		
-		popupMenu.add(btnIndex);
-		popupMenu.add(btnChronology);
-		popupMenu.add(btnComposite);
-		popupMenu.add(btnShowLegend);
-		popupMenu.addSeparator();
-		popupMenu.add(btnChartProperties);
-		popupMenu.addSeparator();
-		popupMenu.add(btnZoomIn);
-		popupMenu.add(btnZoomOut);
-		popupMenu.add(btnZoomReset);
 	}
 	
 	/**
@@ -302,7 +135,6 @@ public class ReportPanel extends JPanel implements PrefsListener {
 				}
 			}
 		}
-		
 	}
 	
 	/**
@@ -377,59 +209,6 @@ public class ReportPanel extends JPanel implements PrefsListener {
 	}
 	
 	/**
-	 * Initialize the menu/toolbar actions.
-	 */
-	private void initActions() {
-		
-		actionSelectAll = new FHAESAction("Select all", "selectall.png") {
-			
-			private static final long serialVersionUID = 1L;
-			
-			@Override
-			public void actionPerformed(ActionEvent event) {
-				
-				selectAll();
-			}
-		};
-		
-		actionCopy = new FHAESAction("Copy", "edit_copy.png") {
-			
-			private static final long serialVersionUID = 1L;
-			
-			@Override
-			public void actionPerformed(ActionEvent event) {
-				
-				copyCurrentReportToClipboard();
-			}
-		};
-		
-		actionParamConfig = new FHAESAction("Analysis options", "configure.png", "Configure") {
-			
-			private static final long serialVersionUID = 1L;
-			
-			@Override
-			public void actionPerformed(ActionEvent event) {
-				
-				showParamsDialog(false);
-			}
-		};
-		actionParamConfig.setToolTipText("View/edit analysis options");
-		
-		actionResultsHelp = new FHAESAction("Help", "help.png") {
-			
-			private static final long serialVersionUID = 1L;
-			
-			@Override
-			public void actionPerformed(ActionEvent event) {
-				
-				Platform.browseWebpage(RemoteHelp.HELP_ANALYSIS_RESULTS, null);
-			}
-		};
-		actionResultsHelp.setToolTipText("Get help on the current analysis type");
-		
-	}
-	
-	/**
 	 * TODO
 	 * 
 	 * @param calledProgrammatically
@@ -438,83 +217,23 @@ public class ReportPanel extends JPanel implements PrefsListener {
 		
 		App.prefs.setSilentMode(true);
 		ParamConfigDialog dialog = new ParamConfigDialog(this);
+		
 		if (dialog.havePreferencesChanged())
 		{
 			App.prefs.setSilentMode(false);
 			// App.prefs.firePrefChanged(PrefKey.EVENT_TYPE_TO_PROCESS);
 			
 			if (!calledProgrammatically)
+			{
 				populateMultiFileReports();
-				
+			}
+			
 			runAnalyses();
 			panelResults.setupTable(true);
-			
 		}
+		
 		App.prefs.setSilentMode(false);
-		
 		MainWindow.getInstance().repaintFileList();
-	}
-	
-	/**
-	 * Show the popup menu.
-	 * 
-	 * @param component
-	 * @param popup
-	 */
-	private static void addPopup(Component component, final JPopupMenu popup) {
-		
-		component.addMouseListener(new MouseAdapter() {
-			
-			@Override
-			public void mousePressed(MouseEvent e) {
-				
-				if (e.isPopupTrigger())
-				{
-					showMenu(e);
-				}
-			}
-			
-			@Override
-			public void mouseReleased(MouseEvent e) {
-				
-				if (e.isPopupTrigger())
-				{
-					showMenu(e);
-				}
-			}
-			
-			private void showMenu(MouseEvent e) {
-				
-				popup.show(e.getComponent(), e.getX(), e.getY());
-			}
-		});
-	}
-	
-	/**
-	 * Populate reports that work on all files in the workspace.
-	 * 
-	 * @param files
-	 */
-	public void setFiles(ArrayList<FHFile> files) {
-		
-		// Check the files passed still exist
-		
-		this.files = new ArrayList<FHFile>();
-		
-		for (FHFile file : files)
-		{
-			if (file.exists())
-			{
-				this.files.add(file);
-			}
-			else
-			{
-				JOptionPane.showMessageDialog(App.mainFrame, "The file '" + file.getName() + "' does not exist.", "File not found",
-						JOptionPane.ERROR_MESSAGE);
-			}
-		}
-		
-		this.populateMultiFileReports();
 	}
 	
 	/**
@@ -522,7 +241,7 @@ public class ReportPanel extends JPanel implements PrefsListener {
 	 */
 	public void runAnalyses() {
 		
-		if (files == null || files.size() == 0)
+		if (fhxFiles == null || fhxFiles.size() == 0)
 			return;
 			
 		// Show paramConfigDialog if necessary
@@ -537,7 +256,7 @@ public class ReportPanel extends JPanel implements PrefsListener {
 		 * }
 		 */
 		
-		AnalysisProgressDialog dialog = new AnalysisProgressDialog(tabbedPane, files);
+		AnalysisProgressDialog dialog = new AnalysisProgressDialog(tabbedPane, fhxFiles);
 		panelResults.setSeasonalityModel(dialog.getSeasonalitySummaryModel());
 		panelResults.setIntervalsSummaryModel(dialog.getIntervalsSummaryModel());
 		panelResults.setIntervalsExceedenceModel(dialog.getIntervalsExceedenceModel());
@@ -592,9 +311,19 @@ public class ReportPanel extends JPanel implements PrefsListener {
 	}
 	
 	/**
+	 * TODO
+	 * 
+	 * @return
+	 */
+	public Boolean isFilePopulated() {
+		
+		return fhxFile != null;
+	}
+	
+	/**
 	 * Populate the reports for a specific file.
 	 * 
-	 * @param file
+	 * @param inFile
 	 */
 	public void setFile(FHFile inFile) {
 		
@@ -605,24 +334,40 @@ public class ReportPanel extends JPanel implements PrefsListener {
 			JOptionPane.showMessageDialog(App.mainFrame, "The file '" + inFile.getName() + "' does not exist.", "File not found",
 					JOptionPane.ERROR_MESSAGE);
 					
-			file = null;
+			fhxFile = null;
 		}
 		else
 		{
-			file = inFile;
+			fhxFile = inFile;
 		}
 		
 		populateSingleFileReports();
 	}
 	
 	/**
-	 * TODO
+	 * Populate reports that work on all files in the workspace.
 	 * 
-	 * @return
+	 * @param files
 	 */
-	public Boolean isFilePopulated() {
+	public void setFiles(ArrayList<FHFile> files) {
 		
-		return file != null;
+		fhxFiles = new ArrayList<FHFile>();
+		
+		// Check the files passed still exist
+		for (FHFile file : files)
+		{
+			if (file.exists())
+			{
+				fhxFiles.add(file);
+			}
+			else
+			{
+				JOptionPane.showMessageDialog(App.mainFrame, "The file '" + file.getName() + "' does not exist.", "File not found",
+						JOptionPane.ERROR_MESSAGE);
+			}
+		}
+		
+		populateMultiFileReports();
 	}
 	
 	/**
@@ -647,29 +392,29 @@ public class ReportPanel extends JPanel implements PrefsListener {
 		// Hide error panel by default
 		errorMessage.setText("");
 		errorMessage.setVisible(false);
-		this.btnEditFile.setVisible(false);
+		btnEditFile.setVisible(false);
 		
-		if (file != null)
+		if (fhxFile != null)
 		{
 			// Set the error message if necessary
-			if (file.getErrorMessage() != null)
+			if (fhxFile.getErrorMessage() != null)
 			{
-				errorMessage.setText(file.getErrorMessage());
+				errorMessage.setText(fhxFile.getErrorMessage());
 				errorMessage.setVisible(true);
 				
-				if (!file.isValidFHXFile())
+				if (!fhxFile.isValidFHXFile())
 				{
 					// Show edit file button
-					this.btnEditFile.setVisible(true);
+					btnEditFile.setVisible(true);
 				}
 				
 				// Change focus to 'File Viewer' to highlight problem with file
 				tabbedPane.setSelectedIndex(0);
 			}
 			
-			if (file.isValidFHXFile())
+			if (fhxFile.isValidFHXFile())
 			{
-				panelChart.loadFile(file.getFireHistoryReader());
+				panelChart.loadFile(fhxFile.getFireHistoryReader());
 			}
 			else
 			{
@@ -687,9 +432,9 @@ public class ReportPanel extends JPanel implements PrefsListener {
 	 */
 	private void populateMultiFileReports() {
 		
-		if (files == null || files.size() == 0)
+		if (fhxFiles == null || fhxFiles.size() == 0)
 		{
-			file = null;
+			fhxFile = null;
 			panelMap.setFHFiles(null);
 			panelResults.clearResults();
 			populateFileReaderTab();
@@ -697,21 +442,21 @@ public class ReportPanel extends JPanel implements PrefsListener {
 			return;
 		}
 		
-		panelMap.setFHFiles(files);
+		panelMap.setFHFiles(fhxFiles);
 	}
 	
 	/**
-	 * TODO
+	 * Populates the summary tab only if the file and report exist.
 	 */
 	private void populateSummaryTab() {
 		
-		if (file == null || file.getReport() == null)
+		if (fhxFile == null || fhxFile.getReport() == null)
 		{
 			txtSummary.setText("");
 			return;
 		}
 		
-		txtSummary.setText(file.getReport());
+		txtSummary.setText(fhxFile.getReport());
 		txtSummary.setCaretPosition(0);
 	}
 	
@@ -720,7 +465,7 @@ public class ReportPanel extends JPanel implements PrefsListener {
 	 */
 	private void populateFileReaderTab() {
 		
-		if (file == null)
+		if (fhxFile == null)
 		{
 			txtFHX.setText("");
 			txtFHX.getHighlighter().removeAllHighlights();
@@ -730,9 +475,9 @@ public class ReportPanel extends JPanel implements PrefsListener {
 		try
 		{
 			// Try to read file into FHX viewer tab
-			FileReader reader = new FileReader(file);
+			FileReader reader = new FileReader(fhxFile);
 			BufferedReader br = new BufferedReader(reader);
-			if (file.length() < 5242880) // 5mb
+			if (fhxFile.length() < FIVE_MEGABYTE_LENGTH) // 5mb
 			{
 				txtFHX.read(br, txtFHX);
 				br.close();
@@ -744,13 +489,13 @@ public class ReportPanel extends JPanel implements PrefsListener {
 			
 			// If there are errors in the file try to highlight the offensive line
 			txtFHX.getHighlighter().removeAllHighlights();
-			if (file.getErrorLine() != null && file.getErrorLine() <= txtFHX.getLineCount())
+			if (fhxFile.getErrorLine() != null && fhxFile.getErrorLine() <= txtFHX.getLineCount())
 			{
 				DefaultHighlightPainter painter = new DefaultHighlighter.DefaultHighlightPainter(Color.YELLOW);
 				try
 				{
-					int start = txtFHX.getLineStartOffset(file.getErrorLine() - 1);
-					int end = txtFHX.getLineStartOffset(file.getErrorLine());
+					int start = txtFHX.getLineStartOffset(fhxFile.getErrorLine() - 1);
+					int end = txtFHX.getLineStartOffset(fhxFile.getErrorLine());
 					log.debug("Line number offset to highlight: " + start);
 					txtFHX.getHighlighter().addHighlight(start, end, painter);
 					txtFHX.setCaretPosition(start);
@@ -768,7 +513,7 @@ public class ReportPanel extends JPanel implements PrefsListener {
 			e2.printStackTrace();
 		}
 		
-		this.txtFHX.setCaretPosition(0);
+		txtFHX.setCaretPosition(0);
 	}
 	
 	/**
@@ -790,5 +535,266 @@ public class ReportPanel extends JPanel implements PrefsListener {
 			log.debug("ReportPanel redoing analyses as preferences have changed");
 			// populateMultiFileReports(false);
 		}
+	}
+	
+	/**
+	 * Show the popup menu.
+	 * 
+	 * @param component
+	 * @param popup
+	 */
+	private static void addPopup(Component component, final JPopupMenu popup) {
+		
+		component.addMouseListener(new MouseAdapter() {
+			
+			@Override
+			public void mousePressed(MouseEvent e) {
+				
+				if (e.isPopupTrigger())
+				{
+					showMenu(e);
+				}
+			}
+			
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				
+				if (e.isPopupTrigger())
+				{
+					showMenu(e);
+				}
+			}
+			
+			private void showMenu(MouseEvent e) {
+				
+				popup.show(e.getComponent(), e.getX(), e.getY());
+			}
+		});
+	}
+	
+	/**
+	 * Initialize the main GUI components.
+	 */
+	public void initGUI() {
+		
+		App.prefs.addPrefsListener(this);
+		if (Platform.isOSX())
+			setBackground(MainWindow.MAC_BACKGROUND_COLOR);
+			
+		setLayout(new BorderLayout(0, 0));
+		JPanel panelRight = new JPanel();
+		if (Platform.isOSX())
+			panelRight.setBackground(MainWindow.MAC_BACKGROUND_COLOR);
+			
+		add(panelRight, BorderLayout.CENTER);
+		panelRight.setLayout(new BorderLayout(0, 0));
+		
+		// Create tabbed pane for holding reports
+		tabbedPane = new JTabbedPane(JTabbedPane.BOTTOM);
+		if (Platform.isOSX())
+			tabbedPane.setBackground(MainWindow.MAC_BACKGROUND_COLOR);
+			
+		panelRight.add(tabbedPane);
+		
+		// Create FHX viewer tab
+		JPanel panelFHX = new JPanel();
+		if (Platform.isOSX())
+			panelFHX.setBackground(MainWindow.MAC_BACKGROUND_COLOR);
+			
+		panelFHX.setToolTipText("Original FHX file contents");
+		tabbedPane.addTab("File Viewer  ", Builder.getImageIcon("fileviewer.png"), panelFHX, null);
+		panelFHX.setLayout(new BorderLayout(0, 0));
+		
+		JPanel fhxButtonPanel = new JPanel();
+		if (Platform.isOSX())
+			fhxButtonPanel.setBackground(MainWindow.MAC_BACKGROUND_COLOR);
+			
+		fhxButtonPanel.setLayout(new BorderLayout());
+		errorMessage = new JTextArea();
+		errorMessage.setEditable(false);
+		errorMessage.setLineWrap(true);
+		errorMessage.setWrapStyleWord(true);
+		errorMessage.setVisible(false);
+		errorMessage.setForeground(Color.RED);
+		
+		btnEditFile = new JButton();
+		btnEditFile.setVisible(false);
+		btnEditFile.setAction(MainWindow.getInstance().actionEditFile);
+		btnEditFile.setIcon(Builder.getImageIcon("bad.png"));
+		btnEditFile.setText("Fix errors");
+		
+		fhxButtonPanel.add(btnEditFile, BorderLayout.EAST);
+		fhxButtonPanel.add(errorMessage, BorderLayout.CENTER);
+		panelFHX.add(fhxButtonPanel, BorderLayout.NORTH);
+		
+		JScrollPane scrollPaneFHX = new JScrollPane();
+		if (Platform.isOSX())
+			scrollPaneFHX.setBackground(MainWindow.MAC_BACKGROUND_COLOR);
+			
+		panelFHX.add(scrollPaneFHX, BorderLayout.CENTER);
+		
+		txtFHX = new JTextArea();
+		
+		txtFHX.setFont(new Font("Monospaced", Font.PLAIN, 12));
+		scrollPaneFHX.setViewportView(txtFHX);
+		TextLineNumber tln = new TextLineNumber(txtFHX);
+		scrollPaneFHX.setRowHeaderView(tln);
+		txtFHX.setEditable(false);
+		
+		// Create popup menu for file viewer
+		JMenuItem mntmSelectAll5 = new JMenuItem(actionSelectAll);
+		JMenuItem mntmCopy5 = new JMenuItem(actionCopy);
+		JPopupMenu popupSummary5 = new JPopupMenu();
+		addPopup(txtFHX, popupSummary5);
+		JMenuItem mntmEditFile = new JMenuItem(MainWindow.getInstance().actionEditFile);
+		popupSummary5.add(mntmEditFile);
+		popupSummary5.add(mntmSelectAll5);
+		popupSummary5.add(mntmCopy5);
+		
+		// Create Summary tab
+		JPanel panelSummary = new JPanel();
+		if (Platform.isOSX())
+			panelSummary.setBackground(MainWindow.MAC_BACKGROUND_COLOR);
+			
+		tabbedPane.addTab("File summary  ", Builder.getImageIcon("info.png"), panelSummary, null);
+		panelSummary.setLayout(new BorderLayout(0, 0));
+		
+		JPanel summaryButtonPanel = new JPanel();
+		if (Platform.isOSX())
+			summaryButtonPanel.setBackground(MainWindow.MAC_BACKGROUND_COLOR);
+		panelSummary.add(summaryButtonPanel, BorderLayout.NORTH);
+		
+		JScrollPane scrollPaneSummary = new JScrollPane();
+		if (Platform.isOSX())
+			scrollPaneSummary.setBackground(MainWindow.MAC_BACKGROUND_COLOR);
+		panelSummary.add(scrollPaneSummary, BorderLayout.CENTER);
+		
+		txtSummary = new JTextArea();
+		txtSummary.setEditable(false);
+		txtSummary.setText("REPORT/n \n FORMAT REPORT FOR FILE: uscdp001.FHX\n\tThis Report was created on: Sat May 18 12:48:23 MDT");
+		txtSummary.setFont(new Font("Monospaced", Font.PLAIN, 12));
+		scrollPaneSummary.setViewportView(txtSummary);
+		
+		// Create popup menu for summary
+		JMenuItem mntmSelectAll = new JMenuItem(actionSelectAll);
+		JMenuItem mntmCopy = new JMenuItem(actionCopy);
+		JPopupMenu popupSummary = new JPopupMenu();
+		addPopup(txtSummary, popupSummary);
+		popupSummary.add(mntmSelectAll);
+		popupSummary.add(mntmCopy);
+		
+		// Report Panel
+		panelResults = new AnalysisResultsPanel();
+		if (Platform.isOSX())
+			panelResults.setBackground(MainWindow.MAC_BACKGROUND_COLOR);
+		tabbedPane.addTab("Analysis ", Builder.getImageIcon("results.png"), panelResults, null);
+		
+		JPanel resultsButtonPanel = new JPanel();
+		if (Platform.isOSX())
+			resultsButtonPanel.setBackground(MainWindow.MAC_BACKGROUND_COLOR);
+		panelResults.add(resultsButtonPanel, BorderLayout.NORTH);
+		
+		JButton btnConfig = new JButton(actionParamConfig);
+		btnConfig.setToolTipText(actionParamConfig.getToolTipText());
+		resultsButtonPanel.add(btnConfig);
+		
+		JButton btnHelp = new JButton(actionResultsHelp);
+		btnHelp.setToolTipText(actionResultsHelp.getToolTipText());
+		actionResultsHelp.setEnabled(false);
+		resultsButtonPanel.add(btnHelp);
+		
+		// Create popup menu for results panel
+		JMenuItem mntmSelectAll4 = new JMenuItem(actionSelectAll);
+		JMenuItem mntmCopy4 = new JMenuItem(actionCopy);
+		JPopupMenu popupResults = new JPopupMenu();
+		addPopup(panelResults.table, popupResults);
+		popupResults.add(mntmSelectAll4);
+		popupResults.add(mntmCopy4);
+		
+		// Map Panel
+		panelMap = new MapPanel();
+		if (Platform.isOSX())
+			panelMap.setBackground(MainWindow.MAC_BACKGROUND_COLOR);
+		tabbedPane.addTab("Map  ", Builder.getImageIcon("map.png"), panelMap, null);
+		
+		panelChart = new NeoFHChart();
+		MainWindow.chartActions = new ChartActions(panelChart);
+		tabbedPane.addTab("Chart  ", Builder.getImageIcon("chart.png"), panelChart, null);
+		
+		// Popup menu for chart display
+		JPopupMenu popupMenu = new JPopupMenu();
+		addPopup(panelChart.svgCanvas, popupMenu);
+		
+		JCheckBoxMenuItem btnIndex = new JCheckBoxMenuItem(MainWindow.chartActions.actionShowIndexPlot);
+		JCheckBoxMenuItem btnChronology = new JCheckBoxMenuItem(MainWindow.chartActions.actionShowChronologyPlot);
+		JCheckBoxMenuItem btnComposite = new JCheckBoxMenuItem(MainWindow.chartActions.actionCompositePlot);
+		JCheckBoxMenuItem btnShowLegend = new JCheckBoxMenuItem(MainWindow.chartActions.actionShowLegend);
+		JMenuItem btnChartProperties = new JMenuItem(MainWindow.chartActions.actionShowChartProperties);
+		JMenuItem btnZoomIn = new JMenuItem(MainWindow.chartActions.actionZoomIn);
+		JMenuItem btnZoomOut = new JMenuItem(MainWindow.chartActions.actionZoomOut);
+		JMenuItem btnZoomReset = new JMenuItem(MainWindow.chartActions.actionZoomReset);
+		
+		popupMenu.add(btnIndex);
+		popupMenu.add(btnChronology);
+		popupMenu.add(btnComposite);
+		popupMenu.add(btnShowLegend);
+		popupMenu.addSeparator();
+		popupMenu.add(btnChartProperties);
+		popupMenu.addSeparator();
+		popupMenu.add(btnZoomIn);
+		popupMenu.add(btnZoomOut);
+		popupMenu.add(btnZoomReset);
+	}
+	
+	/**
+	 * Initialize the menu/toolbar actions.
+	 */
+	private void initActions() {
+		
+		actionSelectAll = new FHAESAction("Select all", "selectall.png") {
+			
+			private static final long serialVersionUID = 1L;
+			
+			@Override
+			public void actionPerformed(ActionEvent event) {
+				
+				selectAll();
+			}
+		};
+		
+		actionCopy = new FHAESAction("Copy", "edit_copy.png") {
+			
+			private static final long serialVersionUID = 1L;
+			
+			@Override
+			public void actionPerformed(ActionEvent event) {
+				
+				copyCurrentReportToClipboard();
+			}
+		};
+		
+		actionParamConfig = new FHAESAction("Analysis options", "configure.png", "Configure") {
+			
+			private static final long serialVersionUID = 1L;
+			
+			@Override
+			public void actionPerformed(ActionEvent event) {
+				
+				showParamsDialog(false);
+			}
+		};
+		actionParamConfig.setToolTipText("View/edit analysis options");
+		
+		actionResultsHelp = new FHAESAction("Help", "help.png") {
+			
+			private static final long serialVersionUID = 1L;
+			
+			@Override
+			public void actionPerformed(ActionEvent event) {
+				
+				Platform.browseWebpage(RemoteHelp.HELP_ANALYSIS_RESULTS, null);
+			}
+		};
+		actionResultsHelp.setToolTipText("Get help on the current analysis type");
 	}
 }

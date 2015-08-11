@@ -40,14 +40,28 @@ import org.fhaes.gui.MainWindow;
 @SuppressWarnings("rawtypes")
 public class FileDropTargetListener extends JList implements DropTargetListener {
 	
-	// ------------------------------ FIELDS ------------------------------
-	
 	private static final long serialVersionUID = 1L;
-	DropTarget dropTarget = null;
+	
+	// Declare local constants
 	private static final String URI_LIST_MIME_TYPE = "text/uri-list;class=java.lang.String";
 	
-	// -------------------------- STATIC METHODS --------------------------
+	// Declare local variables
+	protected DropTarget dropTarget = null;
 	
+	/**
+	 * TODO
+	 */
+	public FileDropTargetListener() {
+		
+		dropTarget = new DropTarget(this, this);
+	}
+	
+	/**
+	 * TODO
+	 * 
+	 * @param data
+	 * @return
+	 */
 	private static List<File> textURIListToFileList(String data) {
 		
 		List<File> list = new ArrayList<File>(1);
@@ -69,19 +83,9 @@ public class FileDropTargetListener extends JList implements DropTargetListener 
 				e.printStackTrace();
 			}
 		}
+		
 		return list;
 	}
-	
-	// --------------------------- CONSTRUCTORS ---------------------------
-	
-	public FileDropTargetListener() {
-		
-		dropTarget = new DropTarget(this, this);
-	}
-	
-	// ------------------------ INTERFACE METHODS ------------------------
-	
-	// --------------------- Interface DropTargetListener ---------------------
 	
 	/**
 	 * TODO
@@ -97,7 +101,8 @@ public class FileDropTargetListener extends JList implements DropTargetListener 
 	 */
 	@Override
 	public void dragOver(DropTargetDragEvent event) {
-	
+		
+		// Do nothing!
 	}
 	
 	/**
@@ -105,7 +110,8 @@ public class FileDropTargetListener extends JList implements DropTargetListener 
 	 */
 	@Override
 	public void dropActionChanged(DropTargetDragEvent event) {
-	
+		
+		// Do nothing!
 	}
 	
 	/**
@@ -113,7 +119,8 @@ public class FileDropTargetListener extends JList implements DropTargetListener 
 	 */
 	@Override
 	public void dragExit(DropTargetEvent event) {
-	
+		
+		// Do nothing!
 	}
 	
 	/**
@@ -123,12 +130,11 @@ public class FileDropTargetListener extends JList implements DropTargetListener 
 	public void drop(DropTargetDropEvent event) {
 		
 		Transferable transferable = event.getTransferable();
-		
 		ArrayList<File> files = new ArrayList<File>();
 		
 		event.acceptDrop(DnDConstants.ACTION_COPY_OR_MOVE);
-		
 		DataFlavor uriListFlavor = null;
+		
 		try
 		{
 			uriListFlavor = new DataFlavor(URI_LIST_MIME_TYPE);
@@ -160,7 +166,6 @@ public class FileDropTargetListener extends JList implements DropTargetListener 
 				files.addAll(files2);
 				System.out.println(files);
 			}
-			
 		}
 		catch (Exception e)
 		{
@@ -172,7 +177,6 @@ public class FileDropTargetListener extends JList implements DropTargetListener 
 		}
 		
 		MainWindow.getInstance().loadFiles(files.toArray(new File[files.size()]));
-		
 		// setModel(model);
 	}
 	
