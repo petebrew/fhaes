@@ -171,10 +171,14 @@ public class NeoFHChart extends JPanel implements PrefsListener {
 			return;
 		}
 		
-		/*
-		 * if (chartMap.containsKey(fr.getFile().getAbsolutePath())) { // Chart has previously been instantiated to retrieve from cache
-		 * currentChart = chartMap.get(fr.getFile().getAbsolutePath()); currentChart.buildElements(); } else {
-		 */
+		// if (chartMap.containsKey(fr.getFile().getAbsolutePath()))
+		// {
+		// Chart has previously been instantiated to retrieve from cache
+		// currentChart = chartMap.get(fr.getFile().getAbsolutePath());
+		// currentChart.buildElements();
+		// }
+		// else
+		// {
 		// New chart so create and cache
 		currentChart = new FireChartSVG(fr);
 		// chartMap.put(fr.getFile().getAbsolutePath(), currentChart);
@@ -182,7 +186,6 @@ public class NeoFHChart extends JPanel implements PrefsListener {
 		
 		// Add chart to canvas
 		svgCanvas.setDocument(currentChart.doc);
-		
 	}
 	
 	/**
@@ -191,7 +194,6 @@ public class NeoFHChart extends JPanel implements PrefsListener {
 	protected void showSeriesPane() {
 		
 		SeriesListDialog.showDialog(currentChart, svgCanvas);
-		
 	}
 	
 	@Override
@@ -222,7 +224,6 @@ public class NeoFHChart extends JPanel implements PrefsListener {
 			public void run() {
 				
 				currentChart.buildElements();
-				
 			}
 		};
 		
@@ -327,7 +328,6 @@ public class NeoFHChart extends JPanel implements PrefsListener {
 					log.debug("Adding svg extension to output file name");
 					outputFile = new File(outputFile.getAbsolutePath() + ".svg");
 				}
-				
 			}
 			else
 			{

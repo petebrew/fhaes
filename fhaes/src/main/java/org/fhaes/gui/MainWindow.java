@@ -138,18 +138,19 @@ public class MainWindow implements PrefsListener {
 	public static final Color macBGColor = new Color(237, 237, 237);
 	
 	// Declare local constants
-	private final int LARGE_DATASET_THRESHOLD = 250;
+	private static final int LARGE_DATASET_THRESHOLD = 250;
+	private static final int MANUALLY_SORT_FILES = 8;
 	
 	// Declare GUI components
 	protected JFrame frame;
 	private JMenu mnOpenRecent;
 	private JMenu mnSave;
-	private JComboBox cboFileSort;
+	private JComboBox fileSortComboBox;
 	private JSplitPane splitPane;
 	private JPanel leftSplitPanel;
 	protected ReportPanel rightSplitPanel;
 	private FileListModel fileListModel;
-	private FileDropTargetListener lstFiles;
+	private FileDropTargetListener fhxFileList;
 	private FeedbackMessagePanel feedbackMessagePanel;
 	
 	// Declare FHAES actions
@@ -291,7 +292,7 @@ public class MainWindow implements PrefsListener {
 			fileListModel.clear();
 		}
 		
-		lstFiles.repaint();
+		fhxFileList.repaint();
 	}
 	
 	/**
@@ -301,7 +302,7 @@ public class MainWindow implements PrefsListener {
 	 */
 	private void clearSelectedFiles(boolean warn) {
 		
-		if (fileListModel == null || fileListModel.getSize() == 0 || lstFiles.getSelectedValuesList().size() == 0)
+		if (fileListModel == null || fileListModel.getSize() == 0 || fhxFileList.getSelectedValuesList().size() == 0)
 			return;
 			
 		if (warn)
@@ -315,7 +316,7 @@ public class MainWindow implements PrefsListener {
 			if (response == JOptionPane.YES_OPTION)
 			{
 				rightSplitPanel.setFile(null);
-				List<FHFile> files = lstFiles.getSelectedValuesList();
+				List<FHFile> files = fhxFileList.getSelectedValuesList();
 				
 				FileListModel modelcopy = fileListModel;
 				for (FHFile f : files)
@@ -332,7 +333,7 @@ public class MainWindow implements PrefsListener {
 			rightSplitPanel.setFile(null);
 			fileListListenerPaused = true;
 			
-			List<FHFile> files = lstFiles.getSelectedValuesList();
+			List<FHFile> files = fhxFileList.getSelectedValuesList();
 			for (FHFile f : files)
 			{
 				fileListModel.removeElement(f);
@@ -342,7 +343,7 @@ public class MainWindow implements PrefsListener {
 			handleFileListChanged();
 		}
 		
-		lstFiles.repaint();
+		fhxFileList.repaint();
 	}
 	
 	/**
@@ -397,7 +398,7 @@ public class MainWindow implements PrefsListener {
 		
 		if (fileToSave == null)
 		{
-			fileToSave = (FHFile) lstFiles.getSelectedValue();
+			fileToSave = (FHFile) fhxFileList.getSelectedValue();
 		}
 		
 		if (outputFolder == null)
@@ -433,7 +434,7 @@ public class MainWindow implements PrefsListener {
 			
 		for (int i = 0; i < fileListModel.getSize(); i++)
 		{
-			lstFiles.setSelectedIndex(i);
+			fhxFileList.setSelectedIndex(i);
 			
 			File f = fileListModel.getElementAt(i);
 			File output = new File(outputFolder + File.separator + f.getName() + "-summary.txt");
@@ -545,7 +546,7 @@ public class MainWindow implements PrefsListener {
 			}
 			
 			// Warn if loading a large dataset
-			if (files.length + fileListModel.getSize() > this.LARGE_DATASET_THRESHOLD)
+			if (files.length + fileListModel.getSize() > LARGE_DATASET_THRESHOLD)
 			{
 				Boolean shallWeContinue = LargeDatasetWarningDialog.showWarning(files.length + fileListModel.getSize());
 				
@@ -575,7 +576,7 @@ public class MainWindow implements PrefsListener {
 				rightSplitPanel.setFile(fileListModel.getElementAt(0));
 			}
 			
-			this.cboFileSort.setSelectedIndex(8);
+			this.fileSortComboBox.setSelectedIndex(MANUALLY_SORT_FILES);
 		}
 		catch (Exception e)
 		{
@@ -642,7 +643,7 @@ public class MainWindow implements PrefsListener {
 		}
 		
 		log.debug("Finished loading files into dialog");
-		lstFiles.repaint();
+		fhxFileList.repaint();
 	}
 	
 	/**
@@ -735,7 +736,6 @@ public class MainWindow implements PrefsListener {
 			{
 				return;
 			}
-			
 		}
 		catch (Exception ex)
 		{
@@ -779,7 +779,7 @@ public class MainWindow implements PrefsListener {
 				// with the new version
 				fileListModel.removeElementAt(index);
 				fileListModel.addElementAt(index, new FHFile(savedFile.getAbsolutePath()));
-				lstFiles.setSelectedIndex(index);
+				fhxFileList.setSelectedIndex(index);
 			}
 			else
 			{
@@ -807,7 +807,7 @@ public class MainWindow implements PrefsListener {
 		
 		try
 		{
-			FHFile file = (FHFile) this.lstFiles.getSelectedValue();
+			FHFile file = (FHFile) this.fhxFileList.getSelectedValue();
 			
 			if (file != null)
 			{
@@ -829,7 +829,7 @@ public class MainWindow implements PrefsListener {
 		
 		ArrayList<FHFile> tempList = new ArrayList<FHFile>();
 		
-		for (Object f : lstFiles.getSelectedValuesList())
+		for (Object f : fhxFileList.getSelectedValuesList())
 		{
 			FHFile file = (FHFile) f;
 			if (file.isValidFHXFile())
@@ -850,7 +850,7 @@ public class MainWindow implements PrefsListener {
 		
 		ArrayList<FHFile> tempList = new ArrayList<FHFile>();
 		
-		for (Object f : lstFiles.getSelectedValuesList())
+		for (Object f : fhxFileList.getSelectedValuesList())
 		{
 			FHFile file = (FHFile) f;
 			if (file.isValidFHXFile() && file.hasFireEventsOrInjuries())
@@ -874,10 +874,10 @@ public class MainWindow implements PrefsListener {
 			int badMarkers = 0;
 			String markers = "";
 			
-			if (lstFiles.getSelectedValuesList().size() > 0)
+			if (fhxFileList.getSelectedValuesList().size() > 0)
 			{
 				
-				List<FHFile> files = lstFiles.getSelectedValuesList();
+				List<FHFile> files = fhxFileList.getSelectedValuesList();
 				for (FHFile f : files)
 				{
 					if (f.getFirstLatitude() != null && f.getFirstLongitude() != null)
@@ -936,7 +936,7 @@ public class MainWindow implements PrefsListener {
 	@SuppressWarnings("unused")
 	private void plotChart() {
 		
-		if (lstFiles.getSelectedValue() == null)
+		if (fhxFileList.getSelectedValue() == null)
 			return;
 			
 		frame.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
@@ -968,9 +968,9 @@ public class MainWindow implements PrefsListener {
 		}
 		
 		// Select current file in list again to update reports
-		if (this.lstFiles.getSelectedIndex() != -1)
+		if (this.fhxFileList.getSelectedIndex() != -1)
 		{
-			this.rightSplitPanel.setFile((FHFile) this.lstFiles.getSelectedValue());
+			this.rightSplitPanel.setFile((FHFile) this.fhxFileList.getSelectedValue());
 		}
 	}
 	
@@ -1013,7 +1013,7 @@ public class MainWindow implements PrefsListener {
 		
 		log.debug("Repainting file list");
 		
-		this.lstFiles.repaint(this.lstFiles.getCellBounds(0, this.fileListModel.getSize() - 1));
+		this.fhxFileList.repaint(this.fhxFileList.getCellBounds(0, this.fileListModel.getSize() - 1));
 	}
 	
 	/**
@@ -1050,14 +1050,14 @@ public class MainWindow implements PrefsListener {
 		
 		if (isFileListPopulated)
 		{
-			log.debug("Current selected file index = " + lstFiles.getSelectedIndex());
-			if (this.lstFiles.getSelectedIndex() == -1)
+			log.debug("Current selected file index : " + fhxFileList.getSelectedIndex());
+			if (this.fhxFileList.getSelectedIndex() == -1)
 			{
-				this.lstFiles.setSelectedIndex(0);
+				this.fhxFileList.setSelectedIndex(0);
 			}
 			else if (!this.rightSplitPanel.isFilePopulated())
 			{
-				this.lstFiles.setSelectedIndex(0);
+				this.fhxFileList.setSelectedIndex(0);
 			}
 			
 			chartActions.setNeoChart(rightSplitPanel.panelChart);
@@ -1068,7 +1068,7 @@ public class MainWindow implements PrefsListener {
 		}
 		
 		// Enable/disable file sorting depending on number of files loaded
-		this.cboFileSort.setEnabled(this.lstFiles.getModel().getSize() > 1);
+		this.fileSortComboBox.setEnabled(this.fhxFileList.getModel().getSize() > 1);
 	}
 	
 	/**
@@ -1078,7 +1078,7 @@ public class MainWindow implements PrefsListener {
 		
 		try
 		{
-			boolean isFileSelected = (lstFiles.getSelectedValue() != null);
+			boolean isFileSelected = (fhxFileList.getSelectedValue() != null);
 			
 			// Actions requiring a file to be selected
 			actionOpenCategoryFile.setEnabled(isFileSelected);
@@ -1089,19 +1089,21 @@ public class MainWindow implements PrefsListener {
 			actionCreateEventFile.setEnabled(isFileSelected);
 			actionCreateCompositeFile.setEnabled(isFileSelected);
 			
-			// Override and disable these actions if multiple files are selected
-			if (lstFiles.getSelectedValuesList().size() > 1)
+			// Handle when multiple files are selected
+			if (fhxFileList.getSelectedValuesList().size() > 1)
 			{
+				// Override *requiring* only one file to be selected
 				actionEditFile.setEnabled(false);
+				actionEditCategories.setEnabled(false);
 				actionSave.setEnabled(false);
+				
+				// Actions *requiring* multiple files to be selected
+				actionMergeFiles.setEnabled(true);
+				actionSpatialJoin.setEnabled(true);
 			}
 			
-			// Actions *requiring* multiple files selected
-			actionMergeFiles.setEnabled(lstFiles.getSelectedValuesList().size() > 1);
-			actionSpatialJoin.setEnabled(lstFiles.getSelectedValuesList().size() > 1);
-			
 			// Update report panels
-			rightSplitPanel.setFile((FHFile) lstFiles.getSelectedValue());
+			rightSplitPanel.setFile((FHFile) fhxFileList.getSelectedValue());
 			
 			// Handle chart actions
 			if (isFileSelected)
@@ -1115,7 +1117,7 @@ public class MainWindow implements PrefsListener {
 		}
 		catch (Exception e)
 		{
-			log.info("Error caught and ignored while evaluating file list");
+			log.info("Error caught and ignored while evaluating file list.");
 		}
 	}
 	
@@ -1140,8 +1142,8 @@ public class MainWindow implements PrefsListener {
 				
 				if (e.isPopupTrigger())
 				{
-					int row = lstFiles.locationToIndex(e.getPoint());
-					lstFiles.setSelectedIndex(row);
+					int row = fhxFileList.locationToIndex(e.getPoint());
+					fhxFileList.setSelectedIndex(row);
 					showMenu(e);
 				}
 			}
@@ -1308,11 +1310,11 @@ public class MainWindow implements PrefsListener {
 		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		leftSplitPanel.add(scrollPane);
 		
-		lstFiles = new FileDropTargetListener();
-		lstFiles.setModel(fileListModel);
-		lstFiles.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-		lstFiles.setCellRenderer(new FHFileListCellRenderer());
-		lstFiles.addListSelectionListener(new ListSelectionListener() {
+		fhxFileList = new FileDropTargetListener();
+		fhxFileList.setModel(fileListModel);
+		fhxFileList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+		fhxFileList.setCellRenderer(new FHFileListCellRenderer());
+		fhxFileList.addListSelectionListener(new ListSelectionListener() {
 			
 			@Override
 			public void valueChanged(ListSelectionEvent evt) {
@@ -1349,25 +1351,25 @@ public class MainWindow implements PrefsListener {
 				}
 				if (fileListModel.getSize() >= selectedFileIndex - 1)
 				{
-					lstFiles.setSelectedIndex(selectedFileIndex - 1);
+					fhxFileList.setSelectedIndex(selectedFileIndex - 1);
 				}
 				else if (fileListModel.getSize() > 0)
 				{
-					lstFiles.setSelectedIndex(0);
+					fhxFileList.setSelectedIndex(0);
 				}
 				else
 				{
-					lstFiles.setSelectedIndex(-1);
+					fhxFileList.setSelectedIndex(-1);
 					rightSplitPanel.setFile(null);
 				}
 			}
 			
 		});
 		
-		lstFiles.setDragEnabled(true);
-		lstFiles.setDropMode(DropMode.INSERT);
+		fhxFileList.setDragEnabled(true);
+		fhxFileList.setDropMode(DropMode.INSERT);
 		
-		lstFiles.addKeyListener(new KeyListener() {
+		fhxFileList.addKeyListener(new KeyListener() {
 			
 			@Override
 			public void keyPressed(KeyEvent arg0) {} // Ignored
@@ -1386,10 +1388,10 @@ public class MainWindow implements PrefsListener {
 			
 		});
 		
-		scrollPane.setViewportView(lstFiles);
+		scrollPane.setViewportView(fhxFileList);
 		
 		JPopupMenu popupMenu = new JPopupMenu();
-		addPopup(lstFiles, popupMenu);
+		addPopup(fhxFileList, popupMenu);
 		
 		FHAESMenuItem saveCurrent = new FHAESMenuItem(actionSave);
 		FHAESMenuItem saveAll = new FHAESMenuItem(actionSaveAll);
@@ -1421,59 +1423,59 @@ public class MainWindow implements PrefsListener {
 		JLabel label = new JLabel("Order:");
 		panel.add(label, "cell 0 0,alignx trailing");
 		
-		cboFileSort = new JComboBox();
-		cboFileSort.setModel(new DefaultComboBoxModel(new String[] { "Name asc.", "Name desc.", "First year asc.", "First year desc.",
-				"Last year asc.", "Last year desc.", "File validity asc.", "File validity desc.", "None" }));
-		cboFileSort.setSelectedIndex(8);
-		cboFileSort.addActionListener(new ActionListener() {
+		fileSortComboBox = new JComboBox();
+		fileSortComboBox.setModel(new DefaultComboBoxModel(new String[] { "Name asc.", "Name desc.", "First year asc.", "First year desc.",
+				"Last year asc.", "Last year desc.", "File validity asc.", "File validity desc.", "Sort Manually" }));
+		fileSortComboBox.setSelectedIndex(MANUALLY_SORT_FILES);
+		fileSortComboBox.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				
-				if (cboFileSort.getSelectedIndex() == 0)
+				if (fileSortComboBox.getSelectedIndex() == 0)
 				{
 					fileListModel.sortAscending(new FHFileNameComparator());
-					lstFiles.repaint();
+					fhxFileList.repaint();
 				}
-				if (cboFileSort.getSelectedIndex() == 1)
+				if (fileSortComboBox.getSelectedIndex() == 1)
 				{
 					fileListModel.sortDescending(new FHFileNameComparator());
-					lstFiles.repaint();
+					fhxFileList.repaint();
 				}
-				if (cboFileSort.getSelectedIndex() == 2)
+				if (fileSortComboBox.getSelectedIndex() == 2)
 				{
 					fileListModel.sortAscending(new FHFileFirstYearComparator());
-					lstFiles.repaint();
+					fhxFileList.repaint();
 				}
-				if (cboFileSort.getSelectedIndex() == 3)
+				if (fileSortComboBox.getSelectedIndex() == 3)
 				{
 					fileListModel.sortDescending(new FHFileFirstYearComparator());
-					lstFiles.repaint();
+					fhxFileList.repaint();
 				}
-				if (cboFileSort.getSelectedIndex() == 4)
+				if (fileSortComboBox.getSelectedIndex() == 4)
 				{
 					fileListModel.sortAscending(new FHFileLastYearComparator());
-					lstFiles.repaint();
+					fhxFileList.repaint();
 				}
-				if (cboFileSort.getSelectedIndex() == 5)
+				if (fileSortComboBox.getSelectedIndex() == 5)
 				{
 					fileListModel.sortDescending(new FHFileLastYearComparator());
-					lstFiles.repaint();
+					fhxFileList.repaint();
 				}
-				if (cboFileSort.getSelectedIndex() == 6)
+				if (fileSortComboBox.getSelectedIndex() == 6)
 				{
 					fileListModel.sortAscending(new FHFileValidityComparator());
-					lstFiles.repaint();
+					fhxFileList.repaint();
 				}
-				if (cboFileSort.getSelectedIndex() == 7)
+				if (fileSortComboBox.getSelectedIndex() == 7)
 				{
 					fileListModel.sortDescending(new FHFileValidityComparator());
-					lstFiles.repaint();
+					fhxFileList.repaint();
 				}
 			}
 		});
 		
-		panel.add(cboFileSort, "cell 1 0,growx");
+		panel.add(fileSortComboBox, "cell 1 0,growx");
 		
 		initMenu();
 		initToolbar();
@@ -1530,7 +1532,7 @@ public class MainWindow implements PrefsListener {
 			@Override
 			public void actionPerformed(ActionEvent event) {
 				
-				FHFile selectedFile = (FHFile) lstFiles.getSelectedValue();
+				FHFile selectedFile = (FHFile) fhxFileList.getSelectedValue();
 				
 				if (selectedFile.isValidFHXFile())
 				{
@@ -1592,7 +1594,7 @@ public class MainWindow implements PrefsListener {
 			public void actionPerformed(ActionEvent event) {
 				
 				FHSampleSize ssiz = new FHSampleSize(frame);
-				ssiz.openFile((File) lstFiles.getSelectedValue());
+				ssiz.openFile((File) fhxFileList.getSelectedValue());
 			}
 		};
 		// actionFHSampleSize.setEnabled(false);
@@ -2029,7 +2031,7 @@ public class MainWindow implements PrefsListener {
 			@Override
 			public void actionPerformed(ActionEvent event) {
 				
-				SpatialJoinDialog sjd = new SpatialJoinDialog(FileListModel.getValidSelectedFileList(lstFiles));
+				SpatialJoinDialog sjd = new SpatialJoinDialog(FileListModel.getValidSelectedFileList(fhxFileList));
 				sjd.setVisible(true);
 			}
 		};

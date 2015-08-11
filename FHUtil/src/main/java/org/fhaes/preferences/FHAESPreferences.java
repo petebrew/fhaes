@@ -512,7 +512,6 @@ public class FHAESPreferences {
 		{
 			l.prefChanged(e);
 		}
-		
 	}
 	
 	/**

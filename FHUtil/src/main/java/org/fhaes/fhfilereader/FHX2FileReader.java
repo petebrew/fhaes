@@ -403,7 +403,7 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 			in = -7;
 			if (j == 0)
 			{
-				log.debug("the FFyearperTree is " + FFyearperTree[j]);
+				log.debug("the FFyearperTree is : " + FFyearperTree[j]);
 			}
 			for (int i = 0; i < dataBlock.size(); i++)
 			{

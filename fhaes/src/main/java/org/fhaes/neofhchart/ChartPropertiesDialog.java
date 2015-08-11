@@ -64,10 +64,10 @@ import net.miginfocom.swing.MigLayout;
 public class ChartPropertiesDialog extends JDialog implements ActionListener {
 	
 	private static final long serialVersionUID = 1L;
+	
+	// Declare GUI components
 	private final JPanel contentPanel = new JPanel();
-	
 	private JLabel lblLegend;
-	
 	private JTextField txtAxisY1Label;
 	private JTextField txtAxisY2Label;
 	private FontChooserComboBox cboFontFamily;
@@ -105,8 +105,6 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 	private JCheckBox chkCompositePlot;
 	private JSpinner spnCompositePlotHeight;
 	private JCheckBox chkCompositeYearLabels;
-	
-	private boolean preferencesChanged;
 	private JComboBox<FireFilterType> cboFilterType;
 	private JSpinner spnFilterValue;
 	private JSpinner spnMinNumberOfSamples;
@@ -143,6 +141,24 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 	private JLabel lblLabelOrientation;
 	private JComboBox<LabelOrientation> cboLabelOrientation;
 	
+	// Declare local variables
+	private boolean preferencesChanged;
+	
+	/**
+	 * Create the dialog.
+	 */
+	public ChartPropertiesDialog(NeoFHChart neoFHChart) {
+		
+		this.neoFHChart = neoFHChart;
+		initGUI();
+	}
+	
+	/**
+	 * TODO
+	 * 
+	 * @param parent
+	 * @param neoFHChart
+	 */
 	public static void showDialog(Component parent, NeoFHChart neoFHChart) {
 		
 		App.prefs.setSilentMode(true);
@@ -161,15 +177,485 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 	}
 	
 	/**
-	 * Create the dialog.
+	 * TODO
 	 */
-	public ChartPropertiesDialog(NeoFHChart neoFHChart) {
+	private void setXAxisGui() {
 		
-		this.neoFHChart = neoFHChart;
-		init();
+		if (this.chkAutoRangeXAxis.isSelected())
+		{
+			this.spnFirstYear.setEnabled(false);
+			this.spnLastYear.setEnabled(false);
+		}
+		else
+		{
+			this.spnFirstYear.setEnabled(true);
+			this.spnLastYear.setEnabled(true);
+		}
 	}
 	
-	private void init() {
+	/**
+	 * TODO
+	 */
+	@Override
+	public void actionPerformed(ActionEvent evt) {
+		
+		if (evt.getActionCommand().equals("OK"))
+		{
+			saveToPreferences();
+			dispose();
+		}
+		else if (evt.getActionCommand().equals("Cancel"))
+		{
+			dispose();
+		}
+		else if (evt.getActionCommand().equals("Reset"))
+		{
+			setToDefaults();
+		}
+		else if (evt.getActionCommand().equals("VerticalGuides"))
+		{
+			this.setVerticalGuideGUI();
+		}
+		else if (evt.getActionCommand().equals("HighlightYears"))
+		{
+			this.setHighlightYearsGUI();
+		}
+		else if (evt.getActionCommand().equals("IndexPlot"))
+		{
+			this.setIndexPlotGUI();
+		}
+		else if (evt.getActionCommand().equals("ChronologyPlot"))
+		{
+			this.setChronologyPlotGUI();
+		}
+		else if (evt.getActionCommand().equals("CompositePlot"))
+		{
+			this.setCompositePlotGUI();
+		}
+		else if (evt.getActionCommand().equals("CompositeYearLabels"))
+		{
+			this.setCompositeYearLabelsGUI();
+		}
+		else if (evt.getActionCommand().equals("AddHighlightYear"))
+		{
+			JSpinner spnYear = new JSpinner();
+			JSpinner.NumberEditor editor = new JSpinner.NumberEditor(spnYear, "#");
+			spnYear.setEditor(editor);
+			
+			int result = JOptionPane.showConfirmDialog(this, spnYear, "Highlight Year", JOptionPane.OK_CANCEL_OPTION,
+					JOptionPane.QUESTION_MESSAGE);
+			if (result == JOptionPane.OK_OPTION)
+			{
+				int highlightyear = (int) spnYear.getValue();
+				highlightYearsModel.addYear(highlightyear);
+				highlightYearsModel.sort();
+			}
+		}
+		else if (evt.getActionCommand().equals("RemoveHighlightYear"))
+		{
+			this.highlightYearsModel.removeYearAtIndex(this.lstHightlightYears.getSelectedIndex());
+		}
+	}
+	
+	/**
+	 * TODO
+	 * 
+	 * @return
+	 */
+	public boolean havePreferencesChanged() {
+		
+		return preferencesChanged;
+	}
+	
+	/**
+	 * Try and set the YAxis label to match the depth type, but only do so if the user hasn't already overridden with their own text.
+	 */
+	private void tryAutoSetYAxisLabel() {
+		
+		String text = this.txtAxisY1Label.getText();
+		if (text.toLowerCase().equals("recorder depth") || text.toLowerCase().equals("sample depth"))
+		{
+			if (this.chkSampleDepth.isSelected())
+			{
+				txtAxisY1Label.setText("Sample Depth");
+			}
+			else
+			{
+				txtAxisY1Label.setText("Recorder Depth");
+			}
+		}
+		
+	}
+	
+	/**
+	 * Enable/disable GUI based components based on selections.
+	 */
+	private void setVerticalGuideGUI() {
+		
+		cboVerticalGuideStyle.setEnabled(chkVerticalGuides.isSelected());
+		spnVerticalGuideWeight.setEnabled(chkVerticalGuides.isSelected());
+		btnVerticalGuideColor.setEnabled(chkVerticalGuides.isSelected());
+	}
+	
+	/**
+	 * Enable/disable GUI based components based on selections.
+	 */
+	private void setHighlightYearsGUI() {
+		
+		cboHighlightStyle.setEnabled(chkHighlightYears.isSelected());
+		spnHighlightWeight.setEnabled(chkHighlightYears.isSelected());
+		btnHighlightColor.setEnabled(chkHighlightYears.isSelected());
+		lstHightlightYears.setEnabled(chkHighlightYears.isSelected());
+		btnAddYear.setEnabled(chkHighlightYears.isSelected());
+		btnRemoveYear.setEnabled(chkHighlightYears.isSelected());
+	}
+	
+	/**
+	 * Enable/disable GUI based components based on selections.
+	 */
+	private void setIndexPlotGUI() {
+		
+		setEnablePanelComponents(panelIndexPlotGeneral, chkIndexPlot.isSelected());
+		setEnablePanelComponents(panelIndexPlotComponents, chkIndexPlot.isSelected());
+		setEnablePanelComponents(panelIndexPlotY1, chkIndexPlot.isSelected());
+		setEnablePanelComponents(panelIndexPlotY2, chkIndexPlot.isSelected());
+		lstHightlightYears.setEnabled(chkIndexPlot.isSelected());
+		
+	}
+	
+	/**
+	 * Enable/disable GUI based components based on selections.
+	 */
+	private void setChronologyPlotGUI() {
+		
+		setEnablePanelComponents(panelChronologySeries, chkChronologyPlot.isSelected());
+		setEnablePanelComponents(panelChronologySymbols, chkChronologyPlot.isSelected());
+		
+	}
+	
+	/**
+	 * Enable/disable GUI based components based on selections.
+	 */
+	private void setCompositePlotGUI() {
+		
+		setEnablePanelComponents(panelCompositeFilters, chkCompositePlot.isSelected());
+		setEnablePanelComponents(panelCompositeGeneral, chkCompositePlot.isSelected());
+		setEnablePanelComponents(panelCompositeYearLabels, chkCompositePlot.isSelected());
+	}
+	
+	/**
+	 * Enable/disable GUI based components based on selections.
+	 */
+	private void setCompositeYearLabelsGUI() {
+		
+		if (!this.chkCompositeYearLabels.isEnabled())
+			return;
+			
+		radShortYearStyle.setEnabled(chkCompositeYearLabels.isSelected());
+		radLongYearStyle.setEnabled(chkCompositeYearLabels.isSelected());
+		spnCompositeYearLabelFontSize.setEnabled(chkCompositeYearLabels.isSelected());
+		spnYearLabelPadding.setEnabled(chkCompositeYearLabels.isSelected());
+		cboLabelOrientation.setEnabled(chkCompositeYearLabels.isSelected());
+		lblPx.setEnabled(chkCompositeYearLabels.isSelected());
+	}
+	
+	/**
+	 * TODO
+	 * 
+	 * @param panel
+	 * @param enable
+	 */
+	private void setEnablePanelComponents(JPanel panel, boolean enable) {
+		
+		if (panel == null)
+			return;
+		if (panel.getComponents().length == 0)
+			return;
+			
+		panel.setEnabled(enable);
+		
+		for (Component component : panel.getComponents())
+		{
+			component.setEnabled(enable);
+		}
+	}
+	
+	/**
+	 * TODO
+	 * 
+	 * @return
+	 */
+	public JCheckBox getChkCompositeYearLabels() {
+		
+		return chkCompositeYearLabels;
+	}
+	
+	/**
+	 * TODO
+	 * 
+	 * @param component
+	 * @param background
+	 */
+	public static void setComponentColours(Component component, Color background) {
+		
+		component.setBackground(background);
+		component.setForeground(getContrastingLabelColour(background));
+	}
+	
+	/**
+	 * TODO
+	 * 
+	 * @param newcolor
+	 * @return
+	 */
+	public static Color getContrastingLabelColour(Color newcolor) {
+		
+		double brightness = 0.299 * newcolor.getRed() + 0.587 * newcolor.getGreen() + 0.114 * newcolor.getBlue();
+		
+		if (brightness > 125.0)
+		{
+			return Color.BLACK;
+		}
+		
+		return Color.WHITE;
+		
+	}
+	
+	/**
+	 * Return all the chart properties to their default values.
+	 */
+	private void setToDefaults() {
+		
+		// Clear preferences first then set all to default
+		
+		// General tab
+		App.prefs.clearPref(PrefKey.CHART_SHOW_LEGEND);
+		App.prefs.clearPref(PrefKey.CHART_FONT_FAMILY);
+		App.prefs.clearPref(PrefKey.CHART_AXIS_X_AUTO_RANGE);
+		App.prefs.clearPref(PrefKey.CHART_AXIS_X_MIN);
+		App.prefs.clearPref(PrefKey.CHART_AXIS_X_MAX);
+		App.prefs.clearPref(PrefKey.CHART_VERTICAL_GUIDES);
+		App.prefs.clearPref(PrefKey.CHART_VERTICAL_GUIDE_COLOR);
+		App.prefs.clearPref(PrefKey.CHART_VERTICAL_GUIDE_WEIGHT);
+		App.prefs.clearPref(PrefKey.CHART_VERTICAL_GUIDE_STYLE);
+		App.prefs.clearPref(PrefKey.CHART_XAXIS_MAJOR_TICK_SPACING);
+		App.prefs.clearPref(PrefKey.CHART_XAXIS_MINOR_TICK_SPACING);
+		App.prefs.clearPref(PrefKey.CHART_XAXIS_MAJOR_TICKS);
+		App.prefs.clearPref(PrefKey.CHART_XAXIS_MINOR_TICKS);
+		App.prefs.clearPref(PrefKey.CHART_HIGHLIGHT_YEARS);
+		App.prefs.clearPref(PrefKey.CHART_HIGHLIGHT_YEAR_STYLE);
+		App.prefs.clearPref(PrefKey.CHART_HIGHLIGHT_YEARS_COLOR);
+		App.prefs.clearPref(PrefKey.CHART_HIGHLIGHT_YEARS_WEIGHT);
+		App.prefs.clearPref(PrefKey.CHART_HIGHLIGHT_YEARS_ARRAY);
+		App.prefs.clearPref(PrefKey.CHART_FONT_BOLD);
+		App.prefs.clearPref(PrefKey.CHART_FONT_ITALIC);
+		
+		// Index plot tab
+		App.prefs.clearPref(PrefKey.CHART_SHOW_INDEX_PLOT);
+		App.prefs.clearPref(PrefKey.CHART_INDEX_PLOT_HEIGHT);
+		App.prefs.clearPref(PrefKey.CHART_SHOW_SAMPLE_DEPTH);
+		App.prefs.clearPref(PrefKey.CHART_SAMPLE_OR_RECORDER_DEPTH_COLOR);
+		App.prefs.clearPref(PrefKey.CHART_SHOW_PERCENT_SCARRED);
+		App.prefs.clearPref(PrefKey.CHART_PERCENT_SCARRED_COLOR);
+		App.prefs.clearPref(PrefKey.CHART_SHOW_DEPTH_THRESHOLD);
+		App.prefs.clearPref(PrefKey.CHART_DEPTH_THRESHOLD_COLOR);
+		App.prefs.clearPref(PrefKey.CHART_DEPTH_THRESHOLD_VALUE);
+		App.prefs.clearPref(PrefKey.CHART_AXIS_Y1_LABEL);
+		App.prefs.clearPref(PrefKey.CHART_AXIS_Y2_LABEL);
+		App.prefs.clearPref(PrefKey.CHART_AXIS_Y1_FONT_SIZE);
+		App.prefs.clearPref(PrefKey.CHART_AXIS_Y2_FONT_SIZE);
+		
+		// Chronology plot tab
+		App.prefs.clearPref(PrefKey.CHART_SHOW_CHRONOLOGY_PLOT);
+		App.prefs.clearPref(PrefKey.CHART_SHOW_CHRONOLOGY_PLOT_LABELS);
+		App.prefs.clearPref(PrefKey.CHART_CHRONOLOGY_PLOT_LABEL_FONT_SIZE);
+		App.prefs.clearPref(PrefKey.CHART_CHRONOLOGY_PLOT_SPACING);
+		App.prefs.clearPref(PrefKey.CHART_SHOW_PITH_SYMBOL);
+		App.prefs.clearPref(PrefKey.CHART_SHOW_BARK_SYMBOL);
+		App.prefs.clearPref(PrefKey.CHART_SHOW_INNER_RING_SYMBOL);
+		App.prefs.clearPref(PrefKey.CHART_SHOW_OUTER_RING_SYMBOL);
+		App.prefs.clearPref(PrefKey.CHART_SHOW_FIRE_EVENT_SYMBOL);
+		App.prefs.clearPref(PrefKey.CHART_SHOW_INJURY_SYMBOL);
+		
+		// Composite plot tab
+		App.prefs.clearPref(PrefKey.CHART_SHOW_COMPOSITE_PLOT);
+		App.prefs.clearPref(PrefKey.CHART_COMPOSITE_HEIGHT);
+		App.prefs.clearPref(PrefKey.CHART_SHOW_COMPOSITE_YEAR_LABELS);
+		App.prefs.clearPref(PrefKey.CHART_COMPOSITE_FILTER_TYPE);
+		App.prefs.clearPref(PrefKey.CHART_COMPOSITE_FILTER_VALUE);
+		App.prefs.clearPref(PrefKey.CHART_COMPOSITE_MIN_NUM_SAMPLES);
+		App.prefs.clearPref(PrefKey.CHART_COMPOSITE_YEAR_LABEL_FONT_SIZE);
+		App.prefs.clearPref(PrefKey.CHART_COMPOSITE_LABEL_TEXT);
+		App.prefs.clearPref(PrefKey.CHART_COMPOSITE_PLOT_LABEL_FONT_SIZE);
+		App.prefs.clearPref(PrefKey.CHART_COMPOSITE_YEAR_LABELS_TWO_DIGIT);
+		App.prefs.clearPref(PrefKey.CHART_COMPOSITE_YEAR_LABEL_BUFFER);
+		App.prefs.clearPref(PrefKey.CHART_COMPOSITE_LABEL_ALIGNMENT);
+		
+		setFromPreferences();
+	}
+	
+	/**
+	 * Save the chart properties to the preferences.
+	 */
+	private void saveToPreferences() {
+		
+		// General tab
+		App.prefs.setBooleanPref(PrefKey.CHART_SHOW_LEGEND, chkLegend.isSelected());
+		App.prefs.setPref(PrefKey.CHART_FONT_FAMILY, cboFontFamily.getSelectedFontName());
+		App.prefs.setBooleanPref(PrefKey.CHART_AXIS_X_AUTO_RANGE, chkAutoRangeXAxis.isSelected());
+		App.prefs.setIntPref(PrefKey.CHART_AXIS_X_MIN, (Integer) spnFirstYear.getValue());
+		App.prefs.setIntPref(PrefKey.CHART_AXIS_X_MAX, (Integer) spnLastYear.getValue());
+		App.prefs.setBooleanPref(PrefKey.CHART_VERTICAL_GUIDES, chkVerticalGuides.isSelected());
+		App.prefs.setColorPref(PrefKey.CHART_VERTICAL_GUIDE_COLOR, btnVerticalGuideColor.getBackground());
+		App.prefs.setIntPref(PrefKey.CHART_VERTICAL_GUIDE_WEIGHT, (Integer) spnVerticalGuideWeight.getValue());
+		App.prefs.setLineStylePref(PrefKey.CHART_VERTICAL_GUIDE_STYLE, (LineStyle) cboVerticalGuideStyle.getSelectedItem());
+		App.prefs.setIntPref(PrefKey.CHART_XAXIS_MAJOR_TICK_SPACING, (Integer) spnMajorSpacing.getValue());
+		App.prefs.setIntPref(PrefKey.CHART_XAXIS_MINOR_TICK_SPACING, (Integer) spnMinorSpacing.getValue());
+		App.prefs.setBooleanPref(PrefKey.CHART_XAXIS_MAJOR_TICKS, chkMajorTicks.isSelected());
+		App.prefs.setBooleanPref(PrefKey.CHART_XAXIS_MINOR_TICKS, chkMinorTicks.isSelected());
+		App.prefs.setBooleanPref(PrefKey.CHART_HIGHLIGHT_YEARS, chkHighlightYears.isSelected());
+		App.prefs.setLineStylePref(PrefKey.CHART_HIGHLIGHT_YEAR_STYLE, (LineStyle) cboHighlightStyle.getSelectedItem());
+		App.prefs.setIntPref(PrefKey.CHART_HIGHLIGHT_YEARS_WEIGHT, (int) spnHighlightWeight.getValue());
+		App.prefs.setColorPref(PrefKey.CHART_HIGHLIGHT_YEARS_COLOR, btnHighlightColor.getBackground());
+		App.prefs.setIntegerArrayPref(PrefKey.CHART_HIGHLIGHT_YEARS_ARRAY, highlightYearsModel.getAllYears());
+		
+		// Index plot tab
+		App.prefs.setBooleanPref(PrefKey.CHART_SHOW_INDEX_PLOT, chkIndexPlot.isSelected());
+		App.prefs.setIntPref(PrefKey.CHART_INDEX_PLOT_HEIGHT, (Integer) spnIndexPlotHeight.getValue());
+		App.prefs.setBooleanPref(PrefKey.CHART_SHOW_SAMPLE_DEPTH, chkSampleDepth.isSelected());
+		App.prefs.setColorPref(PrefKey.CHART_SAMPLE_OR_RECORDER_DEPTH_COLOR, btnSampleDepthColor.getBackground());
+		App.prefs.setBooleanPref(PrefKey.CHART_SHOW_PERCENT_SCARRED, chkPercentScarred.isSelected());
+		App.prefs.setColorPref(PrefKey.CHART_PERCENT_SCARRED_COLOR, btnPercentScarredColor.getBackground());
+		App.prefs.setBooleanPref(PrefKey.CHART_SHOW_DEPTH_THRESHOLD, chkSampleThreshold.isSelected());
+		App.prefs.setColorPref(PrefKey.CHART_DEPTH_THRESHOLD_COLOR, btnThresholdColor.getBackground());
+		App.prefs.setIntPref(PrefKey.CHART_DEPTH_THRESHOLD_VALUE, (Integer) spnThresholdValue.getValue());
+		App.prefs.setPref(PrefKey.CHART_AXIS_Y1_LABEL, txtAxisY1Label.getText());
+		App.prefs.setPref(PrefKey.CHART_AXIS_Y2_LABEL, txtAxisY2Label.getText());
+		App.prefs.setIntPref(PrefKey.CHART_AXIS_Y1_FONT_SIZE, (Integer) spnAxisY1FontSize.getValue());
+		App.prefs.setIntPref(PrefKey.CHART_AXIS_Y2_FONT_SIZE, (Integer) spnAxisY2FontSize.getValue());
+		
+		// Chronology plot tab
+		App.prefs.setBooleanPref(PrefKey.CHART_SHOW_CHRONOLOGY_PLOT, chkChronologyPlot.isSelected());
+		App.prefs.setBooleanPref(PrefKey.CHART_SHOW_CHRONOLOGY_PLOT_LABELS, chkSeriesLabels.isSelected());
+		App.prefs.setIntPref(PrefKey.CHART_CHRONOLOGY_PLOT_LABEL_FONT_SIZE, (Integer) spnSeriesLabelFontSize.getValue());
+		App.prefs.setIntPref(PrefKey.CHART_CHRONOLOGY_PLOT_SPACING, (Integer) spnSeriesSpacing.getValue());
+		App.prefs.setBooleanPref(PrefKey.CHART_SHOW_PITH_SYMBOL, chkPith.isSelected());
+		App.prefs.setBooleanPref(PrefKey.CHART_SHOW_BARK_SYMBOL, chkBark.isSelected());
+		App.prefs.setBooleanPref(PrefKey.CHART_SHOW_INNER_RING_SYMBOL, chkInnerRing.isSelected());
+		App.prefs.setBooleanPref(PrefKey.CHART_SHOW_OUTER_RING_SYMBOL, chkOuterRing.isSelected());
+		App.prefs.setBooleanPref(PrefKey.CHART_SHOW_FIRE_EVENT_SYMBOL, chkFireEvent.isSelected());
+		App.prefs.setBooleanPref(PrefKey.CHART_SHOW_INJURY_SYMBOL, chkInjuryEvent.isSelected());
+		
+		// Composite plot tab
+		App.prefs.setBooleanPref(PrefKey.CHART_SHOW_COMPOSITE_PLOT, chkCompositePlot.isSelected());
+		App.prefs.setIntPref(PrefKey.CHART_COMPOSITE_HEIGHT, (Integer) spnCompositePlotHeight.getValue());
+		App.prefs.setBooleanPref(PrefKey.CHART_SHOW_COMPOSITE_YEAR_LABELS, chkCompositeYearLabels.isSelected());
+		App.prefs.setFireFilterTypePref(PrefKey.CHART_COMPOSITE_FILTER_TYPE, (FireFilterType) cboFilterType.getSelectedItem());
+		App.prefs.setIntPref(PrefKey.CHART_COMPOSITE_FILTER_VALUE, (Integer) spnFilterValue.getValue());
+		App.prefs.setIntPref(PrefKey.CHART_COMPOSITE_MIN_NUM_SAMPLES, (Integer) spnMinNumberOfSamples.getValue());
+		App.prefs.setIntPref(PrefKey.CHART_COMPOSITE_YEAR_LABEL_FONT_SIZE, (Integer) spnCompositeYearLabelFontSize.getValue());
+		App.prefs.setPref(PrefKey.CHART_COMPOSITE_LABEL_TEXT, txtComposite.getText());
+		App.prefs.setIntPref(PrefKey.CHART_COMPOSITE_PLOT_LABEL_FONT_SIZE, (Integer) spnCompositePlotLabelFontSize.getValue());
+		App.prefs.setBooleanPref(PrefKey.CHART_COMPOSITE_YEAR_LABELS_TWO_DIGIT, radShortYearStyle.isSelected());
+		App.prefs.setIntPref(PrefKey.CHART_COMPOSITE_YEAR_LABEL_BUFFER, (Integer) spnYearLabelPadding.getValue());
+		App.prefs.setLabelOrientationPref(PrefKey.CHART_COMPOSITE_LABEL_ALIGNMENT,
+				(LabelOrientation) cboLabelOrientation.getSelectedItem());
+				
+		this.preferencesChanged = true;
+	}
+	
+	/**
+	 * Set the form items to match the values currently in the preferences. If no preference has previously been set then use the default
+	 * value.
+	 */
+	private void setFromPreferences() {
+		
+		// General tab
+		chkLegend.setSelected(App.prefs.getBooleanPref(PrefKey.CHART_SHOW_LEGEND, true));
+		cboFontFamily.setSelectedItem(App.prefs.getPref(PrefKey.CHART_FONT_FAMILY, "Verdana"));
+		chkAutoRangeXAxis.setSelected(App.prefs.getBooleanPref(PrefKey.CHART_AXIS_X_AUTO_RANGE, true));
+		spnFirstYear.setValue(App.prefs.getIntPref(PrefKey.CHART_AXIS_X_MIN, 1900));
+		spnLastYear.setValue(App.prefs.getIntPref(PrefKey.CHART_AXIS_X_MAX, 2000));
+		chkVerticalGuides.setSelected(App.prefs.getBooleanPref(PrefKey.CHART_VERTICAL_GUIDES, true));
+		setComponentColours(btnVerticalGuideColor, App.prefs.getColorPref(PrefKey.CHART_VERTICAL_GUIDE_COLOR, Color.DARK_GRAY));
+		spnVerticalGuideWeight.setValue(App.prefs.getIntPref(PrefKey.CHART_VERTICAL_GUIDE_WEIGHT, 1));
+		cboVerticalGuideStyle.setSelectedItem(App.prefs.getLineStylePref(PrefKey.CHART_VERTICAL_GUIDE_STYLE, LineStyle.DOTTED));
+		chkMajorTicks.setSelected(App.prefs.getBooleanPref(PrefKey.CHART_XAXIS_MAJOR_TICKS, true));
+		chkMinorTicks.setSelected(App.prefs.getBooleanPref(PrefKey.CHART_XAXIS_MINOR_TICKS, true));
+		spnMinorSpacing.setValue(App.prefs.getIntPref(PrefKey.CHART_XAXIS_MINOR_TICK_SPACING, 10));
+		spnMajorSpacing.setValue(App.prefs.getIntPref(PrefKey.CHART_XAXIS_MAJOR_TICK_SPACING, 50));
+		chkHighlightYears.setSelected(App.prefs.getBooleanPref(PrefKey.CHART_HIGHLIGHT_YEARS, false));
+		cboHighlightStyle.setSelectedItem(App.prefs.getLineStylePref(PrefKey.CHART_HIGHLIGHT_YEAR_STYLE, LineStyle.SOLID));
+		spnHighlightWeight.setValue(App.prefs.getIntPref(PrefKey.CHART_HIGHLIGHT_YEARS_WEIGHT, 1));
+		setComponentColours(btnHighlightColor, App.prefs.getColorPref(PrefKey.CHART_HIGHLIGHT_YEARS_COLOR, Color.YELLOW));
+		this.highlightYearsModel.clearYears();
+		this.highlightYearsModel.addYears(App.prefs.getIntegerArrayPref(PrefKey.CHART_HIGHLIGHT_YEARS_ARRAY, null));
+		
+		// Index plot tab
+		chkIndexPlot.setSelected(App.prefs.getBooleanPref(PrefKey.CHART_SHOW_INDEX_PLOT, true));
+		spnIndexPlotHeight.setValue(App.prefs.getIntPref(PrefKey.CHART_INDEX_PLOT_HEIGHT, 100));
+		if (App.prefs.getBooleanPref(PrefKey.CHART_SHOW_SAMPLE_DEPTH, false))
+		{
+			chkSampleDepth.setSelected(true);
+		}
+		else
+		{
+			chkRecorderDepth.setSelected(true);
+		}
+		setComponentColours(btnSampleDepthColor, App.prefs.getColorPref(PrefKey.CHART_SAMPLE_OR_RECORDER_DEPTH_COLOR, Color.BLUE));
+		chkPercentScarred.setSelected(App.prefs.getBooleanPref(PrefKey.CHART_SHOW_PERCENT_SCARRED, true));
+		setComponentColours(btnPercentScarredColor, App.prefs.getColorPref(PrefKey.CHART_PERCENT_SCARRED_COLOR, Color.BLACK));
+		chkSampleThreshold.setSelected(App.prefs.getBooleanPref(PrefKey.CHART_SHOW_DEPTH_THRESHOLD, false));
+		setComponentColours(btnThresholdColor, App.prefs.getColorPref(PrefKey.CHART_DEPTH_THRESHOLD_COLOR, Color.RED));
+		spnThresholdValue.setValue(App.prefs.getIntPref(PrefKey.CHART_DEPTH_THRESHOLD_VALUE, 10));
+		txtAxisY1Label.setText(App.prefs.getPref(PrefKey.CHART_AXIS_Y1_LABEL, "Sample Depth"));
+		txtAxisY2Label.setText(App.prefs.getPref(PrefKey.CHART_AXIS_Y2_LABEL, "% Scarred"));
+		spnAxisY1FontSize.setValue(App.prefs.getIntPref(PrefKey.CHART_AXIS_Y1_FONT_SIZE, 10));
+		spnAxisY2FontSize.setValue(App.prefs.getIntPref(PrefKey.CHART_AXIS_Y2_FONT_SIZE, 10));
+		
+		// Chronology plot tab
+		chkChronologyPlot.setSelected(App.prefs.getBooleanPref(PrefKey.CHART_SHOW_CHRONOLOGY_PLOT, true));
+		chkSeriesLabels.setSelected(App.prefs.getBooleanPref(PrefKey.CHART_SHOW_CHRONOLOGY_PLOT_LABELS, true));
+		spnSeriesLabelFontSize.setValue(App.prefs.getIntPref(PrefKey.CHART_CHRONOLOGY_PLOT_LABEL_FONT_SIZE, 10));
+		spnSeriesSpacing.setValue(App.prefs.getIntPref(PrefKey.CHART_CHRONOLOGY_PLOT_SPACING, 5));
+		chkPith.setSelected(App.prefs.getBooleanPref(PrefKey.CHART_SHOW_PITH_SYMBOL, true));
+		chkBark.setSelected(App.prefs.getBooleanPref(PrefKey.CHART_SHOW_BARK_SYMBOL, true));
+		chkInnerRing.setSelected(App.prefs.getBooleanPref(PrefKey.CHART_SHOW_INNER_RING_SYMBOL, true));
+		chkOuterRing.setSelected(App.prefs.getBooleanPref(PrefKey.CHART_SHOW_OUTER_RING_SYMBOL, true));
+		chkFireEvent.setSelected(App.prefs.getBooleanPref(PrefKey.CHART_SHOW_FIRE_EVENT_SYMBOL, true));
+		chkInjuryEvent.setSelected(App.prefs.getBooleanPref(PrefKey.CHART_SHOW_INJURY_SYMBOL, true));
+		
+		// Composite plot tab
+		chkCompositePlot.setSelected(App.prefs.getBooleanPref(PrefKey.CHART_SHOW_COMPOSITE_PLOT, true));
+		spnCompositePlotHeight.setValue(App.prefs.getIntPref(PrefKey.CHART_COMPOSITE_HEIGHT, 70));
+		chkCompositeYearLabels.setSelected(App.prefs.getBooleanPref(PrefKey.CHART_SHOW_COMPOSITE_YEAR_LABELS, true));
+		cboFilterType
+				.setSelectedItem(App.prefs.getFireFilterTypePref(PrefKey.CHART_COMPOSITE_FILTER_TYPE, FireFilterType.NUMBER_OF_EVENTS));
+		spnFilterValue.setValue(App.prefs.getIntPref(PrefKey.CHART_COMPOSITE_FILTER_VALUE, 2));
+		spnMinNumberOfSamples.setValue(App.prefs.getIntPref(PrefKey.CHART_COMPOSITE_MIN_NUM_SAMPLES, 2));
+		spnCompositeYearLabelFontSize.setValue(App.prefs.getIntPref(PrefKey.CHART_COMPOSITE_YEAR_LABEL_FONT_SIZE, 8));
+		txtComposite.setText(App.prefs.getPref(PrefKey.CHART_COMPOSITE_LABEL_TEXT, "Composite"));
+		spnCompositePlotLabelFontSize.setValue(App.prefs.getIntPref(PrefKey.CHART_COMPOSITE_PLOT_LABEL_FONT_SIZE, 10));
+		radShortYearStyle.setSelected(App.prefs.getBooleanPref(PrefKey.CHART_COMPOSITE_YEAR_LABELS_TWO_DIGIT, false));
+		radLongYearStyle.setSelected(!App.prefs.getBooleanPref(PrefKey.CHART_COMPOSITE_YEAR_LABELS_TWO_DIGIT, false));
+		spnYearLabelPadding.setValue(App.prefs.getIntPref(PrefKey.CHART_COMPOSITE_YEAR_LABEL_BUFFER, 5));
+		cboLabelOrientation
+				.setSelectedItem(App.prefs.getLabelOrientationPref(PrefKey.CHART_COMPOSITE_LABEL_ALIGNMENT, LabelOrientation.HORIZONTAL));
+				
+		tryAutoSetYAxisLabel();
+		setVerticalGuideGUI();
+		setHighlightYearsGUI();
+		setIndexPlotGUI();
+		setChronologyPlotGUI();
+		setCompositePlotGUI();
+		setCompositeYearLabelsGUI();
+		this.setXAxisGui();
+	}
+	
+	/**
+	 * Initializes the GUI.
+	 */
+	private void initGUI() {
 		
 		this.setIconImage(Builder.getApplicationIcon());
 		this.setTitle("Chart Properties");
@@ -233,9 +719,6 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 						
 						panel_1.add(cboFontFamily, "cell 1 1 2 1");
 					}
-					{
-					
-					}
 				}
 				{
 					JPanel panel_1 = new JPanel();
@@ -251,7 +734,6 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 							public void actionPerformed(ActionEvent arg0) {
 								
 								setXAxisGui();
-								
 							}
 							
 						});
@@ -326,9 +808,7 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 								App.prefs.setColorPref(PrefKey.CHART_VERTICAL_GUIDE_COLOR, newcolor);
 								setComponentColours(btnVerticalGuideColor, newcolor);
 							}
-							
 						}
-						
 					});
 					panel_1.add(btnVerticalGuideColor, "cell 6 0,growy");
 					{
@@ -419,9 +899,7 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 									App.prefs.setColorPref(PrefKey.CHART_HIGHLIGHT_YEARS_COLOR, newcolor);
 									setComponentColours(btnHighlightColor, newcolor);
 								}
-								
 							}
-							
 						});
 						panel_1.add(btnHighlightColor, "cell 6 0");
 					}
@@ -507,9 +985,7 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 						public void actionPerformed(ActionEvent arg0) {
 							
 							tryAutoSetYAxisLabel();
-							
 						}
-						
 					});
 					group.add(chkSampleDepth);
 					panelIndexPlotComponents.add(chkSampleDepth, "cell 1 0");
@@ -531,9 +1007,7 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 								App.prefs.setColorPref(PrefKey.CHART_SAMPLE_OR_RECORDER_DEPTH_COLOR, newcolor);
 								setComponentColours(btnSampleDepthColor, newcolor);
 							}
-							
 						}
-						
 					});
 					panelIndexPlotComponents.add(btnSampleDepthColor, "cell 2 0 1 2");
 				}
@@ -549,9 +1023,7 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 						public void actionPerformed(ActionEvent arg0) {
 							
 							tryAutoSetYAxisLabel();
-							
 						}
-						
 					});
 					
 					group.add(chkRecorderDepth);
@@ -582,9 +1054,7 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 								App.prefs.setColorPref(PrefKey.CHART_PERCENT_SCARRED_COLOR, newcolor);
 								setComponentColours(btnPercentScarredColor, newcolor);
 							}
-							
 						}
-						
 					});
 					
 					panelIndexPlotComponents.add(btnPercentScarredColor, "cell 2 2");
@@ -613,9 +1083,7 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 								App.prefs.setColorPref(PrefKey.CHART_DEPTH_THRESHOLD_COLOR, newcolor);
 								setComponentColours(btnThresholdColor, newcolor);
 							}
-							
 						}
-						
 					});
 					panelIndexPlotComponents.add(btnThresholdColor, "cell 2 3");
 				}
@@ -714,9 +1182,7 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 							public void actionPerformed(ActionEvent arg0) {
 								
 								SeriesListDialog.showDialog(neoFHChart.currentChart, neoFHChart.svgCanvas);
-								
 							}
-							
 						});
 						panelChronologySeries.add(btnChooseSeriesToPlot, "flowx,cell 1 1");
 					}
@@ -960,254 +1426,10 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 		setFromPreferences();
 	}
 	
-	private void setXAxisGui() {
-		
-		if (this.chkAutoRangeXAxis.isSelected())
-		{
-			this.spnFirstYear.setEnabled(false);
-			this.spnLastYear.setEnabled(false);
-		}
-		else
-		{
-			this.spnFirstYear.setEnabled(true);
-			this.spnLastYear.setEnabled(true);
-		}
-	}
-	
 	/**
-	 * Set the form items to match the values currently in the preferences. If no preference has previously been set then use the default
-	 * value
+	 * LineStyleRenderer Class.
 	 */
-	private void setFromPreferences() {
-		
-		// General tab
-		chkLegend.setSelected(App.prefs.getBooleanPref(PrefKey.CHART_SHOW_LEGEND, true));
-		cboFontFamily.setSelectedItem(App.prefs.getPref(PrefKey.CHART_FONT_FAMILY, "Verdana"));
-		chkAutoRangeXAxis.setSelected(App.prefs.getBooleanPref(PrefKey.CHART_AXIS_X_AUTO_RANGE, true));
-		spnFirstYear.setValue(App.prefs.getIntPref(PrefKey.CHART_AXIS_X_MIN, 1900));
-		spnLastYear.setValue(App.prefs.getIntPref(PrefKey.CHART_AXIS_X_MAX, 2000));
-		chkVerticalGuides.setSelected(App.prefs.getBooleanPref(PrefKey.CHART_VERTICAL_GUIDES, true));
-		setComponentColours(btnVerticalGuideColor, App.prefs.getColorPref(PrefKey.CHART_VERTICAL_GUIDE_COLOR, Color.DARK_GRAY));
-		spnVerticalGuideWeight.setValue(App.prefs.getIntPref(PrefKey.CHART_VERTICAL_GUIDE_WEIGHT, 1));
-		cboVerticalGuideStyle.setSelectedItem(App.prefs.getLineStylePref(PrefKey.CHART_VERTICAL_GUIDE_STYLE, LineStyle.DOTTED));
-		chkMajorTicks.setSelected(App.prefs.getBooleanPref(PrefKey.CHART_XAXIS_MAJOR_TICKS, true));
-		chkMinorTicks.setSelected(App.prefs.getBooleanPref(PrefKey.CHART_XAXIS_MINOR_TICKS, true));
-		spnMinorSpacing.setValue(App.prefs.getIntPref(PrefKey.CHART_XAXIS_MINOR_TICK_SPACING, 10));
-		spnMajorSpacing.setValue(App.prefs.getIntPref(PrefKey.CHART_XAXIS_MAJOR_TICK_SPACING, 50));
-		chkHighlightYears.setSelected(App.prefs.getBooleanPref(PrefKey.CHART_HIGHLIGHT_YEARS, false));
-		cboHighlightStyle.setSelectedItem(App.prefs.getLineStylePref(PrefKey.CHART_HIGHLIGHT_YEAR_STYLE, LineStyle.SOLID));
-		spnHighlightWeight.setValue(App.prefs.getIntPref(PrefKey.CHART_HIGHLIGHT_YEARS_WEIGHT, 1));
-		setComponentColours(btnHighlightColor, App.prefs.getColorPref(PrefKey.CHART_HIGHLIGHT_YEARS_COLOR, Color.YELLOW));
-		this.highlightYearsModel.clearYears();
-		this.highlightYearsModel.addYears(App.prefs.getIntegerArrayPref(PrefKey.CHART_HIGHLIGHT_YEARS_ARRAY, null));
-		
-		// Index plot tab
-		chkIndexPlot.setSelected(App.prefs.getBooleanPref(PrefKey.CHART_SHOW_INDEX_PLOT, true));
-		spnIndexPlotHeight.setValue(App.prefs.getIntPref(PrefKey.CHART_INDEX_PLOT_HEIGHT, 100));
-		if (App.prefs.getBooleanPref(PrefKey.CHART_SHOW_SAMPLE_DEPTH, false))
-		{
-			chkSampleDepth.setSelected(true);
-		}
-		else
-		{
-			chkRecorderDepth.setSelected(true);
-		}
-		setComponentColours(btnSampleDepthColor, App.prefs.getColorPref(PrefKey.CHART_SAMPLE_OR_RECORDER_DEPTH_COLOR, Color.BLUE));
-		chkPercentScarred.setSelected(App.prefs.getBooleanPref(PrefKey.CHART_SHOW_PERCENT_SCARRED, true));
-		setComponentColours(btnPercentScarredColor, App.prefs.getColorPref(PrefKey.CHART_PERCENT_SCARRED_COLOR, Color.BLACK));
-		chkSampleThreshold.setSelected(App.prefs.getBooleanPref(PrefKey.CHART_SHOW_DEPTH_THRESHOLD, false));
-		setComponentColours(btnThresholdColor, App.prefs.getColorPref(PrefKey.CHART_DEPTH_THRESHOLD_COLOR, Color.RED));
-		spnThresholdValue.setValue(App.prefs.getIntPref(PrefKey.CHART_DEPTH_THRESHOLD_VALUE, 10));
-		txtAxisY1Label.setText(App.prefs.getPref(PrefKey.CHART_AXIS_Y1_LABEL, "Sample Depth"));
-		txtAxisY2Label.setText(App.prefs.getPref(PrefKey.CHART_AXIS_Y2_LABEL, "% Scarred"));
-		spnAxisY1FontSize.setValue(App.prefs.getIntPref(PrefKey.CHART_AXIS_Y1_FONT_SIZE, 10));
-		spnAxisY2FontSize.setValue(App.prefs.getIntPref(PrefKey.CHART_AXIS_Y2_FONT_SIZE, 10));
-		
-		// Chronology plot tab
-		chkChronologyPlot.setSelected(App.prefs.getBooleanPref(PrefKey.CHART_SHOW_CHRONOLOGY_PLOT, true));
-		chkSeriesLabels.setSelected(App.prefs.getBooleanPref(PrefKey.CHART_SHOW_CHRONOLOGY_PLOT_LABELS, true));
-		spnSeriesLabelFontSize.setValue(App.prefs.getIntPref(PrefKey.CHART_CHRONOLOGY_PLOT_LABEL_FONT_SIZE, 10));
-		spnSeriesSpacing.setValue(App.prefs.getIntPref(PrefKey.CHART_CHRONOLOGY_PLOT_SPACING, 5));
-		chkPith.setSelected(App.prefs.getBooleanPref(PrefKey.CHART_SHOW_PITH_SYMBOL, true));
-		chkBark.setSelected(App.prefs.getBooleanPref(PrefKey.CHART_SHOW_BARK_SYMBOL, true));
-		chkInnerRing.setSelected(App.prefs.getBooleanPref(PrefKey.CHART_SHOW_INNER_RING_SYMBOL, true));
-		chkOuterRing.setSelected(App.prefs.getBooleanPref(PrefKey.CHART_SHOW_OUTER_RING_SYMBOL, true));
-		chkFireEvent.setSelected(App.prefs.getBooleanPref(PrefKey.CHART_SHOW_FIRE_EVENT_SYMBOL, true));
-		chkInjuryEvent.setSelected(App.prefs.getBooleanPref(PrefKey.CHART_SHOW_INJURY_SYMBOL, true));
-		
-		// Composite plot tab
-		chkCompositePlot.setSelected(App.prefs.getBooleanPref(PrefKey.CHART_SHOW_COMPOSITE_PLOT, true));
-		spnCompositePlotHeight.setValue(App.prefs.getIntPref(PrefKey.CHART_COMPOSITE_HEIGHT, 70));
-		chkCompositeYearLabels.setSelected(App.prefs.getBooleanPref(PrefKey.CHART_SHOW_COMPOSITE_YEAR_LABELS, true));
-		cboFilterType
-				.setSelectedItem(App.prefs.getFireFilterTypePref(PrefKey.CHART_COMPOSITE_FILTER_TYPE, FireFilterType.NUMBER_OF_EVENTS));
-		spnFilterValue.setValue(App.prefs.getIntPref(PrefKey.CHART_COMPOSITE_FILTER_VALUE, 2));
-		spnMinNumberOfSamples.setValue(App.prefs.getIntPref(PrefKey.CHART_COMPOSITE_MIN_NUM_SAMPLES, 2));
-		spnCompositeYearLabelFontSize.setValue(App.prefs.getIntPref(PrefKey.CHART_COMPOSITE_YEAR_LABEL_FONT_SIZE, 8));
-		txtComposite.setText(App.prefs.getPref(PrefKey.CHART_COMPOSITE_LABEL_TEXT, "Composite"));
-		spnCompositePlotLabelFontSize.setValue(App.prefs.getIntPref(PrefKey.CHART_COMPOSITE_PLOT_LABEL_FONT_SIZE, 10));
-		radShortYearStyle.setSelected(App.prefs.getBooleanPref(PrefKey.CHART_COMPOSITE_YEAR_LABELS_TWO_DIGIT, false));
-		radLongYearStyle.setSelected(!App.prefs.getBooleanPref(PrefKey.CHART_COMPOSITE_YEAR_LABELS_TWO_DIGIT, false));
-		spnYearLabelPadding.setValue(App.prefs.getIntPref(PrefKey.CHART_COMPOSITE_YEAR_LABEL_BUFFER, 5));
-		cboLabelOrientation
-				.setSelectedItem(App.prefs.getLabelOrientationPref(PrefKey.CHART_COMPOSITE_LABEL_ALIGNMENT, LabelOrientation.HORIZONTAL));
-				
-		tryAutoSetYAxisLabel();
-		setVerticalGuideGUI();
-		setHighlightYearsGUI();
-		setIndexPlotGUI();
-		setChronologyPlotGUI();
-		setCompositePlotGUI();
-		setCompositeYearLabelsGUI();
-		this.setXAxisGui();
-	}
-	
-	/**
-	 * Save the chart properties to the preferences
-	 */
-	private void saveToPreferences() {
-		
-		// General tab
-		App.prefs.setBooleanPref(PrefKey.CHART_SHOW_LEGEND, chkLegend.isSelected());
-		App.prefs.setPref(PrefKey.CHART_FONT_FAMILY, cboFontFamily.getSelectedFontName());
-		App.prefs.setBooleanPref(PrefKey.CHART_AXIS_X_AUTO_RANGE, chkAutoRangeXAxis.isSelected());
-		App.prefs.setIntPref(PrefKey.CHART_AXIS_X_MIN, (Integer) spnFirstYear.getValue());
-		App.prefs.setIntPref(PrefKey.CHART_AXIS_X_MAX, (Integer) spnLastYear.getValue());
-		App.prefs.setBooleanPref(PrefKey.CHART_VERTICAL_GUIDES, chkVerticalGuides.isSelected());
-		App.prefs.setColorPref(PrefKey.CHART_VERTICAL_GUIDE_COLOR, btnVerticalGuideColor.getBackground());
-		App.prefs.setIntPref(PrefKey.CHART_VERTICAL_GUIDE_WEIGHT, (Integer) spnVerticalGuideWeight.getValue());
-		App.prefs.setLineStylePref(PrefKey.CHART_VERTICAL_GUIDE_STYLE, (LineStyle) cboVerticalGuideStyle.getSelectedItem());
-		App.prefs.setIntPref(PrefKey.CHART_XAXIS_MAJOR_TICK_SPACING, (Integer) spnMajorSpacing.getValue());
-		App.prefs.setIntPref(PrefKey.CHART_XAXIS_MINOR_TICK_SPACING, (Integer) spnMinorSpacing.getValue());
-		App.prefs.setBooleanPref(PrefKey.CHART_XAXIS_MAJOR_TICKS, chkMajorTicks.isSelected());
-		App.prefs.setBooleanPref(PrefKey.CHART_XAXIS_MINOR_TICKS, chkMinorTicks.isSelected());
-		App.prefs.setBooleanPref(PrefKey.CHART_HIGHLIGHT_YEARS, chkHighlightYears.isSelected());
-		App.prefs.setLineStylePref(PrefKey.CHART_HIGHLIGHT_YEAR_STYLE, (LineStyle) cboHighlightStyle.getSelectedItem());
-		App.prefs.setIntPref(PrefKey.CHART_HIGHLIGHT_YEARS_WEIGHT, (int) spnHighlightWeight.getValue());
-		App.prefs.setColorPref(PrefKey.CHART_HIGHLIGHT_YEARS_COLOR, btnHighlightColor.getBackground());
-		App.prefs.setIntegerArrayPref(PrefKey.CHART_HIGHLIGHT_YEARS_ARRAY, highlightYearsModel.getAllYears());
-		
-		// Index plot tab
-		App.prefs.setBooleanPref(PrefKey.CHART_SHOW_INDEX_PLOT, chkIndexPlot.isSelected());
-		App.prefs.setIntPref(PrefKey.CHART_INDEX_PLOT_HEIGHT, (Integer) spnIndexPlotHeight.getValue());
-		App.prefs.setBooleanPref(PrefKey.CHART_SHOW_SAMPLE_DEPTH, chkSampleDepth.isSelected());
-		App.prefs.setColorPref(PrefKey.CHART_SAMPLE_OR_RECORDER_DEPTH_COLOR, btnSampleDepthColor.getBackground());
-		App.prefs.setBooleanPref(PrefKey.CHART_SHOW_PERCENT_SCARRED, chkPercentScarred.isSelected());
-		App.prefs.setColorPref(PrefKey.CHART_PERCENT_SCARRED_COLOR, btnPercentScarredColor.getBackground());
-		App.prefs.setBooleanPref(PrefKey.CHART_SHOW_DEPTH_THRESHOLD, chkSampleThreshold.isSelected());
-		App.prefs.setColorPref(PrefKey.CHART_DEPTH_THRESHOLD_COLOR, btnThresholdColor.getBackground());
-		App.prefs.setIntPref(PrefKey.CHART_DEPTH_THRESHOLD_VALUE, (Integer) spnThresholdValue.getValue());
-		App.prefs.setPref(PrefKey.CHART_AXIS_Y1_LABEL, txtAxisY1Label.getText());
-		App.prefs.setPref(PrefKey.CHART_AXIS_Y2_LABEL, txtAxisY2Label.getText());
-		App.prefs.setIntPref(PrefKey.CHART_AXIS_Y1_FONT_SIZE, (Integer) spnAxisY1FontSize.getValue());
-		App.prefs.setIntPref(PrefKey.CHART_AXIS_Y2_FONT_SIZE, (Integer) spnAxisY2FontSize.getValue());
-		
-		// Chronology plot tab
-		App.prefs.setBooleanPref(PrefKey.CHART_SHOW_CHRONOLOGY_PLOT, chkChronologyPlot.isSelected());
-		App.prefs.setBooleanPref(PrefKey.CHART_SHOW_CHRONOLOGY_PLOT_LABELS, chkSeriesLabels.isSelected());
-		App.prefs.setIntPref(PrefKey.CHART_CHRONOLOGY_PLOT_LABEL_FONT_SIZE, (Integer) spnSeriesLabelFontSize.getValue());
-		App.prefs.setIntPref(PrefKey.CHART_CHRONOLOGY_PLOT_SPACING, (Integer) spnSeriesSpacing.getValue());
-		App.prefs.setBooleanPref(PrefKey.CHART_SHOW_PITH_SYMBOL, chkPith.isSelected());
-		App.prefs.setBooleanPref(PrefKey.CHART_SHOW_BARK_SYMBOL, chkBark.isSelected());
-		App.prefs.setBooleanPref(PrefKey.CHART_SHOW_INNER_RING_SYMBOL, chkInnerRing.isSelected());
-		App.prefs.setBooleanPref(PrefKey.CHART_SHOW_OUTER_RING_SYMBOL, chkOuterRing.isSelected());
-		App.prefs.setBooleanPref(PrefKey.CHART_SHOW_FIRE_EVENT_SYMBOL, chkFireEvent.isSelected());
-		App.prefs.setBooleanPref(PrefKey.CHART_SHOW_INJURY_SYMBOL, chkInjuryEvent.isSelected());
-		
-		// Composite plot tab
-		App.prefs.setBooleanPref(PrefKey.CHART_SHOW_COMPOSITE_PLOT, chkCompositePlot.isSelected());
-		App.prefs.setIntPref(PrefKey.CHART_COMPOSITE_HEIGHT, (Integer) spnCompositePlotHeight.getValue());
-		App.prefs.setBooleanPref(PrefKey.CHART_SHOW_COMPOSITE_YEAR_LABELS, chkCompositeYearLabels.isSelected());
-		App.prefs.setFireFilterTypePref(PrefKey.CHART_COMPOSITE_FILTER_TYPE, (FireFilterType) cboFilterType.getSelectedItem());
-		App.prefs.setIntPref(PrefKey.CHART_COMPOSITE_FILTER_VALUE, (Integer) spnFilterValue.getValue());
-		App.prefs.setIntPref(PrefKey.CHART_COMPOSITE_MIN_NUM_SAMPLES, (Integer) spnMinNumberOfSamples.getValue());
-		App.prefs.setIntPref(PrefKey.CHART_COMPOSITE_YEAR_LABEL_FONT_SIZE, (Integer) spnCompositeYearLabelFontSize.getValue());
-		App.prefs.setPref(PrefKey.CHART_COMPOSITE_LABEL_TEXT, txtComposite.getText());
-		App.prefs.setIntPref(PrefKey.CHART_COMPOSITE_PLOT_LABEL_FONT_SIZE, (Integer) spnCompositePlotLabelFontSize.getValue());
-		App.prefs.setBooleanPref(PrefKey.CHART_COMPOSITE_YEAR_LABELS_TWO_DIGIT, radShortYearStyle.isSelected());
-		App.prefs.setIntPref(PrefKey.CHART_COMPOSITE_YEAR_LABEL_BUFFER, (Integer) spnYearLabelPadding.getValue());
-		App.prefs.setLabelOrientationPref(PrefKey.CHART_COMPOSITE_LABEL_ALIGNMENT,
-				(LabelOrientation) cboLabelOrientation.getSelectedItem());
-				
-		this.preferencesChanged = true;
-		
-	}
-	
-	/**
-	 * Return all the chart properties to their default values
-	 */
-	private void setToDefaults() {
-		
-		// Clear preferences first then set all to default
-		
-		// General tab
-		App.prefs.clearPref(PrefKey.CHART_SHOW_LEGEND);
-		App.prefs.clearPref(PrefKey.CHART_FONT_FAMILY);
-		App.prefs.clearPref(PrefKey.CHART_AXIS_X_AUTO_RANGE);
-		App.prefs.clearPref(PrefKey.CHART_AXIS_X_MIN);
-		App.prefs.clearPref(PrefKey.CHART_AXIS_X_MAX);
-		App.prefs.clearPref(PrefKey.CHART_VERTICAL_GUIDES);
-		App.prefs.clearPref(PrefKey.CHART_VERTICAL_GUIDE_COLOR);
-		App.prefs.clearPref(PrefKey.CHART_VERTICAL_GUIDE_WEIGHT);
-		App.prefs.clearPref(PrefKey.CHART_VERTICAL_GUIDE_STYLE);
-		App.prefs.clearPref(PrefKey.CHART_XAXIS_MAJOR_TICK_SPACING);
-		App.prefs.clearPref(PrefKey.CHART_XAXIS_MINOR_TICK_SPACING);
-		App.prefs.clearPref(PrefKey.CHART_XAXIS_MAJOR_TICKS);
-		App.prefs.clearPref(PrefKey.CHART_XAXIS_MINOR_TICKS);
-		App.prefs.clearPref(PrefKey.CHART_HIGHLIGHT_YEARS);
-		App.prefs.clearPref(PrefKey.CHART_HIGHLIGHT_YEAR_STYLE);
-		App.prefs.clearPref(PrefKey.CHART_HIGHLIGHT_YEARS_COLOR);
-		App.prefs.clearPref(PrefKey.CHART_HIGHLIGHT_YEARS_WEIGHT);
-		App.prefs.clearPref(PrefKey.CHART_HIGHLIGHT_YEARS_ARRAY);
-		App.prefs.clearPref(PrefKey.CHART_FONT_BOLD);
-		App.prefs.clearPref(PrefKey.CHART_FONT_ITALIC);
-		
-		// Index plot tab
-		App.prefs.clearPref(PrefKey.CHART_SHOW_INDEX_PLOT);
-		App.prefs.clearPref(PrefKey.CHART_INDEX_PLOT_HEIGHT);
-		App.prefs.clearPref(PrefKey.CHART_SHOW_SAMPLE_DEPTH);
-		App.prefs.clearPref(PrefKey.CHART_SAMPLE_OR_RECORDER_DEPTH_COLOR);
-		App.prefs.clearPref(PrefKey.CHART_SHOW_PERCENT_SCARRED);
-		App.prefs.clearPref(PrefKey.CHART_PERCENT_SCARRED_COLOR);
-		App.prefs.clearPref(PrefKey.CHART_SHOW_DEPTH_THRESHOLD);
-		App.prefs.clearPref(PrefKey.CHART_DEPTH_THRESHOLD_COLOR);
-		App.prefs.clearPref(PrefKey.CHART_DEPTH_THRESHOLD_VALUE);
-		App.prefs.clearPref(PrefKey.CHART_AXIS_Y1_LABEL);
-		App.prefs.clearPref(PrefKey.CHART_AXIS_Y2_LABEL);
-		App.prefs.clearPref(PrefKey.CHART_AXIS_Y1_FONT_SIZE);
-		App.prefs.clearPref(PrefKey.CHART_AXIS_Y2_FONT_SIZE);
-		
-		// Chronology plot tab
-		App.prefs.clearPref(PrefKey.CHART_SHOW_CHRONOLOGY_PLOT);
-		App.prefs.clearPref(PrefKey.CHART_SHOW_CHRONOLOGY_PLOT_LABELS);
-		App.prefs.clearPref(PrefKey.CHART_CHRONOLOGY_PLOT_LABEL_FONT_SIZE);
-		App.prefs.clearPref(PrefKey.CHART_CHRONOLOGY_PLOT_SPACING);
-		App.prefs.clearPref(PrefKey.CHART_SHOW_PITH_SYMBOL);
-		App.prefs.clearPref(PrefKey.CHART_SHOW_BARK_SYMBOL);
-		App.prefs.clearPref(PrefKey.CHART_SHOW_INNER_RING_SYMBOL);
-		App.prefs.clearPref(PrefKey.CHART_SHOW_OUTER_RING_SYMBOL);
-		App.prefs.clearPref(PrefKey.CHART_SHOW_FIRE_EVENT_SYMBOL);
-		App.prefs.clearPref(PrefKey.CHART_SHOW_INJURY_SYMBOL);
-		
-		// Composite plot tab
-		App.prefs.clearPref(PrefKey.CHART_SHOW_COMPOSITE_PLOT);
-		App.prefs.clearPref(PrefKey.CHART_COMPOSITE_HEIGHT);
-		App.prefs.clearPref(PrefKey.CHART_SHOW_COMPOSITE_YEAR_LABELS);
-		App.prefs.clearPref(PrefKey.CHART_COMPOSITE_FILTER_TYPE);
-		App.prefs.clearPref(PrefKey.CHART_COMPOSITE_FILTER_VALUE);
-		App.prefs.clearPref(PrefKey.CHART_COMPOSITE_MIN_NUM_SAMPLES);
-		App.prefs.clearPref(PrefKey.CHART_COMPOSITE_YEAR_LABEL_FONT_SIZE);
-		App.prefs.clearPref(PrefKey.CHART_COMPOSITE_LABEL_TEXT);
-		App.prefs.clearPref(PrefKey.CHART_COMPOSITE_PLOT_LABEL_FONT_SIZE);
-		App.prefs.clearPref(PrefKey.CHART_COMPOSITE_YEAR_LABELS_TWO_DIGIT);
-		App.prefs.clearPref(PrefKey.CHART_COMPOSITE_YEAR_LABEL_BUFFER);
-		App.prefs.clearPref(PrefKey.CHART_COMPOSITE_LABEL_ALIGNMENT);
-		
-		setFromPreferences();
-		
-	}
-	
-	class LineStyleRenderer extends JLabel implements ListCellRenderer<LineStyle> {
+	private class LineStyleRenderer extends JLabel implements ListCellRenderer<LineStyle> {
 		
 		private static final long serialVersionUID = 1L;
 		
@@ -1252,204 +1474,5 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 			
 			return this;
 		}
-		
 	}
-	
-	@Override
-	public void actionPerformed(ActionEvent evt) {
-		
-		if (evt.getActionCommand().equals("OK"))
-		{
-			saveToPreferences();
-			dispose();
-		}
-		else if (evt.getActionCommand().equals("Cancel"))
-		{
-			dispose();
-		}
-		else if (evt.getActionCommand().equals("Reset"))
-		{
-			setToDefaults();
-		}
-		else if (evt.getActionCommand().equals("VerticalGuides"))
-		{
-			this.setVerticalGuideGUI();
-		}
-		else if (evt.getActionCommand().equals("HighlightYears"))
-		{
-			this.setHighlightYearsGUI();
-		}
-		else if (evt.getActionCommand().equals("IndexPlot"))
-		{
-			this.setIndexPlotGUI();
-		}
-		else if (evt.getActionCommand().equals("ChronologyPlot"))
-		{
-			this.setChronologyPlotGUI();
-		}
-		else if (evt.getActionCommand().equals("CompositePlot"))
-		{
-			this.setCompositePlotGUI();
-		}
-		else if (evt.getActionCommand().equals("CompositeYearLabels"))
-		{
-			this.setCompositeYearLabelsGUI();
-		}
-		else if (evt.getActionCommand().equals("AddHighlightYear"))
-		{
-			JSpinner spnYear = new JSpinner();
-			JSpinner.NumberEditor editor = new JSpinner.NumberEditor(spnYear, "#");
-			spnYear.setEditor(editor);
-			
-			int result = JOptionPane.showConfirmDialog(this, spnYear, "Highlight Year", JOptionPane.OK_CANCEL_OPTION,
-					JOptionPane.QUESTION_MESSAGE);
-			if (result == JOptionPane.OK_OPTION)
-			{
-				int highlightyear = (int) spnYear.getValue();
-				highlightYearsModel.addYear(highlightyear);
-				highlightYearsModel.sort();
-			}
-		}
-		else if (evt.getActionCommand().equals("RemoveHighlightYear"))
-		{
-			this.highlightYearsModel.removeYearAtIndex(this.lstHightlightYears.getSelectedIndex());
-		}
-	}
-	
-	public boolean havePreferencesChanged() {
-		
-		return preferencesChanged;
-	}
-	
-	/**
-	 * Try and set the YAxis label to match the depth type, but only do so if the user hasn't already overriden with their own text
-	 */
-	private void tryAutoSetYAxisLabel() {
-		
-		String text = this.txtAxisY1Label.getText();
-		if (text.toLowerCase().equals("recorder depth") || text.toLowerCase().equals("sample depth"))
-		{
-			if (this.chkSampleDepth.isSelected())
-			{
-				txtAxisY1Label.setText("Sample Depth");
-			}
-			else
-			{
-				txtAxisY1Label.setText("Recorder Depth");
-			}
-		}
-		
-	}
-	
-	/**
-	 * Enable/disable GUI based components based on selections
-	 */
-	private void setVerticalGuideGUI() {
-		
-		cboVerticalGuideStyle.setEnabled(chkVerticalGuides.isSelected());
-		spnVerticalGuideWeight.setEnabled(chkVerticalGuides.isSelected());
-		btnVerticalGuideColor.setEnabled(chkVerticalGuides.isSelected());
-	}
-	
-	/**
-	 * Enable/disable GUI based components based on selections
-	 */
-	private void setHighlightYearsGUI() {
-		
-		cboHighlightStyle.setEnabled(chkHighlightYears.isSelected());
-		spnHighlightWeight.setEnabled(chkHighlightYears.isSelected());
-		btnHighlightColor.setEnabled(chkHighlightYears.isSelected());
-		lstHightlightYears.setEnabled(chkHighlightYears.isSelected());
-		btnAddYear.setEnabled(chkHighlightYears.isSelected());
-		btnRemoveYear.setEnabled(chkHighlightYears.isSelected());
-	}
-	
-	/**
-	 * Enable/disable GUI based components based on selections
-	 */
-	private void setIndexPlotGUI() {
-		
-		setEnablePanelComponents(panelIndexPlotGeneral, chkIndexPlot.isSelected());
-		setEnablePanelComponents(panelIndexPlotComponents, chkIndexPlot.isSelected());
-		setEnablePanelComponents(panelIndexPlotY1, chkIndexPlot.isSelected());
-		setEnablePanelComponents(panelIndexPlotY2, chkIndexPlot.isSelected());
-		lstHightlightYears.setEnabled(chkIndexPlot.isSelected());
-		
-	}
-	
-	/**
-	 * Enable/disable GUI based components based on selections
-	 */
-	private void setChronologyPlotGUI() {
-		
-		setEnablePanelComponents(panelChronologySeries, chkChronologyPlot.isSelected());
-		setEnablePanelComponents(panelChronologySymbols, chkChronologyPlot.isSelected());
-		
-	}
-	
-	/**
-	 * Enable/disable GUI based components based on selections
-	 */
-	private void setCompositePlotGUI() {
-		
-		setEnablePanelComponents(panelCompositeFilters, chkCompositePlot.isSelected());
-		setEnablePanelComponents(panelCompositeGeneral, chkCompositePlot.isSelected());
-		setEnablePanelComponents(panelCompositeYearLabels, chkCompositePlot.isSelected());
-	}
-	
-	/**
-	 * Enable/disable GUI based components based on selections
-	 */
-	private void setCompositeYearLabelsGUI() {
-		
-		if (!this.chkCompositeYearLabels.isEnabled())
-			return;
-			
-		radShortYearStyle.setEnabled(chkCompositeYearLabels.isSelected());
-		radLongYearStyle.setEnabled(chkCompositeYearLabels.isSelected());
-		spnCompositeYearLabelFontSize.setEnabled(chkCompositeYearLabels.isSelected());
-		spnYearLabelPadding.setEnabled(chkCompositeYearLabels.isSelected());
-		cboLabelOrientation.setEnabled(chkCompositeYearLabels.isSelected());
-		lblPx.setEnabled(chkCompositeYearLabels.isSelected());
-	}
-	
-	private void setEnablePanelComponents(JPanel panel, boolean enable) {
-		
-		if (panel == null)
-			return;
-		if (panel.getComponents().length == 0)
-			return;
-			
-		panel.setEnabled(enable);
-		
-		for (Component component : panel.getComponents())
-		{
-			component.setEnabled(enable);
-		}
-	}
-	
-	public JCheckBox getChkCompositeYearLabels() {
-		
-		return chkCompositeYearLabels;
-	}
-	
-	public static void setComponentColours(Component component, Color background) {
-		
-		component.setBackground(background);
-		component.setForeground(getContrastingLabelColour(background));
-	}
-	
-	public static Color getContrastingLabelColour(Color newcolor) {
-		
-		double brightness = 0.299 * newcolor.getRed() + 0.587 * newcolor.getGreen() + 0.114 * newcolor.getBlue();
-		
-		if (brightness > 125.0)
-		{
-			return Color.BLACK;
-		}
-		
-		return Color.WHITE;
-		
-	}
-	
 }

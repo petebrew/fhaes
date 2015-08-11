@@ -29,31 +29,53 @@ import javax.swing.AbstractListModel;
 public class YearListModel extends AbstractListModel<Integer> {
 	
 	private static final long serialVersionUID = 1L;
+	
+	// Declare local variables
 	ArrayList<Integer> items = new ArrayList<Integer>();
 	
+	/**
+	 * TODO
+	 */
 	@Override
 	public Integer getElementAt(int index) {
 		
 		return items.get(index);
 	}
 	
+	/**
+	 * TODO
+	 */
 	@Override
 	public int getSize() {
 		
 		return items.size();
 	}
 	
+	/**
+	 * TODO
+	 */
 	public void clearYears() {
 		
 		items = new ArrayList<Integer>();
 		this.fireContentsChanged(this, 0, items.size() - 1);
 	}
 	
+	/**
+	 * TODO
+	 * 
+	 * @param index
+	 * @return
+	 */
 	public Integer getYearAt(int index) {
 		
 		return getElementAt(index);
 	}
 	
+	/**
+	 * TODO
+	 * 
+	 * @param value
+	 */
 	public void addYear(Integer value) {
 		
 		if (value == null)
@@ -64,6 +86,11 @@ public class YearListModel extends AbstractListModel<Integer> {
 		this.fireContentsChanged(this, 0, items.size() - 1);
 	}
 	
+	/**
+	 * TODO
+	 * 
+	 * @param values
+	 */
 	public void addYears(Collection<Integer> values) {
 		
 		if (values == null)
@@ -76,6 +103,11 @@ public class YearListModel extends AbstractListModel<Integer> {
 		this.fireContentsChanged(this, 0, items.size() - 1);
 	}
 	
+	/**
+	 * TODO
+	 * 
+	 * @param value
+	 */
 	public void removeYear(Integer value) {
 		
 		items.remove(value);
@@ -89,6 +121,11 @@ public class YearListModel extends AbstractListModel<Integer> {
 		}
 	}
 	
+	/**
+	 * TODO
+	 * 
+	 * @param index
+	 */
 	public void removeYearAtIndex(int index) {
 		
 		items.remove(index);
@@ -103,11 +140,19 @@ public class YearListModel extends AbstractListModel<Integer> {
 		}
 	}
 	
+	/**
+	 * TODO
+	 * 
+	 * @return
+	 */
 	public ArrayList<Integer> getAllYears() {
 		
 		return items;
 	}
 	
+	/**
+	 * TODO
+	 */
 	public void sort() {
 		
 		Collections.sort(items);

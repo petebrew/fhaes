@@ -40,7 +40,7 @@ import org.apache.batik.swing.JSVGCanvas;
 import org.fhaes.util.Builder;
 
 /**
- * SeriesListDialog Class. Dialog to enable the user to select which series within the file to plot
+ * SeriesListDialog Class. Dialog to enable the user to select which series within the file to plot.
  * 
  * @author Peter Brewer
  */
@@ -139,10 +139,21 @@ public class SeriesListDialog extends JDialog implements ActionListener {
 	}
 	
 	/**
-	 * Specialised class for storing the series and their selection status
-	 * 
+	 * TODO
 	 */
-	class CheckListItem {
+	@Override
+	public void actionPerformed(ActionEvent evt) {
+		
+		if (evt.getActionCommand().equals("OK"))
+		{
+			this.dispose();
+		}
+	}
+	
+	/**
+	 * Specialized class for storing the series and their selection status.
+	 */
+	private class CheckListItem {
 		
 		private String label;
 		private boolean isSelected = false;
@@ -170,13 +181,12 @@ public class SeriesListDialog extends JDialog implements ActionListener {
 	}
 	
 	/**
-	 * Renderer for drawing the series checkbox items
+	 * Renderer for drawing the series checkbox items.
 	 * 
 	 * @author Peter Brewer
-	 * 		
 	 */
 	@SuppressWarnings({ "serial", "rawtypes" })
-	class CheckListRenderer extends JCheckBox implements ListCellRenderer {
+	private class CheckListRenderer extends JCheckBox implements ListCellRenderer {
 		
 		@Override
 		public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean hasFocus) {
@@ -190,14 +200,4 @@ public class SeriesListDialog extends JDialog implements ActionListener {
 			return this;
 		}
 	}
-	
-	@Override
-	public void actionPerformed(ActionEvent evt) {
-		
-		if (evt.getActionCommand().equals("OK"))
-		{
-			this.dispose();
-		}
-	}
-	
 }

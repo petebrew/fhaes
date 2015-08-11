@@ -599,18 +599,20 @@ public class ReportPanel extends JPanel implements PrefsListener {
 	public void setFile(FHFile inFile) {
 		
 		log.debug("setFile called with file: " + inFile);
-		this.file = inFile;
 		
 		if (inFile != null && !inFile.exists())
 		{
 			JOptionPane.showMessageDialog(App.mainFrame, "The file '" + inFile.getName() + "' does not exist.", "File not found",
 					JOptionPane.ERROR_MESSAGE);
-			this.file = null;
-			
+					
+			file = null;
+		}
+		else
+		{
+			file = inFile;
 		}
 		
 		populateSingleFileReports();
-		
 	}
 	
 	/**
@@ -755,7 +757,7 @@ public class ReportPanel extends JPanel implements PrefsListener {
 				}
 				catch (BadLocationException e)
 				{
-					log.error("Unable to move caret to position in file.  BadLocationException");
+					log.error("Unable to move caret to position in file. BadLocationException");
 					e.printStackTrace();
 				}
 			}

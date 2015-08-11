@@ -32,10 +32,14 @@ import org.fhaes.util.FHAESAction;
  */
 public class ChartActions {
 	
+	/**
+	 * SeriesSortType Enum.
+	 */
 	public enum SeriesSortType {
 		START_YEAR, END_YEAR, FIRST_FIRE_YEAR, NAME
 	};
 	
+	// Declare chart instance
 	protected NeoFHChart neoFHChart;
 	
 	// Declare primary actions
@@ -436,23 +440,49 @@ public class ChartActions {
 		setNeoChart(neochart);
 	}
 	
-	/*
-	 * private void setTickColor() {
+	/**
+	 * Sets the neoFHChart to the parameter instance and enables the chart actions accordingly.
 	 * 
-	 * if (neoFHChart == null) return;
-	 * 
-	 * Runnable r = new Runnable() {
-	 * 
-	 * @Override public void run() {
-	 * 
-	 * Color ret = JColorChooser.showDialog(App.mainFrame, "Tick Color", neoFHChart.chart.getTickColor());
-	 * 
-	 * if (ret != null) neoFHChart.chart.setTickColor(ret);
-	 * 
-	 * } };
-	 * 
-	 * neoFHChart.svgCanvas.getUpdateManager().getUpdateRunnableQueue().invokeLater(r); }
+	 * @param chart
 	 */
+	public void setNeoChart(NeoFHChart chart) {
+		
+		this.neoFHChart = chart;
+		
+		actionShowIndexPlot.setEnabled(chart != null);
+		actionShowChronologyPlot.setEnabled(chart != null);
+		actionCompositePlot.setEnabled(chart != null);
+		actionShowLegend.setEnabled(chart != null);
+		actionShowChartProperties.setEnabled(chart != null);
+		actionZoomIn.setEnabled(chart != null);
+		actionZoomOut.setEnabled(chart != null);
+		actionZoomReset.setEnabled(chart != null);
+		actionExportChart.setEnabled(chart != null);
+		actionExportChartPDF.setEnabled(chart != null);
+		actionExportChartPNG.setEnabled(chart != null);
+		actionExportChartSVG.setEnabled(chart != null);
+		actionShowCommonTickLine.setEnabled(chart != null);
+		actionShowMinorTickMarks.setEnabled(chart != null);
+		actionShowSampleDepthThreshold.setEnabled(chart != null);
+		actionShowSeriesLabels.setEnabled(chart != null);
+		actionShowSeriesList.setEnabled(chart != null);
+		actionSortEndYear.setEnabled(chart != null);
+		actionSortFirstFireYear.setEnabled(chart != null);
+		actionSortName.setEnabled(chart != null);
+		actionSortStartYear.setEnabled(chart != null);
+		actionSortSeriesBy.setEnabled(chart != null);
+	}
+	
+	/**
+	 * TODO
+	 */
+	private void showSeriesList() {
+		
+		if (neoFHChart == null)
+			return;
+			
+		SeriesListDialog.showDialog(neoFHChart.currentChart, neoFHChart.svgCanvas);
+	}
 	
 	/**
 	 * TODO
@@ -499,17 +529,6 @@ public class ChartActions {
 	
 	/**
 	 * TODO
-	 */
-	private void showSeriesList() {
-		
-		if (neoFHChart == null)
-			return;
-			
-		SeriesListDialog.showDialog(neoFHChart.currentChart, neoFHChart.svgCanvas);
-	}
-	
-	/**
-	 * TODO
 	 * 
 	 * @param format
 	 */
@@ -528,38 +547,23 @@ public class ChartActions {
 		}
 	}
 	
-	/**
-	 * Sets the neoFHChart to the parameter instance and enables the chart actions accordingly.
+	/*
+	 * private void setTickColor() {
 	 * 
-	 * @param chart
+	 * if (neoFHChart == null) return;
+	 * 
+	 * Runnable r = new Runnable() {
+	 * 
+	 * @Override public void run() {
+	 * 
+	 * Color ret = JColorChooser.showDialog(App.mainFrame, "Tick Color", neoFHChart.chart.getTickColor());
+	 * 
+	 * if (ret != null) neoFHChart.chart.setTickColor(ret);
+	 * 
+	 * } };
+	 * 
+	 * neoFHChart.svgCanvas.getUpdateManager().getUpdateRunnableQueue().invokeLater(r); }
 	 */
-	public void setNeoChart(NeoFHChart chart) {
-		
-		this.neoFHChart = chart;
-		
-		actionShowIndexPlot.setEnabled(chart != null);
-		actionShowChronologyPlot.setEnabled(chart != null);
-		actionCompositePlot.setEnabled(chart != null);
-		actionShowLegend.setEnabled(chart != null);
-		actionShowChartProperties.setEnabled(chart != null);
-		actionZoomIn.setEnabled(chart != null);
-		actionZoomOut.setEnabled(chart != null);
-		actionZoomReset.setEnabled(chart != null);
-		actionExportChart.setEnabled(chart != null);
-		actionExportChartPDF.setEnabled(chart != null);
-		actionExportChartPNG.setEnabled(chart != null);
-		actionExportChartSVG.setEnabled(chart != null);
-		actionShowCommonTickLine.setEnabled(chart != null);
-		actionShowMinorTickMarks.setEnabled(chart != null);
-		actionShowSampleDepthThreshold.setEnabled(chart != null);
-		actionShowSeriesLabels.setEnabled(chart != null);
-		actionShowSeriesList.setEnabled(chart != null);
-		actionSortEndYear.setEnabled(chart != null);
-		actionSortFirstFireYear.setEnabled(chart != null);
-		actionSortName.setEnabled(chart != null);
-		actionSortStartYear.setEnabled(chart != null);
-		actionSortSeriesBy.setEnabled(chart != null);
-	}
 	
 	/**
 	 * TODO

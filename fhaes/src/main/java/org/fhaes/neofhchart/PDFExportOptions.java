@@ -55,7 +55,7 @@ import com.itextpdf.text.pdf.PdfWriter;
 import net.miginfocom.swing.MigLayout;
 
 /**
- * PDFExportOptions Class. JDialog for getting export information when saving to PDF files
+ * PDFExportOptions Class. JDialog for getting export information when saving to PDF files.
  * 
  * @author Peter Brewer
  */
@@ -68,11 +68,11 @@ public class PDFExportOptions extends JDialog implements ActionListener {
 	private JRadioButton radLandscape;
 	private FireChartSVG currentChart;
 	private File outputFile;
+	private JLabel lblSize;
 	
 	public final static Object[] PAGESIZES = { "Default", PageSize.LETTER, PageSize.LEGAL, PageSize.EXECUTIVE, PageSize.A5, PageSize.A4,
 			PageSize.A3, PageSize.A2, PageSize.A1, PageSize.A0 };
-	private JLabel lblSize;
-	
+			
 	/**
 	 * Create the dialog.
 	 */
@@ -144,13 +144,15 @@ public class PDFExportOptions extends JDialog implements ActionListener {
 			}
 		}
 		this.setLocationRelativeTo(App.mainFrame);
-		
 	}
 	
+	/**
+	 * TODO
+	 */
 	@Override
 	public void actionPerformed(ActionEvent evt) {
 		
-		// Do the exprot
+		// Do the export
 		if (evt.getActionCommand().equals("OK"))
 		{
 			Document document = null;
@@ -198,7 +200,6 @@ public class PDFExportOptions extends JDialog implements ActionListener {
 				
 				ImgTemplate img = new ImgTemplate(template);
 				document.add(img);
-				
 			}
 			catch (DocumentException e)
 			{
@@ -280,5 +281,4 @@ public class PDFExportOptions extends JDialog implements ActionListener {
 			}
 		}
 	}
-	
 }

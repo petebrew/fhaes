@@ -31,7 +31,7 @@ import org.fhaes.FHRecorder.view.MetaDataPanel;
 public class SampleController {
 	
 	// Declare local constants
-	public static final int NO_SAMPLES_IN_FILE = -1;
+	public static final int INDEX_REPRESENTING_NO_SAMPLES = -1;
 	
 	// Declare local variables
 	private static int selectedSampleIndex;
@@ -58,9 +58,9 @@ public class SampleController {
 		
 		if (numSamples == 0)
 		{
-			selectedSampleIndex = NO_SAMPLES_IN_FILE;
+			selectedSampleIndex = INDEX_REPRESENTING_NO_SAMPLES;
 		}
-		else if (i > -1 && i < numSamples)
+		else if (i >= 0 && i < numSamples)
 		{
 			selectedSampleIndex = i;
 			reqTemp.getSample(selectedSampleIndex).sortEvents();

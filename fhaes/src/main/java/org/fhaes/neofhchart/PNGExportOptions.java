@@ -50,7 +50,7 @@ import org.slf4j.LoggerFactory;
 import net.miginfocom.swing.MigLayout;
 
 /**
- * PNGExportOptions Class. JDialog for getting size information when saving to a PNG image
+ * PNGExportOptions Class. JDialog for getting size information when saving to a PNG image.
  * 
  * @author Peter Brewer
  */
@@ -182,6 +182,9 @@ public class PNGExportOptions extends JDialog implements ActionListener {
 		this.setLocationRelativeTo(App.mainFrame);
 	}
 	
+	/**
+	 * TODO
+	 */
 	@Override
 	public void actionPerformed(ActionEvent evt) {
 		
@@ -193,7 +196,6 @@ public class PNGExportOptions extends JDialog implements ActionListener {
 			log.debug("Exporting to PNG....");
 			try
 			{
-				
 				currentChart.setVisibilityOfNoExportElements(false);
 				
 				PNGTranscoder t = new PNGTranscoder();
@@ -232,5 +234,4 @@ public class PNGExportOptions extends JDialog implements ActionListener {
 			dispose();
 		}
 	}
-	
 }

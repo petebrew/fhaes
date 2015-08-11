@@ -86,7 +86,7 @@ public class NewSampleDialog extends JDialog implements KeyListener {
 		int firstYearToSet = FileController.CURRENT_YEAR - 1;
 		int lastYearToSet = FileController.CURRENT_YEAR;
 		
-		if (SampleController.getSelectedSampleIndex() != SampleController.NO_SAMPLES_IN_FILE)
+		if (SampleController.getSelectedSampleIndex() != SampleController.INDEX_REPRESENTING_NO_SAMPLES)
 		{
 			firstYearToSet = IOController.getFile().getRequiredPart().getDataSetFirstYear();
 			lastYearToSet = IOController.getFile().getRequiredPart().getDataSetLastYear();

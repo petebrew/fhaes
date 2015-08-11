@@ -92,7 +92,9 @@ public class FireChartSVG {
 	
 	// Java <-> ECMAScript interop used for message passing with ECMAScript. Note not thread-safe
 	private static int chart_counter = 0;
+	private static int line_gensym = 0; // only used in drawRect -- I just need a unique id
 	private static Map<Integer, FireChartSVG> chart_map;
+	private int totalHeight = 0;
 	private int chart_num;
 	
 	/**
@@ -120,18 +122,21 @@ public class FireChartSVG {
 		
 		ArrayList<SeriesSVG> temp_list = this.convertFHSeriesToSeriesSVGList(f.getSeriesList());
 		if (!series_list.isEmpty())
+		{
 			series_list.clear();
+		}
 		for (int i = 0; i < temp_list.size(); i++)
+		{
 			try
 			{
 				series_list.add(new SeriesSVG(temp_list.get(i)));
 			}
 			catch (Exception e)
 			{
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
+		}
+		
 		Element svgRoot = doc.getDocumentElement();
 		
 		// Set up the scripts for Java / ECMAScript interop
@@ -200,21 +205,30 @@ public class FireChartSVG {
 		buildElements();
 		positionSeriesLines();
 		positionChartGroupersAndDrawTimeAxis();
-		
 	};
 	
+	/**
+	 * TODO
+	 * 
+	 * @return
+	 */
 	public AbstractFireHistoryReader getReader() {
 		
 		return this.reader;
 	}
 	
+	/**
+	 * TODO
+	 * 
+	 * @return
+	 */
 	public int getChartNum() {
 		
 		return chart_num;
 	}
 	
 	/**
-	 * Returns a dimension in years (time coordinate system) for the specified proportion of the chart width
+	 * Returns a dimension in years (time coordinate system) for the specified proportion of the chart width.
 	 * 
 	 * @param prop
 	 * @return
@@ -222,9 +236,7 @@ public class FireChartSVG {
 	public Double standardChartUnits(int prop) {
 		
 		Double pixelsForProportion = this.chart_width * (prop / 1000.0);
-		
 		return pxToYears(pixelsForProportion);
-		
 	}
 	
 	/**
@@ -250,7 +262,7 @@ public class FireChartSVG {
 	}
 	
 	/**
-	 * Save the current SVG to the specified file
+	 * Save the current SVG to the specified file.
 	 * 
 	 * @param f
 	 */
@@ -277,7 +289,7 @@ public class FireChartSVG {
 	}
 	
 	/**
-	 * Converts dim from years to pixels based off of the chart_width and how many years are in the reader
+	 * Converts dim from years to pixels based off of the chart_width and how many years are in the reader.
 	 * 
 	 * @param dim
 	 * @return
@@ -288,7 +300,7 @@ public class FireChartSVG {
 	}
 	
 	/**
-	 * Get the first year in the chart. Will be the first year in the file, or the year specified by the user if different
+	 * Get the first year in the chart. Will be the first year in the file, or the year specified by the user if different.
 	 * 
 	 * @return
 	 */
@@ -305,7 +317,7 @@ public class FireChartSVG {
 	}
 	
 	/**
-	 * Get the last year in the chart. Will be the last year in the file, or the year specified by the user if different
+	 * Get the last year in the chart. Will be the last year in the file, or the year specified by the user if different.
 	 * 
 	 * @return
 	 */
@@ -322,7 +334,7 @@ public class FireChartSVG {
 	}
 	
 	/**
-	 * Convenience function to get the scaling factor
+	 * Convenience function to get the scaling factor.
 	 * 
 	 * @return
 	 */
@@ -332,7 +344,7 @@ public class FireChartSVG {
 	}
 	
 	/**
-	 * Update the font family used in the plot
+	 * Update the font family used in the plot.
 	 */
 	private void updateFontFamily() {
 		
@@ -340,7 +352,7 @@ public class FireChartSVG {
 	}
 	
 	/**
-	 * Performs the inverse of yearsToPx
+	 * Performs the inverse of yearsToPx.
 	 * 
 	 * @param dim
 	 * @return
@@ -351,7 +363,7 @@ public class FireChartSVG {
 	}
 	
 	/**
-	 * Convenience function to get the scaling factor
+	 * Convenience function to get the scaling factor.
 	 * 
 	 * @return
 	 */
@@ -361,7 +373,7 @@ public class FireChartSVG {
 	}
 	
 	/**
-	 * Get the name of the file being read
+	 * Get the name of the file being read.
 	 * 
 	 * @return
 	 */
@@ -371,7 +383,7 @@ public class FireChartSVG {
 	}
 	
 	/**
-	 * Get the FireChartSVG with the specified ID
+	 * Get the FireChartSVG with the specified ID.
 	 * 
 	 * @param id
 	 * @return
@@ -382,7 +394,7 @@ public class FireChartSVG {
 	}
 	
 	/**
-	 * Helper function that deletes all child tags of the specified element
+	 * Helper function that deletes all child tags of the specified element.
 	 * 
 	 * @param e
 	 */
@@ -399,7 +411,7 @@ public class FireChartSVG {
 	}
 	
 	/**
-	 * Clear out the groupers and build the chart components
+	 * Clear out the groupers and build the chart components.
 	 */
 	public void buildElements() {
 		
@@ -433,7 +445,6 @@ public class FireChartSVG {
 		legend_g.appendChild(getLegend());
 		
 		positionChartGroupersAndDrawTimeAxis();
-		
 	}
 	
 	/**
@@ -508,7 +519,7 @@ public class FireChartSVG {
 		annote_canvas.setAttributeNS(null, "width", Integer.toString(chart_width));
 		annote_canvas.setAttributeNS(null, "height", Integer.toString(total_height));
 		
-		// set document dimesions for png and pdf export
+		// set document dimensions for png and pdf export
 		// svgRoot.setAttributeNS(null, "width", (chart_width + this.widestChronologyLabelSize + 150 + 350) + "px");
 		svgRoot.setAttributeNS(null, "width", getTotalWidth() + "px");
 		
@@ -527,8 +538,6 @@ public class FireChartSVG {
 		return chart_width + this.widestChronologyLabelSize + 300;
 	}
 	
-	private int totalHeight = 0;
-	
 	/**
 	 * TODO
 	 * 
@@ -540,7 +549,7 @@ public class FireChartSVG {
 	}
 	
 	/**
-	 * Get the time axis including the guide and highlight lines
+	 * Get the time axis including the guide and highlight lines.
 	 * 
 	 * @param height
 	 * @return
@@ -657,7 +666,7 @@ public class FireChartSVG {
 	}
 	
 	/**
-	 * Get the index plot
+	 * Get the index plot.
 	 * 
 	 * @return
 	 */
@@ -673,7 +682,7 @@ public class FireChartSVG {
 	}
 	
 	/**
-	 * Get the sample or recorder depth plot
+	 * Get the sample or recorder depth plot.
 	 * 
 	 * @param plotSampleNorRecordingDepth
 	 * @return
@@ -872,7 +881,7 @@ public class FireChartSVG {
 	}
 	
 	/**
-	 * Get the percent scarred plot including bounding box and y2 axis
+	 * Get the percent scarred plot including bounding box and y2 axis.
 	 * 
 	 * @return
 	 */
@@ -1072,7 +1081,7 @@ public class FireChartSVG {
 	}
 	
 	/**
-	 * Set the visibility of the index plot based on the preferences
+	 * Set the visibility of the index plot based on the preferences.
 	 */
 	protected void setIndexPlotVisibility() {
 		
@@ -1094,7 +1103,7 @@ public class FireChartSVG {
 	}
 	
 	/**
-	 * Set the visibility of the chronology plot based on the preferences
+	 * Set the visibility of the chronology plot based on the preferences.
 	 */
 	public void setChronologyPlotVisibility() {
 		
@@ -1113,7 +1122,7 @@ public class FireChartSVG {
 	}
 	
 	/**
-	 * This function toggles the visibility of the series at the given location
+	 * This function toggles the visibility of the series at the given location.
 	 * 
 	 * @param index of the series to hide
 	 */
@@ -1137,7 +1146,7 @@ public class FireChartSVG {
 	}
 	
 	/**
-	 * Sort the series by start year
+	 * Sort the series by start year.
 	 */
 	public void sortBySampleStartYear() {
 		
@@ -1159,7 +1168,7 @@ public class FireChartSVG {
 	}
 	
 	/**
-	 * Sort the series by end year
+	 * Sort the series by end year.
 	 */
 	public void sortBySampleEndYear() {
 		
@@ -1177,7 +1186,7 @@ public class FireChartSVG {
 	}
 	
 	/**
-	 * Sort the series by first fire year
+	 * Sort the series by first fire year.
 	 */
 	public void sortByFirstFireYear() {
 		
@@ -1208,7 +1217,7 @@ public class FireChartSVG {
 	}
 	
 	/**
-	 * Sort the series by name
+	 * Sort the series by name.
 	 */
 	public void sortByName() {
 		
@@ -1227,7 +1236,7 @@ public class FireChartSVG {
 	}
 	
 	/**
-	 * This method swaps the selected series with the series above it
+	 * This method swaps the selected series with the series above it.
 	 * 
 	 * @param series_name: Name of the series to move up
 	 */
@@ -1256,11 +1265,10 @@ public class FireChartSVG {
 			}
 			while (i > 0 && !series_list.get(i + 1).isVisible);
 		}
-		
 	}
 	
 	/**
-	 * This method swaps the selected series with the series below it
+	 * This method swaps the selected series with the series below it.
 	 * 
 	 * @param series_name: Name of the series to move down
 	 */
@@ -1289,7 +1297,6 @@ public class FireChartSVG {
 			}
 			while (i < series_list.size() - 1 && !series_list.get(i - 1).isVisible);
 		}
-		
 	}
 	
 	/**
@@ -1331,6 +1338,12 @@ public class FireChartSVG {
 		return metrics.getMaxAscent();
 	}
 	
+	/**
+	 * TODO
+	 * 
+	 * @param list
+	 * @return
+	 */
 	private ArrayList<SeriesSVG> convertFHSeriesToSeriesSVGList(ArrayList<FHSeries> list) {
 		
 		ArrayList<SeriesSVG> svgseries = new ArrayList<SeriesSVG>();
@@ -1349,10 +1362,10 @@ public class FireChartSVG {
 		}
 		
 		return svgseries;
-		
 	}
 	
 	/**
+	 * TODO
 	 * 
 	 * @return
 	 */
@@ -1463,7 +1476,6 @@ public class FireChartSVG {
 			series_group.appendChild(up_button_g);
 			series_group.appendChild(down_button_g);
 			chronologyPlot.appendChild(series_group);
-			
 		}
 		
 		if (App.prefs.getBooleanPref(PrefKey.CHART_SHOW_CHRONOLOGY_PLOT, true))
@@ -1499,11 +1511,13 @@ public class FireChartSVG {
 			{
 				hidden++;
 			}
+			
 			series_group.setAttributeNS(null, "display", visibility_string);
 		}
 	}
 	
 	/**
+	 * TODO
 	 * 
 	 * @param s
 	 * @return
@@ -1521,7 +1535,6 @@ public class FireChartSVG {
 		int last_index = recording_years.length - 1;
 		if (recording_years.length != 0)
 		{
-			
 			if (s.getLastYear() > this.getLastChartYear())
 			{
 				last_index = (recording_years.length) - (s.getLastYear() - this.getLastChartYear());
@@ -1761,7 +1774,7 @@ public class FireChartSVG {
 	}
 	
 	/**
-	 * Get the composite plot
+	 * Get the composite plot.
 	 * 
 	 * @return
 	 */
@@ -2238,7 +2251,7 @@ public class FireChartSVG {
 	}
 	
 	/**
-	 * Aids in the creation of descriptions for the legend
+	 * Aids in the creation of descriptions for the legend.
 	 * 
 	 * @param text The description to be entered
 	 * @param xLoc The x-location of the text
@@ -2257,6 +2270,9 @@ public class FireChartSVG {
 		return desc;
 	}
 	
+	/**
+	 * TODO
+	 */
 	public void setLegendVisibility() {
 		
 		boolean legendVisible = App.prefs.getBooleanPref(PrefKey.CHART_SHOW_LEGEND, true);
@@ -2271,6 +2287,9 @@ public class FireChartSVG {
 		}
 	}
 	
+	/**
+	 * TODO
+	 */
 	public void setSeriesLabelsVisibility() {
 		
 		boolean isSeriesLabelVisible = App.prefs.getBooleanPref(PrefKey.CHART_SHOW_CHRONOLOGY_PLOT_LABELS, true);
@@ -2299,7 +2318,6 @@ public class FireChartSVG {
 				downButton.setAttributeNS(null, "display", "none");
 			}
 		}
-		
 	}
 	
 	/*
@@ -2308,6 +2326,9 @@ public class FireChartSVG {
 	 * tickLineWeight = weight; tickLineStyle = style; setTickColor(color); positionChartGroupersAndDrawTimeAxis(); return false; }
 	 */
 	
+	/**
+	 * TODO
+	 */
 	public void setCompositePlotVisibility() {
 		
 		boolean isVisible = App.prefs.getBooleanPref(PrefKey.CHART_SHOW_COMPOSITE_PLOT, true);
@@ -2323,6 +2344,11 @@ public class FireChartSVG {
 		positionChartGroupersAndDrawTimeAxis();
 	}
 	
+	/**
+	 * TODO
+	 * 
+	 * @param isVisible
+	 */
 	public void setVisibilityOfNoExportElements(boolean isVisible) {
 		
 		String visibility_setting = isVisible ? "inline" : "none";
@@ -2346,6 +2372,11 @@ public class FireChartSVG {
 	// to deleteAnnoteRect to ensure that the rect only gets deleted when the user is in the eraser mode
 	// ======================================
 	
+	/**
+	 * TODO
+	 * 
+	 * @return
+	 */
 	public Element getAnnoteCanvas() {
 		
 		try
@@ -2357,7 +2388,6 @@ public class FireChartSVG {
 			annote_canvas.setAttributeNS(null, "onmousedown", "paddingGrouperOnClick(evt)");
 			annote_canvas.setAttributeNS(null, "opacity", "0.0");
 			return annote_canvas;
-			
 		}
 		catch (BridgeException e)
 		{
@@ -2366,8 +2396,12 @@ public class FireChartSVG {
 		return null;
 	}
 	
-	static int line_gensym = 0; // only used in drawRect -- I just need a unique id
-	
+	/**
+	 * TODO
+	 * 
+	 * @param x
+	 * @return
+	 */
 	public String drawAnnoteLine(int x) {
 		
 		if (annotemode == AnnoteMode.LINE)
@@ -2395,6 +2429,12 @@ public class FireChartSVG {
 		return "wrong_annotemode";
 	}
 	
+	/**
+	 * TODO
+	 * 
+	 * @param id
+	 * @return
+	 */
 	public boolean deleteAnnoteLine(String id) {
 		
 		if (annotemode == AnnoteMode.ERASE)
@@ -2412,6 +2452,11 @@ public class FireChartSVG {
 		return false;
 	}
 	
+	/**
+	 * TODO
+	 * 
+	 * @param m
+	 */
 	public void setAnnoteMode(AnnoteMode m) {
 		
 		annotemode = m;
@@ -2429,7 +2474,7 @@ public class FireChartSVG {
 	}
 	
 	/**
-	 * Convert a java.awt.Color to a hex string
+	 * Convert a java.awt.Color to a hex string.
 	 * 
 	 * @param color
 	 * @return
@@ -2441,5 +2486,4 @@ public class FireChartSVG {
 			
 		return "#" + Integer.toHexString(color.getRGB()).substring(2);
 	}
-	
 }

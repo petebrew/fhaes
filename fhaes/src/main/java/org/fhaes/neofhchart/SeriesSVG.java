@@ -128,5 +128,4 @@ public class SeriesSVG extends FHSeries {
 		
 		this.labelColor = labelColor;
 	}
-	
 }

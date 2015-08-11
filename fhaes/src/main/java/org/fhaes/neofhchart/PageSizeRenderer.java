@@ -112,5 +112,4 @@ public class PageSizeRenderer extends JLabel implements ListCellRenderer<Object>
 		
 		return this;
 	}
-	
 }

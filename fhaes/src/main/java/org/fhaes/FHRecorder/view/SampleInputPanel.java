@@ -92,10 +92,13 @@ public class SampleInputPanel extends JPanel implements ChangeListener, Property
 	// Declare FHAES logger
 	private static final Logger log = LoggerFactory.getLogger(SampleInputPanel.class);
 	
-	// Declare local constants
+	// Declare public constants
 	public static final String MINIMUM_SAMPLE_NAME_LENGTH_MESSAGE = "Sample name must be at least 3 characters in length.";
 	public static final int MAXIMUM_SAMPLE_NAME_LENGTH = 30;
 	public static final int MINIMUM_SAMPLE_NAME_LENGTH = 3;
+	
+	// Declare local constants
+	private static final int NUM_SAMPLES_REQURIED_FOR_MANUAL_SORT = 2;
 	
 	// Declare sort option constants
 	public static final int MANUAL_SORTING = 0;
@@ -253,6 +256,7 @@ public class SampleInputPanel extends JPanel implements ChangeListener, Property
 			
 			@Override
 			public void keyTyped(KeyEvent evt) {}
+			
 		});
 		sampleNameContainer.add(sampleNameTextBox, "cell 2 0,growx,aligny center");
 		
@@ -400,10 +404,14 @@ public class SampleInputPanel extends JPanel implements ChangeListener, Property
 			SampleController.deleteSample();
 			
 			if (IOController.getFile().getRequiredPart().getNumSamples() > 0)
+			{
 				sampleListBox.setSelectedIndex(0);
+			}
 			else
-				sampleListBox.setSelectedIndex(-1);
-				
+			{
+				sampleListBox.setSelectedIndex(SampleController.INDEX_REPRESENTING_NO_SAMPLES);
+			}
+			
 			FileController.checkIfNumSamplesExceedsFHX2Reqs();
 			
 			needToRefreshPanel = true;
@@ -588,10 +596,14 @@ public class SampleInputPanel extends JPanel implements ChangeListener, Property
 		DefaultListModel model = (DefaultListModel) this.sampleListBox.getModel();
 		
 		if (model != null)
+		{
 			model.clear();
-		for (FHX2_Sample s : this.inReqPart.getSampleList())
-			model.addElement(s);
-			
+		}
+		for (FHX2_Sample sample : this.inReqPart.getSampleList())
+		{
+			model.addElement(sample);
+		}
+		
 		try
 		{
 			sampleListBox.setSelectedValue(selected, true);
@@ -610,7 +622,7 @@ public class SampleInputPanel extends JPanel implements ChangeListener, Property
 	public void redrawSampleDataPanel(int selectedSampleIndex) {
 		
 		displaySampleName("");
-		if (selectedSampleIndex > -1)
+		if (selectedSampleIndex > SampleController.INDEX_REPRESENTING_NO_SAMPLES)
 		{
 			FHX2_Sample selectedSample = this.inReqPart.getSample(selectedSampleIndex);
 			if (selectedSample != null)
@@ -705,7 +717,7 @@ public class SampleInputPanel extends JPanel implements ChangeListener, Property
 		sortByComboBox.setEnabled(true);
 		if (sortByComboBox.getSelectedIndex() == MANUAL_SORTING)
 		{
-			if (IOController.getFile().getRequiredPart().getNumSamples() < 2)
+			if (IOController.getFile().getRequiredPart().getNumSamples() < NUM_SAMPLES_REQURIED_FOR_MANUAL_SORT)
 			{
 				moveDownButton.setEnabled(false);
 				moveUpButton.setEnabled(false);
@@ -720,7 +732,7 @@ public class SampleInputPanel extends JPanel implements ChangeListener, Property
 				moveDownButton.setEnabled(false);
 				moveUpButton.setEnabled(true);
 			}
-			else if (sampleListBox.getSelectedIndex() > -1)
+			else if (sampleListBox.getSelectedIndex() > SampleController.INDEX_REPRESENTING_NO_SAMPLES)
 			{
 				moveDownButton.setEnabled(true);
 				moveUpButton.setEnabled(true);
@@ -957,7 +969,7 @@ public class SampleInputPanel extends JPanel implements ChangeListener, Property
 				
 				if (index == MANUAL_SORTING) // Manual mode; no sorting applied
 				{
-					if (IOController.getFile().getRequiredPart().getNumSamples() < 2)
+					if (IOController.getFile().getRequiredPart().getNumSamples() < NUM_SAMPLES_REQURIED_FOR_MANUAL_SORT)
 					{
 						moveDownButton.setEnabled(false);
 						moveUpButton.setEnabled(false);
@@ -972,7 +984,7 @@ public class SampleInputPanel extends JPanel implements ChangeListener, Property
 						moveDownButton.setEnabled(false);
 						moveUpButton.setEnabled(true);
 					}
-					else if (sampleListBox.getSelectedIndex() > -1)
+					else if (sampleListBox.getSelectedIndex() > SampleController.INDEX_REPRESENTING_NO_SAMPLES)
 					{
 						moveDownButton.setEnabled(true);
 						moveUpButton.setEnabled(true);
@@ -993,6 +1005,7 @@ public class SampleInputPanel extends JPanel implements ChangeListener, Property
 						SampleSorters.sortSampleLastYearAscending();
 					else if (index == LAST_YEAR_DESCENDING)
 						SampleSorters.sortSampleLastYearDescending();
+						
 					moveDownButton.setEnabled(false);
 					moveUpButton.setEnabled(false);
 				}

@@ -364,10 +364,12 @@ public class FHFileChecker extends JFrame {
 								+ "\n";
 						passFormat = false;
 					}
-					log.debug("size of badlines: " + myReaderArray.get(i).getBadDataLineNumbers().size());
-					log.debug("size of data is " + myReaderArray.get(i).getData().size());
-					log.debug("size of rwodata is " + myReaderArray.get(i).getRawRowData().size());
-					log.debug("getNumberofseries = " + myReaderArray.get(i).getNumberOfSeries().toString());
+					
+					// display logger information
+					log.debug("size of bad lines is : " + myReaderArray.get(i).getBadDataLineNumbers().size());
+					log.debug("size of data is : " + myReaderArray.get(i).getData().size());
+					log.debug("size of row data is : " + myReaderArray.get(i).getRawRowData().size());
+					log.debug("number of series is : " + myReaderArray.get(i).getNumberOfSeries().toString());
 					
 					if ((myReaderArray.get(i).getNumberOfSeries().toString().matches(numericalDataint))
 							&& (myReaderArray.get(i).passesBasicSyntaxCheck()))
