@@ -55,8 +55,11 @@ import org.tridas.spatial.GMLPointSRSHandler;
 public class FHFile extends File {
 	
 	private static final long serialVersionUID = 1L;
+	
+	// Declare logger
 	private static final Logger log = LoggerFactory.getLogger(FHFile.class);
 	
+	// Declare local variables
 	private AbstractFireHistoryReader fhaesReader;
 	private boolean isFileValid;
 	private boolean isInitialised = false;
@@ -129,7 +132,6 @@ public class FHFile extends File {
 		{
 			if (eventType.equals(EventTypeToProcess.FIRE_EVENT))
 			{
-				
 				if (!fhaesReader.hasFireEvents())
 				{
 					return "N.B. The analysis parameters are currently set to analyze files for fire scars.  "

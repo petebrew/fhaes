@@ -327,7 +327,7 @@ public class ReportPanel extends JPanel implements PrefsListener {
 	 */
 	public void setFile(FHFile inFile) {
 		
-		log.debug("setFile called with file: " + inFile);
+		log.debug("setFile called with file: \"" + inFile + "\"");
 		
 		if (inFile != null && !inFile.exists())
 		{

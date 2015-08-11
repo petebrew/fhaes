@@ -109,6 +109,7 @@ public class FireChartSVG {
 		// assign number for message passing from ECMAscript
 		chart_num = chart_counter;
 		chart_counter++;
+		
 		if (chart_map == null)
 		{
 			chart_map = new HashMap<Integer, FireChartSVG>();
@@ -142,6 +143,7 @@ public class FireChartSVG {
 		// Set up the scripts for Java / ECMAScript interop
 		Element script = doc.createElementNS(svgNS, "script");
 		script.setAttributeNS(null, "type", "text/ecmascript");
+		
 		try
 		{
 			// File script_file = new File("./script.js");
@@ -165,39 +167,38 @@ public class FireChartSVG {
 		}
 		svgRoot.appendChild(script);
 		
-		// The padding_grouper is used to add in some padding
-		// around the chart as a whole
+		// The padding_grouper is used to add in some padding around the chart as a whole
 		Element padding_grouper = doc.createElementNS(svgNS, "g");
 		padding_grouper.setAttributeNS(null, "id", "padding_g");
 		padding_grouper.setAttributeNS(null, "transform", "translate (" + chartXOffset + ",20)");
 		svgRoot.appendChild(padding_grouper);
 		
-		// build grouper to hold annotation elements
+		// Build grouper to hold annotation elements
 		Element annote_g = doc.createElementNS(svgNS, "g");
 		annote_g.setAttributeNS(null, "id", "annote_g");
 		padding_grouper.appendChild(annote_g);
 		
-		// build the time axis
+		// Build the time axis
 		Element time_axis_g = doc.createElementNS(svgNS, "g");
 		time_axis_g.setAttributeNS(null, "id", "time_axis_g");
 		padding_grouper.appendChild(time_axis_g);
 		
-		// build index plot
+		// Build index plot
 		Element index_plot_g = doc.createElementNS(svgNS, "g");
 		index_plot_g.setAttributeNS(null, "id", "index_plot_g");
 		padding_grouper.appendChild(index_plot_g);
 		
-		// build chronology plot
+		// Build chronology plot
 		Element chrono_plot_g = doc.createElementNS(svgNS, "g");
 		chrono_plot_g.setAttributeNS(null, "id", "chrono_plot_g");
 		padding_grouper.appendChild(chrono_plot_g);
 		
-		// build composite plot
+		// Build composite plot
 		Element comp_plot_g = doc.createElementNS(svgNS, "g");
 		comp_plot_g.setAttributeNS(null, "id", "comp_plot_g");
 		padding_grouper.appendChild(comp_plot_g);
 		
-		// build legend
+		// Build legend
 		Element legend_g = doc.createElementNS(svgNS, "g");
 		legend_g.setAttributeNS(null, "id", "legend_g");
 		padding_grouper.appendChild(legend_g);
@@ -417,29 +418,32 @@ public class FireChartSVG {
 		
 		updateFontFamily();
 		
-		// build annotation canvas
+		// Build annotation canvas
 		Element annote_g = doc.getElementById("annote_g");
 		deleteAllChildren(annote_g);
 		Element canvas = getAnnoteCanvas();
 		if (canvas != null)
+		{
 			annote_g.appendChild(canvas);
-			
-		// build index plot
+		}
+		
+		// Build index plot
 		Element index_plot_g = doc.getElementById("index_plot_g");
 		deleteAllChildren(index_plot_g);
 		index_plot_g.appendChild(getIndexPlot());
 		
-		// build chronology plot
+		// Build chronology plot
 		Element chrono_plot_g = doc.getElementById("chrono_plot_g");
 		deleteAllChildren(chrono_plot_g);
 		chrono_plot_g.appendChild(getChronologyPlot());
 		positionSeriesLines();
 		
-		// build composite plot
+		// Build composite plot
 		Element comp_plot_g = doc.getElementById("comp_plot_g");
 		deleteAllChildren(comp_plot_g);
 		comp_plot_g.appendChild(getCompositePlot());
 		
+		// Build legend
 		Element legend_g = doc.getElementById("legend_g");
 		deleteAllChildren(legend_g);
 		legend_g.appendChild(getLegend());
@@ -453,7 +457,7 @@ public class FireChartSVG {
 	 */
 	public void positionChartGroupersAndDrawTimeAxis() {
 		
-		// calculate plot dimensions
+		// Calculate plot dimensions
 		int cur_bottom = 0; // used for tracking where the bottom of the chart is as it is being built
 		int index_plot_height = App.prefs.getIntPref(PrefKey.CHART_INDEX_PLOT_HEIGHT, 100);
 		int series_spacing_and_height = App.prefs.getIntPref(PrefKey.CHART_CHRONOLOGY_PLOT_SPACING, 5) + seriesHeight;
@@ -1152,18 +1156,14 @@ public class FireChartSVG {
 		
 		Comparator<SeriesSVG> comparator = new Comparator<SeriesSVG>() {
 			
-			// public int compare(FHSeries c1, FHSeries c2) {
-			// return c2.getFirstYear() - c1.getFirstYear();
-			// }
-			
 			@Override
 			public int compare(SeriesSVG c1, SeriesSVG c2) {
 				
 				return c2.getFirstYear() - c1.getFirstYear();
 			}
 		};
-		Collections.sort(series_list, comparator);
 		
+		Collections.sort(series_list, comparator);
 		positionSeriesLines();
 	}
 	
@@ -1180,8 +1180,8 @@ public class FireChartSVG {
 				return c2.getLastYear() - c1.getLastYear();
 			}
 		};
-		Collections.sort(series_list, comparator);
 		
+		Collections.sort(series_list, comparator);
 		positionSeriesLines();
 	}
 	
@@ -1200,19 +1200,23 @@ public class FireChartSVG {
 				
 				int i = 0;
 				for (i = 0; i < c1_events.length && !c1_events[i]; i++)
-					; // intentional
+				{
+					; // loop until the index of the first fire year for c1 is found
+				}
 				int c1_first_fire_year = c1.getFirstYear() + i;
 				
 				int j = 0;
 				for (j = 0; j < c2_events.length && !c2_events[j]; j++)
-					; // intentional
+				{
+					; // loop until the index of the first fire year for c2 is found
+				}
 				int c2_first_fire_year = c2.getFirstYear() + j;
 				
 				return c2_first_fire_year - c1_first_fire_year;
 			}
 		};
-		Collections.sort(series_list, comparator);
 		
+		Collections.sort(series_list, comparator);
 		positionSeriesLines();
 	}
 	
@@ -1226,12 +1230,11 @@ public class FireChartSVG {
 			@Override
 			public int compare(SeriesSVG c1, SeriesSVG c2) {
 				
-				// return c2.getTitle() - c1.getTitle();
 				return c1.getTitle().compareTo(c2.getTitle());
 			}
 		};
-		Collections.sort(series_list, comparator);
 		
+		Collections.sort(series_list, comparator);
 		positionSeriesLines();
 	}
 	
@@ -1243,8 +1246,12 @@ public class FireChartSVG {
 	public void moveSeriesUp(String series_name) {
 		
 		int i = 0;
+		
 		for (i = 0; i < series_list.size() && !series_list.get(i).getTitle().equals(series_name); i++)
-			; // intentional
+		{
+			; // loop until the index of the desired series is found
+		}
+		
 		if (i > 0)
 		{
 			do
@@ -1257,7 +1264,6 @@ public class FireChartSVG {
 				}
 				catch (Exception e)
 				{
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				i--;
@@ -1275,8 +1281,12 @@ public class FireChartSVG {
 	public void moveSeriesDown(String series_name) {
 		
 		int i = 0;
+		
 		for (i = 0; i < series_list.size() && !series_list.get(i).getTitle().equals(series_name); i++)
-			; // intentional
+		{
+			; // loop until the index of the desired series is found
+		}
+		
 		if (i < series_list.size() - 1)
 		{
 			do
@@ -1289,7 +1299,6 @@ public class FireChartSVG {
 				}
 				catch (Exception e)
 				{
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				i++;
@@ -1356,7 +1365,6 @@ public class FireChartSVG {
 			}
 			catch (Exception e)
 			{
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -1869,7 +1877,6 @@ public class FireChartSVG {
 					cur_offset_level = 0;
 					prev_i = i;
 				}
-				
 			}
 		}
 		else
@@ -1882,7 +1889,8 @@ public class FireChartSVG {
 		double chart_height = App.prefs.getIntPref(PrefKey.CHART_COMPOSITE_HEIGHT, 70);
 		
 		if (num_layers > (chart_height / compositeYearLabelFontSize))
-		{ // ensure height is non-negative
+		{
+			// ensure height is non-negative
 			num_layers = (int) Math.floor(chart_height / compositeYearLabelHeight);
 		}
 		
@@ -1894,7 +1902,7 @@ public class FireChartSVG {
 			}
 			else
 			{
-				// height of the comp plot minus the year labels
+				// height of the composite plot minus the year labels
 				chart_height = chart_height - (num_layers * compositeYearLabelHeight);
 			}
 		}

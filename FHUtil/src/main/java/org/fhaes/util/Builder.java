@@ -58,17 +58,27 @@ public class Builder {
 		}
 		else
 		{
-			log.error("Unabled to find icon " + name + ".  Replacing with the 'missing icon' icon.");
+			log.error("Unable to find icon \"" + name + "\". Replacing with the 'missing icon' icon.");
 			return null;
 		}
-		
 	}
 	
+	/**
+	 * TODO
+	 * 
+	 * @return
+	 */
 	public static Image getApplicationIcon() {
 		
 		return Builder.getImage("logo22x22.png");
 	}
 	
+	/**
+	 * TODO
+	 * 
+	 * @param name
+	 * @return
+	 */
 	public static Image getImage(String name) {
 		
 		java.net.URL url = cl.getResource(getResourceURL(name));
@@ -78,6 +88,12 @@ public class Builder {
 			return null;
 	}
 	
+	/**
+	 * TODO
+	 * 
+	 * @param name
+	 * @return
+	 */
 	public static String getResourceURL(String name) {
 		
 		StringBuffer urlBuffer = new StringBuffer();
@@ -90,15 +106,21 @@ public class Builder {
 		
 		// log.debug("Icon url: "+urlBuffer.toString());
 		return urlBuffer.toString();
-		
 	}
 	
+	/**
+	 * TODO
+	 * 
+	 * @return
+	 */
 	public static String getRevisionNumber() {
 		
 		log.debug("Getting revision number");
 		String revision = "Unknown";
+		
 		@SuppressWarnings("rawtypes")
 		Enumeration resEnum;
+		
 		try
 		{
 			resEnum = Thread.currentThread().getContextClassLoader().getResources(JarFile.MANIFEST_NAME);
@@ -137,11 +159,18 @@ public class Builder {
 		return "Unknown";
 	}
 	
+	/**
+	 * TODO
+	 * 
+	 * @return
+	 */
 	public static String getBuildTimestamp() {
 		
 		String revision = "Unknown";
+		
 		@SuppressWarnings("rawtypes")
 		Enumeration resEnum;
+		
 		try
 		{
 			resEnum = Thread.currentThread().getContextClassLoader().getResources(JarFile.MANIFEST_NAME);
@@ -175,12 +204,16 @@ public class Builder {
 		return "Unknown";
 	}
 	
+	/**
+	 * TODO
+	 * 
+	 * @return
+	 */
 	public final static String getVersion() {
 		
 		if (Builder.VERSION == null)
 		{
 			return "development";
-			
 		}
 		
 		// Replace -SNAPSHOT with beta symbol
@@ -191,9 +224,13 @@ public class Builder {
 		return Builder.VERSION;
 	}
 	
+	/**
+	 * TODO
+	 * 
+	 * @return
+	 */
 	public final static String getVersionAndBuild() {
 		
 		return getVersion() + " (r." + getRevisionNumber() + ")";
 	}
-	
 }
