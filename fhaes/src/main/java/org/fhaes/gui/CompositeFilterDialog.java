@@ -36,8 +36,8 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import org.fhaes.FHRecorder.controller.FileController;
 import org.fhaes.enums.FireFilterType;
+import org.fhaes.fhxrecorder.controller.FileController;
 import org.fhaes.preferences.FHAESPreferences.PrefKey;
 import org.fhaes.preferences.wrappers.SpinnerWrapper;
 import org.slf4j.Logger;

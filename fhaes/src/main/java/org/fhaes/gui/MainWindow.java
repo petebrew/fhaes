@@ -68,8 +68,6 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileFilter;
 
-import org.fhaes.FHRecorder.controller.FileController;
-import org.fhaes.FHRecorder.view.FireHistoryRecorder;
 import org.fhaes.components.FHAESCheckBoxMenuItem;
 import org.fhaes.components.FHAESMenuItem;
 import org.fhaes.components.JToolBarButton;
@@ -81,6 +79,8 @@ import org.fhaes.feedback.FeedbackMessagePanel;
 import org.fhaes.feedback.FeedbackPreferenceManager;
 import org.fhaes.fhfilereader.FHCategoryReader;
 import org.fhaes.fhsamplesize.view.FHSampleSize;
+import org.fhaes.fhxrecorder.controller.FileController;
+import org.fhaes.fhxrecorder.view.FireHistoryRecorder;
 import org.fhaes.filefilter.CSVFileFilter;
 import org.fhaes.filefilter.CSVZipFileFilter;
 import org.fhaes.filefilter.FHAESFileFilter;
