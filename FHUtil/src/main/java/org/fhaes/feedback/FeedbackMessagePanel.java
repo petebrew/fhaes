@@ -151,24 +151,28 @@ public class FeedbackMessagePanel extends JPanel {
 				if (displayProtocol == FeedbackDisplayProtocol.AUTO_HIDE)
 				{
 					// Start the auto-hide process after showing the message for five seconds
-					if (animationTask != null)
-					{
-						animationTask.cancel();
-						currentOpacity = FULL_OPACITY;
-						this.setVisible(true);
-					}
-					
+					cancelAnimationTask();
 					animationTask = new AutoHideMessageTask();
 					autoHideDelayTimer.schedule(animationTask, EIGHT_SECOND_DELAY);
 				}
 				else
 				{
-					if (animationTask != null)
-					{
-						animationTask.cancel();
-					}
+					cancelAnimationTask();
 				}
 			}
+		}
+	}
+	
+	/**
+	 * Cancels the animation task if it is running, then resets the view properties as needed.
+	 */
+	private void cancelAnimationTask() {
+		
+		if (animationTask != null)
+		{
+			animationTask.cancel();
+			currentOpacity = FULL_OPACITY;
+			this.setVisible(true);
 		}
 	}
 	
