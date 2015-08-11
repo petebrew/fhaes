@@ -51,6 +51,7 @@ import javax.swing.border.TitledBorder;
 import org.fhaes.enums.FireFilterType;
 import org.fhaes.enums.LabelOrientation;
 import org.fhaes.enums.LineStyle;
+import org.fhaes.neofhchart.util.YearListModel;
 import org.fhaes.preferences.App;
 import org.fhaes.preferences.FHAESPreferences.PrefKey;
 import org.fhaes.util.Builder;

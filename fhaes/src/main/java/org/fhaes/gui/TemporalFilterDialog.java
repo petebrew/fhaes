@@ -34,7 +34,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import org.fhaes.fhxrecorder.controller.FileController;
+import org.fhaes.fhrecorder.controller.FileController;
 
 import net.miginfocom.swing.MigLayout;
 

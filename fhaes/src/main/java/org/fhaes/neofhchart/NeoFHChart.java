@@ -45,6 +45,8 @@ import org.fhaes.filefilter.PDFFilter;
 import org.fhaes.filefilter.PNGFilter;
 import org.fhaes.filefilter.SVGFilter;
 import org.fhaes.filefilter.TXTFileFilter;
+import org.fhaes.neofhchart.util.PDFExportOptions;
+import org.fhaes.neofhchart.util.PNGExportOptions;
 import org.fhaes.preferences.App;
 import org.fhaes.preferences.FHAESPreferences.PrefKey;
 import org.fhaes.preferences.PrefsEvent;
