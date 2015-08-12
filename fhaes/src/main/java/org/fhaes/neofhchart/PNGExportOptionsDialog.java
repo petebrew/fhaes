@@ -15,7 +15,7 @@
  * 		If not, see <http://www.gnu.org/licenses/>.
  * 
  *************************************************************************************************/
-package org.fhaes.neofhchart.util;
+package org.fhaes.neofhchart;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
@@ -42,7 +42,6 @@ import javax.swing.text.DefaultFormatter;
 import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.TranscoderOutput;
 import org.apache.batik.transcoder.image.PNGTranscoder;
-import org.fhaes.neofhchart.FireChartSVG;
 import org.fhaes.preferences.App;
 import org.fhaes.util.Builder;
 import org.slf4j.Logger;
@@ -55,12 +54,12 @@ import net.miginfocom.swing.MigLayout;
  * 
  * @author Peter Brewer
  */
-public class PNGExportOptions extends JDialog implements ActionListener {
+public class PNGExportOptionsDialog extends JDialog implements ActionListener {
 	
 	private static final long serialVersionUID = 1L;
 	
 	// Declare logger
-	private final static Logger log = LoggerFactory.getLogger(PNGExportOptions.class);
+	private final static Logger log = LoggerFactory.getLogger(PNGExportOptionsDialog.class);
 	
 	// Declare GUI components
 	private final JPanel contentPanel = new JPanel();
@@ -81,7 +80,7 @@ public class PNGExportOptions extends JDialog implements ActionListener {
 	 * @param outputFile
 	 * @param currentChart
 	 */
-	public PNGExportOptions(FireChartSVG currentChart, File outputFile) {
+	public PNGExportOptionsDialog(FireChartSVG currentChart, File outputFile) {
 		
 		this.currentChart = currentChart;
 		this.outputFile = outputFile;

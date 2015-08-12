@@ -50,25 +50,27 @@ import org.slf4j.LoggerFactory;
  */
 public class FileController {
 	
+	// Declare logger
+	private static final Logger log = LoggerFactory.getLogger(FileController.class);
+	
+	// Declare public constants
 	public static final int CURRENT_YEAR = Calendar.getInstance().get(Calendar.YEAR);
 	public static final int EARLIEST_ALLOWED_YEAR = -99999;
-	
 	public static final int MAX_VISIBLE_GRAPH_COLUMNS = 20;
-	
 	public static final int FHX2_MAX_FILE_NAME_LENGTH = 8;
 	public static final int FHX2_MAX_SAMPLE_NAME_LENGTH = 8;
 	public static final int FHX2_MAX_NUMBER_OF_SAMPLES = 254;
 	public static final int FHX2_YEAR_LOWER_BOUNDARY = 1200;
 	public static final int FHX2_YEAR_UPPER_BOUNDARY = 2020;
 	
-	private static final Logger log = LoggerFactory.getLogger(FileController.class);
-	private static CustomOptions customOptions = new CustomOptions();
-	
+	// Declare public variables
 	public static FireHistoryRecorder thePrimaryWindow;
 	public static String progName = "Fire History Recorder";
 	public static String filePath = null;
 	public static String fileName = null;
 	
+	// Declare local variables
+	private static CustomOptions customOptions = new CustomOptions();
 	private static Boolean isChangedSinceLastSave = false;
 	private static Boolean isChangedSinceOpened = false;
 	private static Boolean isCorrupted = false;

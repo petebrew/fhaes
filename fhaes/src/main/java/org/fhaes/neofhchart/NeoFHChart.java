@@ -45,8 +45,6 @@ import org.fhaes.filefilter.PDFFilter;
 import org.fhaes.filefilter.PNGFilter;
 import org.fhaes.filefilter.SVGFilter;
 import org.fhaes.filefilter.TXTFileFilter;
-import org.fhaes.neofhchart.util.PDFExportOptions;
-import org.fhaes.neofhchart.util.PNGExportOptions;
 import org.fhaes.preferences.App;
 import org.fhaes.preferences.FHAESPreferences.PrefKey;
 import org.fhaes.preferences.PrefsEvent;
@@ -373,12 +371,12 @@ public class NeoFHChart extends JPanel implements PrefsListener {
 		}
 		else if (selectedFilter.equals(pngf))
 		{
-			PNGExportOptions exp = new PNGExportOptions(currentChart, outputFile);
+			PNGExportOptionsDialog exp = new PNGExportOptionsDialog(currentChart, outputFile);
 			exp.setVisible(true);
 		}
 		else if (selectedFilter.equals(pdff))
 		{
-			PDFExportOptions exp = new PDFExportOptions(currentChart, outputFile);
+			PDFExportOptionsDialog exp = new PDFExportOptionsDialog(currentChart, outputFile);
 			exp.setVisible(true);
 		}
 	}

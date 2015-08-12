@@ -15,9 +15,10 @@
  * 		If not, see <http://www.gnu.org/licenses/>.
  * 
  *************************************************************************************************/
-package org.fhaes.neofhchart.util;
+package org.fhaes.neofhchart;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics2D;
@@ -29,18 +30,20 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.ListCellRenderer;
 import javax.swing.border.EmptyBorder;
 
 import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.print.PrintTranscoder;
-import org.fhaes.neofhchart.FireChartSVG;
 import org.fhaes.preferences.App;
 import org.fhaes.util.Builder;
 
@@ -60,7 +63,7 @@ import net.miginfocom.swing.MigLayout;
  * 
  * @author Peter Brewer
  */
-public class PDFExportOptions extends JDialog implements ActionListener {
+public class PDFExportOptionsDialog extends JDialog implements ActionListener {
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -78,7 +81,7 @@ public class PDFExportOptions extends JDialog implements ActionListener {
 	/**
 	 * Create the dialog.
 	 */
-	public PDFExportOptions(FireChartSVG currentChart, File outputFile) {
+	public PDFExportOptionsDialog(FireChartSVG currentChart, File outputFile) {
 		
 		this.setModal(true);
 		this.setTitle("Export to PDF");
@@ -281,6 +284,85 @@ public class PDFExportOptions extends JDialog implements ActionListener {
 				radLandscape.setEnabled(false);
 				radPortrait.setEnabled(false);
 			}
+		}
+	}
+	
+	/**
+	 * PageSizeRenderer Class. List renderer for displaying iText PageSizes nicely.
+	 */
+	private class PageSizeRenderer extends JLabel implements ListCellRenderer<Object> {
+		
+		private static final long serialVersionUID = 1L;
+		
+		public PageSizeRenderer() {
+			
+			this.setOpaque(true);
+			this.setHorizontalAlignment(LEFT);
+			this.setVerticalAlignment(CENTER);
+		}
+		
+		@SuppressWarnings("rawtypes")
+		@Override
+		public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+			
+			this.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
+			
+			if (value instanceof Rectangle)
+			{
+				if (value.equals(PageSize.A5))
+				{
+					this.setText("A5");
+				}
+				else if (value.equals(PageSize.A4))
+				{
+					this.setText("A4");
+				}
+				else if (value.equals(PageSize.A3))
+				{
+					this.setText("A3");
+				}
+				else if (value.equals(PageSize.A2))
+				{
+					this.setText("A2");
+				}
+				else if (value.equals(PageSize.A1))
+				{
+					this.setText("A1");
+				}
+				else if (value.equals(PageSize.A0))
+				{
+					this.setText("A0");
+				}
+				else if (value.equals(PageSize.LETTER))
+				{
+					this.setText("US Letter");
+				}
+				else if (value.equals(PageSize.LEGAL))
+				{
+					this.setText("US Legal");
+				}
+				else if (value.equals(PageSize.EXECUTIVE))
+				{
+					this.setText("US Executive");
+				}
+			}
+			else
+			{
+				this.setText(value.toString());
+			}
+			
+			if (isSelected)
+			{
+				this.setBackground(list.getSelectionBackground());
+				this.setForeground(list.getSelectionForeground());
+			}
+			else
+			{
+				this.setBackground(list.getBackground());
+				this.setForeground(list.getForeground());
+			}
+			
+			return this;
 		}
 	}
 }

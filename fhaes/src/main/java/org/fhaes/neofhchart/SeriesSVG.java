@@ -44,6 +44,7 @@ public class SeriesSVG extends FHSeries {
 		
 		super(series.getTitle(), series.getFirstYear(), series.hasPith(), series.hasBark(), series.getRecordingYears(),
 				series.getEventYears(), series.getInjuryYears());
+				
 		this.taxon = taxon;
 	}
 	

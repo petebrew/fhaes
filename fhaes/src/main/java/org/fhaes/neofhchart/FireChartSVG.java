@@ -51,6 +51,7 @@ import org.fhaes.enums.LabelOrientation;
 import org.fhaes.enums.LineStyle;
 import org.fhaes.fhfilereader.AbstractFireHistoryReader;
 import org.fhaes.model.FHSeries;
+import org.fhaes.neofhchart.util.ConversionUtil;
 import org.fhaes.preferences.App;
 import org.fhaes.preferences.FHAESPreferences.PrefKey;
 import org.w3c.dom.DOMImplementation;
@@ -121,7 +122,7 @@ public class FireChartSVG {
 		doc = impl.createDocument(svgNS, "svg", null);
 		reader = f;
 		
-		ArrayList<SeriesSVG> temp_list = this.convertFHSeriesToSeriesSVGList(f.getSeriesList());
+		ArrayList<SeriesSVG> temp_list = ConversionUtil.convertFHSeriesToSeriesSVGList(f.getSeriesList());
 		if (!series_list.isEmpty())
 		{
 			series_list.clear();
@@ -290,17 +291,6 @@ public class FireChartSVG {
 	}
 	
 	/**
-	 * Converts dim from years to pixels based off of the chart_width and how many years are in the reader.
-	 * 
-	 * @param dim
-	 * @return
-	 */
-	public double yearsToPx(double dim) {
-		
-		return dim * chart_width / (getLastChartYear() - getFirstChartYear());
-	}
-	
-	/**
 	 * Get the first year in the chart. Will be the first year in the file, or the year specified by the user if different.
 	 * 
 	 * @return
@@ -335,6 +325,17 @@ public class FireChartSVG {
 	}
 	
 	/**
+	 * Converts dim from years to pixels based off of the chart_width and how many years are in the reader.
+	 * 
+	 * @param dim
+	 * @return
+	 */
+	public double yearsToPx(double dim) {
+		
+		return dim * chart_width / (getLastChartYear() - getFirstChartYear());
+	}
+	
+	/**
 	 * Convenience function to get the scaling factor.
 	 * 
 	 * @return
@@ -342,14 +343,6 @@ public class FireChartSVG {
 	public double yearsToPx() {
 		
 		return yearsToPx(1.0);
-	}
-	
-	/**
-	 * Update the font family used in the plot.
-	 */
-	private void updateFontFamily() {
-		
-		fontFamily = App.prefs.getPref(PrefKey.CHART_FONT_FAMILY, "Verdana");
 	}
 	
 	/**
@@ -371,6 +364,14 @@ public class FireChartSVG {
 	public double pxToYears() {
 		
 		return pxToYears(1.0);
+	}
+	
+	/**
+	 * Update the font family used in the plot.
+	 */
+	private void updateFontFamily() {
+		
+		fontFamily = App.prefs.getPref(PrefKey.CHART_FONT_FAMILY, "Verdana");
 	}
 	
 	/**
@@ -1350,31 +1351,6 @@ public class FireChartSVG {
 	/**
 	 * TODO
 	 * 
-	 * @param list
-	 * @return
-	 */
-	private ArrayList<SeriesSVG> convertFHSeriesToSeriesSVGList(ArrayList<FHSeries> list) {
-		
-		ArrayList<SeriesSVG> svgseries = new ArrayList<SeriesSVG>();
-		
-		for (FHSeries series : list)
-		{
-			try
-			{
-				svgseries.add(new SeriesSVG(series));
-			}
-			catch (Exception e)
-			{
-				e.printStackTrace();
-			}
-		}
-		
-		return svgseries;
-	}
-	
-	/**
-	 * TODO
-	 * 
 	 * @return
 	 */
 	private Element getChronologyPlot() {
@@ -1385,7 +1361,7 @@ public class FireChartSVG {
 		
 		// build all of the series
 		ArrayList<Boolean> series_visible = new ArrayList<Boolean>();
-		ArrayList<SeriesSVG> series_arr = convertFHSeriesToSeriesSVGList(reader.getSeriesList());
+		ArrayList<SeriesSVG> series_arr = ConversionUtil.convertFHSeriesToSeriesSVGList(reader.getSeriesList());
 		
 		this.showPith = App.prefs.getBooleanPref(PrefKey.CHART_SHOW_PITH_SYMBOL, true);
 		this.showBark = App.prefs.getBooleanPref(PrefKey.CHART_SHOW_BARK_SYMBOL, true);
@@ -1408,7 +1384,6 @@ public class FireChartSVG {
 				
 		for (int i = 0; i < series_arr.size(); i++)
 		{
-			
 			series_visible.add(true);
 			SeriesSVG s = series_arr.get(i);
 			

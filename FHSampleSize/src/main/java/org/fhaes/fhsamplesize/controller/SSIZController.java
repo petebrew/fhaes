@@ -34,27 +34,17 @@ import org.slf4j.LoggerFactory;
  */
 public class SSIZController {
 	
+	// Declare logger
 	private static final Logger log = LoggerFactory.getLogger(SSIZController.class);
 	
-	private static final int NO_DATA = -1;
+	// Declare local constants
 	private static final int RECORDING_BUT_NO_EVENT = 0;
 	private static final int EVENT_RECORDED = 1;
+	private static final int NO_DATA = -1;
 	
+	// Declare local variables
 	static double[] stdDevMultiplier = { 1.960, 2.575, 3.294 };
-	
-	@SuppressWarnings("unused")
-	private static SSIZAnalysisModel analysisModel;
 	private static ArrayList<AnalysisResultsModel> analysisResults = new ArrayList<AnalysisResultsModel>();
-	
-	/**
-	 * Sets the analysisModel equal to the input SSIZAnalysisModel.
-	 * 
-	 * @param model
-	 */
-	public void setAnalysisModel(SSIZAnalysisModel model) {
-		
-		SSIZController.analysisModel = model;
-	}
 	
 	/**
 	 * Return an int[] containing the count of fires in each year. Where the count does not reach the threshold specified in the model then

@@ -993,6 +993,11 @@ public class FHFileChecker extends JFrame {
 		return jPanelExit;
 	}
 	
+	/**
+	 * TODO
+	 * 
+	 * @return
+	 */
 	private JCheckBox getJCheckformatreport() {
 		
 		if (jcheckformatreport == null)
@@ -1002,6 +1007,11 @@ public class FHFileChecker extends JFrame {
 		return jcheckformatreport;
 	}
 	
+	/**
+	 * TODO
+	 * 
+	 * @return
+	 */
 	private JCheckBox getJCheckindivreport() {
 		
 		if (jcheckindivreport == null)
