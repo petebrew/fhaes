@@ -211,7 +211,7 @@ public class PNGExportOptionsDialog extends JDialog implements ActionListener {
 				t.addTranscodingHint(PNGTranscoder.KEY_WIDTH, width);
 				t.addTranscodingHint(PNGTranscoder.KEY_HEIGHT, height);
 				
-				TranscoderInput input = new TranscoderInput(currentChart.doc);
+				TranscoderInput input = new TranscoderInput(currentChart.getSVGDocument());
 				
 				String path = outputFile.getAbsolutePath();
 				

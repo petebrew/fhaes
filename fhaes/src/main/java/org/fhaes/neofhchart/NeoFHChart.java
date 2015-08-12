@@ -191,7 +191,7 @@ public class NeoFHChart extends JPanel implements PrefsListener {
 		// }
 		
 		// Add chart to canvas
-		svgCanvas.setDocument(currentChart.doc);
+		svgCanvas.setDocument(currentChart.getSVGDocument());
 	}
 	
 	/**

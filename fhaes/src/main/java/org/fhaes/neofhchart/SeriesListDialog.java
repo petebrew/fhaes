@@ -120,7 +120,7 @@ public class SeriesListDialog extends JDialog implements ActionListener {
 				
 				// Toggle visibility of the series
 				chart.toggleVisibilityOfSeries(index);
-				svgCanvas.setDocument(chart.doc);
+				svgCanvas.setDocument(chart.getSVGDocument());
 				
 				// Repaint cell
 				

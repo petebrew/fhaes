@@ -17,6 +17,7 @@
  *************************************************************************************************/
 package org.fhaes.neofhchart.svg;
 
+import java.awt.Color;
 import java.util.ArrayList;
 
 import org.fhaes.model.FHSeries;
@@ -32,18 +33,18 @@ public class ConversionUtil {
 	/**
 	 * Converts an array list of FHseries objects to an array list of FHSeriesSVG objects.
 	 * 
-	 * @param list
+	 * @param seriesList
 	 * @return
 	 */
-	protected static ArrayList<FHSeriesSVG> convertFHSeriesToSeriesSVGList(ArrayList<FHSeries> list) {
+	protected static ArrayList<FHSeriesSVG> convertToFHSeriesSVGList(ArrayList<FHSeries> seriesList) {
 		
-		ArrayList<FHSeriesSVG> svgSeriesList = new ArrayList<FHSeriesSVG>();
+		ArrayList<FHSeriesSVG> seriesSVGList = new ArrayList<FHSeriesSVG>();
 		
-		for (FHSeries series : list)
+		for (FHSeries series : seriesList)
 		{
 			try
 			{
-				svgSeriesList.add(new FHSeriesSVG(series));
+				seriesSVGList.add(new FHSeriesSVG(series));
 			}
 			catch (Exception e)
 			{
@@ -51,37 +52,62 @@ public class ConversionUtil {
 			}
 		}
 		
-		return svgSeriesList;
+		return seriesSVGList;
 	}
 	
 	/**
-	 * Performs the inverse of yearsToPx.
+	 * Convert a java.awt.Color to a hex string.
 	 * 
-	 * @param dim
+	 * @param color
 	 * @return
 	 */
-	protected static double pxToYears(double dim, int chartWidth, int firstChartYear, int lastChartYear) {
+	protected static String getColorAsHex(Color color) {
 		
-		return dim * 1 / yearsToPx(chartWidth, firstChartYear, lastChartYear);
+		if (color == null)
+		{
+			return null;
+		}
+		
+		return "#" + Integer.toHexString(color.getRGB()).substring(2);
 	}
 
 	/**
-	 * Convenience function to get the scaling factor.
+	 * Performs the inverse of yearsToPixels.
 	 * 
+	 * @param dim
+	 * @param chartWidth
+	 * @param firstChartYear
+	 * @param lastChartYear
 	 * @return
 	 */
-	protected static double pxToYears(int chartWidth, int firstChartYear, int lastChartYear) {
+	protected static double pixelsToYears(double dim, int chartWidth, int firstChartYear, int lastChartYear) {
 		
-		return pxToYears(1.0, chartWidth, firstChartYear, lastChartYear);
+		return dim * 1 / yearsToPixels(chartWidth, firstChartYear, lastChartYear);
 	}
 	
 	/**
-	 * Converts dim from years to pixels based off of the chart_width and how many years are in the reader.
+	 * Convenience function to get the scaling factor.
 	 * 
-	 * @param dim
+	 * @param chartWidth
+	 * @param firstChartYear
+	 * @param lastChartYear
 	 * @return
 	 */
-	protected static double yearsToPx(double dim, int chartWidth, int firstChartYear, int lastChartYear) {
+	protected static double pixelsToYears(int chartWidth, int firstChartYear, int lastChartYear) {
+		
+		return pixelsToYears(1.0, chartWidth, firstChartYear, lastChartYear);
+	}
+	
+	/**
+	 * Converts dim from years to pixels based off of the chart width and how many years are in the reader.
+	 * 
+	 * @param dim
+	 * @param chartWidth
+	 * @param firstChartYear
+	 * @param lastChartYear
+	 * @return
+	 */
+	protected static double yearsToPixels(double dim, int chartWidth, int firstChartYear, int lastChartYear) {
 		
 		return dim * chartWidth / (lastChartYear - firstChartYear);
 	}
@@ -89,10 +115,13 @@ public class ConversionUtil {
 	/**
 	 * Convenience function to get the scaling factor.
 	 * 
+	 * @param chartWidth
+	 * @param firstChartYear
+	 * @param lastChartYear
 	 * @return
 	 */
-	protected static double yearsToPx(int chartWidth, int firstChartYear, int lastChartYear) {
+	protected static double yearsToPixels(int chartWidth, int firstChartYear, int lastChartYear) {
 		
-		return yearsToPx(1.0, chartWidth, firstChartYear, lastChartYear);
+		return yearsToPixels(1.0, chartWidth, firstChartYear, lastChartYear);
 	}
 }

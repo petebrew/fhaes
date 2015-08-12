@@ -193,7 +193,7 @@ public class PDFExportOptionsDialog extends JDialog implements ActionListener {
 				Graphics2D g2 = template.createGraphics(width, height);
 				
 				PrintTranscoder prm = new PrintTranscoder();
-				TranscoderInput ti = new TranscoderInput(currentChart.doc);
+				TranscoderInput ti = new TranscoderInput(currentChart.getSVGDocument());
 				prm.transcode(ti, null);
 				
 				PageFormat pg = new PageFormat();
