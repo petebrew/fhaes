@@ -10,7 +10,7 @@
  *
  *************************/
 importPackage(Packages.javax.swing);
-importPackage(Packages.org.fhaes.neofhchart);
+importPackage(Packages.org.fhaes.neofhchart.svg);
 
 function doIt() { /* just for demonstration purposes */
     /* You can call arbitrary functions on FireChartSVG */

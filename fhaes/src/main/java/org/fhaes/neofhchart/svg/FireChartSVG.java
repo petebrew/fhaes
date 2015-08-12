@@ -1930,7 +1930,7 @@ public class FireChartSVG {
 	/**
 	 * This function creates a legend dynamically, based on the current event(s) displayed on the canvas (Fire, Injury, or Fire and Injury).
 	 */
-	public Element getLegend() {
+	private Element getLegend() {
 		
 		int labelwidth = this.getStringWidth(fontFamily, Font.PLAIN, 8, "Outer year without bark");
 		int labelHeight = this.getStringHeight(fontFamily, Font.PLAIN, 8, "Outer year without bark");
