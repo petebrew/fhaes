@@ -44,6 +44,7 @@ import javax.swing.border.EmptyBorder;
 
 import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.print.PrintTranscoder;
+import org.fhaes.neofhchart.svg.FireChartSVG;
 import org.fhaes.preferences.App;
 import org.fhaes.util.Builder;
 
@@ -59,7 +60,7 @@ import com.itextpdf.text.pdf.PdfWriter;
 import net.miginfocom.swing.MigLayout;
 
 /**
- * PDFExportOptions Class. JDialog for getting export information when saving to PDF files.
+ * PDFExportOptionsDialog Class. JDialog for getting export information when saving to PDF files.
  * 
  * @author Peter Brewer
  */

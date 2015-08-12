@@ -37,6 +37,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.border.EmptyBorder;
 
 import org.apache.batik.swing.JSVGCanvas;
+import org.fhaes.neofhchart.svg.FireChartSVG;
 import org.fhaes.util.Builder;
 
 /**
@@ -88,11 +89,11 @@ public class SeriesListDialog extends JDialog implements ActionListener {
 		}
 		
 		ArrayList<CheckListItem> listOfChecks = new ArrayList<CheckListItem>();
-		ArrayList<SeriesSVG> mySVGSeries = chart.getCurrentSeriesList();
+		ArrayList<FHSeriesSVG> mySVGSeries = chart.getCurrentSeriesList();
 		for (int i = 0; i < mySVGSeries.size(); i++)
 		{
 			CheckListItem temp = new CheckListItem(mySVGSeries.get(i).getTitle());
-			temp.setSelected(mySVGSeries.get(i).isVisible);
+			temp.setSelected(mySVGSeries.get(i).isVisible());
 			listOfChecks.add(temp);
 		}
 		

@@ -15,7 +15,7 @@
  * 		If not, see <http://www.gnu.org/licenses/>.
  * 
  *************************************************************************************************/
-package org.fhaes.neofhchart.util;
+package org.fhaes.neofhchart;
 
 import java.util.ArrayList;
 import java.util.Collection;

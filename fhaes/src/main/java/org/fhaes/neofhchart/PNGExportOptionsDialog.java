@@ -42,6 +42,7 @@ import javax.swing.text.DefaultFormatter;
 import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.TranscoderOutput;
 import org.apache.batik.transcoder.image.PNGTranscoder;
+import org.fhaes.neofhchart.svg.FireChartSVG;
 import org.fhaes.preferences.App;
 import org.fhaes.util.Builder;
 import org.slf4j.Logger;
@@ -50,7 +51,7 @@ import org.slf4j.LoggerFactory;
 import net.miginfocom.swing.MigLayout;
 
 /**
- * PNGExportOptions Class. JDialog for getting size information when saving to a PNG image.
+ * PNGExportOptionsDialog Class. JDialog for getting size information when saving to a PNG image.
  * 
  * @author Peter Brewer
  */

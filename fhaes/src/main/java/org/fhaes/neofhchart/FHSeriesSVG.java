@@ -22,13 +22,14 @@ import java.awt.Color;
 import org.fhaes.model.FHSeries;
 
 /**
- * SeriesSVG Class. This class extends FHSeries to keep track of series visibility as well as metadata not currently supported by FHSeries.
+ * FHSeriesSVG Class. This class extends FHSeries to keep track of series visibility and metadata not currently supported by FHSeries.
  * 
  * @author Aaron Decker, Michael Ababio, Zachariah Ferree, Matthew Willie, Peter Brewer
  */
-public class SeriesSVG extends FHSeries {
+public class FHSeriesSVG extends FHSeries {
 	
-	boolean isVisible = true;
+	// Declare local variables
+	private boolean visible = true;
 	private String taxon = "";
 	private Color lineColor = Color.BLACK;
 	private Color labelColor = Color.BLACK;
@@ -40,7 +41,7 @@ public class SeriesSVG extends FHSeries {
 	 * @param taxon
 	 * @throws Exception
 	 */
-	public SeriesSVG(FHSeries series, String taxon) throws Exception {
+	public FHSeriesSVG(FHSeries series, String taxon) throws Exception {
 		
 		super(series.getTitle(), series.getFirstYear(), series.hasPith(), series.hasBark(), series.getRecordingYears(),
 				series.getEventYears(), series.getInjuryYears());
@@ -54,10 +55,20 @@ public class SeriesSVG extends FHSeries {
 	 * @param series
 	 * @throws Exception
 	 */
-	public SeriesSVG(FHSeries series) throws Exception {
+	public FHSeriesSVG(FHSeries series) throws Exception {
 		
 		super(series.getTitle(), series.getFirstYear(), series.hasPith(), series.hasBark(), series.getRecordingYears(),
 				series.getEventYears(), series.getInjuryYears());
+	}
+	
+	/**
+	 * Get the current visibility for this series.
+	 * 
+	 * @return
+	 */
+	public boolean isVisible() {
+		
+		return visible;
 	}
 	
 	/**
@@ -65,19 +76,17 @@ public class SeriesSVG extends FHSeries {
 	 */
 	public void toggleVisibility() {
 		
-		isVisible = !isVisible;
+		visible = !visible;
 	}
 	
 	/**
-	 * Set the taxon for this series.
+	 * Get the line color for this series.
 	 * 
-	 * TODO Replace once we have TRiDaS support
-	 * 
-	 * @param taxon
+	 * @return
 	 */
-	public void setTaxon(String taxon) {
+	public Color getLineColor() {
 		
-		this.taxon = taxon;
+		return lineColor;
 	}
 	
 	/**
@@ -101,13 +110,15 @@ public class SeriesSVG extends FHSeries {
 	}
 	
 	/**
-	 * Get the line color for this series.
+	 * Set the taxon for this series.
 	 * 
-	 * @return
+	 * TODO Replace once we have TRiDaS support
+	 * 
+	 * @param taxon
 	 */
-	public Color getLineColor() {
+	public void setTaxon(String taxon) {
 		
-		return lineColor;
+		this.taxon = taxon;
 	}
 	
 	/**
