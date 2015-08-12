@@ -24,11 +24,11 @@ import org.fhaes.model.FHSeries;
 import org.fhaes.neofhchart.FHSeriesSVG;
 
 /**
- * ConversionUtil Class.
+ * FireChartConversionUtil Class.
  * 
  * @author Joshua Brogan and Peter Brewer
  */
-public class ConversionUtil {
+public class FireChartConversionUtil {
 	
 	/**
 	 * Converts an array list of FHseries objects to an array list of FHSeriesSVG objects.
@@ -36,7 +36,7 @@ public class ConversionUtil {
 	 * @param seriesList
 	 * @return
 	 */
-	protected static ArrayList<FHSeriesSVG> convertToFHSeriesSVGList(ArrayList<FHSeries> seriesList) {
+	protected static ArrayList<FHSeriesSVG> seriesListToSeriesSVGList(ArrayList<FHSeries> seriesList) {
 		
 		ArrayList<FHSeriesSVG> seriesSVGList = new ArrayList<FHSeriesSVG>();
 		
@@ -61,7 +61,7 @@ public class ConversionUtil {
 	 * @param color
 	 * @return
 	 */
-	protected static String getColorAsHex(Color color) {
+	protected static String colorToHexString(Color color) {
 		
 		if (color == null)
 		{
@@ -70,7 +70,7 @@ public class ConversionUtil {
 		
 		return "#" + Integer.toHexString(color.getRGB()).substring(2);
 	}
-
+	
 	/**
 	 * Performs the inverse of yearsToPixels.
 	 * 
