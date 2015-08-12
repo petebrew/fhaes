@@ -291,6 +291,7 @@ public class MainWindow implements PrefsListener {
 		if (response == JOptionPane.YES_OPTION)
 		{
 			fileListModel.clear();
+			handleFileSelectionChanged();
 		}
 		
 		fhxFileList.repaint();
