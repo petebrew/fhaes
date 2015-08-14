@@ -56,7 +56,7 @@ public class FireChartConversionUtil {
 	}
 	
 	/**
-	 * Convert a java.awt.Color to a hex string.
+	 * Converts a java.awt.Color to a hex string.
 	 * 
 	 * @param color
 	 * @return

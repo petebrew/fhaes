@@ -72,7 +72,7 @@ public class SeriesElementBuilder {
 	}
 	
 	/**
-	 * TODO
+	 * Returns a fire year marker element based on the input height and color.
 	 * 
 	 * @param doc
 	 * @param svgNS
@@ -93,7 +93,7 @@ public class SeriesElementBuilder {
 	}
 	
 	/**
-	 * TODO
+	 * Returns an injury year marker element based on the input width, height, and color.
 	 * 
 	 * @param doc
 	 * @param svgNS
@@ -115,7 +115,7 @@ public class SeriesElementBuilder {
 	}
 	
 	/**
-	 * TODO
+	 * Returns an inner-year pith marker based on the input pith value, height, and color.
 	 * 
 	 * @param doc
 	 * @param svgNS
@@ -148,7 +148,7 @@ public class SeriesElementBuilder {
 	}
 	
 	/**
-	 * TODO
+	 * Returns an outer-year bark marker based on the input bark value, height, and color.
 	 * 
 	 * @param doc
 	 * @param svgNS
