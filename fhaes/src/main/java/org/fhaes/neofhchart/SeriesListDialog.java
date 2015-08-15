@@ -89,11 +89,11 @@ public class SeriesListDialog extends JDialog implements ActionListener {
 		}
 		
 		ArrayList<CheckListItem> listOfChecks = new ArrayList<CheckListItem>();
-		ArrayList<FHSeriesSVG> mySVGSeries = chart.getCurrentSeriesList();
-		for (int i = 0; i < mySVGSeries.size(); i++)
+		ArrayList<FHSeriesSVG> seriesSVG = chart.getCurrentSeriesList();
+		for (int i = 0; i < seriesSVG.size(); i++)
 		{
-			CheckListItem temp = new CheckListItem(mySVGSeries.get(i).getTitle());
-			temp.setSelected(mySVGSeries.get(i).isVisible());
+			CheckListItem temp = new CheckListItem(seriesSVG.get(i).getTitle());
+			temp.setSelected(seriesSVG.get(i).isVisible());
 			listOfChecks.add(temp);
 		}
 		

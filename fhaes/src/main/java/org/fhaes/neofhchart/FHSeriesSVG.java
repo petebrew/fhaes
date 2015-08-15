@@ -35,6 +35,18 @@ public class FHSeriesSVG extends FHSeries {
 	private Color labelColor = Color.BLACK;
 	
 	/**
+	 * Create a series from an FHSeries.
+	 * 
+	 * @param series
+	 * @throws Exception
+	 */
+	public FHSeriesSVG(FHSeries series) throws Exception {
+		
+		super(series.getTitle(), series.getFirstYear(), series.hasPith(), series.hasBark(), series.getRecordingYears(),
+				series.getEventYears(), series.getInjuryYears());
+	}
+	
+	/**
 	 * Create a series from an FHSeries plus the taxon string.
 	 * 
 	 * @param series
@@ -47,18 +59,6 @@ public class FHSeriesSVG extends FHSeries {
 				series.getEventYears(), series.getInjuryYears());
 				
 		this.taxon = taxon;
-	}
-	
-	/**
-	 * Create a series from an FHSeries.
-	 * 
-	 * @param series
-	 * @throws Exception
-	 */
-	public FHSeriesSVG(FHSeries series) throws Exception {
-		
-		super(series.getTitle(), series.getFirstYear(), series.hasPith(), series.hasBark(), series.getRecordingYears(),
-				series.getEventYears(), series.getInjuryYears());
 	}
 	
 	/**
@@ -77,6 +77,26 @@ public class FHSeriesSVG extends FHSeries {
 	public void toggleVisibility() {
 		
 		visible = !visible;
+	}
+	
+	/**
+	 * Get the color used for labels for this series.
+	 * 
+	 * @return
+	 */
+	public Color getLabelColor() {
+		
+		return labelColor;
+	}
+	
+	/**
+	 * Set the label color for this series.
+	 * 
+	 * @param labelColor
+	 */
+	public void setLabelColor(Color labelColor) {
+		
+		this.labelColor = labelColor;
 	}
 	
 	/**
@@ -119,25 +139,5 @@ public class FHSeriesSVG extends FHSeries {
 	public void setTaxon(String taxon) {
 		
 		this.taxon = taxon;
-	}
-	
-	/**
-	 * Get the color used for labels for this series.
-	 * 
-	 * @return
-	 */
-	public Color getLabelColor() {
-		
-		return labelColor;
-	}
-	
-	/**
-	 * Set the label color for this series.
-	 * 
-	 * @param labelColor
-	 */
-	public void setLabelColor(Color labelColor) {
-		
-		this.labelColor = labelColor;
 	}
 }
