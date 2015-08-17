@@ -24,7 +24,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
- * SeriesElementBuilder Class.
+ * SeriesElementBuilder Class. This class is used to construct the SVG elements necessary for drawing a fire history series.
  * 
  * @author Joshua Brogan and Peter Brewer
  */
@@ -35,18 +35,20 @@ public class SeriesElementBuilder {
 	 * 
 	 * @param doc
 	 * @param svgNS
-	 * @return
+	 * @return recorderLine
 	 */
 	protected static Element getRecorderLine(Document doc, String svgNS) {
 		
-		Element recorder = doc.createElementNS(svgNS, "line");
-		recorder.setAttributeNS(null, "x1", "0");
-		recorder.setAttributeNS(null, "y1", "0");
-		recorder.setAttributeNS(null, "x2", "10");
-		recorder.setAttributeNS(null, "y2", "0");
-		recorder.setAttributeNS(null, "stroke", "black");
-		recorder.setAttributeNS(null, "stroke-width", "1");
-		return recorder;
+		Element recorderLine = doc.createElementNS(svgNS, "line");
+		
+		recorderLine.setAttributeNS(null, "x1", "0");
+		recorderLine.setAttributeNS(null, "y1", "0");
+		recorderLine.setAttributeNS(null, "x2", "10");
+		recorderLine.setAttributeNS(null, "y2", "0");
+		recorderLine.setAttributeNS(null, "stroke", "black");
+		recorderLine.setAttributeNS(null, "stroke-width", "1");
+		
+		return recorderLine;
 	}
 	
 	/**
@@ -56,62 +58,66 @@ public class SeriesElementBuilder {
 	 * @param svgNS
 	 * @param firstChartYear
 	 * @param lastChartYear
-	 * @return
+	 * @return nonRecorderLine
 	 */
 	protected static Element getNonRecorderLine(Document doc, String svgNS, int firstChartYear, int lastChartYear) {
 		
-		Element nonrecorder = doc.createElementNS(svgNS, "line");
-		nonrecorder.setAttributeNS(null, "x1", "0");
-		nonrecorder.setAttributeNS(null, "y1", "0");
-		nonrecorder.setAttributeNS(null, "x2", "0");
-		nonrecorder.setAttributeNS(null, "y2", "0");
-		nonrecorder.setAttributeNS(null, "stroke", "black");
-		nonrecorder.setAttributeNS(null, "stroke-width", "1");
-		nonrecorder.setAttributeNS(null, "stroke-dasharray", LineStyle.DASHED.getCodeForChartYearCount(lastChartYear - firstChartYear));
-		return nonrecorder;
+		Element nonRecorderLine = doc.createElementNS(svgNS, "line");
+		
+		nonRecorderLine.setAttributeNS(null, "x1", "0");
+		nonRecorderLine.setAttributeNS(null, "y1", "0");
+		nonRecorderLine.setAttributeNS(null, "x2", "0");
+		nonRecorderLine.setAttributeNS(null, "y2", "0");
+		nonRecorderLine.setAttributeNS(null, "stroke", "black");
+		nonRecorderLine.setAttributeNS(null, "stroke-width", "1");
+		nonRecorderLine.setAttributeNS(null, "stroke-dasharray", LineStyle.DASHED.getCodeForChartYearCount(lastChartYear - firstChartYear));
+		
+		return nonRecorderLine;
 	}
 	
 	/**
-	 * Returns a fire year marker element based on the input height and color.
+	 * Returns a fire year marker element based on the input color.
 	 * 
 	 * @param doc
 	 * @param svgNS
-	 * @param height
 	 * @param color
-	 * @return
+	 * @return fireYearMarker
 	 */
-	protected static Element getFireYearMarker(Document doc, String svgNS, int height, Color color) {
+	protected static Element getFireYearMarker(Document doc, String svgNS, Color color) {
 		
-		Element fire_event = doc.createElementNS(svgNS, "rect");
-		fire_event.setAttributeNS(null, "x", "0");
-		fire_event.setAttributeNS(null, "y", "0");
-		fire_event.setAttributeNS(null, "width", "1");
-		fire_event.setAttributeNS(null, "height", Integer.toString(height));
-		fire_event.setAttributeNS(null, "fill", FireChartConversionUtil.colorToHexString(color));
-		fire_event.setAttributeNS(null, "stroke", FireChartConversionUtil.colorToHexString(color));
-		return fire_event;
+		Element fireYearMarker = doc.createElementNS(svgNS, "rect");
+		
+		fireYearMarker.setAttributeNS(null, "x", "0");
+		fireYearMarker.setAttributeNS(null, "y", "0");
+		fireYearMarker.setAttributeNS(null, "width", "1");
+		fireYearMarker.setAttributeNS(null, "height", Integer.toString(FireChartSVG.SERIES_HEIGHT));
+		fireYearMarker.setAttributeNS(null, "fill", FireChartConversionUtil.colorToHexString(color));
+		fireYearMarker.setAttributeNS(null, "stroke", FireChartConversionUtil.colorToHexString(color));
+		
+		return fireYearMarker;
 	}
 	
 	/**
-	 * Returns an injury year marker element based on the input width, height, and color.
+	 * Returns an injury year marker element based on the input width and color.
 	 * 
 	 * @param doc
 	 * @param svgNS
 	 * @param width
-	 * @param height
 	 * @param color
-	 * @return
+	 * @return injuryYearMarker
 	 */
-	protected static Element getInjuryYearMarker(Document doc, String svgNS, int width, int height, Color color) {
+	protected static Element getInjuryYearMarker(Document doc, String svgNS, int width, Color color) {
 		
-		Element injury_event = doc.createElementNS(svgNS, "rect");
-		injury_event.setAttributeNS(null, "x", "0");
-		injury_event.setAttributeNS(null, "y", "0");
-		injury_event.setAttributeNS(null, "width", Integer.toString(width));
-		injury_event.setAttributeNS(null, "height", Integer.toString(height));
-		injury_event.setAttributeNS(null, "fill", "none");
-		injury_event.setAttributeNS(null, "stroke", FireChartConversionUtil.colorToHexString(color));
-		return injury_event;
+		Element injuryYearMarker = doc.createElementNS(svgNS, "rect");
+		
+		injuryYearMarker.setAttributeNS(null, "x", "0");
+		injuryYearMarker.setAttributeNS(null, "y", "0");
+		injuryYearMarker.setAttributeNS(null, "width", Integer.toString(width));
+		injuryYearMarker.setAttributeNS(null, "height", Integer.toString(FireChartSVG.SERIES_HEIGHT));
+		injuryYearMarker.setAttributeNS(null, "fill", "none");
+		injuryYearMarker.setAttributeNS(null, "stroke", FireChartConversionUtil.colorToHexString(color));
+		
+		return injuryYearMarker;
 	}
 	
 	/**
@@ -122,28 +128,32 @@ public class SeriesElementBuilder {
 	 * @param hasPith
 	 * @param height
 	 * @param color
-	 * @return
+	 * @return innerYearPithMarker
 	 */
 	protected static Element getInnerYearPithMarker(Document doc, String svgNS, boolean hasPith, int height, Color color) {
 		
 		if (hasPith)
 		{
-			Element pith_marker = doc.createElementNS(svgNS, "rect");
-			pith_marker.setAttributeNS(null, "x", "0"); // inner year
-			pith_marker.setAttributeNS(null, "y", Integer.toString(-height / 2));
-			pith_marker.setAttributeNS(null, "width", "1");
-			pith_marker.setAttributeNS(null, "height", Integer.toString(height));
-			pith_marker.setAttributeNS(null, "fill", FireChartConversionUtil.colorToHexString(color));
-			pith_marker.setAttributeNS(null, "stroke", FireChartConversionUtil.colorToHexString(color));
-			return pith_marker;
+			Element pithMarker = doc.createElementNS(svgNS, "rect");
+			
+			pithMarker.setAttributeNS(null, "x", "0");
+			pithMarker.setAttributeNS(null, "y", Integer.toString(-height / 2));
+			pithMarker.setAttributeNS(null, "width", "1");
+			pithMarker.setAttributeNS(null, "height", Integer.toString(height));
+			pithMarker.setAttributeNS(null, "fill", FireChartConversionUtil.colorToHexString(color));
+			pithMarker.setAttributeNS(null, "stroke", FireChartConversionUtil.colorToHexString(color));
+			
+			return pithMarker;
 		}
 		else
 		{
-			Element no_pith_marker = doc.createElementNS(svgNS, "polygon");
-			no_pith_marker.setAttributeNS(null, "points", "-2,0.5 5,-5 2,0.5");
-			no_pith_marker.setAttributeNS(null, "fill", FireChartConversionUtil.colorToHexString(color));
-			no_pith_marker.setAttributeNS(null, "stroke", FireChartConversionUtil.colorToHexString(color));
-			return no_pith_marker;
+			Element noPithMarker = doc.createElementNS(svgNS, "polygon");
+			
+			noPithMarker.setAttributeNS(null, "points", "-2,0.5 5,-5 2,0.5");
+			noPithMarker.setAttributeNS(null, "fill", FireChartConversionUtil.colorToHexString(color));
+			noPithMarker.setAttributeNS(null, "stroke", FireChartConversionUtil.colorToHexString(color));
+			
+			return noPithMarker;
 		}
 	}
 	
@@ -155,28 +165,32 @@ public class SeriesElementBuilder {
 	 * @param hasBark
 	 * @param height
 	 * @param color
-	 * @return
+	 * @return outerYearBarkMarker
 	 */
 	protected static Element getOuterYearBarkMarker(Document doc, String svgNS, boolean hasBark, int height, Color color) {
 		
 		if (hasBark)
 		{
-			Element bark_marker = doc.createElementNS(svgNS, "rect");
-			bark_marker.setAttributeNS(null, "x", "0");
-			bark_marker.setAttributeNS(null, "y", Integer.toString(-height / 2));
-			bark_marker.setAttributeNS(null, "width", "1");
-			bark_marker.setAttributeNS(null, "height", Integer.toString(height));
-			bark_marker.setAttributeNS(null, "fill", FireChartConversionUtil.colorToHexString(color));
-			bark_marker.setAttributeNS(null, "stroke", FireChartConversionUtil.colorToHexString(color));
-			return bark_marker;
+			Element barkMarker = doc.createElementNS(svgNS, "rect");
+			
+			barkMarker.setAttributeNS(null, "x", "0");
+			barkMarker.setAttributeNS(null, "y", Integer.toString(-height / 2));
+			barkMarker.setAttributeNS(null, "width", "1");
+			barkMarker.setAttributeNS(null, "height", Integer.toString(height));
+			barkMarker.setAttributeNS(null, "fill", FireChartConversionUtil.colorToHexString(color));
+			barkMarker.setAttributeNS(null, "stroke", FireChartConversionUtil.colorToHexString(color));
+			
+			return barkMarker;
 		}
 		else
 		{
-			Element no_bark_marker = doc.createElementNS(svgNS, "polygon");
-			no_bark_marker.setAttributeNS(null, "points", "2,0.5 -5,-5 -2,0.5");
-			no_bark_marker.setAttributeNS(null, "fill", FireChartConversionUtil.colorToHexString(color));
-			no_bark_marker.setAttributeNS(null, "stroke", FireChartConversionUtil.colorToHexString(color));
-			return no_bark_marker;
+			Element noBarkMarker = doc.createElementNS(svgNS, "polygon");
+			
+			noBarkMarker.setAttributeNS(null, "points", "2,0.5 -5,-5 -2,0.5");
+			noBarkMarker.setAttributeNS(null, "fill", FireChartConversionUtil.colorToHexString(color));
+			noBarkMarker.setAttributeNS(null, "stroke", FireChartConversionUtil.colorToHexString(color));
+			
+			return noBarkMarker;
 		}
 	}
 }
