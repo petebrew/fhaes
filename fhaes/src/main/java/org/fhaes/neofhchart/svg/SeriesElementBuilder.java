@@ -20,8 +20,10 @@ package org.fhaes.neofhchart.svg;
 import java.awt.Color;
 
 import org.fhaes.enums.LineStyle;
+import org.fhaes.neofhchart.FHSeriesSVG;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Text;
 
 /**
  * SeriesElementBuilder Class. This class is used to construct the SVG elements necessary for drawing a fire history series.
@@ -29,6 +31,42 @@ import org.w3c.dom.Element;
  * @author Joshua Brogan and Peter Brewer
  */
 public class SeriesElementBuilder {
+	
+	/**
+	 * Returns an up button.
+	 * 
+	 * @param doc
+	 * @param svgNS
+	 * @return upButton
+	 */
+	protected static Element getUpButton(Document doc, String svgNS) {
+		
+		Element upButton = doc.createElementNS(svgNS, "polygon");
+		
+		upButton.setAttributeNS(null, "points", "2,8 2,4 0,4 4,0 8,4 8,4 6,4 6,8");
+		upButton.setAttributeNS(null, "fill", "black");
+		upButton.setAttributeNS(null, "opacity", "0.2");
+		
+		return upButton;
+	}
+	
+	/**
+	 * Returns a down button.
+	 * 
+	 * @param doc
+	 * @param svgNS
+	 * @return downButton
+	 */
+	protected static Element getDownButton(Document doc, String svgNS) {
+		
+		Element downButton = doc.createElementNS(svgNS, "polygon");
+		
+		downButton.setAttributeNS(null, "points", "2,0 2,4 0,4 4,8 8,4 8,4 6,4 6,0");
+		downButton.setAttributeNS(null, "fill", "black");
+		downButton.setAttributeNS(null, "opacity", "0.2");
+		
+		return downButton;
+	}
 	
 	/**
 	 * Returns a recorder line that is pre-configured. You will probably need to change the x1 y1 x2 y2 attributes to your liking.
@@ -192,5 +230,33 @@ public class SeriesElementBuilder {
 			
 			return noBarkMarker;
 		}
+	}
+	
+	/**
+	 * Returns a series name element based on the input parameters.
+	 * 
+	 * @param doc
+	 * @param svgNS
+	 * @param seriesSVG
+	 * @param fontFamily
+	 * @param fontSize
+	 * @param chartWidth
+	 * @return seriesNameElement
+	 */
+	protected static Element getSeriesNameElement(Document doc, String svgNS, FHSeriesSVG seriesSVG, String fontFamily, int fontSize,
+			int chartWidth) {
+			
+		Element seriesNameElement = doc.createElementNS(svgNS, "text");
+		
+		Text seriesNameText = doc.createTextNode(seriesSVG.getTitle());
+		seriesNameElement.setAttribute("id", "series_label_" + seriesSVG.getTitle());
+		seriesNameElement.setAttribute("x", Double.toString(chartWidth + 10));
+		seriesNameElement.setAttribute("y", Integer.toString((FireChartSVG.SERIES_HEIGHT / 2)));
+		seriesNameElement.setAttribute("font-family", fontFamily);
+		seriesNameElement.setAttribute("font-size", +fontSize + "");
+		seriesNameElement.setAttribute("fill", FireChartConversionUtil.colorToHexString(seriesSVG.getLabelColor()));
+		seriesNameElement.appendChild(seriesNameText);
+		
+		return seriesNameElement;
 	}
 }

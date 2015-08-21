@@ -31,7 +31,7 @@ import org.w3c.dom.Text;
  * 
  * @author Joshua Brogan and Peter Brewer
  */
-public class TimeAxisBuilder {
+public class TimeAxisElementBuilder {
 	
 	// Declare local constants
 	private static final int TICK_HEIGHT = 10;
@@ -182,7 +182,7 @@ public class TimeAxisBuilder {
 	}
 	
 	/**
-	 * Returns a year text graphic element based on the input parameters.
+	 * Returns a year text element based on the input parameters.
 	 * 
 	 * @param doc
 	 * @param svgNS
@@ -193,29 +193,23 @@ public class TimeAxisBuilder {
 	 * @param height
 	 * @param firstChartYear
 	 * @param lastChartYear
-	 * @return yearTextGraphic
+	 * @return yearTextElement
 	 */
-	protected static Element getYearTextGraphic(Document doc, String svgNS, String fontFamily, int yearToDisplay, int yearPosition,
-			int chartWidth, int height, int readerFirstYear, int firstChartYear, int lastChartYear) {
-			
+	protected static Element getYearTextElement(Document doc, String svgNS, String fontFamily, int yearToDisplay, int readerFirstYear) {
+		
+		Element yearTextElement = doc.createElementNS(svgNS, "text");
+		
+		// Display the year text with the correct BC and zero cases accounted for
 		if (yearToDisplay >= -1 && readerFirstYear < 0)
 			yearToDisplay += 1;
 			
-		// Create the year text with the correct BC and zero cases accounted for
 		Text yearText = doc.createTextNode(Integer.toString(yearToDisplay));
+		yearTextElement.setAttributeNS(null, "x", "0");
+		yearTextElement.setAttributeNS(null, "y", "0");
+		yearTextElement.setAttributeNS(null, "font-family", fontFamily);
+		yearTextElement.setAttributeNS(null, "font-size", "8");
+		yearTextElement.appendChild(yearText);
 		
-		Element yearTextGraphic = doc.createElementNS(svgNS, "g");
-		yearTextGraphic.setAttributeNS(null, "transform", "translate(" + yearPosition + "," + height + ") scale("
-				+ FireChartConversionUtil.pixelsToYears(chartWidth, firstChartYear, lastChartYear) + ",1)");
-				
-		Element yearTextHolder = doc.createElementNS(svgNS, "text");
-		yearTextHolder.setAttributeNS(null, "x", "0");
-		yearTextHolder.setAttributeNS(null, "y", "0");
-		yearTextHolder.setAttributeNS(null, "font-family", fontFamily);
-		yearTextHolder.setAttributeNS(null, "font-size", "8");
-		yearTextHolder.appendChild(yearText);
-		yearTextGraphic.appendChild(yearTextHolder);
-		
-		return yearTextGraphic;
+		return yearTextElement;
 	}
 }
