@@ -84,6 +84,9 @@ public class FireChartSVG {
 	// Declare protected constants
 	protected static final int SERIES_HEIGHT = 10;
 	
+	// Declare local constants
+	private static final int DEFAULT_CHART_TITLE_FONT_SIZE = 16;
+	
 	// Declare local variables
 	private AbstractFireHistoryReader reader;
 	private int chartXOffset = 50;
@@ -210,6 +213,11 @@ public class FireChartSVG {
 		Element legend_g = doc.createElementNS(svgNS, "g");
 		legend_g.setAttributeNS(null, "id", "legend_g");
 		padding_grouper.appendChild(legend_g);
+		
+		// Build chart title
+		Element chart_title_g = doc.createElementNS(svgNS, "g");
+		chart_title_g.setAttributeNS(null, "id", "chart_title_g");
+		padding_grouper.appendChild(chart_title_g);
 		
 		buildElements();
 		positionSeriesLines();
@@ -530,7 +538,7 @@ public class FireChartSVG {
 	}
 	
 	/**
-	 * TODO
+	 * Handles the positioning of the series lines on the chart.
 	 */
 	private void positionSeriesLines() {
 		
@@ -598,6 +606,10 @@ public class FireChartSVG {
 		
 		// reset svg dimensions
 		Element svgRoot = doc.getDocumentElement();
+		
+		// move the chart title to its appropriate location
+		Element chart_title_g = doc.getElementById("chart_title_g");
+		chart_title_g.setAttributeNS(null, "transform", "translate(0, " + -10 + ")"); // TODO
 		
 		// build time axis
 		Element time_axis_g = doc.getElementById("time_axis_g");
@@ -671,6 +683,19 @@ public class FireChartSVG {
 		Element legend_g = doc.getElementById("legend_g");
 		deleteAllChildren(legend_g);
 		legend_g.appendChild(getLegend());
+		
+		// Build chart title
+		Element chart_title_g = doc.getElementById("chart_title_g");
+		deleteAllChildren(chart_title_g);
+		chart_title_g.appendChild(getChartTitle("TEST"));
+		if (App.prefs.getBooleanPref(PrefKey.CHART_SHOW_CHART_TITLE, true))
+		{
+			chart_title_g.setAttributeNS(null, "display", "inline");
+		}
+		else
+		{
+			chart_title_g.setAttributeNS(null, "display", "none");
+		}
 		
 		positionChartGroupersAndDrawTimeAxis();
 	}
@@ -1330,6 +1355,7 @@ public class FireChartSVG {
 		legend.setAttributeNS(null, "transform", "scale(1.0)");
 		legend.appendChild(LegendElementBuilder.getChartRectangle(doc, svgNS, labelWidth, currentY));
 		
+		// Only show the chart if the preference has been set to do so
 		if (App.prefs.getBooleanPref(PrefKey.CHART_SHOW_LEGEND, true))
 		{
 			legend.setAttributeNS(null, "display", "inline");
@@ -1343,97 +1369,23 @@ public class FireChartSVG {
 	}
 	
 	/**
-	 * Set the visibility of the index plot based on the preferences.
-	 */
-	public void setIndexPlotVisibility() {
-		
-		boolean isVisible = App.prefs.getBooleanPref(PrefKey.CHART_SHOW_INDEX_PLOT, true);
-		
-		Element plot_grouper1 = doc.getElementById("scarred");
-		Element plot_grouper2 = doc.getElementById("depths");
-		
-		if (!isVisible)
-		{
-			plot_grouper1.setAttributeNS(null, "display", "none");
-			plot_grouper2.setAttributeNS(null, "display", "none");
-		}
-		else
-		{
-			plot_grouper1.setAttributeNS(null, "display", "inline");
-			plot_grouper2.setAttributeNS(null, "display", "inline");
-		}
-		
-		positionChartGroupersAndDrawTimeAxis();
-	}
-	
-	/**
-	 * Set the visibility of the chronology plot based on the preferences.
-	 */
-	public void setChronologyPlotVisibility() {
-		
-		boolean isVisible = App.prefs.getBooleanPref(PrefKey.CHART_SHOW_CHRONOLOGY_PLOT, true);
-		Element plot_grouper = doc.getElementById("chronology_plot");
-		
-		if (!isVisible)
-		{
-			plot_grouper.setAttributeNS(null, "display", "none");
-		}
-		else
-		{
-			plot_grouper.setAttributeNS(null, "display", "inline");
-		}
-		
-		positionChartGroupersAndDrawTimeAxis();
-	}
-	
-	/*
-	 * public boolean setCommonTickAttrib(int weight, Color color, LineStyle style) {
+	 * Returns a chart title element containing the input text.
 	 * 
-	 * tickLineWeight = weight; tickLineStyle = style; setTickColor(color); positionChartGroupersAndDrawTimeAxis(); return false; }
+	 * @param chartTitle
+	 * @return chartTitleElement
 	 */
-	
-	/**
-	 * TODO
-	 */
-	public void setCompositePlotVisibility() {
+	private Element getChartTitle(String chartTitle) {
 		
-		boolean isVisible = App.prefs.getBooleanPref(PrefKey.CHART_SHOW_COMPOSITE_PLOT, true);
-		Element plot_grouper = doc.getElementById("comp_plot");
+		Element chartTitleElement = doc.createElementNS(svgNS, "text");
 		
-		if (!isVisible)
-		{
-			plot_grouper.setAttributeNS(null, "display", "none");
-		}
-		else
-		{
-			plot_grouper.setAttributeNS(null, "display", "inline");
-		}
+		Text chartTitleText = doc.createTextNode(chartTitle);
+		chartTitleElement.setAttributeNS(null, "x", "0");
+		chartTitleElement.setAttributeNS(null, "y", "0");
+		chartTitleElement.setAttributeNS(null, "font-family", fontFamily);
+		chartTitleElement.setAttributeNS(null, "font-size", Integer.toString(DEFAULT_CHART_TITLE_FONT_SIZE));
+		chartTitleElement.appendChild(chartTitleText);
 		
-		positionChartGroupersAndDrawTimeAxis();
-	}
-	
-	/*
-	 * public boolean setCommonTickAttrib(int weight, Color color, LineStyle style) {
-	 * 
-	 * tickLineWeight = weight; tickLineStyle = style; setTickColor(color); positionChartGroupersAndDrawTimeAxis(); return false; }
-	 */
-	
-	/**
-	 * TODO
-	 */
-	public void setLegendVisibility() {
-		
-		boolean legendVisible = App.prefs.getBooleanPref(PrefKey.CHART_SHOW_LEGEND, true);
-		Element legend = doc.getElementById("legend");
-		
-		if (legendVisible)
-		{
-			legend.setAttributeNS(null, "display", "inline");
-		}
-		else
-		{
-			legend.setAttributeNS(null, "display", "none");
-		}
+		return chartTitleElement;
 	}
 	
 	/**
@@ -1513,7 +1465,7 @@ public class FireChartSVG {
 	 * 
 	 * @return
 	 */
-	public Element getPercentScarredPlot() {
+	private Element getPercentScarredPlot() {
 		
 		// determine y scaling
 		double scale_y = -1 * ((double) App.prefs.getIntPref(PrefKey.CHART_INDEX_PLOT_HEIGHT, 100)) / (100);
@@ -1710,59 +1662,6 @@ public class FireChartSVG {
 		}
 		
 		return scarred_g;
-	}
-	
-	/*
-	 * public boolean setCommonTickAttrib(int weight, Color color, LineStyle style) {
-	 * 
-	 * tickLineWeight = weight; tickLineStyle = style; setTickColor(color); positionChartGroupersAndDrawTimeAxis(); return false; }
-	 */
-	
-	/**
-	 * TODO
-	 */
-	public void setSeriesLabelsVisibility() {
-		
-		boolean isSeriesLabelVisible = App.prefs.getBooleanPref(PrefKey.CHART_SHOW_CHRONOLOGY_PLOT_LABELS, true);
-		
-		for (FHSeriesSVG seriesSVG : seriesSVGList)
-		{
-			Element ser = doc.getElementById("series_label_" + seriesSVG.getTitle());
-			if (isSeriesLabelVisible)
-				ser.setAttributeNS(null, "display", "inline");
-			else
-				ser.setAttributeNS(null, "display", "none");
-		}
-		
-		for (int i = 0; i < seriesSVGList.size(); i++)
-		{
-			Element upButton = doc.getElementById("up_button" + i);
-			Element downButton = doc.getElementById("down_button" + i);
-			if (isSeriesLabelVisible)
-			{
-				upButton.setAttributeNS(null, "display", "inline");
-				downButton.setAttributeNS(null, "display", "inline");
-			}
-			else
-			{
-				upButton.setAttributeNS(null, "display", "none");
-				downButton.setAttributeNS(null, "display", "none");
-			}
-		}
-	}
-	
-	/**
-	 * This function toggles the visibility of the series at the given location.
-	 * 
-	 * @param index of the series to hide
-	 */
-	public void toggleVisibilityOfSeries(int index) {
-		
-		FHSeriesSVG seriesToHide = seriesSVGList.get(index);
-		seriesToHide.toggleVisibility();
-		seriesSVGList.set(index, seriesToHide);
-		positionSeriesLines();
-		positionChartGroupersAndDrawTimeAxis();
 	}
 	
 	/*
@@ -1972,6 +1871,159 @@ public class FireChartSVG {
 		
 		return sample_g;
 	}
+	
+	/**
+	 * Set the visibility of the index plot based on the preferences.
+	 */
+	public void setIndexPlotVisibility() {
+		
+		boolean isVisible = App.prefs.getBooleanPref(PrefKey.CHART_SHOW_INDEX_PLOT, true);
+		
+		Element plot_grouper1 = doc.getElementById("scarred");
+		Element plot_grouper2 = doc.getElementById("depths");
+		
+		if (!isVisible)
+		{
+			plot_grouper1.setAttributeNS(null, "display", "none");
+			plot_grouper2.setAttributeNS(null, "display", "none");
+		}
+		else
+		{
+			plot_grouper1.setAttributeNS(null, "display", "inline");
+			plot_grouper2.setAttributeNS(null, "display", "inline");
+		}
+		
+		positionChartGroupersAndDrawTimeAxis();
+	}
+	
+	/**
+	 * Set the visibility of the chronology plot based on the preferences.
+	 */
+	public void setChronologyPlotVisibility() {
+		
+		boolean isVisible = App.prefs.getBooleanPref(PrefKey.CHART_SHOW_CHRONOLOGY_PLOT, true);
+		Element plot_grouper = doc.getElementById("chronology_plot");
+		
+		if (!isVisible)
+		{
+			plot_grouper.setAttributeNS(null, "display", "none");
+		}
+		else
+		{
+			plot_grouper.setAttributeNS(null, "display", "inline");
+		}
+		
+		positionChartGroupersAndDrawTimeAxis();
+	}
+	
+	/*
+	 * public boolean setCommonTickAttrib(int weight, Color color, LineStyle style) {
+	 * 
+	 * tickLineWeight = weight; tickLineStyle = style; setTickColor(color); positionChartGroupersAndDrawTimeAxis(); return false; }
+	 */
+	
+	/**
+	 * TODO
+	 */
+	public void setCompositePlotVisibility() {
+		
+		boolean isVisible = App.prefs.getBooleanPref(PrefKey.CHART_SHOW_COMPOSITE_PLOT, true);
+		Element plot_grouper = doc.getElementById("comp_plot");
+		
+		if (!isVisible)
+		{
+			plot_grouper.setAttributeNS(null, "display", "none");
+		}
+		else
+		{
+			plot_grouper.setAttributeNS(null, "display", "inline");
+		}
+		
+		positionChartGroupersAndDrawTimeAxis();
+	}
+	
+	/*
+	 * public boolean setCommonTickAttrib(int weight, Color color, LineStyle style) {
+	 * 
+	 * tickLineWeight = weight; tickLineStyle = style; setTickColor(color); positionChartGroupersAndDrawTimeAxis(); return false; }
+	 */
+	
+	/**
+	 * TODO
+	 */
+	public void setLegendVisibility() {
+		
+		boolean legendVisible = App.prefs.getBooleanPref(PrefKey.CHART_SHOW_LEGEND, true);
+		Element legend = doc.getElementById("legend");
+		
+		if (legendVisible)
+		{
+			legend.setAttributeNS(null, "display", "inline");
+		}
+		else
+		{
+			legend.setAttributeNS(null, "display", "none");
+		}
+	}
+	
+	/*
+	 * public boolean setCommonTickAttrib(int weight, Color color, LineStyle style) {
+	 * 
+	 * tickLineWeight = weight; tickLineStyle = style; setTickColor(color); positionChartGroupersAndDrawTimeAxis(); return false; }
+	 */
+	
+	/**
+	 * TODO
+	 */
+	public void setSeriesLabelsVisibility() {
+		
+		boolean isSeriesLabelVisible = App.prefs.getBooleanPref(PrefKey.CHART_SHOW_CHRONOLOGY_PLOT_LABELS, true);
+		
+		for (FHSeriesSVG seriesSVG : seriesSVGList)
+		{
+			Element ser = doc.getElementById("series_label_" + seriesSVG.getTitle());
+			if (isSeriesLabelVisible)
+				ser.setAttributeNS(null, "display", "inline");
+			else
+				ser.setAttributeNS(null, "display", "none");
+		}
+		
+		for (int i = 0; i < seriesSVGList.size(); i++)
+		{
+			Element upButton = doc.getElementById("up_button" + i);
+			Element downButton = doc.getElementById("down_button" + i);
+			if (isSeriesLabelVisible)
+			{
+				upButton.setAttributeNS(null, "display", "inline");
+				downButton.setAttributeNS(null, "display", "inline");
+			}
+			else
+			{
+				upButton.setAttributeNS(null, "display", "none");
+				downButton.setAttributeNS(null, "display", "none");
+			}
+		}
+	}
+	
+	/**
+	 * This function toggles the visibility of the series at the given location.
+	 * 
+	 * @param index of the series to hide
+	 */
+	public void toggleVisibilityOfSeries(int index) {
+		
+		FHSeriesSVG seriesToHide = seriesSVGList.get(index);
+		seriesToHide.toggleVisibility();
+		seriesSVGList.set(index, seriesToHide);
+		positionSeriesLines();
+		positionChartGroupersAndDrawTimeAxis();
+	}
+	
+	/*
+	 * public boolean setCommonTickAttrib(int weight, Color color, LineStyle style) {
+	 * 
+	 * tickLineWeight = weight; tickLineStyle = style; setTickColor(color); positionChartGroupersAndDrawTimeAxis(); return false; }
+	 */
 	
 	/*
 	 * public boolean setCommonTickAttrib(int weight, Color color, LineStyle style) {

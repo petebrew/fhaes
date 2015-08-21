@@ -323,6 +323,8 @@ public class FHAESPreferences {
 		
 		CHART_AXIS_Y2_FONT_SIZE("chartAxisY2FontSize"),
 		
+		CHART_SHOW_CHART_TITLE("chartShowName"),
+		
 		CHART_SHOW_LEGEND("chartShowLegend"),
 		
 		CHART_FONT_FAMILY("chartFontFamily"),

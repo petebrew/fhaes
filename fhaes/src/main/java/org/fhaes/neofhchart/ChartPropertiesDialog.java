@@ -67,7 +67,10 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 	
 	// Declare GUI components
 	private final JPanel contentPanel = new JPanel();
-	private JLabel lblLegend;
+	private JLabel lblShowChartTitle;
+	private JCheckBox chkShowChartTitle;
+	private JLabel lblShowLegend;
+	private JCheckBox chkShowLegend;
 	private JTextField txtAxisY1Label;
 	private JTextField txtAxisY2Label;
 	private FontChooserComboBox cboFontFamily;
@@ -79,7 +82,6 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 	private JSpinner spnMajorSpacing;
 	private JCheckBox chkVerticalGuides;
 	private JCheckBox chkAutoRangeXAxis;
-	private JCheckBox chkLegend;
 	private JCheckBox chkIndexPlot;
 	private JSpinner spnIndexPlotHeight;
 	private JRadioButton chkSampleDepth;
@@ -143,6 +145,12 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 	
 	// Declare local variables
 	private boolean preferencesChanged;
+	private JLabel lblChartTitleFontSize;
+	private JSpinner spnChartTitleFontSize;
+	private JLabel lblUseDefaultChartTitle;
+	private JCheckBox chkUseDefaultName;
+	private JLabel lblChartTitleOverrideText;
+	private JTextField chartTitleOverrideText;
 	
 	/**
 	 * Create the dialog.
@@ -500,7 +508,8 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 	private void saveToPreferences() {
 		
 		// General tab
-		App.prefs.setBooleanPref(PrefKey.CHART_SHOW_LEGEND, chkLegend.isSelected());
+		App.prefs.setBooleanPref(PrefKey.CHART_SHOW_CHART_TITLE, chkShowChartTitle.isSelected());
+		App.prefs.setBooleanPref(PrefKey.CHART_SHOW_LEGEND, chkShowLegend.isSelected());
 		App.prefs.setPref(PrefKey.CHART_FONT_FAMILY, cboFontFamily.getSelectedFontName());
 		App.prefs.setBooleanPref(PrefKey.CHART_AXIS_X_AUTO_RANGE, chkAutoRangeXAxis.isSelected());
 		App.prefs.setIntPref(PrefKey.CHART_AXIS_X_MIN, (Integer) spnFirstYear.getValue());
@@ -571,7 +580,8 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 	private void setFromPreferences() {
 		
 		// General tab
-		chkLegend.setSelected(App.prefs.getBooleanPref(PrefKey.CHART_SHOW_LEGEND, true));
+		chkShowChartTitle.setSelected(App.prefs.getBooleanPref(PrefKey.CHART_SHOW_CHART_TITLE, true));
+		chkShowLegend.setSelected(App.prefs.getBooleanPref(PrefKey.CHART_SHOW_LEGEND, true));
 		cboFontFamily.setSelectedItem(App.prefs.getPref(PrefKey.CHART_FONT_FAMILY, "Verdana"));
 		chkAutoRangeXAxis.setSelected(App.prefs.getBooleanPref(PrefKey.CHART_AXIS_X_AUTO_RANGE, true));
 		spnFirstYear.setValue(App.prefs.getIntPref(PrefKey.CHART_AXIS_X_MIN, 1900));
@@ -677,57 +687,104 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 					JPanel panel_1 = new JPanel();
 					panel_1.setBorder(new TitledBorder(null, "General", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 					panel.add(panel_1, "cell 0 0,grow");
+					panel_1.setLayout(new MigLayout("", "[180px][80,fill][150px,right][grow,fill]", "[30][30][30]"));
 					{
-						lblLegend = new JLabel("Show legend:");
+					
 					}
-					panel_1.setLayout(new MigLayout("", "[180px,right][fill][]", "[15px][]"));
-					panel_1.add(lblLegend, "cell 0 0,alignx right,aligny center");
-					{
-						chkLegend = new JCheckBox("");
-						panel_1.add(chkLegend, "cell 1 0");
-						chkLegend.setSelected(true);
-					}
+					
+					lblShowLegend = new JLabel("Show legend:");
+					panel_1.add(lblShowLegend, "cell 0 0,alignx right,aligny center");
+					
+					chkShowLegend = new JCheckBox("");
+					chkShowLegend.setSelected(true);
+					panel_1.add(chkShowLegend, "cell 1 0,alignx left");
 					{
 						JLabel lblFont = new JLabel("Font family:");
-						panel_1.add(lblFont, "cell 0 1");
+						panel_1.add(lblFont, "cell 2 0,alignx right,aligny center");
+					}
+					cboFontFamily = new FontChooserComboBox();
+					cboFontFamily.addItemListener(new ItemListener() {
+						
+						@Override
+						public void itemStateChanged(ItemEvent arg0) {
+							
+							String font = cboFontFamily.getSelectedFontName();
+							
+							if (font != null)
+							{
+								App.prefs.setPref(PrefKey.CHART_FONT_FAMILY, font);
+							}
+							
+						}
+					});
+					
+					if (App.prefs.getPref(PrefKey.CHART_FONT_FAMILY, null) != null)
+					{
+						cboFontFamily.setSelectedItem(App.prefs.getPref(PrefKey.CHART_FONT_FAMILY, null));
+					}
+					else
+					{
+						cboFontFamily.setSelectedItem("Verdana");
+					}
+					
+					panel_1.add(cboFontFamily, "cell 3 0,grow");
+					
+					lblShowChartTitle = new JLabel("Show chart title:");
+					panel_1.add(lblShowChartTitle, "cell 0 1,alignx right,aligny center");
+					
+					chkShowChartTitle = new JCheckBox("");
+					chkShowChartTitle.setSelected(true);
+					panel_1.add(chkShowChartTitle, "cell 1 1,alignx left");
+					{
+						lblChartTitleFontSize = new JLabel("Chart title font size:");
+						panel_1.add(lblChartTitleFontSize, "cell 2 1,alignx right,aligny center");
 					}
 					{
-						cboFontFamily = new FontChooserComboBox();
-						cboFontFamily.addItemListener(new ItemListener() {
+						spnChartTitleFontSize = new JSpinner();
+						panel_1.add(spnChartTitleFontSize, "cell 3 1,grow");
+					}
+					{
+						lblUseDefaultChartTitle = new JLabel("Use default chart title:");
+						panel_1.add(lblUseDefaultChartTitle, "cell 0 2,alignx right,aligny center");
+					}
+					{
+						chkUseDefaultName = new JCheckBox("");
+						chkUseDefaultName.setSelected(true);
+						chkUseDefaultName.addActionListener(new ActionListener() {
 							
 							@Override
-							public void itemStateChanged(ItemEvent arg0) {
+							public void actionPerformed(ActionEvent arg0) {
 								
-								String font = cboFontFamily.getSelectedFontName();
-								
-								if (font != null)
+								if (chkUseDefaultName.isSelected())
 								{
-									App.prefs.setPref(PrefKey.CHART_FONT_FAMILY, font);
+									chartTitleOverrideText.setEnabled(false);
 								}
-								
+								else
+								{
+									chartTitleOverrideText.setEnabled(true);
+								}
 							}
+							
 						});
-						
-						if (App.prefs.getPref(PrefKey.CHART_FONT_FAMILY, null) != null)
-						{
-							cboFontFamily.setSelectedItem(App.prefs.getPref(PrefKey.CHART_FONT_FAMILY, null));
-						}
-						else
-						{
-							cboFontFamily.setSelectedItem("Verdana");
-						}
-						
-						panel_1.add(cboFontFamily, "cell 1 1 2 1");
+						panel_1.add(chkUseDefaultName, "cell 1 2,alignx left");
+					}
+					{
+						lblChartTitleOverrideText = new JLabel("Chart title override text:");
+						panel_1.add(lblChartTitleOverrideText, "cell 2 2,alignx right,aligny center");
+					}
+					{
+						chartTitleOverrideText = new JTextField();
+						panel_1.add(chartTitleOverrideText, "cell 3 2,grow");
+						chartTitleOverrideText.setColumns(10);
 					}
 				}
 				{
 					JPanel panel_1 = new JPanel();
 					panel_1.setBorder(new TitledBorder(null, "X Axis", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 					panel.add(panel_1, "cell 0 1,grow");
-					panel_1.setLayout(new MigLayout("", "[180px][67.00,fill][][62.00,fill]", "[][15px]"));
+					panel_1.setLayout(new MigLayout("", "[180px][67.00,fill][][62.00,fill][grow,fill]", "[][15px]"));
 					{
 						chkAutoRangeXAxis = new JCheckBox("Auto adjust");
-						
 						chkAutoRangeXAxis.addActionListener(new ActionListener() {
 							
 							@Override
@@ -1378,7 +1435,6 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 						ButtonGroup butgroup = new ButtonGroup();
 						butgroup.add(radLongYearStyle);
 						butgroup.add(radShortYearStyle);
-						
 					}
 					{
 						lblLabelOrientation = new JLabel("Label orientation:");
