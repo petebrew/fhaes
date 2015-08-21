@@ -846,7 +846,13 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 						panel_1.add(spnMinorSpacing, "cell 3 2");
 					}
 					{
-						cboVerticalGuideStyle = new JComboBox<LineStyle>(LineStyle.values());
+						cboVerticalGuideStyle = new JComboBox<LineStyle>();
+						
+						for (int i = 0; i < LineStyle.values().length; i++)
+						{
+							cboVerticalGuideStyle.addItem(LineStyle.values()[i]);
+						}
+						
 						cboVerticalGuideStyle.setRenderer(new LineStyleRenderer());
 						panel_1.add(cboVerticalGuideStyle, "cell 3 0,growx");
 					}
@@ -871,7 +877,13 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 						panel_1.add(lblStyle_1, "cell 2 0,alignx trailing");
 					}
 					{
-						cboHighlightStyle = new JComboBox<LineStyle>(LineStyle.values());
+						cboHighlightStyle = new JComboBox<LineStyle>();
+						
+						for (int i = 0; i < LineStyle.values().length; i++)
+						{
+							cboHighlightStyle.addItem(LineStyle.values()[i]);
+						}
+						
 						cboHighlightStyle.setRenderer(new LineStyleRenderer());
 						panel_1.add(cboHighlightStyle, "flowx,cell 3 0,growx");
 					}
@@ -1306,7 +1318,13 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 						panelCompositeFilters.add(lblFilterType, "cell 0 0,alignx trailing");
 					}
 					{
-						cboFilterType = new JComboBox<FireFilterType>(FireFilterType.values());
+						cboFilterType = new JComboBox<FireFilterType>();
+						
+						for (int i = 0; i < FireFilterType.values().length; i++)
+						{
+							cboFilterType.addItem(FireFilterType.values()[i]);
+						}
+						
 						panelCompositeFilters.add(cboFilterType, "cell 1 0");
 					}
 					{
@@ -1367,7 +1385,13 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 						panelCompositeYearLabels.add(lblLabelOrientation, "cell 0 2,alignx trailing");
 					}
 					{
-						cboLabelOrientation = new JComboBox<LabelOrientation>(LabelOrientation.values());
+						cboLabelOrientation = new JComboBox<LabelOrientation>();
+						
+						for (int i = 0; i < LabelOrientation.values().length; i++)
+						{
+							cboLabelOrientation.addItem(LabelOrientation.values()[i]);
+						}
+						
 						panelCompositeYearLabels.add(cboLabelOrientation, "cell 1 2 2 1");
 					}
 					{

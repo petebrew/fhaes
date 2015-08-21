@@ -818,25 +818,25 @@ public class FireChartSVG {
 	}
 	
 	/**
-	 * Get the index plot.
+	 * Gets the index plot as an element.
 	 * 
-	 * @return
+	 * @return indexPlot
 	 */
 	private Element getIndexPlot() {
 		
-		Element index_g = doc.createElementNS(svgNS, "g");
-		index_g.setAttribute("id", "indexplot");
+		Element indexPlot = doc.createElementNS(svgNS, "g");
 		
-		index_g.appendChild(getSampleOrRecorderDepthsPlot(App.prefs.getBooleanPref(PrefKey.CHART_SHOW_SAMPLE_DEPTH, false)));
-		index_g.appendChild(getPercentScarredPlot());
+		indexPlot.setAttribute("id", "indexplot");
+		indexPlot.appendChild(getSampleOrRecorderDepthsPlot(App.prefs.getBooleanPref(PrefKey.CHART_SHOW_SAMPLE_DEPTH, false)));
+		indexPlot.appendChild(getPercentScarredPlot());
 		
-		return index_g;
+		return indexPlot;
 	}
 	
 	/**
-	 * TODO
+	 * Gets the chronology plot as an element.
 	 * 
-	 * @return
+	 * @return chronologyPlot
 	 */
 	private Element getChronologyPlot() {
 		
@@ -944,9 +944,9 @@ public class FireChartSVG {
 	}
 	
 	/**
-	 * Get the composite plot.
+	 * Get the composite plot as an element.
 	 * 
-	 * @return
+	 * @return compositePlot
 	 */
 	private Element getCompositePlot() {
 		
@@ -989,9 +989,9 @@ public class FireChartSVG {
 		}
 		
 		// compositePlot is centered off of the year 0 A.D.
-		Element composite_plot = doc.createElementNS(svgNS, "g");
-		composite_plot.setAttributeNS(null, "id", "comp_plot");
-		composite_plot.setAttributeNS(null, "transform",
+		Element compositePlot = doc.createElementNS(svgNS, "g");
+		compositePlot.setAttributeNS(null, "id", "comp_plot");
+		compositePlot.setAttributeNS(null, "transform",
 				"scale(" + FireChartConversionUtil.yearsToPixels(chartWidth, getFirstChartYear(), getLastChartYear()) + "," + 1
 						+ ") translate(-" + getFirstChartYear() + ",0) ");
 						
@@ -1076,8 +1076,8 @@ public class FireChartSVG {
 		prev_i = 0;
 		for (int i : composite_years)
 		{
-			composite_plot.appendChild(CompositePlotElementBuilder.getEventLine(doc, svgNS, i, chart_height, chartWidth,
-					getFirstChartYear(), getLastChartYear()));
+			compositePlot.appendChild(CompositePlotElementBuilder.getEventLine(doc, svgNS, i, chart_height, chartWidth, getFirstChartYear(),
+					getLastChartYear()));
 					
 			// calculate the offsets for the labels
 			if (FireChartConversionUtil.yearsToPixels(i - prev_i, chartWidth, getFirstChartYear(), getLastChartYear()) < overlap_margin)
@@ -1148,18 +1148,18 @@ public class FireChartSVG {
 				text_g.appendChild(year_text);
 			}
 			
-			composite_plot.appendChild(text_g);
+			compositePlot.appendChild(text_g);
 			prev_i = i;
 		}
 		
 		// Draw a rectangle around it
 		// Needs to be 4 lines to cope with stroke width in different coord sys in x and y
-		composite_plot.appendChild(CompositePlotElementBuilder.getCompLine1(doc, svgNS, getFirstChartYear(), getLastChartYear()));
-		composite_plot
+		compositePlot.appendChild(CompositePlotElementBuilder.getCompLine1(doc, svgNS, getFirstChartYear(), getLastChartYear()));
+		compositePlot
 				.appendChild(CompositePlotElementBuilder.getCompLine2(doc, svgNS, chart_height, getFirstChartYear(), getLastChartYear()));
-		composite_plot.appendChild(
+		compositePlot.appendChild(
 				CompositePlotElementBuilder.getCompLine3(doc, svgNS, chart_height, chartWidth, getFirstChartYear(), getLastChartYear()));
-		composite_plot.appendChild(
+		compositePlot.appendChild(
 				CompositePlotElementBuilder.getCompLine4(doc, svgNS, chart_height, chartWidth, getFirstChartYear(), getLastChartYear()));
 				
 		/*
@@ -1185,22 +1185,24 @@ public class FireChartSVG {
 		Element comp_name_text_g = doc.createElementNS(svgNS, "g");
 		comp_name_text_g.setAttributeNS(null, "transform", translate_string + scale_string);
 		comp_name_text_g.appendChild(CompositePlotElementBuilder.getCompNameElement(doc, svgNS, fontFamily));
-		composite_plot.appendChild(comp_name_text_g);
+		compositePlot.appendChild(comp_name_text_g);
 		
 		if (App.prefs.getBooleanPref(PrefKey.CHART_SHOW_COMPOSITE_PLOT, true))
 		{
-			composite_plot.setAttributeNS(null, "display", "inline");
+			compositePlot.setAttributeNS(null, "display", "inline");
 		}
 		else
 		{
-			composite_plot.setAttributeNS(null, "display", "none");
+			compositePlot.setAttributeNS(null, "display", "none");
 		}
 		
-		return composite_plot;
+		return compositePlot;
 	}
 	
 	/**
 	 * This function creates a legend dynamically, based on the current event(s) displayed on the canvas (Fire, Injury, or Fire and Injury).
+	 * 
+	 * @return legend
 	 */
 	private Element getLegend() {
 		
@@ -1349,6 +1351,7 @@ public class FireChartSVG {
 		
 		Element plot_grouper1 = doc.getElementById("scarred");
 		Element plot_grouper2 = doc.getElementById("depths");
+		
 		if (!isVisible)
 		{
 			plot_grouper1.setAttributeNS(null, "display", "none");
@@ -1359,6 +1362,7 @@ public class FireChartSVG {
 			plot_grouper1.setAttributeNS(null, "display", "inline");
 			plot_grouper2.setAttributeNS(null, "display", "inline");
 		}
+		
 		positionChartGroupersAndDrawTimeAxis();
 	}
 	
@@ -1368,8 +1372,8 @@ public class FireChartSVG {
 	public void setChronologyPlotVisibility() {
 		
 		boolean isVisible = App.prefs.getBooleanPref(PrefKey.CHART_SHOW_CHRONOLOGY_PLOT, true);
-		
 		Element plot_grouper = doc.getElementById("chronology_plot");
+		
 		if (!isVisible)
 		{
 			plot_grouper.setAttributeNS(null, "display", "none");
@@ -1378,6 +1382,7 @@ public class FireChartSVG {
 		{
 			plot_grouper.setAttributeNS(null, "display", "inline");
 		}
+		
 		positionChartGroupersAndDrawTimeAxis();
 	}
 	
@@ -1394,6 +1399,7 @@ public class FireChartSVG {
 		
 		boolean isVisible = App.prefs.getBooleanPref(PrefKey.CHART_SHOW_COMPOSITE_PLOT, true);
 		Element plot_grouper = doc.getElementById("comp_plot");
+		
 		if (!isVisible)
 		{
 			plot_grouper.setAttributeNS(null, "display", "none");
@@ -1402,6 +1408,7 @@ public class FireChartSVG {
 		{
 			plot_grouper.setAttributeNS(null, "display", "inline");
 		}
+		
 		positionChartGroupersAndDrawTimeAxis();
 	}
 	
@@ -1418,6 +1425,7 @@ public class FireChartSVG {
 		
 		boolean legendVisible = App.prefs.getBooleanPref(PrefKey.CHART_SHOW_LEGEND, true);
 		Element legend = doc.getElementById("legend");
+		
 		if (legendVisible)
 		{
 			legend.setAttributeNS(null, "display", "inline");
@@ -1980,9 +1988,11 @@ public class FireChartSVG {
 		
 		String visibility_setting = isVisible ? "inline" : "none";
 		NodeList n = doc.getElementsByTagName("*");
+		
 		for (int i = 0; i < n.getLength(); i++)
 		{
 			Element temp = (Element) n.item(i);
+			
 			if (temp.getAttribute("class").equals("no_export"))
 			{
 				temp.setAttributeNS(null, "display", visibility_setting);
@@ -2000,9 +2010,9 @@ public class FireChartSVG {
 	// ======================================
 	
 	/**
-	 * TODO
+	 * Gets the annote canvas as an element.
 	 * 
-	 * @return
+	 * @return annote_canvas
 	 */
 	public Element getAnnoteCanvas() {
 		
@@ -2051,8 +2061,10 @@ public class FireChartSVG {
 			
 			annote_g.appendChild(annote_line);
 			annotemode = AnnoteMode.NONE;
+			
 			return id;
 		}
+		
 		return "wrong_annotemode";
 	}
 	
@@ -2068,6 +2080,7 @@ public class FireChartSVG {
 		{
 			Element annote_g = doc.getElementById("annote_g");
 			Element annote_line = doc.getElementById(id);
+			
 			if (annote_line == null)
 			{
 				return false;
@@ -2076,6 +2089,7 @@ public class FireChartSVG {
 			annote_g.removeChild(annote_line);
 			return true;
 		}
+		
 		return false;
 	}
 	
