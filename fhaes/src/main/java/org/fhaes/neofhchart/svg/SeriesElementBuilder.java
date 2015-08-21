@@ -33,42 +33,6 @@ import org.w3c.dom.Text;
 public class SeriesElementBuilder {
 	
 	/**
-	 * Returns an up button.
-	 * 
-	 * @param doc
-	 * @param svgNS
-	 * @return upButton
-	 */
-	protected static Element getUpButton(Document doc, String svgNS) {
-		
-		Element upButton = doc.createElementNS(svgNS, "polygon");
-		
-		upButton.setAttributeNS(null, "points", "2,8 2,4 0,4 4,0 8,4 8,4 6,4 6,8");
-		upButton.setAttributeNS(null, "fill", "black");
-		upButton.setAttributeNS(null, "opacity", "0.2");
-		
-		return upButton;
-	}
-	
-	/**
-	 * Returns a down button.
-	 * 
-	 * @param doc
-	 * @param svgNS
-	 * @return downButton
-	 */
-	protected static Element getDownButton(Document doc, String svgNS) {
-		
-		Element downButton = doc.createElementNS(svgNS, "polygon");
-		
-		downButton.setAttributeNS(null, "points", "2,0 2,4 0,4 4,8 8,4 8,4 6,4 6,0");
-		downButton.setAttributeNS(null, "fill", "black");
-		downButton.setAttributeNS(null, "opacity", "0.2");
-		
-		return downButton;
-	}
-	
-	/**
 	 * Returns a recorder line that is pre-configured. You will probably need to change the x1 y1 x2 y2 attributes to your liking.
 	 * 
 	 * @param doc
@@ -258,5 +222,41 @@ public class SeriesElementBuilder {
 		seriesNameElement.appendChild(seriesNameText);
 		
 		return seriesNameElement;
+	}
+
+	/**
+	 * Returns an up button.
+	 * 
+	 * @param doc
+	 * @param svgNS
+	 * @return upButton
+	 */
+	protected static Element getUpButton(Document doc, String svgNS) {
+		
+		Element upButton = doc.createElementNS(svgNS, "polygon");
+		
+		upButton.setAttributeNS(null, "points", "2,8 2,4 0,4 4,0 8,4 8,4 6,4 6,8");
+		upButton.setAttributeNS(null, "fill", "black");
+		upButton.setAttributeNS(null, "opacity", "0.2");
+		
+		return upButton;
+	}
+
+	/**
+	 * Returns a down button.
+	 * 
+	 * @param doc
+	 * @param svgNS
+	 * @return downButton
+	 */
+	protected static Element getDownButton(Document doc, String svgNS) {
+		
+		Element downButton = doc.createElementNS(svgNS, "polygon");
+		
+		downButton.setAttributeNS(null, "points", "2,0 2,4 0,4 4,8 8,4 8,4 6,4 6,0");
+		downButton.setAttributeNS(null, "fill", "black");
+		downButton.setAttributeNS(null, "opacity", "0.2");
+		
+		return downButton;
 	}
 }

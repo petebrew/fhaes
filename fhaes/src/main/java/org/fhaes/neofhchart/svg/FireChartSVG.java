@@ -48,7 +48,6 @@ import org.fhaes.enums.AnnoteMode;
 import org.fhaes.enums.EventTypeToProcess;
 import org.fhaes.enums.FireFilterType;
 import org.fhaes.enums.LabelOrientation;
-import org.fhaes.enums.LineStyle;
 import org.fhaes.fhfilereader.AbstractFireHistoryReader;
 import org.fhaes.model.FHSeries;
 import org.fhaes.neofhchart.FHSeriesSVG;
@@ -1205,7 +1204,7 @@ public class FireChartSVG {
 	 */
 	private Element getLegend() {
 		
-		int labelwidth = this.getStringWidth(fontFamily, Font.PLAIN, 8, "Outer year without bark");
+		int labelWidth = this.getStringWidth(fontFamily, Font.PLAIN, 8, "Outer year without bark");
 		int labelHeight = this.getStringHeight(fontFamily, Font.PLAIN, 8, "Outer year without bark");
 		int currentY = 0; // to help position symbols
 		int moveValue = 20;
@@ -1224,157 +1223,110 @@ public class FireChartSVG {
 		// RECORDER YEAR
 		Element recorder_g = doc.createElementNS(svgNS, "g");
 		recorder_g.setAttributeNS(null, "id", "recorder");
-		Element recorder = doc.createElementNS(svgNS, "line");
-		recorder.setAttributeNS(null, "x1", "0");
-		recorder.setAttributeNS(null, "y1", "0");
-		recorder.setAttributeNS(null, "x2", "15");
-		recorder.setAttributeNS(null, "y2", "0");
-		recorder.setAttributeNS(null, "stroke", "black");
-		recorder.setAttributeNS(null, "stroke-width", "1");
-		recorder_g.appendChild(recorder);
-		Element desc = createDescription("Recorder year", leftJustified, currentY + (labelHeight / 2));
-		recorder_g.appendChild(desc);
+		recorder_g.appendChild(LegendElementBuilder.getRecorderYearExample(doc, svgNS));
+		Element recorder_desc = LegendElementBuilder.getDescriptionElement(doc, svgNS, fontFamily, "Recorder year", leftJustified,
+				currentY + (labelHeight / 2));
+		recorder_g.appendChild(recorder_desc);
 		legend.appendChild(recorder_g);
 		
 		// NON-RECORDER YEAR
 		currentY += moveValue;
 		Element nonrecorder_g = doc.createElementNS(svgNS, "g");
-		Element nonrecorder = doc.createElementNS(svgNS, "line");
-		nonrecorder.setAttributeNS(null, "x1", "0");
-		nonrecorder.setAttributeNS(null, "y1", Integer.toString(currentY));
-		nonrecorder.setAttributeNS(null, "x2", "15");
-		nonrecorder.setAttributeNS(null, "y2", Integer.toString(currentY));
-		nonrecorder.setAttributeNS(null, "stroke", "black");
-		nonrecorder.setAttributeNS(null, "stroke-width", "1");
-		nonrecorder.setAttributeNS(null, "stroke-dasharray", LineStyle.DASHED.getCode());
-		nonrecorder_g.appendChild(nonrecorder);
-		desc = createDescription("Non-recorder year", leftJustified, currentY + (labelHeight / 2));
-		nonrecorder_g.appendChild(desc);
+		nonrecorder_g.appendChild(LegendElementBuilder.getNonRecorderYearExample(doc, svgNS, currentY));
+		Element nonrecorder_desc = LegendElementBuilder.getDescriptionElement(doc, svgNS, fontFamily, "Non-recorder year", leftJustified,
+				currentY + (labelHeight / 2));
+		nonrecorder_g.appendChild(nonrecorder_desc);
 		legend.appendChild(nonrecorder_g);
 		
 		// currentY += moveValue * 2; // so next symbol is at spot y = 100
 		
 		if (App.prefs.getBooleanPref(PrefKey.CHART_SHOW_FIRE_EVENT_SYMBOL, true))
 		{
-			// create a fire injury event
+			// FIRE EVENT MARKER
 			currentY += moveValue;
 			Element fireMarker_g = doc.createElementNS(svgNS, "g");
 			Element fireMarker = SeriesElementBuilder.getFireYearMarker(doc, svgNS, Color.BLACK);
 			fireMarker.setAttributeNS(null, "width", "2");
 			fireMarker_g.appendChild(fireMarker);
 			fireMarker_g.setAttributeNS(null, "transform", "translate(0, " + currentY + ")");
-			desc = createDescription("Fire event", leftJustified, (labelHeight / 2));
-			fireMarker_g.appendChild(desc);
+			Element fireMarker_desc = LegendElementBuilder.getDescriptionElement(doc, svgNS, fontFamily, "Fire event", leftJustified,
+					(labelHeight / 2));
+			fireMarker_g.appendChild(fireMarker_desc);
 			legend.appendChild(fireMarker_g);
 		}
 		
 		if (App.prefs.getBooleanPref(PrefKey.CHART_SHOW_INJURY_SYMBOL, true))
 		{
-			// create an injury event marker
+			// INJURY EVENT MARKER
 			currentY += moveValue;
 			Element injuryMarker_g = doc.createElementNS(svgNS, "g");
-			Element injuryMarker = SeriesElementBuilder.getInjuryYearMarker(doc, svgNS, 3, Color.BLACK);
-			injuryMarker_g.appendChild(injuryMarker);
+			injuryMarker_g.appendChild(SeriesElementBuilder.getInjuryYearMarker(doc, svgNS, 3, Color.BLACK));
 			injuryMarker_g.setAttributeNS(null, "transform", "translate(0, " + Integer.toString(currentY) + ")");
-			desc = createDescription("Injury event", leftJustified, (labelHeight / 2));
-			injuryMarker_g.appendChild(desc);
+			Element injuryMarker_desc = LegendElementBuilder.getDescriptionElement(doc, svgNS, fontFamily, "Injury event", leftJustified,
+					(labelHeight / 2));
+			injuryMarker_g.appendChild(injuryMarker_desc);
 			legend.appendChild(injuryMarker_g);
 		}
 		
-		// create inner year with pith
+		// PITH WITH NON-RECORDER LINE
 		currentY += moveValue;
 		Element innerPith_g = doc.createElementNS(svgNS, "g");
 		Element innerPith = SeriesElementBuilder.getInnerYearPithMarker(doc, svgNS, true, 5, Color.BLACK);
 		innerPith_g.appendChild(innerPith);
 		innerPith_g.setAttributeNS(null, "transform", "translate(0, " + Integer.toString(currentY) + ")");
 		Element pithNonrecorder_g = doc.createElementNS(svgNS, "g");
-		Element pithNonrecorder = doc.createElementNS(svgNS, "line");
-		pithNonrecorder.setAttributeNS(null, "x1", "0");
-		pithNonrecorder.setAttributeNS(null, "y1", "0");
-		pithNonrecorder.setAttributeNS(null, "x2", "10");
-		pithNonrecorder.setAttributeNS(null, "y2", "0");
-		pithNonrecorder.setAttributeNS(null, "stroke", "black");
-		pithNonrecorder.setAttributeNS(null, "stroke-width", "1");
-		pithNonrecorder.setAttributeNS(null, "stroke-dasharray", LineStyle.DASHED.getCode());
-		pithNonrecorder_g.appendChild(pithNonrecorder);
+		pithNonrecorder_g.appendChild(LegendElementBuilder.getPithWithNonRecorderLineExample(doc, svgNS));
 		innerPith_g.appendChild(pithNonrecorder_g);
-		desc = createDescription("Inner year with pith", leftJustified, (labelHeight / 2));
-		innerPith_g.appendChild(desc);
+		Element pithNonrecorder_desc = LegendElementBuilder.getDescriptionElement(doc, svgNS, fontFamily, "Inner year with pith",
+				leftJustified, (labelHeight / 2));
+		innerPith_g.appendChild(pithNonrecorder_desc);
 		legend.appendChild(innerPith_g);
 		
-		// create inner year without pith
+		// NO PITH WITH NON-RECORDER LINE
 		currentY += moveValue;
 		Element withoutPith_g = doc.createElementNS(svgNS, "g");
 		Element withoutPith = SeriesElementBuilder.getInnerYearPithMarker(doc, svgNS, false, SERIES_HEIGHT, Color.BLACK);
 		withoutPith_g.appendChild(withoutPith);
 		withoutPith_g.setAttributeNS(null, "transform", "translate(0, " + Integer.toString(currentY) + ")");
 		Element withoutPithNonrecorder_g = doc.createElementNS(svgNS, "g");
-		Element withoutPithNonrecorder = doc.createElementNS(svgNS, "line");
-		withoutPithNonrecorder.setAttributeNS(null, "x1", "0");
-		withoutPithNonrecorder.setAttributeNS(null, "y1", "-0.5");
-		withoutPithNonrecorder.setAttributeNS(null, "x2", "10");
-		withoutPithNonrecorder.setAttributeNS(null, "y2", "-0.5");
-		withoutPithNonrecorder.setAttributeNS(null, "stroke", "black");
-		withoutPithNonrecorder.setAttributeNS(null, "stroke-width", "1");
-		withoutPithNonrecorder.setAttributeNS(null, "stroke-dasharray", LineStyle.DASHED.getCode());
-		withoutPithNonrecorder_g.appendChild(withoutPithNonrecorder);
+		withoutPithNonrecorder_g.appendChild(LegendElementBuilder.getNoPithWithNonRecorderLineExample(doc, svgNS));
 		withoutPith_g.appendChild(withoutPithNonrecorder_g);
-		desc = createDescription("Inner year without pith", leftJustified, (labelHeight / 2));
-		withoutPith_g.appendChild(desc);
+		Element withoutPithNonrecorder_desc = LegendElementBuilder.getDescriptionElement(doc, svgNS, fontFamily, "Inner year without pith",
+				leftJustified, (labelHeight / 2));
+		withoutPith_g.appendChild(withoutPithNonrecorder_desc);
 		legend.appendChild(withoutPith_g);
 		
-		// create outer year with bark
+		// BARK WITH RECORDER LINE
 		currentY += moveValue;
 		Element withBark_g = doc.createElementNS(svgNS, "g");
 		Element withBark = SeriesElementBuilder.getOuterYearBarkMarker(doc, svgNS, true, 5, Color.BLACK);
 		withBark_g.appendChild(withBark);
 		withBark_g.setAttributeNS(null, "transform", "translate(5, " + Integer.toString(currentY) + ")");
 		Element barkRecorder_g = doc.createElementNS(svgNS, "g");
-		Element barkRecorder = doc.createElementNS(svgNS, "line");
-		barkRecorder.setAttributeNS(null, "x1", "0");
-		barkRecorder.setAttributeNS(null, "y1", "0");
-		barkRecorder.setAttributeNS(null, "x2", "-8");
-		barkRecorder.setAttributeNS(null, "y2", "0");
-		barkRecorder.setAttributeNS(null, "stroke", "black");
-		barkRecorder.setAttributeNS(null, "stroke-width", "1");
-		barkRecorder_g.appendChild(barkRecorder);
+		barkRecorder_g.appendChild(LegendElementBuilder.getBarkWithRecorderLineExample(doc, svgNS));
 		withBark_g.appendChild(barkRecorder_g);
-		desc = createDescription("Outer year with bark", leftJustified - 5, (labelHeight / 2));
-		withBark_g.appendChild(desc);
+		Element barkRecorder_desc = LegendElementBuilder.getDescriptionElement(doc, svgNS, fontFamily, "Outer year with bark",
+				leftJustified - 5, (labelHeight / 2));
+		withBark_g.appendChild(barkRecorder_desc);
 		legend.appendChild(withBark_g);
 		
-		// create outer year without bark
+		// NO BARK WITH RECORDER LINE
 		currentY += moveValue;
 		Element withoutBark_g = doc.createElementNS(svgNS, "g");
 		Element withoutBark = SeriesElementBuilder.getOuterYearBarkMarker(doc, svgNS, false, SERIES_HEIGHT, Color.BLACK);
 		withoutBark_g.appendChild(withoutBark);
 		withoutBark_g.setAttributeNS(null, "transform", "translate(5, " + Integer.toString(currentY) + ")");
-		
 		Element withoutBarkRecorder_g = doc.createElementNS(svgNS, "g");
-		Element withoutBarkRecorder = doc.createElementNS(svgNS, "line");
-		withoutBarkRecorder.setAttributeNS(null, "x1", "0");
-		withoutBarkRecorder.setAttributeNS(null, "y1", "-0.5");
-		withoutBarkRecorder.setAttributeNS(null, "x2", "-8");
-		withoutBarkRecorder.setAttributeNS(null, "y2", "-0.5");
-		withoutBarkRecorder.setAttributeNS(null, "stroke", "black");
-		withoutBarkRecorder.setAttributeNS(null, "stroke-width", "1");
-		withoutBarkRecorder_g.appendChild(withoutBarkRecorder);
+		withoutBarkRecorder_g.appendChild(LegendElementBuilder.getNoBarkWithRecorderLineExample(doc, svgNS));
 		withoutBark_g.appendChild(withoutBarkRecorder_g);
-		desc = createDescription("Outer year without bark", leftJustified - 5, (labelHeight / 2));
-		withoutBark_g.appendChild(desc);
+		Element withoutBarkRecorder_desc = LegendElementBuilder.getDescriptionElement(doc, svgNS, fontFamily, "Outer year without bark",
+				leftJustified - 5, (labelHeight / 2));
+		withoutBark_g.appendChild(withoutBarkRecorder_desc);
 		legend.appendChild(withoutBark_g);
 		
 		// Add rectangle around legend and append
 		legend.setAttributeNS(null, "transform", "scale(1.0)");
-		Element chart_rect = doc.createElementNS(svgNS, "rect");
-		chart_rect.setAttributeNS(null, "x", "-10");
-		chart_rect.setAttributeNS(null, "y", "-10");
-		chart_rect.setAttributeNS(null, "width", labelwidth + 40 + "");
-		chart_rect.setAttributeNS(null, "height", Integer.toString(currentY + 20));
-		chart_rect.setAttributeNS(null, "stroke", "black");
-		chart_rect.setAttributeNS(null, "stroke-width", "0.5");
-		chart_rect.setAttributeNS(null, "fill", "none");
-		legend.appendChild(chart_rect);
+		legend.appendChild(LegendElementBuilder.getChartRectangle(doc, svgNS, labelWidth, currentY));
 		
 		if (App.prefs.getBooleanPref(PrefKey.CHART_SHOW_LEGEND, true))
 		{
@@ -1474,26 +1426,6 @@ public class FireChartSVG {
 		{
 			legend.setAttributeNS(null, "display", "none");
 		}
-	}
-	
-	/**
-	 * Aids in the creation of descriptions for the legend.
-	 * 
-	 * @param text The description to be entered
-	 * @param xLoc The x-location of the text
-	 * @param yLoc The y-location of the text
-	 * @return A description element
-	 */
-	private Element createDescription(String text, int xLoc, int yLoc) {
-		
-		Text descriptionText = doc.createTextNode(text);
-		Element desc = doc.createElementNS(svgNS, "text");
-		desc.setAttributeNS(null, "x", Integer.toString(xLoc));
-		desc.setAttributeNS(null, "y", Integer.toString(yLoc));
-		desc.setAttributeNS(null, "font-family", fontFamily);
-		desc.setAttributeNS(null, "font-size", Integer.toString(8));
-		desc.appendChild(descriptionText);
-		return desc;
 	}
 	
 	/**
