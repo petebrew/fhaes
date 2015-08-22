@@ -875,7 +875,7 @@ public class FireChartSVG {
 		
 		if (App.prefs.getBooleanPref(PrefKey.CHART_SHOW_CHART_TITLE, true))
 		{
-			indexPlotOffsetAmount = 10;
+			indexPlotOffsetAmount = App.prefs.getIntPref(PrefKey.CHART_TITLE_FONT_SIZE, 20) + 10;
 		}
 		
 		indexPlot.setAttribute("id", "indexplot");
@@ -1460,7 +1460,7 @@ public class FireChartSVG {
 					
 					if (App.prefs.getBooleanPref(PrefKey.CHART_SHOW_CHART_TITLE, true))
 					{
-						vertGuidesOffsetAmount = 10;
+						vertGuidesOffsetAmount = App.prefs.getIntPref(PrefKey.CHART_TITLE_FONT_SIZE, 20) + 10;
 					}
 					
 					timeAxis.appendChild(TimeAxisElementBuilder.getVerticalGuide(doc, svgNS, i, vertGuidesOffsetAmount, chartWidth, height,
