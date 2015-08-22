@@ -156,20 +156,21 @@ public class TimeAxisElementBuilder {
 	 * @param doc
 	 * @param svgNS
 	 * @param yearPosition
+	 * @param vertGuidesOffsetAmount
 	 * @param chartWidth
 	 * @param height
 	 * @param firstChartYear
 	 * @param lastChartYear
 	 * @return verticalGuide
 	 */
-	protected static Element getVerticalGuide(Document doc, String svgNS, int yearPosition, int chartWidth, int height, int firstChartYear,
-			int lastChartYear) {
+	protected static Element getVerticalGuide(Document doc, String svgNS, int yearPosition, int vertGuidesOffsetAmount, int chartWidth,
+			int height, int firstChartYear, int lastChartYear) {
 			
 		Element verticalGuide = doc.createElementNS(svgNS, "line");
 		
 		verticalGuide.setAttributeNS(null, "x1", Integer.toString(yearPosition));
 		verticalGuide.setAttributeNS(null, "x2", Integer.toString(yearPosition));
-		verticalGuide.setAttributeNS(null, "y1", "0");
+		verticalGuide.setAttributeNS(null, "y1", Integer.toString(vertGuidesOffsetAmount));
 		verticalGuide.setAttributeNS(null, "y2", Double.toString(height - (2 * TICK_HEIGHT)));
 		verticalGuide.setAttributeNS(null, "stroke-width", Double.toString(App.prefs.getIntPref(PrefKey.CHART_VERTICAL_GUIDE_WEIGHT, 1)
 				* FireChartConversionUtil.pixelsToYears(chartWidth, firstChartYear, lastChartYear)));

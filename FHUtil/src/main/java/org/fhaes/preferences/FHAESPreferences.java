@@ -323,7 +323,13 @@ public class FHAESPreferences {
 		
 		CHART_AXIS_Y2_FONT_SIZE("chartAxisY2FontSize"),
 		
-		CHART_SHOW_CHART_TITLE("chartShowName"),
+		CHART_TITLE_FONT_SIZE("chartTitleFontSize"),
+		
+		CHART_TITLE_USE_DEFAULT_NAME("chartTitleUseDefaultName"),
+		
+		CHART_TITLE_OVERRIDE_VALUE("chartTitleOverrideValue"),
+		
+		CHART_SHOW_CHART_TITLE("chartShowChartTitle"),
 		
 		CHART_SHOW_LEGEND("chartShowLegend"),
 		

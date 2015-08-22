@@ -49,6 +49,7 @@ import org.fhaes.enums.EventTypeToProcess;
 import org.fhaes.enums.FireFilterType;
 import org.fhaes.enums.LabelOrientation;
 import org.fhaes.fhfilereader.AbstractFireHistoryReader;
+import org.fhaes.model.FHFile;
 import org.fhaes.model.FHSeries;
 import org.fhaes.neofhchart.FHSeriesSVG;
 import org.fhaes.preferences.App;
@@ -83,9 +84,6 @@ public class FireChartSVG {
 	
 	// Declare protected constants
 	protected static final int SERIES_HEIGHT = 10;
-	
-	// Declare local constants
-	private static final int DEFAULT_CHART_TITLE_FONT_SIZE = 16;
 	
 	// Declare local variables
 	private AbstractFireHistoryReader reader;
@@ -189,6 +187,11 @@ public class FireChartSVG {
 		annote_g.setAttributeNS(null, "id", "annote_g");
 		padding_grouper.appendChild(annote_g);
 		
+		// Build chart title
+		Element chart_title_g = doc.createElementNS(svgNS, "g");
+		chart_title_g.setAttributeNS(null, "id", "chart_title_g");
+		padding_grouper.appendChild(chart_title_g);
+		
 		// Build the time axis
 		Element time_axis_g = doc.createElementNS(svgNS, "g");
 		time_axis_g.setAttributeNS(null, "id", "time_axis_g");
@@ -213,11 +216,6 @@ public class FireChartSVG {
 		Element legend_g = doc.createElementNS(svgNS, "g");
 		legend_g.setAttributeNS(null, "id", "legend_g");
 		padding_grouper.appendChild(legend_g);
-		
-		// Build chart title
-		Element chart_title_g = doc.createElementNS(svgNS, "g");
-		chart_title_g.setAttributeNS(null, "id", "chart_title_g");
-		padding_grouper.appendChild(chart_title_g);
 		
 		buildElements();
 		positionSeriesLines();
@@ -549,6 +547,7 @@ public class FireChartSVG {
 			FHSeries series = seriesSVGList.get(i);
 			Element series_group = doc.getElementById("series_group_" + series.getTitle());
 			String visibility_string = seriesSVGList.get(i).isVisible() ? "inline" : "none";
+			
 			if (seriesSVGList.get(i).isVisible())
 			{
 				series_group.setAttributeNS(null, "transform",
@@ -574,6 +573,11 @@ public class FireChartSVG {
 		int index_plot_height = App.prefs.getIntPref(PrefKey.CHART_INDEX_PLOT_HEIGHT, 100);
 		int series_spacing_and_height = App.prefs.getIntPref(PrefKey.CHART_CHRONOLOGY_PLOT_SPACING, 5) + SERIES_HEIGHT;
 		
+		if (App.prefs.getBooleanPref(PrefKey.CHART_SHOW_CHART_TITLE, true))
+		{
+			cur_bottom += App.prefs.getIntPref(PrefKey.CHART_TITLE_FONT_SIZE, 20) + 10;
+		}
+		
 		if (App.prefs.getBooleanPref(PrefKey.CHART_SHOW_INDEX_PLOT, true))
 		{
 			cur_bottom += index_plot_height + series_spacing_and_height;
@@ -581,6 +585,7 @@ public class FireChartSVG {
 		
 		int chronology_plot_y = cur_bottom;
 		int num_visible = 0;
+		
 		for (int i = 0; i < seriesSVGList.size(); i++)
 		{
 			if (seriesSVGList.get(i).isVisible())
@@ -590,6 +595,7 @@ public class FireChartSVG {
 		}
 		
 		int chronology_plot_height = num_visible * series_spacing_and_height + SERIES_HEIGHT;
+		
 		if (App.prefs.getBooleanPref(PrefKey.CHART_SHOW_CHRONOLOGY_PLOT, true))
 		{
 			cur_bottom += chronology_plot_height + series_spacing_and_height;
@@ -597,6 +603,7 @@ public class FireChartSVG {
 		
 		int composite_plot_y = cur_bottom;
 		int composite_plot_height = App.prefs.getIntPref(PrefKey.CHART_COMPOSITE_HEIGHT, 70);
+		
 		if (App.prefs.getBooleanPref(PrefKey.CHART_SHOW_COMPOSITE_PLOT, true))
 		{
 			cur_bottom += composite_plot_height + series_spacing_and_height;
@@ -607,18 +614,16 @@ public class FireChartSVG {
 		// reset svg dimensions
 		Element svgRoot = doc.getDocumentElement();
 		
-		// move the chart title to its appropriate location
-		Element chart_title_g = doc.getElementById("chart_title_g");
-		chart_title_g.setAttributeNS(null, "transform", "translate(0, " + -10 + ")"); // TODO
-		
 		// build time axis
 		Element time_axis_g = doc.getElementById("time_axis_g");
+		
 		// delete everything in the current time axis
 		NodeList n = time_axis_g.getChildNodes(); // because getChildNodes doesn't return a seq
 		for (int i = 0; i < n.getLength(); i++)
 		{ // no, instead we get a non-iterable custom data-structure :(
 			time_axis_g.removeChild(n.item(i));
 		}
+		
 		// add in the new time axis
 		time_axis_g.appendChild(getTimeAxis(total_height));
 		
@@ -663,6 +668,35 @@ public class FireChartSVG {
 			annote_g.appendChild(canvas);
 		}
 		
+		// Build chart title
+		Element chart_title_g = doc.getElementById("chart_title_g");
+		deleteAllChildren(chart_title_g);
+		if (App.prefs.getBooleanPref(PrefKey.CHART_TITLE_USE_DEFAULT_NAME, true))
+		{
+			FHFile currentFile = new FHFile(getReader().getFile());
+			
+			if (currentFile.getSiteName().length() > 0)
+			{
+				chart_title_g.appendChild(getChartTitle(currentFile.getSiteName()));
+			}
+			else
+			{
+				chart_title_g.appendChild(getChartTitle("Fire Chart for: \"" + currentFile.getFileNameWithoutExtension() + "\""));
+			}
+		}
+		else
+		{
+			chart_title_g.appendChild(getChartTitle(App.prefs.getPref(PrefKey.CHART_TITLE_OVERRIDE_VALUE, "Fire Chart")));
+		}
+		if (App.prefs.getBooleanPref(PrefKey.CHART_SHOW_CHART_TITLE, true))
+		{
+			chart_title_g.setAttributeNS(null, "display", "inline");
+		}
+		else
+		{
+			chart_title_g.setAttributeNS(null, "display", "none");
+		}
+		
 		// Build index plot
 		Element index_plot_g = doc.getElementById("index_plot_g");
 		deleteAllChildren(index_plot_g);
@@ -683,19 +717,6 @@ public class FireChartSVG {
 		Element legend_g = doc.getElementById("legend_g");
 		deleteAllChildren(legend_g);
 		legend_g.appendChild(getLegend());
-		
-		// Build chart title
-		Element chart_title_g = doc.getElementById("chart_title_g");
-		deleteAllChildren(chart_title_g);
-		chart_title_g.appendChild(getChartTitle("TEST"));
-		if (App.prefs.getBooleanPref(PrefKey.CHART_SHOW_CHART_TITLE, true))
-		{
-			chart_title_g.setAttributeNS(null, "display", "inline");
-		}
-		else
-		{
-			chart_title_g.setAttributeNS(null, "display", "none");
-		}
 		
 		positionChartGroupersAndDrawTimeAxis();
 	}
@@ -850,8 +871,15 @@ public class FireChartSVG {
 	private Element getIndexPlot() {
 		
 		Element indexPlot = doc.createElementNS(svgNS, "g");
+		int indexPlotOffsetAmount = 0;
+		
+		if (App.prefs.getBooleanPref(PrefKey.CHART_SHOW_CHART_TITLE, true))
+		{
+			indexPlotOffsetAmount = 10;
+		}
 		
 		indexPlot.setAttribute("id", "indexplot");
+		indexPlot.setAttributeNS(null, "transform", "translate(0," + indexPlotOffsetAmount + ")");
 		indexPlot.appendChild(getSampleOrRecorderDepthsPlot(App.prefs.getBooleanPref(PrefKey.CHART_SHOW_SAMPLE_DEPTH, false)));
 		indexPlot.appendChild(getPercentScarredPlot());
 		
@@ -1382,7 +1410,8 @@ public class FireChartSVG {
 		chartTitleElement.setAttributeNS(null, "x", "0");
 		chartTitleElement.setAttributeNS(null, "y", "0");
 		chartTitleElement.setAttributeNS(null, "font-family", fontFamily);
-		chartTitleElement.setAttributeNS(null, "font-size", Integer.toString(DEFAULT_CHART_TITLE_FONT_SIZE));
+		Integer chartTitleFontSize = App.prefs.getIntPref(PrefKey.CHART_TITLE_FONT_SIZE, 20);
+		chartTitleElement.setAttributeNS(null, "font-size", chartTitleFontSize.toString());
 		chartTitleElement.appendChild(chartTitleText);
 		
 		return chartTitleElement;
@@ -1427,8 +1456,15 @@ public class FireChartSVG {
 			{ // year is a multiple of tickInterval
 				if (vertGuides)
 				{
-					timeAxis.appendChild(TimeAxisElementBuilder.getVerticalGuide(doc, svgNS, i, chartWidth, height, getFirstChartYear(),
-							getLastChartYear()));
+					int vertGuidesOffsetAmount = 0;
+					
+					if (App.prefs.getBooleanPref(PrefKey.CHART_SHOW_CHART_TITLE, true))
+					{
+						vertGuidesOffsetAmount = 10;
+					}
+					
+					timeAxis.appendChild(TimeAxisElementBuilder.getVerticalGuide(doc, svgNS, i, vertGuidesOffsetAmount, chartWidth, height,
+							getFirstChartYear(), getLastChartYear()));
 				}
 				
 				if (majorTicks)
