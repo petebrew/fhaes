@@ -42,6 +42,8 @@ import javax.swing.SwingWorker;
 import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
 
+import net.miginfocom.swing.MigLayout;
+
 import org.fhaes.analysis.FHInterval;
 import org.fhaes.analysis.FHMatrix;
 import org.fhaes.analysis.FHSeasonality;
@@ -56,8 +58,6 @@ import org.fhaes.preferences.FHAESPreferences.PrefKey;
 import org.fhaes.util.TableUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import net.miginfocom.swing.MigLayout;
 
 /**
  * AnalysisProgressDialog Class. This is a dialog that shows progress for calculating results. The dialog runs in a background thread to
@@ -112,10 +112,10 @@ public class AnalysisProgressDialog extends JDialog implements PropertyChangeLis
 	private JPanel panel;
 	
 	public AnalysisProgressDialog(Component parent, ArrayList<FHFile> files) {
-		
+	
 		if (files == null || files.size() == 0)
 			return;
-			
+		
 		this.fileList = files;
 		
 		final Task task = new Task();
@@ -149,7 +149,7 @@ public class AnalysisProgressDialog extends JDialog implements PropertyChangeLis
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				
+			
 				task.cancel(true);
 				
 			}
@@ -170,7 +170,7 @@ public class AnalysisProgressDialog extends JDialog implements PropertyChangeLis
 	}
 	
 	public ArrayList<FHFile> getFileList() {
-		
+	
 		return fileList;
 	}
 	
@@ -181,10 +181,10 @@ public class AnalysisProgressDialog extends JDialog implements PropertyChangeLis
 		 */
 		@Override
 		public Void doInBackground() {
-			
+		
 			if (fileList == null || fileList.size() == 0)
 				return null;
-				
+			
 			FHFile[] array = fileList.toArray(new FHFile[fileList.size()]);
 			
 			// Run seasonality analysis
@@ -211,15 +211,15 @@ public class AnalysisProgressDialog extends JDialog implements PropertyChangeLis
 						App.prefs.getBooleanPref(PrefKey.SEASONALITY_SECOND_GROUP_LATE, true),
 						App.prefs.getIntPref(PrefKey.RANGE_FIRST_YEAR, 0), App.prefs.getIntPref(PrefKey.RANGE_LAST_YEAR, 0),
 						App.prefs.getEventTypePref(PrefKey.EVENT_TYPE_TO_PROCESS, EventTypeToProcess.FIRE_EVENT));
-						
+				
 				seasonalitySummaryModel = getTableModelFromCSV(seasonalitySummaryFile);
 				
 			}
 			catch (Exception e)
 			{
 				log.error("Error caught during seasonality calculations");
-				JOptionPane.showMessageDialog(App.mainFrame, "Error running seasonality analysis.  Please check logs and inform developers",
-						"Error", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(App.mainFrame,
+						"Error running seasonality analysis.  Please check logs and inform developers", "Error", JOptionPane.ERROR_MESSAGE);
 				e.printStackTrace();
 			}
 			
@@ -228,14 +228,13 @@ public class AnalysisProgressDialog extends JDialog implements PropertyChangeLis
 			lblInfo.setText("Calculating intervals...");
 			try
 			{
-				FHInterval fhint = new FHInterval(array,
-						App.prefs.getAnalysisTypePref(PrefKey.INTERVALS_ANALYSIS_TYPE, AnalysisType.COMPOSITE),
-						App.prefs.getIntPref(PrefKey.RANGE_FIRST_YEAR, 0), App.prefs.getIntPref(PrefKey.RANGE_LAST_YEAR, 0),
-						App.prefs.getFireFilterTypePref(PrefKey.COMPOSITE_FILTER_TYPE, FireFilterType.NUMBER_OF_EVENTS),
-						(double) App.prefs.getIntPref(PrefKey.COMPOSITE_FILTER_VALUE, 1),
-						App.prefs.getBooleanPref(PrefKey.INTERVALS_INCLUDE_OTHER_INJURIES, false),
-						App.prefs.getEventTypePref(PrefKey.EVENT_TYPE_TO_PROCESS, EventTypeToProcess.FIRE_EVENT),
-						App.prefs.getDoublePref(PrefKey.INTERVALS_ALPHA_LEVEL, 0.125));
+				FHInterval fhint = new FHInterval(array, App.prefs.getAnalysisTypePref(PrefKey.INTERVALS_ANALYSIS_TYPE,
+						AnalysisType.COMPOSITE), App.prefs.getIntPref(PrefKey.RANGE_FIRST_YEAR, 0), App.prefs.getIntPref(
+						PrefKey.RANGE_LAST_YEAR, 0), App.prefs.getFireFilterTypePref(PrefKey.COMPOSITE_FILTER_TYPE,
+						FireFilterType.NUMBER_OF_EVENTS), (double) App.prefs.getIntPref(PrefKey.COMPOSITE_FILTER_VALUE, 1),
+						App.prefs.getBooleanPref(PrefKey.INTERVALS_INCLUDE_OTHER_INJURIES, false), App.prefs.getEventTypePref(
+								PrefKey.EVENT_TYPE_TO_PROCESS, EventTypeToProcess.FIRE_EVENT), App.prefs.getDoublePref(
+								PrefKey.INTERVALS_ALPHA_LEVEL, 0.125));
 				setProgress(10);
 				intervalsExceedenceFile = fhint.getExceedence();
 				intervalsExceedenceModel = getTableModelFromCSV(intervalsExceedenceFile);
@@ -250,7 +249,7 @@ public class AnalysisProgressDialog extends JDialog implements PropertyChangeLis
 				log.error("Error caught when running FHInterval");
 				JOptionPane.showMessageDialog(App.mainFrame, "Error running intervals analysis.  Please check logs and inform developers",
 						"Error", JOptionPane.ERROR_MESSAGE);
-						
+				
 			}
 			
 			// Run Matrix analysis
@@ -263,13 +262,12 @@ public class AnalysisProgressDialog extends JDialog implements PropertyChangeLis
 				lblInfo.setText("Calculating matrices...");
 				try
 				{
-					fhm = new FHMatrix(array, App.prefs.getIntPref(PrefKey.RANGE_FIRST_YEAR, 0),
-							App.prefs.getIntPref(PrefKey.RANGE_LAST_YEAR, 0),
-							App.prefs.getFireFilterTypePref(PrefKey.COMPOSITE_FILTER_TYPE, FireFilterType.NUMBER_OF_EVENTS),
-							App.prefs.getEventTypePref(PrefKey.EVENT_TYPE_TO_PROCESS, EventTypeToProcess.FIRE_EVENT),
-							(double) App.prefs.getIntPref(PrefKey.COMPOSITE_FILTER_VALUE, 1),
+					fhm = new FHMatrix(array, App.prefs.getIntPref(PrefKey.RANGE_FIRST_YEAR, 0), App.prefs.getIntPref(
+							PrefKey.RANGE_LAST_YEAR, 0), App.prefs.getFireFilterTypePref(PrefKey.COMPOSITE_FILTER_TYPE,
+							FireFilterType.NUMBER_OF_EVENTS), App.prefs.getEventTypePref(PrefKey.EVENT_TYPE_TO_PROCESS,
+							EventTypeToProcess.FIRE_EVENT), (double) App.prefs.getIntPref(PrefKey.COMPOSITE_FILTER_VALUE, 1),
 							App.prefs.getIntPref(PrefKey.RANGE_OVERLAP_REQUIRED, 25), NoDataLabel.MINUS_99);
-							
+					
 					bin00File = fhm.getFileMatrix00Result();
 					bin00Model = getTableModelFromCSV(bin00File);
 					setProgress(25);
@@ -345,7 +343,7 @@ public class AnalysisProgressDialog extends JDialog implements PropertyChangeLis
 				log.error("Error caught when running FHSummary");
 				JOptionPane.showMessageDialog(App.mainFrame, "Error running summary analysis.  Please check logs and inform developers",
 						"Error", JOptionPane.ERROR_MESSAGE);
-						
+				
 			}
 			setProgress(110);
 			
@@ -358,16 +356,16 @@ public class AnalysisProgressDialog extends JDialog implements PropertyChangeLis
 		 */
 		@Override
 		public void done() {
-			
+		
 			setCursor(Cursor.getDefaultCursor()); // turn off the wait cursor
-			App.mainFrame.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+			App.mainFrame.setCursor(Cursor.getDefaultCursor());
 			
 			finish();
 		}
 	}
 	
 	private DefaultTableModel getTableModelFromCSV(File f) {
-		
+	
 		FileReader reader;
 		try
 		{
@@ -389,173 +387,173 @@ public class AnalysisProgressDialog extends JDialog implements PropertyChangeLis
 	}
 	
 	public File getSeasonalityFile() {
-		
+	
 		return seasonalitySummaryFile;
 	}
 	
 	public File getIntervalsSummaryFile() {
-		
+	
 		return this.intervalsSummaryFile;
 	}
 	
 	public File getIntervalsExceedenceFile() {
-		
+	
 		return this.intervalsExceedenceFile;
 	}
 	
 	public File getBin00File() {
-		
+	
 		return this.bin00File;
 	}
 	
 	public File getBin10File() {
-		
+	
 		return this.bin10File;
 	}
 	
 	public File getBin01File() {
-		
+	
 		return this.bin01File;
 	}
 	
 	public File getBin11File() {
-		
+	
 		return this.bin11File;
 	}
 	
 	public FHMatrix getFHMatrixClass() {
-		
+	
 		return this.fhm;
 	}
 	
 	public File getBinSumFile() {
-		
+	
 		return this.binSumFile;
 	}
 	
 	public File getDSCOHFile() {
-		
+	
 		return this.fileDSCOH;
 	}
 	
 	public File getSCOHFile() {
-		
+	
 		return this.fileSCOH;
 	}
 	
 	public File getDSJACFile() {
-		
+	
 		return this.fileDSJAC;
 	}
 	
 	public File getSJACFile() {
-		
+	
 		return this.fileSJAC;
 	}
 	
 	public File getSiteSummaryFile() {
-		
+	
 		return this.fileSite;
 	}
 	
 	public File getNTPFile() {
-		
+	
 		return this.fileNTP;
 	}
 	
 	public File getGeneralSummaryFile() {
-		
+	
 		return this.generalFilesSummaryFile;
 	}
 	
 	public File getTreeSummaryFile() {
-		
+	
 		return this.fileTree;
 	}
 	
 	public DefaultTableModel getSeasonalitySummaryModel() {
-		
+	
 		return seasonalitySummaryModel;
 	}
 	
 	public DefaultTableModel getIntervalsSummaryModel() {
-		
+	
 		return intervalsSummaryModel;
 	}
 	
 	public DefaultTableModel getIntervalsExceedenceModel() {
-		
+	
 		return intervalsExceedenceModel;
 	}
 	
 	public DefaultTableModel getBin00Model() {
-		
+	
 		return bin00Model;
 	}
 	
 	public DefaultTableModel getBin01Model() {
-		
+	
 		return bin01Model;
 	}
 	
 	public DefaultTableModel getBin10Model() {
-		
+	
 		return bin10Model;
 	}
 	
 	public DefaultTableModel getBin11Model() {
-		
+	
 		return bin11Model;
 	}
 	
 	public DefaultTableModel getBinSumModel() {
-		
+	
 		return binSumModel;
 	}
 	
 	public DefaultTableModel getDSCOHModel() {
-		
+	
 		return DSCOHModel;
 	}
 	
 	public DefaultTableModel getDSJACModel() {
-		
+	
 		return DSJACModel;
 	}
 	
 	public DefaultTableModel getSCOHModel() {
-		
+	
 		return SCOHModel;
 	}
 	
 	public DefaultTableModel getSiteModel() {
-		
+	
 		return SiteModel;
 	}
 	
 	public DefaultTableModel getSJACModel() {
-		
+	
 		return SJACModel;
 	}
 	
 	public DefaultTableModel getNTPModel() {
-		
+	
 		return NTPModel;
 	}
 	
 	public DefaultTableModel getGeneralSummaryModel() {
-		
+	
 		return this.generalFilesSummaryModel;
 	}
 	
 	public DefaultTableModel getTreeModel() {
-		
+	
 		return TreeModel;
 	}
 	
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
-		
+	
 		if ("progress" == evt.getPropertyName())
 		{
 			int progress = (Integer) evt.getNewValue();
@@ -565,7 +563,7 @@ public class AnalysisProgressDialog extends JDialog implements PropertyChangeLis
 	}
 	
 	private void finish() {
-		
+	
 		this.setVisible(false);
 	}
 	
