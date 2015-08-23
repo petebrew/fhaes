@@ -42,6 +42,10 @@ import javax.swing.text.DefaultFormatter;
 import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.TranscoderOutput;
 import org.apache.batik.transcoder.image.PNGTranscoder;
+import org.fhaes.enums.FeedbackDisplayProtocol;
+import org.fhaes.enums.FeedbackMessageType;
+import org.fhaes.feedback.FeedbackPreferenceManager.FeedbackDictionary;
+import org.fhaes.gui.MainWindow;
 import org.fhaes.neofhchart.svg.FireChartSVG;
 import org.fhaes.preferences.App;
 import org.fhaes.util.Builder;
@@ -85,106 +89,99 @@ public class PNGExportOptionsDialog extends JDialog implements ActionListener {
 		
 		this.currentChart = currentChart;
 		this.outputFile = outputFile;
+		
 		prop = ((double) currentChart.getTotalHeight() / (currentChart.getTotalWidth()));
 		
 		this.setModal(true);
 		this.setTitle("Output size");
 		this.setIconImage(Builder.getApplicationIcon());
-		setBounds(100, 100, 291, 158);
-		getContentPane().setLayout(new BorderLayout());
+		this.setBounds(100, 100, 291, 158);
+		
+		this.getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
-		getContentPane().add(contentPanel, BorderLayout.CENTER);
+		this.getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(new MigLayout("", "[][grow,fill][][]", "[][]"));
-		{
-			JLabel lblHeight = new JLabel("Height:");
-			contentPanel.add(lblHeight, "cell 0 0");
-		}
-		{
-			spnHeight = new JSpinner();
-			spnHeight.setModel(new SpinnerNumberModel(currentChart.getTotalHeight(), 100, 9999, 1));
-			JComponent comp = spnHeight.getEditor();
-			JFormattedTextField field = (JFormattedTextField) comp.getComponent(0);
-			DefaultFormatter formatter = (DefaultFormatter) field.getFormatter();
-			formatter.setCommitsOnValidEdit(true);
-			spnHeight.addChangeListener(new ChangeListener() {
+		
+		JLabel lblHeight = new JLabel("Height:");
+		contentPanel.add(lblHeight, "cell 0 0");
+		
+		spnHeight = new JSpinner();
+		spnHeight.setModel(new SpinnerNumberModel(currentChart.getTotalHeight(), 100, 9999, 1));
+		JComponent comp = spnHeight.getEditor();
+		JFormattedTextField field = (JFormattedTextField) comp.getComponent(0);
+		DefaultFormatter formatter = (DefaultFormatter) field.getFormatter();
+		formatter.setCommitsOnValidEdit(true);
+		spnHeight.addChangeListener(new ChangeListener() {
+			
+			@Override
+			public void stateChanged(ChangeEvent e) {
 				
-				@Override
-				public void stateChanged(ChangeEvent e) {
-					
-					if (btnLock.isSelected() && heightSpinnerEnabled)
-					{
-						Integer height = (Integer) spnHeight.getValue();
-						Integer new_width = (int) (height / prop);
-						widthSpinnerEnabled = false;
-						spnWidth.setValue(new_width);
-						widthSpinnerEnabled = true;
-					}
+				if (btnLock.isSelected() && heightSpinnerEnabled)
+				{
+					Integer height = (Integer) spnHeight.getValue();
+					Integer new_width = (int) (height / prop);
+					widthSpinnerEnabled = false;
+					spnWidth.setValue(new_width);
+					widthSpinnerEnabled = true;
 				}
-			});
-			contentPanel.add(spnHeight, "cell 1 0");
-		}
-		{
-			JLabel lblPx = new JLabel("px");
-			contentPanel.add(lblPx, "cell 2 0,aligny bottom");
-		}
-		{
-			btnLock = new JToggleButton();
-			btnLock.setSelectedIcon(Builder.getImageIcon("chain.png"));
-			btnLock.setIcon(Builder.getImageIcon("unchain.png"));
-			btnLock.setSelected(true);
-			btnLock.setToolTipText("Lock/unlock aspect ratio");
-			contentPanel.add(btnLock, "cell 3 0 1 2,growy");
-		}
-		{
-			JLabel lblWidth = new JLabel("Width:");
-			contentPanel.add(lblWidth, "cell 0 1");
-		}
-		{
-			spnWidth = new JSpinner();
-			spnWidth.setModel(new SpinnerNumberModel(currentChart.getTotalWidth(), 100, 9999, 1));
-			JComponent comp = spnWidth.getEditor();
-			JFormattedTextField field = (JFormattedTextField) comp.getComponent(0);
-			DefaultFormatter formatter = (DefaultFormatter) field.getFormatter();
-			formatter.setCommitsOnValidEdit(true);
-			spnWidth.addChangeListener(new ChangeListener() {
+			}
+		});
+		contentPanel.add(spnHeight, "cell 1 0");
+		
+		JLabel lblPx = new JLabel("px");
+		contentPanel.add(lblPx, "cell 2 0,aligny bottom");
+		
+		btnLock = new JToggleButton();
+		btnLock.setSelectedIcon(Builder.getImageIcon("chain.png"));
+		btnLock.setIcon(Builder.getImageIcon("unchain.png"));
+		btnLock.setSelected(true);
+		btnLock.setToolTipText("Lock/unlock aspect ratio");
+		contentPanel.add(btnLock, "cell 3 0 1 2,growy");
+		
+		JLabel lblWidth = new JLabel("Width:");
+		contentPanel.add(lblWidth, "cell 0 1");
+		
+		spnWidth = new JSpinner();
+		spnWidth.setModel(new SpinnerNumberModel(currentChart.getTotalWidth(), 100, 9999, 1));
+		JComponent comp2 = spnWidth.getEditor();
+		JFormattedTextField field2 = (JFormattedTextField) comp2.getComponent(0);
+		DefaultFormatter formatter2 = (DefaultFormatter) field2.getFormatter();
+		formatter2.setCommitsOnValidEdit(true);
+		spnWidth.addChangeListener(new ChangeListener() {
+			
+			@Override
+			public void stateChanged(ChangeEvent e) {
 				
-				@Override
-				public void stateChanged(ChangeEvent e) {
-					
-					if (btnLock.isSelected() && widthSpinnerEnabled)
-					{
-						Integer width = (Integer) spnWidth.getValue();
-						Integer new_height = (int) (width * prop);
-						heightSpinnerEnabled = false;
-						spnHeight.setValue(new_height);
-						heightSpinnerEnabled = true;
-					}
+				if (btnLock.isSelected() && widthSpinnerEnabled)
+				{
+					Integer width = (Integer) spnWidth.getValue();
+					Integer new_height = (int) (width * prop);
+					heightSpinnerEnabled = false;
+					spnHeight.setValue(new_height);
+					heightSpinnerEnabled = true;
 				}
-			});
-			contentPanel.add(spnWidth, "cell 1 1");
-		}
-		{
-			JLabel label = new JLabel("px");
-			contentPanel.add(label, "cell 2 1");
-		}
-		{
-			JPanel buttonPane = new JPanel();
-			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
-			getContentPane().add(buttonPane, BorderLayout.SOUTH);
-			{
-				JButton okButton = new JButton("OK");
-				okButton.setActionCommand("OK");
-				okButton.addActionListener(this);
-				buttonPane.add(okButton);
-				getRootPane().setDefaultButton(okButton);
 			}
-			{
-				JButton cancelButton = new JButton("Cancel");
-				cancelButton.setActionCommand("Cancel");
-				cancelButton.addActionListener(this);
-				buttonPane.add(cancelButton);
-			}
-		}
+		});
+		contentPanel.add(spnWidth, "cell 1 1");
+		
+		JLabel label = new JLabel("px");
+		contentPanel.add(label, "cell 2 1");
+		
+		JPanel buttonPane = new JPanel();
+		buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
+		this.getContentPane().add(buttonPane, BorderLayout.SOUTH);
+		
+		JButton okButton = new JButton("OK");
+		okButton.setActionCommand("OK");
+		okButton.addActionListener(this);
+		buttonPane.add(okButton);
+		this.getRootPane().setDefaultButton(okButton);
+		
+		JButton cancelButton = new JButton("Cancel");
+		cancelButton.setActionCommand("Cancel");
+		cancelButton.addActionListener(this);
+		buttonPane.add(cancelButton);
+		
 		this.setLocationRelativeTo(App.mainFrame);
 	}
 	
@@ -200,6 +197,7 @@ public class PNGExportOptionsDialog extends JDialog implements ActionListener {
 				return;
 				
 			log.debug("Exporting to PNG....");
+			
 			try
 			{
 				currentChart.setVisibilityOfNoExportElements(false);
@@ -227,17 +225,21 @@ public class PNGExportOptionsDialog extends JDialog implements ActionListener {
 				png_ostream.close();
 				currentChart.setVisibilityOfNoExportElements(true);
 				// svgCanvas.setDocument(currentChart.doc);
+				
+				MainWindow.getInstance().getFeedbackMessagePanel().updateFeedbackMessage(FeedbackMessageType.INFO,
+						FeedbackDisplayProtocol.AUTO_HIDE, FeedbackDictionary.NEOFHCHART_PNG_EXPORT_MESSAGE.toString());
 			}
 			catch (Exception e)
 			{
 				log.error("Error charting chart");
 				e.printStackTrace();
 			}
-			dispose();
+			
+			this.dispose();
 		}
-		if (evt.getActionCommand().equals("Cancel"))
+		else if (evt.getActionCommand().equals("Cancel"))
 		{
-			dispose();
+			this.dispose();
 		}
 	}
 }

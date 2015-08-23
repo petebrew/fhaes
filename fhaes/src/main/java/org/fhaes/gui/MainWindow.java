@@ -2338,7 +2338,6 @@ public class MainWindow implements PrefsListener {
 		JMenu mnChart = new JMenu("Chart");
 		menuBar.add(mnChart);
 		
-		mnChart.addSeparator();
 		mnChart.add(new FHAESCheckBoxMenuItem(chartActions.actionShowIndexPlot));
 		mnChart.add(new FHAESCheckBoxMenuItem(chartActions.actionShowChronologyPlot));
 		mnChart.add(new FHAESCheckBoxMenuItem(chartActions.actionCompositePlot));

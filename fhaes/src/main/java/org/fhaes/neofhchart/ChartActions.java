@@ -90,12 +90,12 @@ public class ChartActions {
 	 */
 	
 	/**
-	 * TODO
+	 * Initializes the set of actions which can be performed on a neoFHChart.
 	 * 
 	 * @param neochart
 	 */
 	public ChartActions(NeoFHChart neochart) {
-	
+		
 		/*
 		 * SHOW INDEX PLOT
 		 */
@@ -105,7 +105,7 @@ public class ChartActions {
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-			
+				
 				boolean val = (Boolean) getValue(Action.SELECTED_KEY);
 				App.prefs.setBooleanPref(PrefKey.CHART_SHOW_INDEX_PLOT, val);
 			}
@@ -118,12 +118,12 @@ public class ChartActions {
 		 */
 		actionShowChronologyPlot = new FHAESAction("Chronology plot", "firechronologyplot.png", "Chronology",
 				"Hide/show the chronology plot") {
-			
+				
 			private static final long serialVersionUID = 1L;
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-			
+				
 				boolean val = (Boolean) getValue(Action.SELECTED_KEY);
 				App.prefs.setBooleanPref(PrefKey.CHART_SHOW_CHRONOLOGY_PLOT, val);
 			}
@@ -140,7 +140,7 @@ public class ChartActions {
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-			
+				
 				boolean val = (Boolean) getValue(Action.SELECTED_KEY);
 				App.prefs.setBooleanPref(PrefKey.CHART_SHOW_COMPOSITE_PLOT, val);
 			}
@@ -157,7 +157,7 @@ public class ChartActions {
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-			
+				
 				boolean val = (Boolean) getValue(Action.SELECTED_KEY);
 				App.prefs.setBooleanPref(PrefKey.CHART_SHOW_LEGEND, val);
 			}
@@ -174,7 +174,7 @@ public class ChartActions {
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-			
+				
 				showChartProperties();
 			}
 		};
@@ -189,7 +189,7 @@ public class ChartActions {
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-			
+				
 				ActionMap map = neoFHChart.svgCanvas.getActionMap();
 				Action action = map.get(JSVGCanvasEx.ZOOM_IN_ACTION);
 				action.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, null));
@@ -206,7 +206,7 @@ public class ChartActions {
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-			
+				
 				ActionMap map = neoFHChart.svgCanvas.getActionMap();
 				Action action = map.get(JSVGCanvasEx.ZOOM_OUT_ACTION);
 				action.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, null));
@@ -223,7 +223,7 @@ public class ChartActions {
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-			
+				
 				ActionMap map = neoFHChart.svgCanvas.getActionMap();
 				Action action = map.get(JSVGCanvas.RESET_TRANSFORM_ACTION);
 				action.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, null));
@@ -240,7 +240,7 @@ public class ChartActions {
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-			
+				
 				exportChart(null);
 			}
 		};
@@ -254,7 +254,7 @@ public class ChartActions {
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-			
+				
 				exportChart("SVG");
 			}
 		};
@@ -268,7 +268,7 @@ public class ChartActions {
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-			
+				
 				exportChart("PNG");
 			}
 		};
@@ -282,7 +282,7 @@ public class ChartActions {
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-			
+				
 				exportChart("PDF");
 			}
 		};
@@ -292,12 +292,12 @@ public class ChartActions {
 		 */
 		actionShowSampleDepthThreshold = new FHAESAction("Sample depth threshold", null, "Sample depth",
 				"Hide/show the sample depth threshold line") {
-			
+				
 			private static final long serialVersionUID = 1L;
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-			
+				
 				boolean val = (Boolean) getValue(Action.SELECTED_KEY);
 				App.prefs.setBooleanPref(PrefKey.CHART_SHOW_DEPTH_THRESHOLD, val);
 			}
@@ -313,7 +313,7 @@ public class ChartActions {
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-			
+				
 				boolean val = (Boolean) getValue(Action.SELECTED_KEY);
 				App.prefs.setBooleanPref(PrefKey.CHART_SHOW_CHRONOLOGY_PLOT_LABELS, val);
 			}
@@ -329,7 +329,7 @@ public class ChartActions {
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-			
+				
 				boolean val = (Boolean) getValue(Action.SELECTED_KEY);
 				App.prefs.setBooleanPref(PrefKey.CHART_VERTICAL_GUIDES, val);
 			}
@@ -345,7 +345,7 @@ public class ChartActions {
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-			
+				
 				boolean val = (Boolean) getValue(Action.SELECTED_KEY);
 				App.prefs.setBooleanPref(PrefKey.CHART_XAXIS_MINOR_TICKS, val);
 			}
@@ -357,12 +357,12 @@ public class ChartActions {
 		 */
 		actionShowSeriesList = new FHAESAction("Choose series to plot...", "chooseseries.png", "Choose series",
 				"Choose which series to plot") {
-			
+				
 			private static final long serialVersionUID = 1L;
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-			
+				
 				showSeriesList();
 			}
 		};
@@ -389,7 +389,7 @@ public class ChartActions {
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-			
+				
 				sortSeries(SeriesSortType.START_YEAR);
 			}
 		};
@@ -403,7 +403,7 @@ public class ChartActions {
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-			
+				
 				sortSeries(SeriesSortType.END_YEAR);
 			}
 		};
@@ -417,7 +417,7 @@ public class ChartActions {
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-			
+				
 				sortSeries(SeriesSortType.FIRST_FIRE_YEAR);
 			}
 		};
@@ -431,7 +431,7 @@ public class ChartActions {
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-			
+				
 				sortSeries(SeriesSortType.NAME);
 			}
 		};
@@ -446,7 +446,7 @@ public class ChartActions {
 	 * @param chart
 	 */
 	public void setNeoChart(NeoFHChart chart) {
-	
+		
 		this.neoFHChart = chart;
 		
 		actionShowIndexPlot.setEnabled(chart != null);
@@ -474,31 +474,39 @@ public class ChartActions {
 	}
 	
 	/**
-	 * TODO
+	 * Shows a dialog containing all of the configurable properties for the neoFHChart.
+	 */
+	public void showChartProperties() {
+		
+		ChartPropertiesDialog.showDialog(App.mainFrame, neoFHChart);
+	}
+	
+	/**
+	 * Shows a dialog containing a list of all the series in neoFHChart.
 	 */
 	private void showSeriesList() {
-	
+		
 		if (neoFHChart == null)
 			return;
-		
+			
 		SeriesListDialog.showDialog(neoFHChart.currentChart, neoFHChart.svgCanvas);
 	}
 	
 	/**
-	 * TODO
+	 * Handles sorting of series on the neoFHChart.
 	 * 
 	 * @param type
 	 */
 	private void sortSeries(final SeriesSortType type) {
-	
+		
 		if (neoFHChart == null)
 			return;
-		
+			
 		Runnable r = new Runnable() {
 			
 			@Override
 			public void run() {
-			
+				
 				if (type.equals(SeriesSortType.START_YEAR))
 				{
 					neoFHChart.currentChart.sortBySampleStartYear();
@@ -506,20 +514,14 @@ public class ChartActions {
 				else if (type.equals(SeriesSortType.END_YEAR))
 				{
 					neoFHChart.currentChart.sortBySampleEndYear();
-					
 				}
 				else if (type.equals(SeriesSortType.FIRST_FIRE_YEAR))
 				{
 					neoFHChart.currentChart.sortByFirstFireYear();
-					
 				}
 				else if (type.equals(SeriesSortType.NAME))
 				{
 					neoFHChart.currentChart.sortByName();
-				}
-				else
-				{
-					// unknown type
 				}
 			}
 		};
@@ -528,15 +530,15 @@ public class ChartActions {
 	}
 	
 	/**
-	 * TODO
+	 * Handles exporting of the neoFHChart.
 	 * 
 	 * @param format
 	 */
 	private void exportChart(String format) {
-	
+		
 		if (neoFHChart == null)
 			return;
-		
+			
 		if (format == null)
 		{
 			neoFHChart.doExport();
@@ -547,29 +549,23 @@ public class ChartActions {
 		}
 	}
 	
-	/*
-	 * private void setTickColor() {
-	 * 
-	 * if (neoFHChart == null) return;
-	 * 
-	 * Runnable r = new Runnable() {
-	 * 
-	 * @Override public void run() {
-	 * 
-	 * Color ret = JColorChooser.showDialog(App.mainFrame, "Tick Color", neoFHChart.chart.getTickColor());
-	 * 
-	 * if (ret != null) neoFHChart.chart.setTickColor(ret);
-	 * 
-	 * } };
-	 * 
-	 * neoFHChart.svgCanvas.getUpdateManager().getUpdateRunnableQueue().invokeLater(r); }
-	 */
-	
-	/**
-	 * TODO
-	 */
-	public void showChartProperties() {
-	
-		ChartPropertiesDialog.showDialog(App.mainFrame, neoFHChart);
-	}
+	// private void setTickColor() {
+	//
+	// if (neoFHChart == null)
+	// return;
+	//
+	// Runnable r = new Runnable() {
+	//
+	// @Override
+	// public void run() {
+	//
+	// Color ret = JColorChooser.showDialog(App.mainFrame, "Tick Color", neoFHChart.chart.getTickColor());
+	//
+	// if (ret != null)
+	// neoFHChart.chart.setTickColor(ret);
+	// }
+	// };
+	//
+	// neoFHChart.svgCanvas.getUpdateManager().getUpdateRunnableQueue().invokeLater(r);
+	// }
 }

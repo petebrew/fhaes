@@ -44,9 +44,15 @@ import javax.swing.border.EmptyBorder;
 
 import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.print.PrintTranscoder;
+import org.fhaes.enums.FeedbackDisplayProtocol;
+import org.fhaes.enums.FeedbackMessageType;
+import org.fhaes.feedback.FeedbackPreferenceManager.FeedbackDictionary;
+import org.fhaes.gui.MainWindow;
 import org.fhaes.neofhchart.svg.FireChartSVG;
 import org.fhaes.preferences.App;
 import org.fhaes.util.Builder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
@@ -68,6 +74,10 @@ public class PDFExportOptionsDialog extends JDialog implements ActionListener {
 	
 	private static final long serialVersionUID = 1L;
 	
+	// Declare logger
+	private final static Logger log = LoggerFactory.getLogger(PDFExportOptionsDialog.class);
+	
+	// Declare GUI components
 	private final JPanel contentPanel = new JPanel();
 	private JComboBox<Object> cboPaperSize;
 	private JRadioButton radPortrait;
@@ -76,6 +86,7 @@ public class PDFExportOptionsDialog extends JDialog implements ActionListener {
 	private File outputFile;
 	private JLabel lblSize;
 	
+	// Declare local variables
 	public final static Object[] PAGESIZES = { "Default", PageSize.LETTER, PageSize.LEGAL, PageSize.EXECUTIVE, PageSize.A5, PageSize.A4,
 			PageSize.A3, PageSize.A2, PageSize.A1, PageSize.A0 };
 			
@@ -87,68 +98,61 @@ public class PDFExportOptionsDialog extends JDialog implements ActionListener {
 		this.setModal(true);
 		this.setTitle("Export to PDF");
 		this.setIconImage(Builder.getApplicationIcon());
+		this.setBounds(100, 100, 450, 176);
+		
 		this.currentChart = currentChart;
 		this.outputFile = outputFile;
 		
-		setBounds(100, 100, 450, 176);
-		getContentPane().setLayout(new BorderLayout());
+		this.getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
-		getContentPane().add(contentPanel, BorderLayout.CENTER);
+		this.getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(new MigLayout("", "[][grow][]", "[][15px:n][][]"));
-		{
-			JLabel lblPaperSize = new JLabel("Paper size:");
-			contentPanel.add(lblPaperSize, "cell 0 0,alignx trailing");
-		}
-		{
-			cboPaperSize = new JComboBox<Object>(PAGESIZES);
-			cboPaperSize.setRenderer(new PageSizeRenderer());
-			cboPaperSize.setActionCommand("PaperSize");
-			cboPaperSize.addActionListener(this);
-			contentPanel.add(cboPaperSize, "cell 1 0 2 1,growx");
-		}
-		{
-			lblSize = new JLabel("");
-			lblSize.setFont(new Font("Dialog", Font.PLAIN, 10));
-			contentPanel.add(lblSize, "cell 1 1,alignx right,aligny top");
-		}
-		{
-			JLabel lblNewLabel = new JLabel("");
-			lblNewLabel.setIcon(Builder.getImageIcon("pdf48.png"));
-			contentPanel.add(lblNewLabel, "cell 2 1 1 3");
-		}
-		{
-			radPortrait = new JRadioButton("Portrait");
-			radPortrait.setEnabled(false);
-			contentPanel.add(radPortrait, "cell 1 2");
-		}
-		{
-			radLandscape = new JRadioButton("Landscape");
-			radLandscape.setEnabled(false);
-			radLandscape.setSelected(true);
-			
-			ButtonGroup bg = new ButtonGroup();
-			bg.add(radLandscape);
-			bg.add(radPortrait);
-			contentPanel.add(radLandscape, "cell 1 3");
-		}
-		{
-			JPanel buttonPane = new JPanel();
-			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
-			getContentPane().add(buttonPane, BorderLayout.SOUTH);
-			{
-				JButton okButton = new JButton("OK");
-				okButton.setActionCommand("OK");
-				okButton.addActionListener(this);
-				buttonPane.add(okButton);
-				getRootPane().setDefaultButton(okButton);
-			}
-			{
-				JButton cancelButton = new JButton("Cancel");
-				cancelButton.setActionCommand("Cancel");
-				cancelButton.addActionListener(this);
-				buttonPane.add(cancelButton);
-			}
-		}
+		
+		JLabel lblPaperSize = new JLabel("Paper size:");
+		contentPanel.add(lblPaperSize, "cell 0 0,alignx trailing");
+		
+		cboPaperSize = new JComboBox<Object>(PAGESIZES);
+		cboPaperSize.setRenderer(new PageSizeRenderer());
+		cboPaperSize.setActionCommand("PaperSize");
+		cboPaperSize.addActionListener(this);
+		contentPanel.add(cboPaperSize, "cell 1 0 2 1,growx");
+		
+		lblSize = new JLabel("");
+		lblSize.setFont(new Font("Dialog", Font.PLAIN, 10));
+		contentPanel.add(lblSize, "cell 1 1,alignx right,aligny top");
+		
+		JLabel lblNewLabel = new JLabel("");
+		lblNewLabel.setIcon(Builder.getImageIcon("pdf48.png"));
+		contentPanel.add(lblNewLabel, "cell 2 1 1 3");
+		
+		radPortrait = new JRadioButton("Portrait");
+		radPortrait.setEnabled(false);
+		contentPanel.add(radPortrait, "cell 1 2");
+		
+		radLandscape = new JRadioButton("Landscape");
+		radLandscape.setEnabled(false);
+		radLandscape.setSelected(true);
+		
+		ButtonGroup bg = new ButtonGroup();
+		bg.add(radLandscape);
+		bg.add(radPortrait);
+		contentPanel.add(radLandscape, "cell 1 3");
+		
+		JPanel buttonPane = new JPanel();
+		buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
+		this.getContentPane().add(buttonPane, BorderLayout.SOUTH);
+		
+		JButton okButton = new JButton("OK");
+		okButton.setActionCommand("OK");
+		okButton.addActionListener(this);
+		buttonPane.add(okButton);
+		this.getRootPane().setDefaultButton(okButton);
+		
+		JButton cancelButton = new JButton("Cancel");
+		cancelButton.setActionCommand("Cancel");
+		cancelButton.addActionListener(this);
+		buttonPane.add(cancelButton);
+		
 		this.setLocationRelativeTo(App.mainFrame);
 	}
 	
@@ -161,6 +165,11 @@ public class PDFExportOptionsDialog extends JDialog implements ActionListener {
 		// Do the export
 		if (evt.getActionCommand().equals("OK"))
 		{
+			if (currentChart == null)
+				return;
+				
+			log.debug("Exporting to PDF....");
+			
 			Document document = null;
 			
 			if (cboPaperSize.getSelectedItem() instanceof Rectangle)
@@ -206,6 +215,9 @@ public class PDFExportOptionsDialog extends JDialog implements ActionListener {
 				
 				ImgTemplate img = new ImgTemplate(template);
 				document.add(img);
+				
+				MainWindow.getInstance().getFeedbackMessagePanel().updateFeedbackMessage(FeedbackMessageType.INFO,
+						FeedbackDisplayProtocol.AUTO_HIDE, FeedbackDictionary.NEOFHCHART_PDF_EXPORT_MESSAGE.toString());
 			}
 			catch (DocumentException e)
 			{
@@ -219,19 +231,17 @@ public class PDFExportOptionsDialog extends JDialog implements ActionListener {
 			{
 				currentChart.setVisibilityOfNoExportElements(true);
 			}
-			document.close();
 			
-			dispose();
+			document.close();
+			this.dispose();
 		}
-		
-		if (evt.getActionCommand().equals("Cancel"))
+		else if (evt.getActionCommand().equals("Cancel"))
 		{
-			dispose();
+			this.dispose();
 		}
-		
-		// Update the paper size label
-		if (evt.getActionCommand().equals("PaperSize"))
+		else if (evt.getActionCommand().equals("PaperSize"))
 		{
+			// Update the paper size label
 			if (this.cboPaperSize.getSelectedItem() instanceof Rectangle)
 			{
 				Object value = this.cboPaperSize.getSelectedItem();

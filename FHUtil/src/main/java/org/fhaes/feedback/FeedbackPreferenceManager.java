@@ -33,7 +33,13 @@ public class FeedbackPreferenceManager {
 		
 		CATEGORY_FILE_SAVED_MESSAGE("Category file was saved successfully.", PrefKey.SHOW_CATEGORY_FILE_SAVED_MESSAGE),
 		
-		FHRECORDER_FILE_SAVED_MESSAGE("FHX file was saved successfully.", PrefKey.SHOW_FHRECORDER_FILE_SAVED_MESSAGE);
+		FHRECORDER_FILE_SAVED_MESSAGE("FHX file was saved successfully.", PrefKey.SHOW_FHRECORDER_FILE_SAVED_MESSAGE),
+		
+		NEOFHCHART_PDF_EXPORT_MESSAGE("PDF file was exported successfully.", PrefKey.SHOW_NEOFHCHART_PDF_EXPORT_MESSAGE),
+		
+		NEOFHCHART_PNG_EXPORT_MESSAGE("PNG file was exported successfully.", PrefKey.SHOW_NEOFHCHART_PNG_EXPORT_MESSAGE),
+		
+		NEOFHCHART_SVG_EXPORT_MESSAGE("SVG file was exported successfully.", PrefKey.SHOW_NEOFHCHART_SVG_EXPORT_MESSAGE);
 		
 		// Declare local variables
 		private final String humanReadable;
@@ -101,5 +107,11 @@ public class FeedbackPreferenceManager {
 		App.prefs.setBooleanPref(PrefKey.SHOW_CATEGORY_FILE_SAVED_MESSAGE, true);
 		
 		App.prefs.setBooleanPref(PrefKey.SHOW_FHRECORDER_FILE_SAVED_MESSAGE, true);
+		
+		App.prefs.setBooleanPref(PrefKey.SHOW_NEOFHCHART_PDF_EXPORT_MESSAGE, true);
+		
+		App.prefs.setBooleanPref(PrefKey.SHOW_NEOFHCHART_PNG_EXPORT_MESSAGE, true);
+		
+		App.prefs.setBooleanPref(PrefKey.SHOW_NEOFHCHART_SVG_EXPORT_MESSAGE, true);
 	}
 }

@@ -46,9 +46,13 @@ import org.apache.batik.dom.svg.SVGDOMImplementation;
 import org.apache.batik.dom.svg.SVGLocatableSupport;
 import org.fhaes.enums.AnnoteMode;
 import org.fhaes.enums.EventTypeToProcess;
+import org.fhaes.enums.FeedbackDisplayProtocol;
+import org.fhaes.enums.FeedbackMessageType;
 import org.fhaes.enums.FireFilterType;
 import org.fhaes.enums.LabelOrientation;
+import org.fhaes.feedback.FeedbackPreferenceManager.FeedbackDictionary;
 import org.fhaes.fhfilereader.AbstractFireHistoryReader;
+import org.fhaes.gui.MainWindow;
 import org.fhaes.model.FHFile;
 import org.fhaes.model.FHSeries;
 import org.fhaes.neofhchart.FHSeriesSVG;
@@ -223,7 +227,7 @@ public class FireChartSVG {
 	};
 	
 	/**
-	 * TODO
+	 * Gets the SVG document instance for this chart.
 	 * 
 	 * @return
 	 */
@@ -233,7 +237,7 @@ public class FireChartSVG {
 	}
 	
 	/**
-	 * TODO
+	 * Gets the abstract fire history reader for this chart.
 	 * 
 	 * @return
 	 */
@@ -253,7 +257,7 @@ public class FireChartSVG {
 	}
 	
 	/**
-	 * TODO
+	 * Gets the chart number for use in the ECMAscript.
 	 * 
 	 * @return
 	 */
@@ -274,6 +278,16 @@ public class FireChartSVG {
 	}
 	
 	/**
+	 * This function returns the up-to-date list of series.
+	 * 
+	 * @return the current list of series
+	 */
+	public ArrayList<FHSeriesSVG> getCurrentSeriesList() {
+		
+		return seriesSVGList;
+	}
+	
+	/**
 	 * Save the current SVG to the specified file.
 	 * 
 	 * @param f
@@ -291,8 +305,12 @@ public class FireChartSVG {
 			{
 				f.createNewFile();
 			}
+			
 			FileOutputStream fstream = new FileOutputStream(f);
 			printDocument(doc, fstream);
+			
+			MainWindow.getInstance().getFeedbackMessagePanel().updateFeedbackMessage(FeedbackMessageType.INFO,
+					FeedbackDisplayProtocol.AUTO_HIDE, FeedbackDictionary.NEOFHCHART_SVG_EXPORT_MESSAGE.toString());
 		}
 		catch (Exception e)
 		{
@@ -397,7 +415,7 @@ public class FireChartSVG {
 	}
 	
 	/**
-	 * TODO
+	 * Gets the total width of this chart.
 	 * 
 	 * @return
 	 */
@@ -407,7 +425,7 @@ public class FireChartSVG {
 	}
 	
 	/**
-	 * TODO
+	 * Gets the total height of this chart.
 	 * 
 	 * @return
 	 */
@@ -453,16 +471,6 @@ public class FireChartSVG {
 		JComponent graphics = new JPanel();
 		FontMetrics metrics = graphics.getFontMetrics(font);
 		return metrics.getMaxAscent();
-	}
-	
-	/**
-	 * This function returns the up-to-date list of series.
-	 * 
-	 * @return the current list of series
-	 */
-	public ArrayList<FHSeriesSVG> getCurrentSeriesList() {
-		
-		return seriesSVGList;
 	}
 	
 	/**
@@ -1288,8 +1296,8 @@ public class FireChartSVG {
 		currentY += moveValue;
 		Element nonrecorder_g = doc.createElementNS(svgNS, "g");
 		nonrecorder_g.appendChild(LegendElementBuilder.getNonRecorderYearExample(doc, svgNS, currentY));
-		Element nonrecorder_desc = LegendElementBuilder.getDescriptionTextElement(doc, svgNS, fontFamily, "Non-recorder year", leftJustified,
-				currentY + (labelHeight / 2));
+		Element nonrecorder_desc = LegendElementBuilder.getDescriptionTextElement(doc, svgNS, fontFamily, "Non-recorder year",
+				leftJustified, currentY + (labelHeight / 2));
 		nonrecorder_g.appendChild(nonrecorder_desc);
 		legend.appendChild(nonrecorder_g);
 		
@@ -1317,8 +1325,8 @@ public class FireChartSVG {
 			Element injuryMarker_g = doc.createElementNS(svgNS, "g");
 			injuryMarker_g.appendChild(SeriesElementBuilder.getInjuryYearMarker(doc, svgNS, 3, Color.BLACK));
 			injuryMarker_g.setAttributeNS(null, "transform", "translate(0, " + Integer.toString(currentY) + ")");
-			Element injuryMarker_desc = LegendElementBuilder.getDescriptionTextElement(doc, svgNS, fontFamily, "Injury event", leftJustified,
-					(labelHeight / 2));
+			Element injuryMarker_desc = LegendElementBuilder.getDescriptionTextElement(doc, svgNS, fontFamily, "Injury event",
+					leftJustified, (labelHeight / 2));
 			injuryMarker_g.appendChild(injuryMarker_desc);
 			legend.appendChild(injuryMarker_g);
 		}
@@ -1346,8 +1354,8 @@ public class FireChartSVG {
 		Element withoutPithNonrecorder_g = doc.createElementNS(svgNS, "g");
 		withoutPithNonrecorder_g.appendChild(LegendElementBuilder.getNoPithWithNonRecorderLineExample(doc, svgNS));
 		withoutPith_g.appendChild(withoutPithNonrecorder_g);
-		Element withoutPithNonrecorder_desc = LegendElementBuilder.getDescriptionTextElement(doc, svgNS, fontFamily, "Inner year without pith",
-				leftJustified, (labelHeight / 2));
+		Element withoutPithNonrecorder_desc = LegendElementBuilder.getDescriptionTextElement(doc, svgNS, fontFamily,
+				"Inner year without pith", leftJustified, (labelHeight / 2));
 		withoutPith_g.appendChild(withoutPithNonrecorder_desc);
 		legend.appendChild(withoutPith_g);
 		
@@ -1562,16 +1570,6 @@ public class FireChartSVG {
 			}
 		}
 		
-		// draw in the bounding rectangle
-		
-		/*
-		 * Element chart_rect = doc.createElementNS(svgNS, "rect"); chart_rect.setAttributeNS(null, "x", "0");
-		 * chart_rect.setAttributeNS(null, "y", "0"); chart_rect.setAttributeNS(null, "width", Integer.toString(getLastChartYear() -
-		 * getFirstChartYear())); chart_rect.setAttributeNS(null, "height", "100"); chart_rect.setAttributeNS(null, "stroke", "black");
-		 * chart_rect.setAttributeNS(null, "stroke-width", Double.toString(pixelsToYears(1))); chart_rect.setAttributeNS(null, "fill",
-		 * "none"); scarred_scale_g.appendChild(chart_rect);
-		 */
-		
 		// draw a rectangle around it
 		// Needs to be 4 lines to cope with stroke width in different coord sys in x and y
 		scarred_scale_g.appendChild(
@@ -1642,12 +1640,6 @@ public class FireChartSVG {
 		
 		return scarred_g;
 	}
-	
-	/*
-	 * public boolean setCommonTickAttrib(int weight, Color color, LineStyle style) {
-	 * 
-	 * tickLineWeight = weight; tickLineStyle = style; setTickColor(color); positionChartGroupersAndDrawTimeAxis(); return false; }
-	 */
 	
 	/**
 	 * Get the sample or recorder depth plot.
@@ -1765,7 +1757,7 @@ public class FireChartSVG {
 		int labelHeight = this.getStringHeight(fontFamily, Font.PLAIN, font_size, "9");
 		for (int i = 0; i < num_ticks; i++)
 		{
-			int labelwidth = this.getStringWidth(fontFamily, Font.PLAIN, font_size, i * tick_spacing + "");
+			int labelWidth = this.getStringWidth(fontFamily, Font.PLAIN, font_size, i * tick_spacing + "");
 			
 			sample_g.appendChild(SampleRecorderPlotElementBuilder.getHorizontalTick(doc, svgNS, unscale_y, i, tick_spacing));
 			
@@ -1773,17 +1765,17 @@ public class FireChartSVG {
 			unscale_g.setAttributeNS(null, "transform", "translate(-5," + (i * tick_spacing) + ") scale(1," + (1.0 / scale_y) + ")");
 			
 			unscale_g.appendChild(SampleRecorderPlotElementBuilder.getDepthTextElement(doc, svgNS, fontFamily, font_size, scale_y, i,
-					tick_spacing, labelwidth, labelHeight));
+					tick_spacing, labelWidth, labelHeight));
 					
 			sample_g.appendChild(unscale_g);
 		}
 		
 		// add in label that says "Sample Depth"
-		int labelwidth = this.getStringWidth(fontFamily, Font.PLAIN, font_size, num_ticks * tick_spacing + "");
+		int labelWidth = this.getStringWidth(fontFamily, Font.PLAIN, font_size, num_ticks * tick_spacing + "");
 		
 		Element unscale_g = doc.createElementNS(svgNS, "g");
 		unscale_g.setAttributeNS(null, "transform",
-				"translate(" + (-5 - labelwidth - 10) + "," + 0 + ") scale(1," + (1.0 / scale_y) + ") rotate(270)");
+				"translate(" + (-5 - labelWidth - 10) + "," + 0 + ") scale(1," + (1.0 / scale_y) + ") rotate(270)");
 				
 		unscale_g.appendChild(SampleRecorderPlotElementBuilder.getSampleDepthTextElement(doc, svgNS, fontFamily));
 		sample_g.appendChild(unscale_g);
@@ -1845,14 +1837,8 @@ public class FireChartSVG {
 		positionChartGroupersAndDrawTimeAxis();
 	}
 	
-	/*
-	 * public boolean setCommonTickAttrib(int weight, Color color, LineStyle style) {
-	 * 
-	 * tickLineWeight = weight; tickLineStyle = style; setTickColor(color); positionChartGroupersAndDrawTimeAxis(); return false; }
-	 */
-	
 	/**
-	 * TODO
+	 * Set the visibility of the composite plot based on the preferences.
 	 */
 	public void setCompositePlotVisibility() {
 		
@@ -1871,14 +1857,8 @@ public class FireChartSVG {
 		positionChartGroupersAndDrawTimeAxis();
 	}
 	
-	/*
-	 * public boolean setCommonTickAttrib(int weight, Color color, LineStyle style) {
-	 * 
-	 * tickLineWeight = weight; tickLineStyle = style; setTickColor(color); positionChartGroupersAndDrawTimeAxis(); return false; }
-	 */
-	
 	/**
-	 * TODO
+	 * Set the visibility of the legend based on the preferences.
 	 */
 	public void setLegendVisibility() {
 		
@@ -1895,14 +1875,8 @@ public class FireChartSVG {
 		}
 	}
 	
-	/*
-	 * public boolean setCommonTickAttrib(int weight, Color color, LineStyle style) {
-	 * 
-	 * tickLineWeight = weight; tickLineStyle = style; setTickColor(color); positionChartGroupersAndDrawTimeAxis(); return false; }
-	 */
-	
 	/**
-	 * TODO
+	 * Set the visibility of the series labels based on the preferences.
 	 */
 	public void setSeriesLabelsVisibility() {
 		
@@ -1935,33 +1909,7 @@ public class FireChartSVG {
 	}
 	
 	/**
-	 * This function toggles the visibility of the series at the given location.
-	 * 
-	 * @param index of the series to hide
-	 */
-	public void toggleVisibilityOfSeries(int index) {
-		
-		FHSeriesSVG seriesToHide = seriesSVGList.get(index);
-		seriesToHide.toggleVisibility();
-		seriesSVGList.set(index, seriesToHide);
-		positionSeriesLines();
-		positionChartGroupersAndDrawTimeAxis();
-	}
-	
-	/*
-	 * public boolean setCommonTickAttrib(int weight, Color color, LineStyle style) {
-	 * 
-	 * tickLineWeight = weight; tickLineStyle = style; setTickColor(color); positionChartGroupersAndDrawTimeAxis(); return false; }
-	 */
-	
-	/*
-	 * public boolean setCommonTickAttrib(int weight, Color color, LineStyle style) {
-	 * 
-	 * tickLineWeight = weight; tickLineStyle = style; setTickColor(color); positionChartGroupersAndDrawTimeAxis(); return false; }
-	 */
-	
-	/**
-	 * TODO
+	 * Set the visibility of the no-export elements based on the input parameter.
 	 * 
 	 * @param isVisible
 	 */
@@ -1981,14 +1929,28 @@ public class FireChartSVG {
 		}
 	}
 	
-	// ============== Annotation ============
+	/**
+	 * This function toggles the visibility of the series at the given location.
+	 * 
+	 * @param index of the series to hide
+	 */
+	public void toggleVisibilityOfSeries(int index) {
+		
+		FHSeriesSVG seriesToHide = seriesSVGList.get(index);
+		seriesToHide.toggleVisibility();
+		seriesSVGList.set(index, seriesToHide);
+		positionSeriesLines();
+		positionChartGroupersAndDrawTimeAxis();
+	}
+	
+	// ============== Annotation ==============
 	// There is a <rect id="annote_canvas"> element in the DOM under <g id="annote_g">.
 	// It is used to catch mouse events in order to add, resize, or delete annotation rectangles.
 	// The enum Mode is used to track whether the user has selected add, resize, &etc.
 	// All mode checking will be done java-side to simplify the js.
 	// In other words, rectangles will always call deleteAnnoteRect when clicked, and it is up
 	// to deleteAnnoteRect to ensure that the rect only gets deleted when the user is in the eraser mode
-	// ======================================
+	// ========================================
 	
 	/**
 	 * Gets the annote canvas as an element.
@@ -2015,7 +1977,7 @@ public class FireChartSVG {
 	}
 	
 	/**
-	 * TODO
+	 * Draws a line on the annotation grouper.
 	 * 
 	 * @param x
 	 * @return
@@ -2050,7 +2012,7 @@ public class FireChartSVG {
 	}
 	
 	/**
-	 * TODO
+	 * Removes a line from the annotation grouper.
 	 * 
 	 * @param id
 	 * @return
@@ -2075,7 +2037,7 @@ public class FireChartSVG {
 	}
 	
 	/**
-	 * TODO
+	 * Sets the annote mode according to the input parameter.
 	 * 
 	 * @param m
 	 */
@@ -2108,7 +2070,7 @@ public class FireChartSVG {
 	}
 	
 	/**
-	 * TODO
+	 * Handles printing of the SVG document.
 	 * 
 	 * @param doc
 	 * @param out
@@ -2227,4 +2189,13 @@ public class FireChartSVG {
 		Collections.sort(seriesSVGList, comparator);
 		positionSeriesLines();
 	}
+	
+	// public boolean setCommonTickAttrib(int weight, Color color, LineStyle style) {
+	//
+	// tickLineWeight = weight;
+	// tickLineStyle = style;
+	// setTickColor(color);
+	// positionChartGroupersAndDrawTimeAxis();
+	// return false;
+	// }
 }

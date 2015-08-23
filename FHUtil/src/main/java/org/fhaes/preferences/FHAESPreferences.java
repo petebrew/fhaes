@@ -425,7 +425,13 @@ public class FHAESPreferences {
 		
 		SHOW_CATEGORY_FILE_SAVED_MESSAGE("showCategoryFileSavedMessage"),
 		
-		SHOW_FHRECORDER_FILE_SAVED_MESSAGE("showFHRecorderFileSavedMessage");
+		SHOW_FHRECORDER_FILE_SAVED_MESSAGE("showFHRecorderFileSavedMessage"),
+		
+		SHOW_NEOFHCHART_PDF_EXPORT_MESSAGE("showNeoFHChartPDFExportMessage"),
+		
+		SHOW_NEOFHCHART_PNG_EXPORT_MESSAGE("showNeoFHChartPNGExportMessage"),
+		
+		SHOW_NEOFHCHART_SVG_EXPORT_MESSAGE("showNeoFHChartSVGExportMessage");
 		
 		/**
 		 * 
