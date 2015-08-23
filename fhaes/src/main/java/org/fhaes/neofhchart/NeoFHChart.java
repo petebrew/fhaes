@@ -370,14 +370,14 @@ public class NeoFHChart extends JPanel implements PrefsListener {
 			currentChart.saveSVGToDisk(outputFile);
 			return;
 		}
-		else if (selectedFilter.equals(pngf))
-		{
-			PNGExportOptionsDialog exp = new PNGExportOptionsDialog(currentChart, outputFile);
-			exp.setVisible(true);
-		}
 		else if (selectedFilter.equals(pdff))
 		{
 			PDFExportOptionsDialog exp = new PDFExportOptionsDialog(currentChart, outputFile);
+			exp.setVisible(true);
+		}
+		else if (selectedFilter.equals(pngf))
+		{
+			PNGExportOptionsDialog exp = new PNGExportOptionsDialog(currentChart, outputFile);
 			exp.setVisible(true);
 		}
 	}

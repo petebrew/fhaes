@@ -151,7 +151,6 @@ public class ReportPanel extends JPanel implements PrefsListener {
 		{
 			// Analysis results
 			return panelResults.table;
-			
 		}
 		else if (selectedIndex == 0)
 		{
@@ -167,19 +166,18 @@ public class ReportPanel extends JPanel implements PrefsListener {
 		{
 			// Map
 			return null;
-			
 		}
 		
 		try
 		{
-			return (JComponent) MainWindow.getInstance().frame.getFocusOwner();
+			return (JComponent) MainWindow.getInstance().getFrame().getFocusOwner();
 		}
 		catch (Exception e)
 		{
 			e.printStackTrace();
 		}
 		
-		log.error("Failed to get currently focussed component");
+		log.error("Failed to get currently focused component.");
 		return null;
 	}
 	

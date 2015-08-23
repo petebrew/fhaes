@@ -33,7 +33,7 @@ public class LegendElementBuilder {
 	private static final int DESCRIPTION_FONT_SIZE = 8;
 	
 	/**
-	 * Returns a description element based on the input parameters.
+	 * Returns a description text element based on the input parameters.
 	 * 
 	 * @param doc
 	 * @param svgNS
@@ -41,20 +41,20 @@ public class LegendElementBuilder {
 	 * @param fontFamily
 	 * @param xLoc, the x-location of the text
 	 * @param yLoc, the y-location of the text
-	 * @return descriptionElement
+	 * @return descriptionTextElement
 	 */
-	protected static Element getDescriptionElement(Document doc, String svgNS, String fontFamily, String text, int xLoc, int yLoc) {
+	protected static Element getDescriptionTextElement(Document doc, String svgNS, String fontFamily, String text, int xLoc, int yLoc) {
 		
-		Element descriptionElement = doc.createElementNS(svgNS, "text");
+		Element descriptionTextElement = doc.createElementNS(svgNS, "text");
 		
 		Text descriptionText = doc.createTextNode(text);
-		descriptionElement.setAttributeNS(null, "x", Integer.toString(xLoc));
-		descriptionElement.setAttributeNS(null, "y", Integer.toString(yLoc));
-		descriptionElement.setAttributeNS(null, "font-family", fontFamily);
-		descriptionElement.setAttributeNS(null, "font-size", Integer.toString(DESCRIPTION_FONT_SIZE));
-		descriptionElement.appendChild(descriptionText);
+		descriptionTextElement.setAttributeNS(null, "x", Integer.toString(xLoc));
+		descriptionTextElement.setAttributeNS(null, "y", Integer.toString(yLoc));
+		descriptionTextElement.setAttributeNS(null, "font-family", fontFamily);
+		descriptionTextElement.setAttributeNS(null, "font-size", Integer.toString(DESCRIPTION_FONT_SIZE));
+		descriptionTextElement.appendChild(descriptionText);
 		
-		return descriptionElement;
+		return descriptionTextElement;
 	}
 	
 	/**

@@ -37,21 +37,21 @@ public class CompositePlotElementBuilder {
 	 * @param svgNS
 	 * @param firstChartYear
 	 * @param lastChartYear
-	 * @return compLine1
+	 * @return borderLine1
 	 */
-	protected static Element getCompLine1(Document doc, String svgNS, int firstChartYear, int lastChartYear) {
+	protected static Element getBorderLine1(Document doc, String svgNS, int firstChartYear, int lastChartYear) {
 		
-		Element compLine1 = doc.createElementNS(svgNS, "line");
+		Element borderLine1 = doc.createElementNS(svgNS, "line");
 		
-		compLine1.setAttributeNS(null, "x1", Double.toString(firstChartYear));
-		compLine1.setAttributeNS(null, "x2", Double.toString(lastChartYear));
-		compLine1.setAttributeNS(null, "y1", "0");
-		compLine1.setAttributeNS(null, "y2", "0");
-		compLine1.setAttributeNS(null, "stroke-width", "1");
-		compLine1.setAttributeNS(null, "stroke", "black");
-		compLine1.setAttributeNS(null, "stroke-linecap", "butt");
+		borderLine1.setAttributeNS(null, "x1", Double.toString(firstChartYear));
+		borderLine1.setAttributeNS(null, "x2", Double.toString(lastChartYear));
+		borderLine1.setAttributeNS(null, "y1", "0");
+		borderLine1.setAttributeNS(null, "y2", "0");
+		borderLine1.setAttributeNS(null, "stroke-width", "1");
+		borderLine1.setAttributeNS(null, "stroke", "black");
+		borderLine1.setAttributeNS(null, "stroke-linecap", "butt");
 		
-		return compLine1;
+		return borderLine1;
 	}
 	
 	/**
@@ -62,49 +62,21 @@ public class CompositePlotElementBuilder {
 	 * @param chartHeight
 	 * @param firstChartYear
 	 * @param lastChartYear
-	 * @return compLine2
+	 * @return borderLine2
 	 */
-	protected static Element getCompLine2(Document doc, String svgNS, double chartHeight, int firstChartYear, int lastChartYear) {
+	protected static Element getBorderLine2(Document doc, String svgNS, double chartHeight, int firstChartYear, int lastChartYear) {
 		
-		Element compLine2 = doc.createElementNS(svgNS, "line");
+		Element borderLine2 = doc.createElementNS(svgNS, "line");
 		
-		compLine2.setAttributeNS(null, "x1", Integer.toString(firstChartYear));
-		compLine2.setAttributeNS(null, "x2", Integer.toString(lastChartYear));
-		compLine2.setAttributeNS(null, "y1", Double.toString(chartHeight));
-		compLine2.setAttributeNS(null, "y2", Double.toString(chartHeight));
-		compLine2.setAttributeNS(null, "stroke-width", "1");
-		compLine2.setAttributeNS(null, "stroke", "black");
-		compLine2.setAttributeNS(null, "stroke-linecap", "butt");
+		borderLine2.setAttributeNS(null, "x1", Integer.toString(firstChartYear));
+		borderLine2.setAttributeNS(null, "x2", Integer.toString(lastChartYear));
+		borderLine2.setAttributeNS(null, "y1", Double.toString(chartHeight));
+		borderLine2.setAttributeNS(null, "y2", Double.toString(chartHeight));
+		borderLine2.setAttributeNS(null, "stroke-width", "1");
+		borderLine2.setAttributeNS(null, "stroke", "black");
+		borderLine2.setAttributeNS(null, "stroke-linecap", "butt");
 		
-		return compLine2;
-	}
-	
-	/**
-	 * Returns one part of the rectangular box which surrounds the composite plot.
-	 * 
-	 * @param doc
-	 * @param svgNS
-	 * @param chartHeight
-	 * @param chartWidth
-	 * @param firstChartYear
-	 * @param lastChartYear
-	 * @return compLine3
-	 */
-	protected static Element getCompLine3(Document doc, String svgNS, double chartHeight, int chartWidth, int firstChartYear,
-			int lastChartYear) {
-			
-		Element compLine3 = doc.createElementNS(svgNS, "line");
-		
-		compLine3.setAttributeNS(null, "x1", Integer.toString(firstChartYear));
-		compLine3.setAttributeNS(null, "x2", Integer.toString(firstChartYear));
-		compLine3.setAttributeNS(null, "y1", "0");
-		compLine3.setAttributeNS(null, "y2", Double.toString(chartHeight));
-		compLine3.setAttributeNS(null, "stroke-width",
-				FireChartConversionUtil.pixelsToYears(1, chartWidth, firstChartYear, lastChartYear) + "");
-		compLine3.setAttributeNS(null, "stroke", "black");
-		compLine3.setAttributeNS(null, "stroke-linecap", "butt");
-		
-		return compLine3;
+		return borderLine2;
 	}
 	
 	/**
@@ -116,48 +88,76 @@ public class CompositePlotElementBuilder {
 	 * @param chartWidth
 	 * @param firstChartYear
 	 * @param lastChartYear
-	 * @return compLine4
+	 * @return borderLine3
 	 */
-	protected static Element getCompLine4(Document doc, String svgNS, double chartHeight, int chartWidth, int firstChartYear,
+	protected static Element getBorderLine3(Document doc, String svgNS, double chartHeight, int chartWidth, int firstChartYear,
 			int lastChartYear) {
 			
-		Element compLine4 = doc.createElementNS(svgNS, "line");
+		Element borderLine3 = doc.createElementNS(svgNS, "line");
 		
-		compLine4.setAttributeNS(null, "x1", Integer.toString(lastChartYear));
-		compLine4.setAttributeNS(null, "x2", Integer.toString(lastChartYear));
-		compLine4.setAttributeNS(null, "y1", "0");
-		compLine4.setAttributeNS(null, "y2", Double.toString(chartHeight));
-		compLine4.setAttributeNS(null, "stroke-width",
+		borderLine3.setAttributeNS(null, "x1", Integer.toString(firstChartYear));
+		borderLine3.setAttributeNS(null, "x2", Integer.toString(firstChartYear));
+		borderLine3.setAttributeNS(null, "y1", "0");
+		borderLine3.setAttributeNS(null, "y2", Double.toString(chartHeight));
+		borderLine3.setAttributeNS(null, "stroke-width",
 				FireChartConversionUtil.pixelsToYears(1, chartWidth, firstChartYear, lastChartYear) + "");
-		compLine4.setAttributeNS(null, "stroke", "black");
-		compLine4.setAttributeNS(null, "stroke-linecap", "butt");
+		borderLine3.setAttributeNS(null, "stroke", "black");
+		borderLine3.setAttributeNS(null, "stroke-linecap", "butt");
 		
-		return compLine4;
+		return borderLine3;
 	}
 	
 	/**
-	 * Returns a composite name element based on the input parameters.
+	 * Returns one part of the rectangular box which surrounds the composite plot.
+	 * 
+	 * @param doc
+	 * @param svgNS
+	 * @param chartHeight
+	 * @param chartWidth
+	 * @param firstChartYear
+	 * @param lastChartYear
+	 * @return borderLine4
+	 */
+	protected static Element getBorderLine4(Document doc, String svgNS, double chartHeight, int chartWidth, int firstChartYear,
+			int lastChartYear) {
+			
+		Element borderLine4 = doc.createElementNS(svgNS, "line");
+		
+		borderLine4.setAttributeNS(null, "x1", Integer.toString(lastChartYear));
+		borderLine4.setAttributeNS(null, "x2", Integer.toString(lastChartYear));
+		borderLine4.setAttributeNS(null, "y1", "0");
+		borderLine4.setAttributeNS(null, "y2", Double.toString(chartHeight));
+		borderLine4.setAttributeNS(null, "stroke-width",
+				FireChartConversionUtil.pixelsToYears(1, chartWidth, firstChartYear, lastChartYear) + "");
+		borderLine4.setAttributeNS(null, "stroke", "black");
+		borderLine4.setAttributeNS(null, "stroke-linecap", "butt");
+		
+		return borderLine4;
+	}
+	
+	/**
+	 * Returns a composite name text element based on the input parameters.
 	 * 
 	 * @param doc
 	 * @param svgNS
 	 * @param fontFamily
-	 * @return compositeNameElement
+	 * @return compositeNameTextElement
 	 */
-	protected static Element getCompNameElement(Document doc, String svgNS, String fontFamily) {
+	protected static Element getCompositeNameTextElement(Document doc, String svgNS, String fontFamily) {
 		
-		Element compositeNameElement = doc.createElementNS(svgNS, "text");
+		Element compositeNameTextElement = doc.createElementNS(svgNS, "text");
 		
 		Text compositeNameText = doc.createTextNode(App.prefs.getPref(PrefKey.CHART_COMPOSITE_LABEL_TEXT, "Composite"));
-		compositeNameElement.setAttributeNS(null, "x", "0");
-		compositeNameElement.setAttributeNS(null, "y", "0");
-		compositeNameElement.setAttributeNS(null, "font-family", fontFamily);
-		compositeNameElement.setAttributeNS(null, "font-size",
+		compositeNameTextElement.setAttributeNS(null, "x", "0");
+		compositeNameTextElement.setAttributeNS(null, "y", "0");
+		compositeNameTextElement.setAttributeNS(null, "font-family", fontFamily);
+		compositeNameTextElement.setAttributeNS(null, "font-size",
 				Integer.toString(App.prefs.getIntPref(PrefKey.CHART_COMPOSITE_PLOT_LABEL_FONT_SIZE, 10)));
-		compositeNameElement.appendChild(compositeNameText);
+		compositeNameTextElement.appendChild(compositeNameText);
 		
-		return compositeNameElement;
+		return compositeNameTextElement;
 	}
-
+	
 	/**
 	 * Returns an event line element based on the input parameters.
 	 * 

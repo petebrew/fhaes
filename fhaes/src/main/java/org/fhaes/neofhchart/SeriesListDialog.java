@@ -70,23 +70,21 @@ public class SeriesListDialog extends JDialog implements ActionListener {
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public SeriesListDialog(final FireChartSVG chart, final JSVGCanvas svgCanvas) {
 		
-		setBounds(100, 100, 450, 300);
-		getContentPane().setLayout(new BorderLayout());
+		this.setBounds(100, 100, 450, 300);
+		this.getContentPane().setLayout(new BorderLayout());
 		contentPanel.setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
-		getContentPane().add(contentPanel, BorderLayout.CENTER);
-		{
-			JPanel buttonPane = new JPanel();
-			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
-			getContentPane().add(buttonPane, BorderLayout.SOUTH);
-			{
-				JButton okButton = new JButton("OK");
-				okButton.setActionCommand("OK");
-				okButton.addActionListener(this);
-				buttonPane.add(okButton);
-				getRootPane().setDefaultButton(okButton);
-			}
-		}
+		this.getContentPane().add(contentPanel, BorderLayout.CENTER);
+		
+		JPanel buttonPane = new JPanel();
+		buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
+		this.getContentPane().add(buttonPane, BorderLayout.SOUTH);
+		
+		JButton okButton = new JButton("OK");
+		okButton.setActionCommand("OK");
+		okButton.addActionListener(this);
+		buttonPane.add(okButton);
+		this.getRootPane().setDefaultButton(okButton);
 		
 		ArrayList<CheckListItem> listOfChecks = new ArrayList<CheckListItem>();
 		ArrayList<FHSeriesSVG> seriesSVG = chart.getCurrentSeriesList();
@@ -134,7 +132,7 @@ public class SeriesListDialog extends JDialog implements ActionListener {
 		thisPanel.add(listScroller);
 		
 		contentPanel.add(thisPanel, BorderLayout.CENTER);
-		setModal(true);
+		this.setModal(true);
 		this.setTitle("Choose series to plot");
 		this.setIconImage(Builder.getApplicationIcon());
 	}

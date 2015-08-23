@@ -1047,7 +1047,7 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 	
 		panelResult.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		table.setModel(new DefaultTableModel());
-		MainWindow.getInstance().rightSplitPanel.actionResultsHelp.setEnabled(false);
+		MainWindow.getInstance().getReportPanel().actionResultsHelp.setEnabled(false);
 		
 		if (this.generalSummaryModel == null)
 		{
@@ -1081,7 +1081,7 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 	public void setupTable(Boolean forceRefresh) {
 	
 		cl.show(cards, RESULTSPANEL);
-		MainWindow.getInstance().rightSplitPanel.actionResultsHelp.setEnabled(true);
+		MainWindow.getInstance().getReportPanel().actionResultsHelp.setEnabled(true);
 		
 		goldFishPanel.setParamsText();
 		
@@ -1406,7 +1406,7 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 		if (MainWindow.getInstance().isFileListPopulated())
 		{
 			cl.show(cards, RUNANALYSIS);
-			MainWindow.getInstance().rightSplitPanel.actionResultsHelp.setEnabled(false);
+			MainWindow.getInstance().getReportPanel().actionResultsHelp.setEnabled(false);
 			clearResults();
 			repaintTree();
 		}

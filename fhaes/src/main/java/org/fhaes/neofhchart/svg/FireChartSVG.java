@@ -46,9 +46,13 @@ import org.apache.batik.dom.svg.SVGDOMImplementation;
 import org.apache.batik.dom.svg.SVGLocatableSupport;
 import org.fhaes.enums.AnnoteMode;
 import org.fhaes.enums.EventTypeToProcess;
+import org.fhaes.enums.FeedbackDisplayProtocol;
+import org.fhaes.enums.FeedbackMessageType;
 import org.fhaes.enums.FireFilterType;
 import org.fhaes.enums.LabelOrientation;
+import org.fhaes.feedback.FeedbackPreferenceManager.FeedbackDictionary;
 import org.fhaes.fhfilereader.AbstractFireHistoryReader;
+import org.fhaes.gui.MainWindow;
 import org.fhaes.model.FHFile;
 import org.fhaes.model.FHSeries;
 import org.fhaes.neofhchart.FHSeriesSVG;
@@ -223,7 +227,7 @@ public class FireChartSVG {
 	};
 	
 	/**
-	 * TODO
+	 * Gets the SVG document instance for this chart.
 	 * 
 	 * @return
 	 */
@@ -233,7 +237,7 @@ public class FireChartSVG {
 	}
 	
 	/**
-	 * TODO
+	 * Gets the abstract fire history reader for this chart.
 	 * 
 	 * @return
 	 */
@@ -253,7 +257,7 @@ public class FireChartSVG {
 	}
 	
 	/**
-	 * TODO
+	 * Gets the chart number for use in the ECMAscript.
 	 * 
 	 * @return
 	 */
@@ -274,6 +278,16 @@ public class FireChartSVG {
 	}
 	
 	/**
+	 * This function returns the up-to-date list of series.
+	 * 
+	 * @return the current list of series
+	 */
+	public ArrayList<FHSeriesSVG> getCurrentSeriesList() {
+		
+		return seriesSVGList;
+	}
+	
+	/**
 	 * Save the current SVG to the specified file.
 	 * 
 	 * @param f
@@ -291,8 +305,12 @@ public class FireChartSVG {
 			{
 				f.createNewFile();
 			}
+			
 			FileOutputStream fstream = new FileOutputStream(f);
 			printDocument(doc, fstream);
+			
+			MainWindow.getInstance().getFeedbackMessagePanel().updateFeedbackMessage(FeedbackMessageType.INFO,
+					FeedbackDisplayProtocol.AUTO_HIDE, FeedbackDictionary.NEOFHCHART_SVG_EXPORT_MESSAGE.toString());
 		}
 		catch (Exception e)
 		{
@@ -397,7 +415,7 @@ public class FireChartSVG {
 	}
 	
 	/**
-	 * TODO
+	 * Gets the total width of this chart.
 	 * 
 	 * @return
 	 */
@@ -407,7 +425,7 @@ public class FireChartSVG {
 	}
 	
 	/**
-	 * TODO
+	 * Gets the total height of this chart.
 	 * 
 	 * @return
 	 */
@@ -453,16 +471,6 @@ public class FireChartSVG {
 		JComponent graphics = new JPanel();
 		FontMetrics metrics = graphics.getFontMetrics(font);
 		return metrics.getMaxAscent();
-	}
-	
-	/**
-	 * This function returns the up-to-date list of series.
-	 * 
-	 * @return the current list of series
-	 */
-	public ArrayList<FHSeriesSVG> getCurrentSeriesList() {
-		
-		return seriesSVGList;
 	}
 	
 	/**
@@ -1207,13 +1215,13 @@ public class FireChartSVG {
 		
 		// Draw a rectangle around it
 		// Needs to be 4 lines to cope with stroke width in different coord sys in x and y
-		compositePlot.appendChild(CompositePlotElementBuilder.getCompLine1(doc, svgNS, getFirstChartYear(), getLastChartYear()));
+		compositePlot.appendChild(CompositePlotElementBuilder.getBorderLine1(doc, svgNS, getFirstChartYear(), getLastChartYear()));
 		compositePlot
-				.appendChild(CompositePlotElementBuilder.getCompLine2(doc, svgNS, chart_height, getFirstChartYear(), getLastChartYear()));
+				.appendChild(CompositePlotElementBuilder.getBorderLine2(doc, svgNS, chart_height, getFirstChartYear(), getLastChartYear()));
 		compositePlot.appendChild(
-				CompositePlotElementBuilder.getCompLine3(doc, svgNS, chart_height, chartWidth, getFirstChartYear(), getLastChartYear()));
+				CompositePlotElementBuilder.getBorderLine3(doc, svgNS, chart_height, chartWidth, getFirstChartYear(), getLastChartYear()));
 		compositePlot.appendChild(
-				CompositePlotElementBuilder.getCompLine4(doc, svgNS, chart_height, chartWidth, getFirstChartYear(), getLastChartYear()));
+				CompositePlotElementBuilder.getBorderLine4(doc, svgNS, chart_height, chartWidth, getFirstChartYear(), getLastChartYear()));
 				
 		/*
 		 * comp_line.setAttributeNS(null, "x", Integer.toString(getFirstChartYear())); comp_line.setAttributeNS(null, "y", "0");
@@ -1237,7 +1245,7 @@ public class FireChartSVG {
 				
 		Element comp_name_text_g = doc.createElementNS(svgNS, "g");
 		comp_name_text_g.setAttributeNS(null, "transform", translate_string + scale_string);
-		comp_name_text_g.appendChild(CompositePlotElementBuilder.getCompNameElement(doc, svgNS, fontFamily));
+		comp_name_text_g.appendChild(CompositePlotElementBuilder.getCompositeNameTextElement(doc, svgNS, fontFamily));
 		compositePlot.appendChild(comp_name_text_g);
 		
 		if (App.prefs.getBooleanPref(PrefKey.CHART_SHOW_COMPOSITE_PLOT, true))
@@ -1279,7 +1287,7 @@ public class FireChartSVG {
 		Element recorder_g = doc.createElementNS(svgNS, "g");
 		recorder_g.setAttributeNS(null, "id", "recorder");
 		recorder_g.appendChild(LegendElementBuilder.getRecorderYearExample(doc, svgNS));
-		Element recorder_desc = LegendElementBuilder.getDescriptionElement(doc, svgNS, fontFamily, "Recorder year", leftJustified,
+		Element recorder_desc = LegendElementBuilder.getDescriptionTextElement(doc, svgNS, fontFamily, "Recorder year", leftJustified,
 				currentY + (labelHeight / 2));
 		recorder_g.appendChild(recorder_desc);
 		legend.appendChild(recorder_g);
@@ -1288,8 +1296,8 @@ public class FireChartSVG {
 		currentY += moveValue;
 		Element nonrecorder_g = doc.createElementNS(svgNS, "g");
 		nonrecorder_g.appendChild(LegendElementBuilder.getNonRecorderYearExample(doc, svgNS, currentY));
-		Element nonrecorder_desc = LegendElementBuilder.getDescriptionElement(doc, svgNS, fontFamily, "Non-recorder year", leftJustified,
-				currentY + (labelHeight / 2));
+		Element nonrecorder_desc = LegendElementBuilder.getDescriptionTextElement(doc, svgNS, fontFamily, "Non-recorder year",
+				leftJustified, currentY + (labelHeight / 2));
 		nonrecorder_g.appendChild(nonrecorder_desc);
 		legend.appendChild(nonrecorder_g);
 		
@@ -1304,7 +1312,7 @@ public class FireChartSVG {
 			fireMarker.setAttributeNS(null, "width", "2");
 			fireMarker_g.appendChild(fireMarker);
 			fireMarker_g.setAttributeNS(null, "transform", "translate(0, " + currentY + ")");
-			Element fireMarker_desc = LegendElementBuilder.getDescriptionElement(doc, svgNS, fontFamily, "Fire event", leftJustified,
+			Element fireMarker_desc = LegendElementBuilder.getDescriptionTextElement(doc, svgNS, fontFamily, "Fire event", leftJustified,
 					(labelHeight / 2));
 			fireMarker_g.appendChild(fireMarker_desc);
 			legend.appendChild(fireMarker_g);
@@ -1317,8 +1325,8 @@ public class FireChartSVG {
 			Element injuryMarker_g = doc.createElementNS(svgNS, "g");
 			injuryMarker_g.appendChild(SeriesElementBuilder.getInjuryYearMarker(doc, svgNS, 3, Color.BLACK));
 			injuryMarker_g.setAttributeNS(null, "transform", "translate(0, " + Integer.toString(currentY) + ")");
-			Element injuryMarker_desc = LegendElementBuilder.getDescriptionElement(doc, svgNS, fontFamily, "Injury event", leftJustified,
-					(labelHeight / 2));
+			Element injuryMarker_desc = LegendElementBuilder.getDescriptionTextElement(doc, svgNS, fontFamily, "Injury event",
+					leftJustified, (labelHeight / 2));
 			injuryMarker_g.appendChild(injuryMarker_desc);
 			legend.appendChild(injuryMarker_g);
 		}
@@ -1332,7 +1340,7 @@ public class FireChartSVG {
 		Element pithNonrecorder_g = doc.createElementNS(svgNS, "g");
 		pithNonrecorder_g.appendChild(LegendElementBuilder.getPithWithNonRecorderLineExample(doc, svgNS));
 		innerPith_g.appendChild(pithNonrecorder_g);
-		Element pithNonrecorder_desc = LegendElementBuilder.getDescriptionElement(doc, svgNS, fontFamily, "Inner year with pith",
+		Element pithNonrecorder_desc = LegendElementBuilder.getDescriptionTextElement(doc, svgNS, fontFamily, "Inner year with pith",
 				leftJustified, (labelHeight / 2));
 		innerPith_g.appendChild(pithNonrecorder_desc);
 		legend.appendChild(innerPith_g);
@@ -1346,8 +1354,8 @@ public class FireChartSVG {
 		Element withoutPithNonrecorder_g = doc.createElementNS(svgNS, "g");
 		withoutPithNonrecorder_g.appendChild(LegendElementBuilder.getNoPithWithNonRecorderLineExample(doc, svgNS));
 		withoutPith_g.appendChild(withoutPithNonrecorder_g);
-		Element withoutPithNonrecorder_desc = LegendElementBuilder.getDescriptionElement(doc, svgNS, fontFamily, "Inner year without pith",
-				leftJustified, (labelHeight / 2));
+		Element withoutPithNonrecorder_desc = LegendElementBuilder.getDescriptionTextElement(doc, svgNS, fontFamily,
+				"Inner year without pith", leftJustified, (labelHeight / 2));
 		withoutPith_g.appendChild(withoutPithNonrecorder_desc);
 		legend.appendChild(withoutPith_g);
 		
@@ -1360,7 +1368,7 @@ public class FireChartSVG {
 		Element barkRecorder_g = doc.createElementNS(svgNS, "g");
 		barkRecorder_g.appendChild(LegendElementBuilder.getBarkWithRecorderLineExample(doc, svgNS));
 		withBark_g.appendChild(barkRecorder_g);
-		Element barkRecorder_desc = LegendElementBuilder.getDescriptionElement(doc, svgNS, fontFamily, "Outer year with bark",
+		Element barkRecorder_desc = LegendElementBuilder.getDescriptionTextElement(doc, svgNS, fontFamily, "Outer year with bark",
 				leftJustified - 5, (labelHeight / 2));
 		withBark_g.appendChild(barkRecorder_desc);
 		legend.appendChild(withBark_g);
@@ -1374,7 +1382,7 @@ public class FireChartSVG {
 		Element withoutBarkRecorder_g = doc.createElementNS(svgNS, "g");
 		withoutBarkRecorder_g.appendChild(LegendElementBuilder.getNoBarkWithRecorderLineExample(doc, svgNS));
 		withoutBark_g.appendChild(withoutBarkRecorder_g);
-		Element withoutBarkRecorder_desc = LegendElementBuilder.getDescriptionElement(doc, svgNS, fontFamily, "Outer year without bark",
+		Element withoutBarkRecorder_desc = LegendElementBuilder.getDescriptionTextElement(doc, svgNS, fontFamily, "Outer year without bark",
 				leftJustified - 5, (labelHeight / 2));
 		withoutBark_g.appendChild(withoutBarkRecorder_desc);
 		legend.appendChild(withoutBark_g);
@@ -1557,114 +1565,47 @@ public class FireChartSVG {
 			{
 				double percent = percent_arr[i];
 				percent = (percent > 100) ? 100 : percent; // don't allow values over 100%
-				Element vertical_line = doc.createElementNS(svgNS, "line");
-				vertical_line.setAttributeNS(null, "x1", Integer.toString(i));
-				vertical_line.setAttributeNS(null, "y1", "0");
-				vertical_line.setAttributeNS(null, "x2", Integer.toString(i));
-				vertical_line.setAttributeNS(null, "y2", Double.toString(percent));
-				vertical_line.setAttributeNS(null, "stroke", "black");
-				vertical_line.setAttributeNS(null, "stroke-width",
-						Double.toString(FireChartConversionUtil.pixelsToYears(1, chartWidth, getFirstChartYear(), getLastChartYear())));
-				scarred_scale_g.appendChild(vertical_line);
+				scarred_scale_g.appendChild(PercentScarredPlotElementBuilder.getVerticalLine(doc, svgNS, percent, i, chartWidth,
+						getFirstChartYear(), getLastChartYear()));
 			}
 		}
 		
-		// draw in the bounding rectangle
-		
-		/*
-		 * Element chart_rect = doc.createElementNS(svgNS, "rect"); chart_rect.setAttributeNS(null, "x", "0");
-		 * chart_rect.setAttributeNS(null, "y", "0"); chart_rect.setAttributeNS(null, "width", Integer.toString(getLastChartYear() -
-		 * getFirstChartYear())); chart_rect.setAttributeNS(null, "height", "100"); chart_rect.setAttributeNS(null, "stroke", "black");
-		 * chart_rect.setAttributeNS(null, "stroke-width", Double.toString(pixelsToYears(1))); chart_rect.setAttributeNS(null, "fill",
-		 * "none"); scarred_scale_g.appendChild(chart_rect);
-		 */
-		
 		// draw a rectangle around it
 		// Needs to be 4 lines to cope with stroke width in different coord sys in x and y
-		Element comp_line = doc.createElementNS(svgNS, "line");
-		comp_line.setAttributeNS(null, "x1", "0");
-		comp_line.setAttributeNS(null, "y1", "0");
-		comp_line.setAttributeNS(null, "x2", "0");
-		comp_line.setAttributeNS(null, "y2", "100");
-		comp_line.setAttributeNS(null, "stroke-width",
-				FireChartConversionUtil.pixelsToYears(1, chartWidth, getFirstChartYear(), getLastChartYear()) + "");
-		comp_line.setAttributeNS(null, "stroke", "black");
-		comp_line.setAttributeNS(null, "stroke-linecap", "butt");
-		scarred_scale_g.appendChild(comp_line);
-		
-		Element comp_line2 = doc.createElementNS(svgNS, "line");
-		comp_line2.setAttributeNS(null, "x1", "0");
-		comp_line2.setAttributeNS(null, "y1", "100");
-		comp_line2.setAttributeNS(null, "x2", Integer.toString(getLastChartYear() - getFirstChartYear()));
-		comp_line2.setAttributeNS(null, "y2", "100");
-		comp_line2.setAttributeNS(null, "stroke-width", 0 - unscale_y + "");
-		comp_line2.setAttributeNS(null, "stroke", "black");
-		comp_line2.setAttributeNS(null, "stroke-linecap", "butt");
-		scarred_scale_g.appendChild(comp_line2);
-		
-		Element comp_line3 = doc.createElementNS(svgNS, "line");
-		comp_line3.setAttributeNS(null, "x1", Integer.toString(getLastChartYear() - getFirstChartYear()));
-		comp_line3.setAttributeNS(null, "y1", "100");
-		comp_line3.setAttributeNS(null, "x2", Integer.toString(getLastChartYear() - getFirstChartYear()));
-		comp_line3.setAttributeNS(null, "y2", "0");
-		comp_line3.setAttributeNS(null, "stroke-width",
-				FireChartConversionUtil.pixelsToYears(1, chartWidth, getFirstChartYear(), getLastChartYear()) + "");
-		comp_line3.setAttributeNS(null, "stroke", "black");
-		comp_line3.setAttributeNS(null, "stroke-linecap", "butt");
-		scarred_scale_g.appendChild(comp_line3);
-		
-		Element comp_line4 = doc.createElementNS(svgNS, "line");
-		comp_line4.setAttributeNS(null, "x1", Integer.toString(getLastChartYear() - getFirstChartYear()));
-		comp_line4.setAttributeNS(null, "y1", "0");
-		comp_line4.setAttributeNS(null, "x2", "0");
-		comp_line4.setAttributeNS(null, "y2", "0");
-		comp_line4.setAttributeNS(null, "stroke-width", 0 - unscale_y + "");
-		comp_line4.setAttributeNS(null, "stroke", "black");
-		comp_line4.setAttributeNS(null, "stroke-linecap", "butt");
-		scarred_scale_g.appendChild(comp_line4);
-		
+		scarred_scale_g.appendChild(
+				PercentScarredPlotElementBuilder.getBorderLine1(doc, svgNS, chartWidth, getFirstChartYear(), getLastChartYear()));
+		scarred_scale_g.appendChild(
+				PercentScarredPlotElementBuilder.getBorderLine2(doc, svgNS, unscale_y, getFirstChartYear(), getLastChartYear()));
+		scarred_scale_g.appendChild(
+				PercentScarredPlotElementBuilder.getBorderLine3(doc, svgNS, chartWidth, getFirstChartYear(), getLastChartYear()));
+		scarred_scale_g.appendChild(
+				PercentScarredPlotElementBuilder.getBorderLine4(doc, svgNS, unscale_y, getFirstChartYear(), getLastChartYear()));
+				
 		// draw in the labels
-		int yaxis_fontsize = App.prefs.getIntPref(PrefKey.CHART_AXIS_Y2_FONT_SIZE, 10);
-		int labelHeight = this.getStringHeight(fontFamily, Font.PLAIN, yaxis_fontsize, "100");
+		int yAxisFontSize = App.prefs.getIntPref(PrefKey.CHART_AXIS_Y2_FONT_SIZE, 10);
+		int labelHeight = this.getStringHeight(fontFamily, Font.PLAIN, yAxisFontSize, "100");
 		for (int i = 0; i <= 100; i += 25)
 		{
-			
-			Text percent_tick_text_t = doc.createTextNode(Integer.toString(i));
-			Element percent_tick_text = doc.createElementNS(svgNS, "text");
 			Element unscale_g = doc.createElementNS(svgNS, "g");
-			Element horiz_tick = doc.createElementNS(svgNS, "line");
-			
 			String x = Double.toString(chartWidth);
 			String y = Integer.toString(i);
 			unscale_g.setAttributeNS(null, "transform", "translate(" + x + "," + y + ") scale(1," + unscale_y + ")");
 			
-			horiz_tick.setAttributeNS(null, "x1", "0");
-			horiz_tick.setAttributeNS(null, "y1", "0");
-			horiz_tick.setAttributeNS(null, "x2", "5");
-			horiz_tick.setAttributeNS(null, "y2", "0");
-			horiz_tick.setAttributeNS(null, "stroke",
-					FireChartConversionUtil.colorToHexString(App.prefs.getColorPref(PrefKey.CHART_PERCENT_SCARRED_COLOR, Color.BLACK)));
-			horiz_tick.setAttributeNS(null, "stroke-width", Double.toString(0 - unscale_y));
-			
-			int labelx = 7;
-			int labely = labelHeight / 2;
+			int labelX = 7;
+			int labelY = labelHeight / 2;
 			if (i == 0)
 			{
-				// labelx = 7 + zeroLabelWidth + zeroLabelWidth;
-				labely = 0;
+				// labelX = 7 + zeroLabelWidth + zeroLabelWidth;
+				labelY = 0;
 			}
 			else if (i >= 25 && i <= 75)
 			{
-				// labelx = 7 + zeroLabelWidth;
+				// labelX = 7 + zeroLabelWidth;
 			}
-			percent_tick_text.setAttributeNS(null, "x", labelx + "");
-			percent_tick_text.setAttributeNS(null, "y", labely + "");
-			percent_tick_text.setAttributeNS(null, "font-family", fontFamily);
-			percent_tick_text.setAttributeNS(null, "font-size", yaxis_fontsize + "");
 			
-			percent_tick_text.appendChild(percent_tick_text_t);
-			unscale_g.appendChild(percent_tick_text);
-			unscale_g.appendChild(horiz_tick);
+			unscale_g.appendChild(
+					PercentScarredPlotElementBuilder.getPercentTickTextElement(doc, svgNS, fontFamily, labelX, labelY, i, yAxisFontSize));
+			unscale_g.appendChild(PercentScarredPlotElementBuilder.getHorizontalTick(doc, svgNS, unscale_y));
 			scarred_g.appendChild(unscale_g);
 		}
 		
@@ -1673,7 +1614,7 @@ public class FireChartSVG {
 		unscale_g.setAttributeNS(null, "transform", "scale(1," + unscale_y + ")");
 		
 		Element rotate_g = doc.createElementNS(svgNS, "g");
-		String x = Double.toString(chartWidth + 5 + 10 + this.getStringWidth(fontFamily, Font.PLAIN, yaxis_fontsize, "100"));
+		String x = Double.toString(chartWidth + 5 + 10 + this.getStringWidth(fontFamily, Font.PLAIN, yAxisFontSize, "100"));
 		String y = Double.toString(scale_y * 100);
 		rotate_g.setAttributeNS(null, "transform", "translate(" + x + "," + y + ") rotate(90)");
 		
@@ -1699,12 +1640,6 @@ public class FireChartSVG {
 		
 		return scarred_g;
 	}
-	
-	/*
-	 * public boolean setCommonTickAttrib(int weight, Color color, LineStyle style) {
-	 * 
-	 * tickLineWeight = weight; tickLineStyle = style; setTickColor(color); positionChartGroupersAndDrawTimeAxis(); return false; }
-	 */
 	
 	/**
 	 * Get the sample or recorder depth plot.
@@ -1788,111 +1723,61 @@ public class FireChartSVG {
 		
 		// build the trend line
 		int begin_index = 0;
-		String linecolor = FireChartConversionUtil
+		String lineColor = FireChartConversionUtil
 				.colorToHexString(App.prefs.getColorPref(PrefKey.CHART_SAMPLE_OR_RECORDER_DEPTH_COLOR, Color.BLUE));
 		for (int i = 1; i < sample_depths.length; i++)
 		{
 			if (sample_depths[i] != sample_depths[begin_index])
 			{
-				Element vline = doc.createElementNS(svgNS, "line");
-				vline.setAttributeNS(null, "x1", Double.toString(i));
-				vline.setAttributeNS(null, "y1", Double.toString(sample_depths[begin_index]));
-				vline.setAttributeNS(null, "x2", Double.toString(i));
-				vline.setAttributeNS(null, "y2", Double.toString(sample_depths[i]));
-				vline.setAttributeNS(null, "stroke", linecolor);
-				vline.setAttributeNS(null, "stroke-width",
-						Double.toString(FireChartConversionUtil.pixelsToYears(1, chartWidth, getFirstChartYear(), getLastChartYear())));
-				sample_g_chart.appendChild(vline);
-				
-				Element hline = doc.createElementNS(svgNS, "line");
-				hline.setAttributeNS(null, "x1", Double.toString(begin_index));
-				hline.setAttributeNS(null, "y1", Double.toString(sample_depths[begin_index]));
-				hline.setAttributeNS(null, "x2", Double.toString(i));
-				hline.setAttributeNS(null, "y2", Double.toString(sample_depths[begin_index]));
-				hline.setAttributeNS(null, "stroke", linecolor);
-				hline.setAttributeNS(null, "stroke-width", Double.toString(-1.0 / scale_y));
-				sample_g_chart.appendChild(hline);
-				
+				sample_g_chart.appendChild(SampleRecorderPlotElementBuilder.getVerticalTrendLinePart(doc, svgNS, lineColor, i,
+						sample_depths[begin_index], sample_depths[i], chartWidth, getFirstChartYear(), getLastChartYear()));
+						
+				sample_g_chart.appendChild(SampleRecorderPlotElementBuilder.getHorizontalTrendLinePart(doc, svgNS, lineColor, scale_y, i,
+						begin_index, sample_depths[begin_index]));
+						
 				begin_index = i;
 			}
 			
 			// draw in the final line
 			if (i + 1 == sample_depths.length)
 			{
-				Element final_hline = doc.createElementNS(svgNS, "line");
-				final_hline.setAttributeNS(null, "x1", Double.toString(begin_index));
-				final_hline.setAttributeNS(null, "y1", Double.toString(sample_depths[begin_index]));
-				final_hline.setAttributeNS(null, "x2", Double.toString(i));
-				final_hline.setAttributeNS(null, "y2", Double.toString(sample_depths[begin_index]));
-				final_hline.setAttributeNS(null, "stroke", linecolor);
-				final_hline.setAttributeNS(null, "stroke-width", Double.toString(-1.0 / scale_y));
-				sample_g_chart.appendChild(final_hline);
+				sample_g_chart.appendChild(SampleRecorderPlotElementBuilder.getHorizontalTrendLinePart(doc, svgNS, lineColor, scale_y, i,
+						begin_index, sample_depths[begin_index]));
 			}
 		}
 		
 		// add the threshold depth
-		int threshold_sample_depth_value = App.prefs.getIntPref(PrefKey.CHART_DEPTH_THRESHOLD_VALUE, 10);
-		Element threshold_line = doc.createElementNS(svgNS, "line");
-		threshold_line.setAttributeNS(null, "id", "threshold_line");
-		threshold_line.setAttributeNS(null, "x1", Integer.toString(0));
-		threshold_line.setAttributeNS(null, "y1", Double.toString(threshold_sample_depth_value));
-		threshold_line.setAttributeNS(null, "x2", Integer.toString(getLastChartYear() - getFirstChartYear()));
-		threshold_line.setAttributeNS(null, "y2", Double.toString(threshold_sample_depth_value));
-		threshold_line.setAttributeNS(null, "stroke",
-				FireChartConversionUtil.colorToHexString(App.prefs.getColorPref(PrefKey.CHART_DEPTH_THRESHOLD_COLOR, Color.RED)));
-		threshold_line.setAttributeNS(null, "stroke-width", Double.toString(-1.0 / scale_y));
-		if (!App.prefs.getBooleanPref(PrefKey.CHART_SHOW_DEPTH_THRESHOLD, false) || threshold_sample_depth_value > largest_sample_depth
-				|| threshold_sample_depth_value < 0)
-		{
-			threshold_line.setAttributeNS(null, "display", "none");
-		}
-		sample_g_chart.appendChild(threshold_line);
-		
+		sample_g_chart.appendChild(SampleRecorderPlotElementBuilder.getThresholdLine(doc, svgNS, scale_y, largest_sample_depth,
+				getFirstChartYear(), getLastChartYear()));
+				
 		// add in the tick lines
 		int num_ticks = 4;
 		int tick_spacing = (int) Math.ceil((double) largest_sample_depth / (double) num_ticks);
 		int font_size = App.prefs.getIntPref(PrefKey.CHART_AXIS_Y1_FONT_SIZE, 10);
-		int labelheight = this.getStringHeight(fontFamily, Font.PLAIN, font_size, "9");
+		int labelHeight = this.getStringHeight(fontFamily, Font.PLAIN, font_size, "9");
 		for (int i = 0; i < num_ticks; i++)
 		{
-			Element horiz_tick = doc.createElementNS(svgNS, "line");
-			int labelwidth = this.getStringWidth(fontFamily, Font.PLAIN, font_size, i * tick_spacing + "");
+			int labelWidth = this.getStringWidth(fontFamily, Font.PLAIN, font_size, i * tick_spacing + "");
 			
-			horiz_tick.setAttributeNS(null, "x1", "-5");
-			horiz_tick.setAttributeNS(null, "y1", Integer.toString(i * tick_spacing));
-			horiz_tick.setAttributeNS(null, "x2", "0");
-			horiz_tick.setAttributeNS(null, "y2", Integer.toString(i * tick_spacing));
-			horiz_tick.setAttributeNS(null, "stroke", "black");
-			horiz_tick.setAttributeNS(null, "stroke-width", Double.toString(0 - unscale_y));
-			sample_g.appendChild(horiz_tick);
+			sample_g.appendChild(SampleRecorderPlotElementBuilder.getHorizontalTick(doc, svgNS, unscale_y, i, tick_spacing));
 			
 			Element unscale_g = doc.createElementNS(svgNS, "g");
 			unscale_g.setAttributeNS(null, "transform", "translate(-5," + (i * tick_spacing) + ") scale(1," + (1.0 / scale_y) + ")");
-			Text depth_text_t = doc.createTextNode(Integer.toString(i * tick_spacing));
-			Element depth_text = doc.createElementNS(svgNS, "text");
-			depth_text.setAttributeNS(null, "x", 0 - labelwidth + "");
-			depth_text.setAttributeNS(null, "y", Double.toString(0 - (labelheight / 2.0) * (1.0 / scale_y) + 2));
-			depth_text.setAttributeNS(null, "font-family", fontFamily);
-			depth_text.setAttributeNS(null, "font-size", font_size + "");
-			depth_text.appendChild(depth_text_t);
-			unscale_g.appendChild(depth_text);
+			
+			unscale_g.appendChild(SampleRecorderPlotElementBuilder.getDepthTextElement(doc, svgNS, fontFamily, font_size, scale_y, i,
+					tick_spacing, labelWidth, labelHeight));
+					
 			sample_g.appendChild(unscale_g);
 		}
 		
 		// add in label that says "Sample Depth"
-		int labelwidth = this.getStringWidth(fontFamily, Font.PLAIN, font_size, num_ticks * tick_spacing + "");
+		int labelWidth = this.getStringWidth(fontFamily, Font.PLAIN, font_size, num_ticks * tick_spacing + "");
 		
 		Element unscale_g = doc.createElementNS(svgNS, "g");
 		unscale_g.setAttributeNS(null, "transform",
-				"translate(" + (-5 - labelwidth - 10) + "," + 0 + ") scale(1," + (1.0 / scale_y) + ") rotate(270)");
-		Text label_t = doc.createTextNode(App.prefs.getPref(PrefKey.CHART_AXIS_Y1_LABEL, "Sample Depth"));
-		Element label = doc.createElementNS(svgNS, "text");
-		label.setAttributeNS(null, "x", "0");
-		label.setAttributeNS(null, "y", "0");
-		label.setAttributeNS(null, "font-family", fontFamily);
-		label.setAttributeNS(null, "font-size", App.prefs.getIntPref(PrefKey.CHART_AXIS_Y1_FONT_SIZE, 10) + "");
-		label.appendChild(label_t);
-		unscale_g.appendChild(label);
+				"translate(" + (-5 - labelWidth - 10) + "," + 0 + ") scale(1," + (1.0 / scale_y) + ") rotate(270)");
+				
+		unscale_g.appendChild(SampleRecorderPlotElementBuilder.getSampleDepthTextElement(doc, svgNS, fontFamily));
 		sample_g.appendChild(unscale_g);
 		sample_g.appendChild(sample_g_chart);
 		
@@ -1952,14 +1837,8 @@ public class FireChartSVG {
 		positionChartGroupersAndDrawTimeAxis();
 	}
 	
-	/*
-	 * public boolean setCommonTickAttrib(int weight, Color color, LineStyle style) {
-	 * 
-	 * tickLineWeight = weight; tickLineStyle = style; setTickColor(color); positionChartGroupersAndDrawTimeAxis(); return false; }
-	 */
-	
 	/**
-	 * TODO
+	 * Set the visibility of the composite plot based on the preferences.
 	 */
 	public void setCompositePlotVisibility() {
 		
@@ -1978,14 +1857,8 @@ public class FireChartSVG {
 		positionChartGroupersAndDrawTimeAxis();
 	}
 	
-	/*
-	 * public boolean setCommonTickAttrib(int weight, Color color, LineStyle style) {
-	 * 
-	 * tickLineWeight = weight; tickLineStyle = style; setTickColor(color); positionChartGroupersAndDrawTimeAxis(); return false; }
-	 */
-	
 	/**
-	 * TODO
+	 * Set the visibility of the legend based on the preferences.
 	 */
 	public void setLegendVisibility() {
 		
@@ -2002,14 +1875,8 @@ public class FireChartSVG {
 		}
 	}
 	
-	/*
-	 * public boolean setCommonTickAttrib(int weight, Color color, LineStyle style) {
-	 * 
-	 * tickLineWeight = weight; tickLineStyle = style; setTickColor(color); positionChartGroupersAndDrawTimeAxis(); return false; }
-	 */
-	
 	/**
-	 * TODO
+	 * Set the visibility of the series labels based on the preferences.
 	 */
 	public void setSeriesLabelsVisibility() {
 		
@@ -2042,33 +1909,7 @@ public class FireChartSVG {
 	}
 	
 	/**
-	 * This function toggles the visibility of the series at the given location.
-	 * 
-	 * @param index of the series to hide
-	 */
-	public void toggleVisibilityOfSeries(int index) {
-		
-		FHSeriesSVG seriesToHide = seriesSVGList.get(index);
-		seriesToHide.toggleVisibility();
-		seriesSVGList.set(index, seriesToHide);
-		positionSeriesLines();
-		positionChartGroupersAndDrawTimeAxis();
-	}
-	
-	/*
-	 * public boolean setCommonTickAttrib(int weight, Color color, LineStyle style) {
-	 * 
-	 * tickLineWeight = weight; tickLineStyle = style; setTickColor(color); positionChartGroupersAndDrawTimeAxis(); return false; }
-	 */
-	
-	/*
-	 * public boolean setCommonTickAttrib(int weight, Color color, LineStyle style) {
-	 * 
-	 * tickLineWeight = weight; tickLineStyle = style; setTickColor(color); positionChartGroupersAndDrawTimeAxis(); return false; }
-	 */
-	
-	/**
-	 * TODO
+	 * Set the visibility of the no-export elements based on the input parameter.
 	 * 
 	 * @param isVisible
 	 */
@@ -2088,14 +1929,28 @@ public class FireChartSVG {
 		}
 	}
 	
-	// ============== Annotation ============
+	/**
+	 * This function toggles the visibility of the series at the given location.
+	 * 
+	 * @param index of the series to hide
+	 */
+	public void toggleVisibilityOfSeries(int index) {
+		
+		FHSeriesSVG seriesToHide = seriesSVGList.get(index);
+		seriesToHide.toggleVisibility();
+		seriesSVGList.set(index, seriesToHide);
+		positionSeriesLines();
+		positionChartGroupersAndDrawTimeAxis();
+	}
+	
+	// ============== Annotation ==============
 	// There is a <rect id="annote_canvas"> element in the DOM under <g id="annote_g">.
 	// It is used to catch mouse events in order to add, resize, or delete annotation rectangles.
 	// The enum Mode is used to track whether the user has selected add, resize, &etc.
 	// All mode checking will be done java-side to simplify the js.
 	// In other words, rectangles will always call deleteAnnoteRect when clicked, and it is up
 	// to deleteAnnoteRect to ensure that the rect only gets deleted when the user is in the eraser mode
-	// ======================================
+	// ========================================
 	
 	/**
 	 * Gets the annote canvas as an element.
@@ -2122,7 +1977,7 @@ public class FireChartSVG {
 	}
 	
 	/**
-	 * TODO
+	 * Draws a line on the annotation grouper.
 	 * 
 	 * @param x
 	 * @return
@@ -2157,7 +2012,7 @@ public class FireChartSVG {
 	}
 	
 	/**
-	 * TODO
+	 * Removes a line from the annotation grouper.
 	 * 
 	 * @param id
 	 * @return
@@ -2182,7 +2037,7 @@ public class FireChartSVG {
 	}
 	
 	/**
-	 * TODO
+	 * Sets the annote mode according to the input parameter.
 	 * 
 	 * @param m
 	 */
@@ -2215,7 +2070,7 @@ public class FireChartSVG {
 	}
 	
 	/**
-	 * TODO
+	 * Handles printing of the SVG document.
 	 * 
 	 * @param doc
 	 * @param out
@@ -2334,4 +2189,13 @@ public class FireChartSVG {
 		Collections.sort(seriesSVGList, comparator);
 		positionSeriesLines();
 	}
+	
+	// public boolean setCommonTickAttrib(int weight, Color color, LineStyle style) {
+	//
+	// tickLineWeight = weight;
+	// tickLineStyle = style;
+	// setTickColor(color);
+	// positionChartGroupersAndDrawTimeAxis();
+	// return false;
+	// }
 }
