@@ -197,7 +197,7 @@ public class SeriesElementBuilder {
 	}
 	
 	/**
-	 * Returns a series name element based on the input parameters.
+	 * Returns a series name text element based on the input parameters.
 	 * 
 	 * @param doc
 	 * @param svgNS
@@ -205,25 +205,25 @@ public class SeriesElementBuilder {
 	 * @param fontFamily
 	 * @param fontSize
 	 * @param chartWidth
-	 * @return seriesNameElement
+	 * @return seriesNameTextElement
 	 */
 	protected static Element getSeriesNameElement(Document doc, String svgNS, FHSeriesSVG seriesSVG, String fontFamily, int fontSize,
 			int chartWidth) {
 			
-		Element seriesNameElement = doc.createElementNS(svgNS, "text");
+		Element seriesNameTextElement = doc.createElementNS(svgNS, "text");
 		
 		Text seriesNameText = doc.createTextNode(seriesSVG.getTitle());
-		seriesNameElement.setAttribute("id", "series_label_" + seriesSVG.getTitle());
-		seriesNameElement.setAttribute("x", Double.toString(chartWidth + 10));
-		seriesNameElement.setAttribute("y", Integer.toString((FireChartSVG.SERIES_HEIGHT / 2)));
-		seriesNameElement.setAttribute("font-family", fontFamily);
-		seriesNameElement.setAttribute("font-size", +fontSize + "");
-		seriesNameElement.setAttribute("fill", FireChartConversionUtil.colorToHexString(seriesSVG.getLabelColor()));
-		seriesNameElement.appendChild(seriesNameText);
+		seriesNameTextElement.setAttribute("id", "series_label_" + seriesSVG.getTitle());
+		seriesNameTextElement.setAttribute("x", Double.toString(chartWidth + 10));
+		seriesNameTextElement.setAttribute("y", Integer.toString((FireChartSVG.SERIES_HEIGHT / 2)));
+		seriesNameTextElement.setAttribute("font-family", fontFamily);
+		seriesNameTextElement.setAttribute("font-size", +fontSize + "");
+		seriesNameTextElement.setAttribute("fill", FireChartConversionUtil.colorToHexString(seriesSVG.getLabelColor()));
+		seriesNameTextElement.appendChild(seriesNameText);
 		
-		return seriesNameElement;
+		return seriesNameTextElement;
 	}
-
+	
 	/**
 	 * Returns an up button.
 	 * 
@@ -241,7 +241,7 @@ public class SeriesElementBuilder {
 		
 		return upButton;
 	}
-
+	
 	/**
 	 * Returns a down button.
 	 * 
