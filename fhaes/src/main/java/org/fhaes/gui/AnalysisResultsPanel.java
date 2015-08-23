@@ -105,14 +105,14 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 	
 	private JScrollPane scrollPane;
 	private DefaultTreeModel treeModel;
-	private DefaultMutableTreeNode root;
-	private DefaultMutableTreeNode nodeSimMatrices;
-	private DefaultMutableTreeNode nodeDisSimMatrices;
-	private DefaultMutableTreeNode nodeInterval;
-	private DefaultMutableTreeNode nodeSeasonality;
-	private DefaultMutableTreeNode nodeBinaryMatrices;
-	private DefaultMutableTreeNode nodeBinarySummaryMatrices;
-	private DefaultMutableTreeNode nodeGeneral;
+	private DefaultMutableTreeNode rootNode;
+	private DefaultMutableTreeNode categorySimMatrices;
+	private DefaultMutableTreeNode categoryDisSimMatrices;
+	private DefaultMutableTreeNode categoryInterval;
+	private DefaultMutableTreeNode categorySeasonality;
+	private DefaultMutableTreeNode categoryBinaryMatrices;
+	private DefaultMutableTreeNode categoryBinarySummaryMatrices;
+	private DefaultMutableTreeNode categoryGeneral;
 	
 	private FHAESResultTreeNode itemJaccard;
 	private FHAESResultTreeNode itemCohen;
@@ -130,6 +130,7 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 	private FHAESResultTreeNode itemBinTreeSummary;
 	private FHAESResultTreeNode itemNTP;
 	private FHAESResultTreeNode itemGeneralSummary;
+	private FHAESResultTreeNode itemSingleFileSummary;
 	
 	private DefaultMutableTreeNode previouslySelectedNode;
 	protected GoldFishPanel goldFishPanel;
@@ -160,6 +161,7 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 	private DefaultTableModel NTPModel = null;
 	private DefaultTableModel treeSummaryModel = null;
 	private DefaultTableModel generalSummaryModel = null;
+	private DefaultTableModel singleFileSummaryModel = null;
 	private FHMatrix fhm;
 	
 	protected File seasonalitySummaryFile = null;
@@ -178,6 +180,7 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 	protected File NTPFile = null;
 	protected File treeSummaryFile = null;
 	protected File generalSummaryFile = null;
+	protected File singleFileSummaryFile = null;
 	
 	final static String RESULTSPANEL = "Results panel";
 	final static String PICKRESULTPANEL = "Pick result panel";
@@ -191,7 +194,7 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 	 * Create the panel.
 	 */
 	public AnalysisResultsPanel() {
-		
+	
 		initGUI();
 	}
 	
@@ -199,7 +202,7 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 	 * TODO
 	 */
 	public void repaintTree() {
-		
+	
 		treeResults.repaint();
 	}
 	
@@ -209,7 +212,7 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 	 * @param fhm
 	 */
 	public void setFHMatrix(FHMatrix fhm) {
-		
+	
 		this.fhm = fhm;
 	}
 	
@@ -218,19 +221,47 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 	 * 
 	 * @param f
 	 */
+	public void setSingleFileSummaryModel(DefaultTableModel f) {
+	
+		singleFileSummaryModel = f;
+		if (f != null)
+		{
+			setResultsEnabled(true);
+			setupTable(true);
+		}
+		setSingleFileSummaryStatus();
+	}
+	
+	/**
+	 * Enabled/Disable SingleFileSummary item depending on whether there is a model or not
+	 */
+	public void setSingleFileSummaryStatus() {
+	
+		itemSingleFileSummary.setEnabled(singleFileSummaryModel != null);
+	}
+	
+	/**
+	 * TODO
+	 * 
+	 * @param f
+	 */
 	public void setSeasonalityModel(DefaultTableModel f) {
-		
+	
 		seasonalitySummaryModel = f;
 		if (f != null)
 		{
 			setResultsEnabled(true);
-			this.itemSeasonalitySummary.setEnabled(true);
-		}
-		else
-		{
-			this.itemSeasonalitySummary.setEnabled(false);
 		}
 		
+		setSeasonalitySummaryStatus();
+	}
+	
+	/**
+	 * Enabled/Disable SeasonalitySummary item depending on whether there is a model or not
+	 */
+	public void setSeasonalitySummaryStatus() {
+	
+		itemSeasonalitySummary.setEnabled(seasonalitySummaryModel != null);
 	}
 	
 	/**
@@ -239,17 +270,22 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 	 * @param f
 	 */
 	public void setIntervalsSummaryModel(DefaultTableModel f) {
-		
+	
 		intervalsSummaryModel = f;
 		if (f != null)
 		{
 			setResultsEnabled(true);
 			this.itemIntervalSummary.setEnabled(true);
 		}
-		else
-		{
-			this.itemIntervalSummary.setEnabled(false);
-		}
+		setIntervalsSummaryStatus();
+	}
+	
+	/**
+	 * Enabled/Disable IntervalSummary item depending on whether there is a model or not
+	 */
+	public void setIntervalsSummaryStatus() {
+	
+		itemIntervalSummary.setEnabled(intervalsSummaryModel != null);
 	}
 	
 	/**
@@ -258,17 +294,22 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 	 * @param f
 	 */
 	public void setIntervalsExceedenceModel(DefaultTableModel f) {
-		
+	
 		intervalsExceedenceModel = f;
 		if (f != null)
 		{
 			setResultsEnabled(true);
 			this.itemExceedence.setEnabled(true);
 		}
-		else
-		{
-			this.itemExceedence.setEnabled(false);
-		}
+		setIntervalsExceedenceStatus();
+	}
+	
+	/**
+	 * Enabled/Disable IntervalsExceedence item depending on whether there is a model or not
+	 */
+	public void setIntervalsExceedenceStatus() {
+	
+		this.itemExceedence.setEnabled(this.intervalsExceedenceModel != null);
 	}
 	
 	/**
@@ -277,7 +318,7 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 	 * @param f
 	 */
 	public void setBin00Model(DefaultTableModel f) {
-		
+	
 		this.bin00Model = f;
 		if (f != null)
 		{
@@ -296,7 +337,7 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 	 * @param f
 	 */
 	public void setBin01Model(DefaultTableModel f) {
-		
+	
 		this.bin01Model = f;
 		if (f != null)
 		{
@@ -315,7 +356,7 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 	 * @param f
 	 */
 	public void setBin10Model(DefaultTableModel f) {
-		
+	
 		this.bin10Model = f;
 		if (f != null)
 		{
@@ -334,7 +375,7 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 	 * @param f
 	 */
 	public void setBin11Model(DefaultTableModel f) {
-		
+	
 		this.bin11Model = f;
 		if (f != null)
 		{
@@ -353,7 +394,7 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 	 * @param f
 	 */
 	public void setBinSumModel(DefaultTableModel f) {
-		
+	
 		this.binSumModel = f;
 		if (f != null)
 		{
@@ -372,7 +413,7 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 	 * @param f
 	 */
 	public void setDSCOHModel(DefaultTableModel f) {
-		
+	
 		this.DSCOHModel = f;
 		if (f != null)
 		{
@@ -392,7 +433,7 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 	 * @param f
 	 */
 	public void setDSJACModel(DefaultTableModel f) {
-		
+	
 		this.DSJACModel = f;
 		if (f != null)
 		{
@@ -411,7 +452,7 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 	 * @param f
 	 */
 	public void setSCOHModel(DefaultTableModel f) {
-		
+	
 		this.SCOHModel = f;
 		if (f != null)
 		{
@@ -430,7 +471,7 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 	 * @param f
 	 */
 	public void setSJACModel(DefaultTableModel f) {
-		
+	
 		this.SJACModel = f;
 		if (f != null)
 		{
@@ -449,7 +490,7 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 	 * @param f
 	 */
 	public void setNTPModel(DefaultTableModel f) {
-		
+	
 		this.NTPModel = f;
 		if (f != null)
 		{
@@ -468,18 +509,23 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 	 * @param f
 	 */
 	public void setGeneralSummaryModel(DefaultTableModel f) {
-		
+	
 		this.generalSummaryModel = f;
 		if (f != null)
 		{
 			setResultsEnabled(true);
 			this.itemGeneralSummary.setEnabled(true);
 		}
-		else
-		{
-			this.itemGeneralSummary.setEnabled(false);
-		}
 		
+		setGeneralSummaryStatus();
+	}
+	
+	/**
+	 * Enabled/Disable GeneralSummary item depending on whether there is a model or not
+	 */
+	public void setGeneralSummaryStatus() {
+	
+		this.itemGeneralSummary.setEnabled(generalSummaryModel != null);
 	}
 	
 	/**
@@ -488,7 +534,7 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 	 * @param f
 	 */
 	public void setSiteSummaryModel(DefaultTableModel f) {
-		
+	
 		this.siteSummaryModel = f;
 		if (f != null)
 		{
@@ -507,7 +553,7 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 	 * @param f
 	 */
 	public void setTreeSummaryModel(DefaultTableModel f) {
-		
+	
 		this.treeSummaryModel = f;
 		if (f != null)
 		{
@@ -526,188 +572,190 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 	 * @return
 	 */
 	public FHMatrix getFHMatrix() {
-		
+	
 		return fhm;
 	}
 	
 	/**
-	 * TODO
+	 * Set up the AnalysisResults GUI
 	 */
 	private void initGUI() {
-		
+	
 		setLayout(new BorderLayout(0, 0));
 		if (Platform.isOSX())
 			setBackground(MainWindow.MAC_BACKGROUND_COLOR);
-			
+		
+		ImageIcon iconMultipleTables = Builder.getImageIcon("multipletables16.png");
 		ImageIcon iconTable = Builder.getImageIcon("table16.png");
+		
 		// ImageIcon iconChart = Builder.getImageIcon("chart16.png");
 		
 		// Categories
-		root = new FHAESCategoryTreeNode("FHAES analysis results");
-		nodeGeneral = new FHAESCategoryTreeNode("General", Builder.getImageIcon("interval16.png"));
-		nodeInterval = new FHAESCategoryTreeNode("Interval analysis", Builder.getImageIcon("interval16.png"));
-		nodeSeasonality = new FHAESCategoryTreeNode("Seasonality", Builder.getImageIcon("seasonality16.png"));
-		nodeBinarySummaryMatrices = new FHAESCategoryTreeNode("Binary summary matrices", Builder.getImageIcon("matrix16.png"));
-		nodeBinaryMatrices = new FHAESCategoryTreeNode("Binary comparison matrices", Builder.getImageIcon("matrix16.png"));
-		nodeSimMatrices = new FHAESCategoryTreeNode("Similarity matrices", Builder.getImageIcon("matrix16.png"));
-		nodeDisSimMatrices = new FHAESCategoryTreeNode("Dissimilarity matrices", Builder.getImageIcon("matrix16.png"));
+		rootNode = new FHAESCategoryTreeNode("FHAES analysis results");
+		categoryGeneral = new FHAESCategoryTreeNode("General", Builder.getImageIcon("interval16.png"));
+		categoryInterval = new FHAESCategoryTreeNode("Interval analysis", Builder.getImageIcon("interval16.png"));
+		categorySeasonality = new FHAESCategoryTreeNode("Seasonality", Builder.getImageIcon("seasonality16.png"));
+		categoryBinarySummaryMatrices = new FHAESCategoryTreeNode("Binary summary matrices", Builder.getImageIcon("matrix16.png"));
+		categoryBinaryMatrices = new FHAESCategoryTreeNode("Binary comparison matrices", Builder.getImageIcon("matrix16.png"));
+		categorySimMatrices = new FHAESCategoryTreeNode("Similarity matrices", Builder.getImageIcon("matrix16.png"));
+		categoryDisSimMatrices = new FHAESCategoryTreeNode("Dissimilarity matrices", Builder.getImageIcon("matrix16.png"));
 		
 		// Menu actions
 		
 		// Results
 		
-		itemJaccard = new FHAESResultTreeNode(FHAESResult.JACCARD_SIMILARITY_MATRIX, iconTable);
+		itemJaccard = new FHAESResultTreeNode(FHAESResult.JACCARD_SIMILARITY_MATRIX, iconMultipleTables);
 		itemJaccard.addAction(new FHAESAction("Save to CSV", "formatcsv.png") {
 			
 			private static final long serialVersionUID = 1L;
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-				
+			
 				saveFileToDisk(SJACFile, new CSVFileFilter());
 			}
 		});
 		
-		itemCohen = new FHAESResultTreeNode(FHAESResult.COHEN_SIMILARITITY_MATRIX, iconTable);
+		itemCohen = new FHAESResultTreeNode(FHAESResult.COHEN_SIMILARITITY_MATRIX, iconMultipleTables);
 		itemCohen.addAction(new FHAESAction("Save to CSV", "formatcsv.png") {
 			
 			private static final long serialVersionUID = 1L;
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-				
+			
 				saveFileToDisk(SCOHFile, new CSVFileFilter());
 			}
 		});
 		
-		itemJaccardD = new FHAESResultTreeNode(FHAESResult.JACCARD_SIMILARITY_MATRIX_D, iconTable);
+		itemJaccardD = new FHAESResultTreeNode(FHAESResult.JACCARD_SIMILARITY_MATRIX_D, iconMultipleTables);
 		itemJaccardD.addAction(new FHAESAction("Save to CSV", "formatcsv.png") {
 			
 			private static final long serialVersionUID = 1L;
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-				
+			
 				saveFileToDisk(DSJACFile, new CSVFileFilter());
 			}
 		});
 		
-		itemCohenD = new FHAESResultTreeNode(FHAESResult.COHEN_SIMILARITITY_MATRIX_D, iconTable);
+		itemCohenD = new FHAESResultTreeNode(FHAESResult.COHEN_SIMILARITITY_MATRIX_D, iconMultipleTables);
 		itemCohenD.addAction(new FHAESAction("Save to CSV", "formatcsv.png") {
 			
 			private static final long serialVersionUID = 1L;
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-				
+			
 				saveFileToDisk(DSCOHFile, new CSVFileFilter());
 			}
 		});
 		
-		itemIntervalSummary = new FHAESResultTreeNode(FHAESResult.INTERVAL_SUMMARY, iconTable);
+		itemIntervalSummary = new FHAESResultTreeNode(FHAESResult.INTERVAL_SUMMARY, iconMultipleTables);
 		itemIntervalSummary.addAction(new FHAESAction("Save to CSV", "formatcsv.png") {
 			
 			private static final long serialVersionUID = 1L;
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-				
+			
 				saveFileToDisk(intervalsSummaryFile, new CSVFileFilter());
 			}
 		});
 		
-		itemExceedence = new FHAESResultTreeNode(FHAESResult.INTERVAL_EXCEEDENCE_TABLE, iconTable);
+		itemExceedence = new FHAESResultTreeNode(FHAESResult.INTERVAL_EXCEEDENCE_TABLE, iconMultipleTables);
 		itemExceedence.addAction(new FHAESAction("Save to CSV", "formatcsv.png") {
 			
 			private static final long serialVersionUID = 1L;
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-				
+			
 				saveFileToDisk(intervalsExceedenceFile, new CSVFileFilter());
 			}
 		});
 		
-		itemSeasonalitySummary = new FHAESResultTreeNode(FHAESResult.SEASONALITY_SUMMARY, iconTable);
+		itemSeasonalitySummary = new FHAESResultTreeNode(FHAESResult.SEASONALITY_SUMMARY, iconMultipleTables);
 		itemSeasonalitySummary.addAction(new FHAESAction("Save to CSV", "formatcsv.png") {
 			
 			private static final long serialVersionUID = 1L;
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-				
+			
 				saveFileToDisk(seasonalitySummaryFile, new CSVFileFilter());
 			}
 		});
 		
-		itemBin00 = new FHAESResultTreeNode(FHAESResult.BINARY_MATRIX_00, iconTable);
+		itemBin00 = new FHAESResultTreeNode(FHAESResult.BINARY_MATRIX_00, iconMultipleTables);
 		itemBin00.addAction(new FHAESAction("Save to CSV", "formatcsv.png") {
 			
 			private static final long serialVersionUID = 1L;
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-				
+			
 				saveFileToDisk(bin00File, new CSVFileFilter());
 			}
 		});
 		
-		itemBin01 = new FHAESResultTreeNode(FHAESResult.BINARY_MATRIX_01, iconTable);
+		itemBin01 = new FHAESResultTreeNode(FHAESResult.BINARY_MATRIX_01, iconMultipleTables);
 		itemBin01.addAction(new FHAESAction("Save to CSV", "formatcsv.png") {
 			
 			private static final long serialVersionUID = 1L;
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-				
+			
 				saveFileToDisk(bin01File, new CSVFileFilter());
 			}
 		});
 		
-		itemBin10 = new FHAESResultTreeNode(FHAESResult.BINARY_MATRIX_10, iconTable);
+		itemBin10 = new FHAESResultTreeNode(FHAESResult.BINARY_MATRIX_10, iconMultipleTables);
 		itemBin10.addAction(new FHAESAction("Save to CSV", "formatcsv.png") {
 			
 			private static final long serialVersionUID = 1L;
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-				
+			
 				saveFileToDisk(bin10File, new CSVFileFilter());
 			}
 		});
 		
-		itemBin11 = new FHAESResultTreeNode(FHAESResult.BINARY_MATRIX_11, iconTable);
+		itemBin11 = new FHAESResultTreeNode(FHAESResult.BINARY_MATRIX_11, iconMultipleTables);
 		itemBin11.addAction(new FHAESAction("Save to CSV", "formatcsv.png") {
 			
 			private static final long serialVersionUID = 1L;
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-				
+			
 				saveFileToDisk(bin11File, new CSVFileFilter());
 			}
 		});
 		
-		itemBinSum = new FHAESResultTreeNode(FHAESResult.BINARY_MATRIX_SUM, iconTable);
+		itemBinSum = new FHAESResultTreeNode(FHAESResult.BINARY_MATRIX_SUM, iconMultipleTables);
 		itemBinSum.addAction(new FHAESAction("Save to CSV", "formatcsv.png") {
 			
 			private static final long serialVersionUID = 1L;
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-				
+			
 				saveFileToDisk(binSumFile, new CSVFileFilter());
 			}
 			
 		});
-		itemBinSiteSummary = new FHAESResultTreeNode(FHAESResult.BINARY_MATRIX_SITE, iconTable);
+		itemBinSiteSummary = new FHAESResultTreeNode(FHAESResult.BINARY_MATRIX_SITE, iconMultipleTables);
 		itemBinSiteSummary.addAction(new FHAESAction("Save to CSV", "formatcsv.png") {
 			
 			private static final long serialVersionUID = 1L;
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-				
+			
 				saveFileToDisk(siteSummaryFile, new CSVFileFilter());
 			}
 		});
@@ -717,82 +765,96 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-				
+			
 				ShapeFileDialog sfd = new ShapeFileDialog(App.mainFrame, fhm);
 				sfd.setVisible(true);
 			}
 		});
 		
-		itemBinTreeSummary = new FHAESResultTreeNode(FHAESResult.BINARY_MATRIX_TREE, iconTable);
+		itemBinTreeSummary = new FHAESResultTreeNode(FHAESResult.BINARY_MATRIX_TREE, iconMultipleTables);
 		itemBinTreeSummary.addAction(new FHAESAction("Save to CSV", "formatcsv.png") {
 			
 			private static final long serialVersionUID = 1L;
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-				
+			
 				saveFileToDisk(treeSummaryFile, new CSVFileFilter());
 			}
 		});
 		
-		itemNTP = new FHAESResultTreeNode(FHAESResult.BINARY_MATRIX_NTP, iconTable);
+		itemNTP = new FHAESResultTreeNode(FHAESResult.BINARY_MATRIX_NTP, iconMultipleTables);
 		itemNTP.addAction(new FHAESAction("Save to CSV", "formatcsv.png") {
 			
 			private static final long serialVersionUID = 1L;
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-				
+			
 				saveFileToDisk(NTPFile, new CSVFileFilter());
 			}
 		});
 		
-		this.itemGeneralSummary = new FHAESResultTreeNode(FHAESResult.GENERAL_SUMMARY, iconTable);
+		this.itemGeneralSummary = new FHAESResultTreeNode(FHAESResult.GENERAL_SUMMARY, iconMultipleTables);
 		itemGeneralSummary.addAction(new FHAESAction("Save to CSV", "formatcsv.png") {
 			
 			private static final long serialVersionUID = 1L;
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-				
+			
 				saveFileToDisk(generalSummaryFile, new CSVFileFilter());
 			}
 			
 		});
 		
+		this.itemSingleFileSummary = new FHAESResultTreeNode(FHAESResult.SINGLE_FILE_SUMMARY, iconTable);
+		itemSingleFileSummary.addAction(new FHAESAction("Save to CSV", "formatcsv.png") {
+			
+			private static final long serialVersionUID = 1L;
+			
+			@Override
+			public void actionPerformed(ActionEvent event) {
+			
+				saveFileToDisk(singleFileSummaryFile, new CSVFileFilter());
+			}
+			
+		});
+		
 		// Add results to categories
-		nodeGeneral.add(itemGeneralSummary);
-		nodeSimMatrices.add(itemJaccard);
-		nodeSimMatrices.add(itemCohen);
-		nodeDisSimMatrices.add(itemJaccardD);
-		nodeDisSimMatrices.add(itemCohenD);
-		nodeInterval.add(itemIntervalSummary);
-		nodeInterval.add(itemExceedence);
-		nodeSeasonality.add(itemSeasonalitySummary);
-		nodeBinaryMatrices.add(itemBin11);
-		nodeBinaryMatrices.add(itemBin01);
-		nodeBinaryMatrices.add(itemBin10);
-		nodeBinaryMatrices.add(itemBin00);
-		nodeBinaryMatrices.add(itemBinSum);
-		nodeBinarySummaryMatrices.add(itemBinSiteSummary);
-		nodeBinarySummaryMatrices.add(itemBinTreeSummary);
-		nodeBinarySummaryMatrices.add(itemNTP);
+		categoryGeneral.add(itemGeneralSummary);
+		categoryGeneral.add(itemSingleFileSummary);
+		categorySimMatrices.add(itemJaccard);
+		categorySimMatrices.add(itemCohen);
+		categoryDisSimMatrices.add(itemJaccardD);
+		categoryDisSimMatrices.add(itemCohenD);
+		categoryInterval.add(itemIntervalSummary);
+		categoryInterval.add(itemExceedence);
+		categorySeasonality.add(itemSeasonalitySummary);
+		categoryBinaryMatrices.add(itemBin11);
+		categoryBinaryMatrices.add(itemBin01);
+		categoryBinaryMatrices.add(itemBin10);
+		categoryBinaryMatrices.add(itemBin00);
+		categoryBinaryMatrices.add(itemBinSum);
+		categoryBinarySummaryMatrices.add(itemBinSiteSummary);
+		categoryBinarySummaryMatrices.add(itemBinTreeSummary);
+		categoryBinarySummaryMatrices.add(itemNTP);
 		
 		// Add categories to root of tree
-		root.add(nodeGeneral);
-		root.add(nodeInterval);
-		root.add(nodeSeasonality);
-		root.add(nodeBinarySummaryMatrices);
-		root.add(nodeBinaryMatrices);
-		root.add(nodeSimMatrices);
-		root.add(nodeDisSimMatrices);
+		rootNode.add(categoryGeneral);
+		rootNode.add(categoryInterval);
+		rootNode.add(categorySeasonality);
+		rootNode.add(categoryBinarySummaryMatrices);
+		rootNode.add(categoryBinaryMatrices);
+		rootNode.add(categorySimMatrices);
+		rootNode.add(categoryDisSimMatrices);
 		
-		treeModel = new DefaultTreeModel(root);
+		treeModel = new DefaultTreeModel(rootNode);
 		
 		splitPane = new JSplitPane();
 		if (Platform.isOSX())
 			splitPane.setBackground(MainWindow.MAC_BACKGROUND_COLOR);
-			
+		
 		splitPane.setResizeWeight(0.9);
 		add(splitPane, BorderLayout.CENTER);
 		
@@ -853,7 +915,7 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 			panelResult.setBackground(MainWindow.MAC_BACKGROUND_COLOR);
 		if (Platform.isOSX())
 			scrollPane.setBackground(MainWindow.MAC_BACKGROUND_COLOR);
-			
+		
 		// Expand all nodes
 		for (int i = 0; i < treeResults.getRowCount(); i++)
 		{
@@ -866,7 +928,7 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 			
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				
+			
 				if (SwingUtilities.isRightMouseButton(e))
 				{
 					int x = e.getX();
@@ -877,7 +939,7 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 						return;
 					if (!tree.isEnabled())
 						return;
-						
+					
 					tree.setSelectionPath(path);
 					Component mc = e.getComponent();
 					
@@ -887,7 +949,7 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 						
 						if (!node.isEnabled())
 							return;
-							
+						
 						FHAESResultPopupMenu popupMenu = new FHAESResultPopupMenu(node.getArrayOfActions());
 						popupMenu.show(mc, e.getX(), e.getY());
 					}
@@ -896,30 +958,22 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 			
 			@Override
 			public void mouseEntered(MouseEvent arg0) {
-				
-				// TODO Auto-generated method stub
-				
+			
 			}
 			
 			@Override
 			public void mouseExited(MouseEvent arg0) {
-				
-				// TODO Auto-generated method stub
-				
+			
 			}
 			
 			@Override
 			public void mousePressed(MouseEvent arg0) {
-				
-				// TODO Auto-generated method stub
-				
+			
 			}
 			
 			@Override
 			public void mouseReleased(MouseEvent arg0) {
-				
-				// TODO Auto-generated method stub
-				
+			
 			}
 			
 		});
@@ -930,18 +984,18 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 	}
 	
 	/**
-	 * TODO
+	 * Save a file to disk, asking the user for a filename. Add the selected FileFilter to the save dialog box.
 	 * 
 	 * @param fileToSave
 	 * @param filter
 	 */
 	private void saveFileToDisk(File fileToSave, FileFilter filter) {
-		
+	
 		File outfile = IOUtil.getOutputFile(filter);
 		
 		if (outfile == null)
 			return;
-			
+		
 		if (outfile.exists())
 		{
 			Object[] options = { "Overwrite", "No", "Cancel" };
@@ -949,7 +1003,7 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 					"Confirm", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, // do not use a custom Icon
 					options, // the titles of buttons
 					options[0]); // default button title
-					
+			
 			if (response != JOptionPane.YES_OPTION)
 			{
 				return;
@@ -969,14 +1023,14 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 	}
 	
 	/**
-	 * TODO
+	 * Simple popup menu class for nodes in the results tree.
 	 */
 	class FHAESResultPopupMenu extends JPopupMenu {
 		
 		private static final long serialVersionUID = 1L;
 		
 		public FHAESResultPopupMenu(ArrayList<FHAESAction> actions) {
-			
+		
 			for (FHAESAction action : actions)
 			{
 				JMenuItem menuItem = new JMenuItem(action);
@@ -986,34 +1040,46 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 	}
 	
 	/**
-	 * TODO
+	 * Clear the analysis results table and show the relevant instructional card page, either 'pick analysis' or 'run analysis' depending on
+	 * whether we have analyses to show
 	 */
 	private void clearTable() {
-		
+	
 		panelResult.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		table.setModel(new DefaultTableModel());
 		MainWindow.getInstance().rightSplitPanel.actionResultsHelp.setEnabled(false);
 		
-		cl.show(cards, PICKRESULTPANEL);
+		if (this.generalSummaryModel == null)
+		{
+			// No general sumamry model so analyses have NOT been run
+			// Show 'run analysis' card
+			cl.show(cards, RUNANALYSIS);
+		}
+		else
+		{
+			// If there is a general summary model then the analysis have been run.
+			// Show the 'pick results' card
+			cl.show(cards, PICKRESULTPANEL);
+		}
 		
 		this.repaint();
 	}
 	
 	/**
-	 * TODO
+	 * Draw the analysis results table depending on the current tree-node
 	 */
 	public void setupTable() {
-		
+	
 		setupTable(false);
 	}
 	
 	/**
-	 * TODO
+	 * Draw the analysis results table depending on the current tree-node forcing the GUI to refresh regardless
 	 * 
 	 * @param forceRefresh
 	 */
 	public void setupTable(Boolean forceRefresh) {
-		
+	
 		cl.show(cards, RESULTSPANEL);
 		MainWindow.getInstance().rightSplitPanel.actionResultsHelp.setEnabled(true);
 		
@@ -1246,6 +1312,17 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 				table.setModel(generalSummaryModel);
 			}
 			
+			else if (result.equals(FHAESResult.SINGLE_FILE_SUMMARY))
+			{
+				
+				if (this.singleFileSummaryModel == null)
+				{
+					clearTable();
+					return;
+				}
+				table.setModel(singleFileSummaryModel);
+			}
+			
 			else
 			{
 				log.warn("Unhandled FHAESResult type");
@@ -1283,11 +1360,11 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 	}
 	
 	/**
-	 * TODO
+	 * The selection of the tree widget has changed to set up the results table
 	 */
 	@Override
 	public void valueChanged(TreeSelectionEvent evt) {
-		
+	
 		log.debug("Tree item selected");
 		
 		setupTable();
@@ -1298,7 +1375,7 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 	 * Clear all the results from the table and tree.
 	 */
 	public void clearResults() {
-		
+	
 		seasonalitySummaryModel = null;
 		intervalsExceedenceModel = null;
 		intervalsSummaryModel = null;
@@ -1314,6 +1391,9 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 		SJACModel = null;
 		NTPModel = null;
 		treeSummaryModel = null;
+		singleFileSummaryModel = null;
+		generalSummaryModel = null;
+		
 		setResultsEnabled(false);
 		table.setModel(new DefaultTableModel());
 	}
@@ -1322,7 +1402,7 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 	 * Show the run analysis tab.
 	 */
 	public void showRunAnalysisTab() {
-		
+	
 		if (MainWindow.getInstance().isFileListPopulated())
 		{
 			cl.show(cards, RUNANALYSIS);
@@ -1344,18 +1424,28 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 	 * @param b
 	 */
 	private void setResultsEnabled(boolean b) {
-		
+	
 		treeResults.setEnabled(b);
 		MainWindow.getInstance().actionSaveResults.setEnabled(b);
+		
+		if (b)
+		{
+			setSeasonalitySummaryStatus();
+			setSingleFileSummaryStatus();
+			setGeneralSummaryStatus();
+			setIntervalsSummaryStatus();
+			setIntervalsExceedenceStatus();
+			
+		}
 	}
 	
 	/**
-	 * TODO
+	 * Get a text file containing the parameters the user has selected in the analysis properties dialog
 	 * 
 	 * @return
 	 */
 	private File getParamsAsFile() {
-		
+	
 		try
 		{
 			
@@ -1401,12 +1491,12 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 	}
 	
 	/**
-	 * TODO
+	 * Get a README text file to be including in the analysis results zip file.
 	 * 
 	 * @return
 	 */
 	private File getReadmeFile() {
-		
+	
 		try
 		{
 			Writer wr;
@@ -1440,12 +1530,12 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 	}
 	
 	/**
-	 * TODO
+	 * Save the current results into a zip file
 	 * 
 	 * @param outputfile
 	 */
 	public void saveZipOfResults(File outputfile) {
-		
+	
 		try
 		{
 			FileOutputStream fos = new FileOutputStream(outputfile.getAbsolutePath());
@@ -1468,6 +1558,8 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 			addToZipFile(this.SCOHFile, "COHEN similarity.csv", zos);
 			addToZipFile(this.DSJACFile, "JACCARD dissimilarity.csv", zos);
 			addToZipFile(this.DSCOHFile, "COHEN dissimilarity.csv", zos);
+			addToZipFile(this.singleFileSummaryFile, "Single file summary.csv", zos);
+			
 			addToZipFile(getReadmeFile(), "readme.txt", zos);
 			
 			zos.close();
@@ -1486,7 +1578,7 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 	}
 	
 	/**
-	 * TODO
+	 * Add a file to a zip file stream
 	 * 
 	 * @param file
 	 * @param filename
@@ -1495,12 +1587,12 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 	 * @throws IOException
 	 */
 	public static void addToZipFile(File file, String filename, ZipOutputStream zos) throws FileNotFoundException, IOException {
-		
+	
 		if (file == null)
 			return;
 		if (!file.exists())
 			return;
-			
+		
 		FileInputStream fis = new FileInputStream(file);
 		ZipEntry zipEntry = new ZipEntry(filename);
 		zos.putNextEntry(zipEntry);
@@ -1517,12 +1609,12 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 	}
 	
 	/**
-	 * TODO
+	 * Save the current analyses results to a multi-tabbed Excel file
 	 * 
 	 * @param outputfile
 	 */
 	public void saveXLSXOfResults(File outputfile) {
-		
+	
 		Workbook workbook = new XSSFWorkbook();
 		CreationHelper createHelper = workbook.getCreationHelper();
 		
@@ -1546,6 +1638,7 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 		writeModelToXLSXSheet(workbook.createSheet("Matrix C (1-0)"), bin10Model);
 		writeModelToXLSXSheet(workbook.createSheet("Matrix D (0-0)"), bin00Model);
 		writeModelToXLSXSheet(workbook.createSheet("Matrix L (Sum)"), binSumModel);
+		writeModelToXLSXSheet(workbook.createSheet("Single File Summary"), singleFileSummaryModel);
 		
 		OutputStream os = IOUtils.createOutput(outputfile);
 		try
@@ -1577,7 +1670,7 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 	 * @return
 	 */
 	private String getFirstSeasonCombinationDescription() {
-		
+	
 		String cellvalue = "";
 		if (App.prefs.getBooleanPref(PrefKey.SEASONALITY_FIRST_GROUP_DORMANT, true))
 		{
@@ -1613,7 +1706,7 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 	 * @return
 	 */
 	private String getSecondSeasonCombinationDescription() {
-		
+	
 		String cellvalue = "";
 		if (App.prefs.getBooleanPref(PrefKey.SEASONALITY_SECOND_GROUP_DORMANT, false))
 		{
@@ -1644,12 +1737,12 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 	}
 	
 	/**
-	 * TODO
+	 * Write the selected analysis parameters to the provided Excel spreadsheet
 	 * 
 	 * @param dataSheet
 	 */
 	private void writeParametersToXLSXSheet(Sheet dataSheet) {
-		
+	
 		int rows = 10;
 		
 		for (int i = 0; i < rows; i++)
@@ -1718,13 +1811,13 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 	}
 	
 	/**
-	 * TODO
+	 * Write the specified DefaultTableModel to the provided Excel spreadsheet
 	 * 
 	 * @param dataSheet
 	 * @param model
 	 */
 	private void writeModelToXLSXSheet(Sheet dataSheet, DefaultTableModel model) {
-		
+	
 		if (model == null)
 		{
 			Row headerrow = dataSheet.createRow(0);

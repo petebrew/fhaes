@@ -52,7 +52,9 @@ public enum FHAESResult {
 	
 	BINARY_MATRIX_NTP("Binary summary: number of fires, number of trees and percentage scarred trees", "NTP Matrix"),
 	
-	GENERAL_SUMMARY("General input file summary", "General summary");
+	GENERAL_SUMMARY("Series-by-series summary", "Series-by-series summary"),
+	
+	SINGLE_FILE_SUMMARY("Annual summary of currently selected file", "Current file annual summary");
 	
 	// Declare local variables
 	private String fullname;
@@ -65,7 +67,7 @@ public enum FHAESResult {
 	 * @param shortname
 	 */
 	FHAESResult(String fullname, String shortname) {
-		
+	
 		this.fullname = fullname;
 		this.shortname = shortname;
 	}
@@ -75,7 +77,7 @@ public enum FHAESResult {
 	 */
 	@Override
 	public String toString() {
-		
+	
 		return fullname;
 	}
 	
@@ -83,15 +85,15 @@ public enum FHAESResult {
 	 * Get the full name for this FHAESResult.
 	 */
 	public String getFullName() {
-		
+	
 		return fullname;
 	}
-
+	
 	/**
 	 * Get the short name for this FHAESResult.
 	 */
 	public String getShortName() {
-		
+	
 		return shortname;
 	}
 	
@@ -102,7 +104,7 @@ public enum FHAESResult {
 	 * @return
 	 */
 	public static FHAESResult fromFullName(String name) {
-		
+	
 		for (FHAESResult type : FHAESResult.values())
 		{
 			if (type.fullname.equals(name))
@@ -119,7 +121,7 @@ public enum FHAESResult {
 	 * @return
 	 */
 	public static FHAESResult fromShortName(String name) {
-		
+	
 		for (FHAESResult type : FHAESResult.values())
 		{
 			if (type.shortname.equals(name))
