@@ -54,7 +54,7 @@ public class RunAnalysisPanel extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				
-				MainWindow.getInstance().rightSplitPanel.actionParamConfig.perform(this);
+				MainWindow.getInstance().getReportPanel().actionParamConfig.perform(this);
 			}
 		});
 		

@@ -123,7 +123,7 @@ public class QuickLaunchDialog extends JDialog implements MouseListener {
 		else
 		{
 			this.pack();
-			this.setLocationRelativeTo(MainWindow.getInstance().rightSplitPanel);
+			this.setLocationRelativeTo(MainWindow.getInstance().getReportPanel());
 			this.setVisible(true);
 		}
 	}

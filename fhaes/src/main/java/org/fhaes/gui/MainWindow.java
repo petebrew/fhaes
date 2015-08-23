@@ -143,13 +143,13 @@ public class MainWindow implements PrefsListener {
 	private static final int MANUALLY_SORT_FILES = 8;
 	
 	// Declare GUI components
-	protected JFrame frame;
+	private JFrame frame;
 	private JMenu mnOpenRecent;
 	private JMenu mnSave;
 	private JComboBox fileSortComboBox;
 	private JSplitPane splitPane;
-	private JPanel leftSplitPanel;
-	protected ReportPanel rightSplitPanel;
+	private JPanel fileListDisplayPanel;
+	private ReportPanel reportPanel;
 	private FileListModel fileListModel;
 	private FileDropTargetListener fhxFileList;
 	private FeedbackMessagePanel feedbackMessagePanel;
@@ -242,6 +242,26 @@ public class MainWindow implements PrefsListener {
 	}
 	
 	/**
+	 * Gets the frame.
+	 * 
+	 * @return frame
+	 */
+	protected JFrame getFrame() {
+		
+		return frame;
+	}
+	
+	/**
+	 * Gets the report panel.
+	 * 
+	 * @return reportPanel
+	 */
+	protected ReportPanel getReportPanel() {
+		
+		return reportPanel;
+	}
+	
+	/**
 	 * Initializes the MainWindow.
 	 * 
 	 * @wbp.parser.entryPoint
@@ -317,7 +337,7 @@ public class MainWindow implements PrefsListener {
 					
 			if (response == JOptionPane.YES_OPTION)
 			{
-				rightSplitPanel.setFile(null);
+				reportPanel.setFile(null);
 				List<FHFile> files = fhxFileList.getSelectedValuesList();
 				
 				FileListModel modelcopy = fileListModel;
@@ -332,7 +352,7 @@ public class MainWindow implements PrefsListener {
 		}
 		else
 		{
-			rightSplitPanel.setFile(null);
+			reportPanel.setFile(null);
 			fileListListenerPaused = true;
 			
 			List<FHFile> files = fhxFileList.getSelectedValuesList();
@@ -411,7 +431,7 @@ public class MainWindow implements PrefsListener {
 		log.debug("Saving to " + outputFolder);
 		
 		// TODO replace access to reports from GUI to File itself
-		if (writeTextAreaToDisk(outputFolder + File.separator + fileToSave.getName() + "-summary.txt", rightSplitPanel.txtSummary,
+		if (writeTextAreaToDisk(outputFolder + File.separator + fileToSave.getName() + "-summary.txt", reportPanel.txtSummary,
 				false) == JOptionPane.CANCEL_OPTION)
 			return;
 		// if(writeTextAreaToDisk(outputFolder+File.separator+fileToSave.getName()+"-seasonality.txt",
@@ -456,8 +476,7 @@ public class MainWindow implements PrefsListener {
 				confirmedOverwriteOK = true;
 			}
 			
-			if (writeTextAreaToDisk(output.getAbsolutePath(), rightSplitPanel.txtSummary,
-					confirmedOverwriteOK) == JOptionPane.CANCEL_OPTION)
+			if (writeTextAreaToDisk(output.getAbsolutePath(), reportPanel.txtSummary, confirmedOverwriteOK) == JOptionPane.CANCEL_OPTION)
 				return;
 		}
 	}
@@ -469,7 +488,7 @@ public class MainWindow implements PrefsListener {
 		
 		File outputFile = IOUtil.getOutputFile(new TXTFileFilter());
 		
-		if (writeTextAreaToDisk(outputFile.getAbsolutePath(), rightSplitPanel.txtSummary, false) == JOptionPane.CANCEL_OPTION)
+		if (writeTextAreaToDisk(outputFile.getAbsolutePath(), reportPanel.txtSummary, false) == JOptionPane.CANCEL_OPTION)
 			return;
 	}
 	
@@ -504,7 +523,7 @@ public class MainWindow implements PrefsListener {
 		try
 		{
 			pw = new FileWriter(filename);
-			rightSplitPanel.txtSummary.write(pw);
+			reportPanel.txtSummary.write(pw);
 			
 		}
 		catch (IOException e)
@@ -558,7 +577,7 @@ public class MainWindow implements PrefsListener {
 				}
 			}
 			
-			FileLoadProgressDialog pd = new FileLoadProgressDialog(leftSplitPanel, files);
+			FileLoadProgressDialog pd = new FileLoadProgressDialog(fileListDisplayPanel, files);
 			fileListModel.addAllElements(pd.getFileList());
 			
 			for (File currentFile : files)
@@ -575,7 +594,7 @@ public class MainWindow implements PrefsListener {
 			
 			if (selectFirst)
 			{
-				rightSplitPanel.setFile(fileListModel.getElementAt(0));
+				reportPanel.setFile(fileListModel.getElementAt(0));
 			}
 			
 			this.fileSortComboBox.setSelectedIndex(MANUALLY_SORT_FILES);
@@ -1005,7 +1024,7 @@ public class MainWindow implements PrefsListener {
 		if (this.fhxFileList.getSelectedIndex() != INDEX_REPRESENTING_NO_FILES && doSetFileOperation)
 		{
 			// Select current file in list again to update reports
-			this.rightSplitPanel.setFile((FHFile) this.fhxFileList.getSelectedValue());
+			this.reportPanel.setFile((FHFile) this.fhxFileList.getSelectedValue());
 		}
 	}
 	
@@ -1071,21 +1090,21 @@ public class MainWindow implements PrefsListener {
 		actionSaveCurrentSummary.setEnabled(isFileListPopulated);
 		actionSaveAllSummaries.setEnabled(isFileListPopulated);
 		actionGenerateSHP.setEnabled(isFileListPopulated);
-		rightSplitPanel.actionCopy.setEnabled(isFileListPopulated);
-		rightSplitPanel.actionSelectAll.setEnabled(isFileListPopulated);
-		rightSplitPanel.actionParamConfig.setEnabled(isFileListPopulated);
+		reportPanel.actionCopy.setEnabled(isFileListPopulated);
+		reportPanel.actionSelectAll.setEnabled(isFileListPopulated);
+		reportPanel.actionParamConfig.setEnabled(isFileListPopulated);
 		actionCreateCompositeFile.setEnabled(isFileListPopulated);
 		actionCreateEventFile.setEnabled(isFileListPopulated);
 		// rightSplitPanel.actionResultsHelp.setEnabled(isFileListPopulated);
-		rightSplitPanel.panelResults.showRunAnalysisTab();
+		reportPanel.panelResults.showRunAnalysisTab();
 		
 		// If list is empty set file to null
 		if (!isFileListPopulated)
 		{
-			this.rightSplitPanel.setFile(null);
+			this.reportPanel.setFile(null);
 		}
 		
-		this.rightSplitPanel.setFiles(fileListModel.getValidFileListWithEvents());
+		this.reportPanel.setFiles(fileListModel.getValidFileListWithEvents());
 		
 		if (isFileListPopulated)
 		{
@@ -1095,12 +1114,12 @@ public class MainWindow implements PrefsListener {
 			{
 				this.fhxFileList.setSelectedIndex(0);
 			}
-			else if (!this.rightSplitPanel.isFilePopulated())
+			else if (!this.reportPanel.isFilePopulated())
 			{
 				this.fhxFileList.setSelectedIndex(0);
 			}
 			
-			chartActions.setNeoChart(rightSplitPanel.panelChart);
+			chartActions.setNeoChart(reportPanel.panelChart);
 		}
 		else
 		{
@@ -1143,12 +1162,12 @@ public class MainWindow implements PrefsListener {
 			}
 			
 			// Update report panels
-			rightSplitPanel.setFile((FHFile) fhxFileList.getSelectedValue());
+			reportPanel.setFile((FHFile) fhxFileList.getSelectedValue());
 			
 			// Handle chart actions
 			if (isFileSelected)
 			{
-				chartActions.setNeoChart(rightSplitPanel.panelChart);
+				chartActions.setNeoChart(reportPanel.panelChart);
 			}
 			else
 			{
@@ -1333,22 +1352,22 @@ public class MainWindow implements PrefsListener {
 		
 		frame.getContentPane().add(splitPane, "cell 0 1,growx,aligny top");
 		
-		rightSplitPanel = new ReportPanel();
+		reportPanel = new ReportPanel();
 		if (Platform.isOSX())
-			rightSplitPanel.setBackground(MAC_BACKGROUND_COLOR);
+			reportPanel.setBackground(MAC_BACKGROUND_COLOR);
 			
-		splitPane.setRightComponent(rightSplitPanel);
+		splitPane.setRightComponent(reportPanel);
 		
-		leftSplitPanel = new JPanel();
+		fileListDisplayPanel = new JPanel();
 		if (Platform.isOSX())
-			leftSplitPanel.setBackground(MAC_BACKGROUND_COLOR);
-		leftSplitPanel.setMinimumSize(new Dimension(200, 200));
-		splitPane.setLeftComponent(leftSplitPanel);
-		leftSplitPanel.setLayout(new BorderLayout(0, 0));
+			fileListDisplayPanel.setBackground(MAC_BACKGROUND_COLOR);
+		fileListDisplayPanel.setMinimumSize(new Dimension(200, 200));
+		splitPane.setLeftComponent(fileListDisplayPanel);
+		fileListDisplayPanel.setLayout(new BorderLayout(0, 0));
 		
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		leftSplitPanel.add(scrollPane);
+		fileListDisplayPanel.add(scrollPane);
 		
 		fhxFileList = new FileDropTargetListener();
 		fhxFileList.setModel(fileListModel);
@@ -1382,12 +1401,12 @@ public class MainWindow implements PrefsListener {
 			public void intervalRemoved(ListDataEvent evt) {
 				
 				handleFileListChanged();
-				rightSplitPanel.setFile(null);
+				reportPanel.setFile(null);
 				
 				// Try and select the previous item in the list
 				if (fileListModel == null)
 				{
-					rightSplitPanel.setFile(null);
+					reportPanel.setFile(null);
 				}
 				if (fileListModel.getSize() >= selectedFileIndex - 1)
 				{
@@ -1400,7 +1419,7 @@ public class MainWindow implements PrefsListener {
 				else
 				{
 					fhxFileList.setSelectedIndex(INDEX_REPRESENTING_NO_FILES);
-					rightSplitPanel.setFile(null);
+					reportPanel.setFile(null);
 				}
 			}
 			
@@ -1457,7 +1476,7 @@ public class MainWindow implements PrefsListener {
 		if (Platform.isOSX())
 			panel.setBackground(MAC_BACKGROUND_COLOR);
 			
-		leftSplitPanel.add(panel, BorderLayout.SOUTH);
+		fileListDisplayPanel.add(panel, BorderLayout.SOUTH);
 		panel.setLayout(new MigLayout("", "[][grow]", "[]"));
 		
 		JLabel label = new JLabel("Order:");
@@ -1525,8 +1544,8 @@ public class MainWindow implements PrefsListener {
 			MacUtils.makeWindowLeopardStyle(frame.getRootPane());
 			frame.setBackground(MAC_BACKGROUND_COLOR);
 			splitPane.setBackground(MAC_BACKGROUND_COLOR);
-			rightSplitPanel.setBackground(MAC_BACKGROUND_COLOR);
-			leftSplitPanel.setBackground(MAC_BACKGROUND_COLOR);
+			reportPanel.setBackground(MAC_BACKGROUND_COLOR);
+			fileListDisplayPanel.setBackground(MAC_BACKGROUND_COLOR);
 		}
 		
 		frame.pack();
@@ -2058,7 +2077,7 @@ public class MainWindow implements PrefsListener {
 			@Override
 			public void actionPerformed(ActionEvent event) {
 				
-				ShapeFileDialog sfd = new ShapeFileDialog(rightSplitPanel, rightSplitPanel.panelResults.getFHMatrix());
+				ShapeFileDialog sfd = new ShapeFileDialog(reportPanel, reportPanel.panelResults.getFHMatrix());
 				sfd.setVisible(true);
 			}
 		};
@@ -2147,15 +2166,15 @@ public class MainWindow implements PrefsListener {
 					
 					try
 					{
-						rightSplitPanel.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+						reportPanel.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 						
 						if (chosenfilter.getDescription().equals(new XLSXFileFilter().getDescription()))
 						{
-							rightSplitPanel.panelResults.saveXLSXOfResults(outputFile);
+							reportPanel.panelResults.saveXLSXOfResults(outputFile);
 						}
 						else if (chosenfilter.getDescription().equals(new CSVZipFileFilter().getDescription()))
 						{
-							rightSplitPanel.panelResults.saveZipOfResults(outputFile);
+							reportPanel.panelResults.saveZipOfResults(outputFile);
 						}
 					}
 					catch (Exception e)
@@ -2165,7 +2184,7 @@ public class MainWindow implements PrefsListener {
 					}
 					finally
 					{
-						rightSplitPanel.setCursor(Cursor.getDefaultCursor());
+						reportPanel.setCursor(Cursor.getDefaultCursor());
 					}
 				}
 			}
@@ -2308,8 +2327,8 @@ public class MainWindow implements PrefsListener {
 		mnEdit.setMnemonic('e');
 		menuBar.add(mnEdit);
 		
-		mnEdit.add(new FHAESMenuItem(rightSplitPanel.actionSelectAll));
-		mnEdit.add(new FHAESMenuItem(rightSplitPanel.actionCopy));
+		mnEdit.add(new FHAESMenuItem(reportPanel.actionSelectAll));
+		mnEdit.add(new FHAESMenuItem(reportPanel.actionCopy));
 		mnEdit.addSeparator();
 		mnEdit.add(new FHAESMenuItem(actionEditFile));
 		
@@ -2373,7 +2392,7 @@ public class MainWindow implements PrefsListener {
 		JMenu mnTools = new JMenu(BUNDLE.getString("MainWindow.mnTools.text")); //$NON-NLS-1$
 		menuBar.add(mnTools);
 		
-		mnTools.add(new FHAESMenuItem(rightSplitPanel.actionParamConfig));
+		mnTools.add(new FHAESMenuItem(reportPanel.actionParamConfig));
 		mnTools.addSeparator();
 		mnTools.add(new FHAESMenuItem(actionJSEAConfig));
 		mnTools.add(new FHAESMenuItem(actionFHSampleSize));
@@ -2419,10 +2438,10 @@ public class MainWindow implements PrefsListener {
 		JToolBarButton btnSaveAll = new JToolBarButton(this.actionSaveResults);
 		JToolBarButton btnExportChart = new JToolBarButton(MainWindow.chartActions.actionExportChart);
 		JToolBarButton btnEditFile = new JToolBarButton(this.actionEditFile);
-		JToolBarButton btnSelectAll = new JToolBarButton(rightSplitPanel.actionSelectAll);
-		JToolBarButton btnCopy = new JToolBarButton(rightSplitPanel.actionCopy);
+		JToolBarButton btnSelectAll = new JToolBarButton(reportPanel.actionSelectAll);
+		JToolBarButton btnCopy = new JToolBarButton(reportPanel.actionCopy);
 		JToolBarButton btnClear = new JToolBarButton(this.actionClearList);
-		JToolBarButton btnParameters = new JToolBarButton(rightSplitPanel.actionParamConfig);
+		JToolBarButton btnParameters = new JToolBarButton(reportPanel.actionParamConfig);
 		JToolBarButton btnJSEA = new JToolBarButton(this.actionJSEAConfig);
 		JToolBarButton btnMergeFiles = new JToolBarButton(this.actionMergeFiles);
 		JToolBarButton btnSpatialJoin = new JToolBarButton(this.actionSpatialJoin);
