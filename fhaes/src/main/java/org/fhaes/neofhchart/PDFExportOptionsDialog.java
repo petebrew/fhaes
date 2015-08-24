@@ -92,8 +92,12 @@ public class PDFExportOptionsDialog extends JDialog implements ActionListener {
 			
 	/**
 	 * Create the dialog.
+	 * 
+	 * @param currentChart
+	 * @param outputFile
+	 * @param isBulkExport
 	 */
-	public PDFExportOptionsDialog(FireChartSVG currentChart, File outputFile) {
+	public PDFExportOptionsDialog(FireChartSVG currentChart, File outputFile, boolean isBulkExport) {
 		
 		this.setModal(true);
 		this.setTitle("Export to PDF");
@@ -153,7 +157,16 @@ public class PDFExportOptionsDialog extends JDialog implements ActionListener {
 		cancelButton.addActionListener(this);
 		buttonPane.add(cancelButton);
 		
-		this.setLocationRelativeTo(App.mainFrame);
+		if (isBulkExport)
+		{
+			doExportToPDF();
+			this.dispose();
+		}
+		else
+		{
+			this.setLocationRelativeTo(App.mainFrame);
+			this.setVisible(true);
+		}
 	}
 	
 	/**
@@ -162,81 +175,27 @@ public class PDFExportOptionsDialog extends JDialog implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent evt) {
 		
-		// Do the export
 		if (evt.getActionCommand().equals("OK"))
 		{
-			if (currentChart == null)
-				return;
-				
-			log.debug("Exporting to PDF....");
+			// Perform the export operation
+			boolean completedSuccessfully = doExportToPDF();
 			
-			Document document = null;
-			
-			if (cboPaperSize.getSelectedItem() instanceof Rectangle)
+			if (completedSuccessfully)
 			{
-				Rectangle rect = (Rectangle) cboPaperSize.getSelectedItem();
-				if (radLandscape.isSelected())
-					rect = rect.rotate();
-				document = new Document(rect, 10, 10, 10, 10);
-			}
-			else
-			{
-				Rectangle rect = new Rectangle(currentChart.getTotalWidth(), currentChart.getTotalHeight());
-				document = new Document(rect, 10, 10, 10, 10);
-			}
-			
-			try
-			{
-				currentChart.setVisibilityOfNoExportElements(false);
-				
-				PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(outputFile.getAbsolutePath()));
-				document.open();
-				
-				int width = (int) document.getPageSize().getWidth();
-				int height = (int) document.getPageSize().getHeight();
-				
-				PdfContentByte cb = writer.getDirectContent();
-				PdfTemplate template = cb.createTemplate(width, height);
-				
-				@SuppressWarnings("deprecation")
-				Graphics2D g2 = template.createGraphics(width, height);
-				
-				PrintTranscoder prm = new PrintTranscoder();
-				TranscoderInput ti = new TranscoderInput(currentChart.getSVGDocument());
-				prm.transcode(ti, null);
-				
-				PageFormat pg = new PageFormat();
-				Paper pp = new Paper();
-				pp.setSize(width, height);
-				pp.setImageableArea(0, 0, width, height);
-				pg.setPaper(pp);
-				prm.print(g2, pg, 0);
-				g2.dispose();
-				
-				ImgTemplate img = new ImgTemplate(template);
-				document.add(img);
-				
 				MainWindow.getInstance().getFeedbackMessagePanel().updateFeedbackMessage(FeedbackMessageType.INFO,
 						FeedbackDisplayProtocol.AUTO_HIDE, FeedbackDictionary.NEOFHCHART_PDF_EXPORT_MESSAGE.toString());
 			}
-			catch (DocumentException e)
+			else
 			{
-				System.err.println(e);
-			}
-			catch (IOException e)
-			{
-				System.err.println(e);
-			}
-			finally
-			{
-				currentChart.setVisibilityOfNoExportElements(true);
+				MainWindow.getInstance().getFeedbackMessagePanel().updateFeedbackMessage(FeedbackMessageType.ERROR,
+						FeedbackDisplayProtocol.MANUAL_HIDE, "An error occured while attempting to export chart as PDF.");
 			}
 			
-			document.close();
 			this.dispose();
 		}
 		else if (evt.getActionCommand().equals("Cancel"))
 		{
+			// Close the dialog
 			this.dispose();
 		}
 		else if (evt.getActionCommand().equals("PaperSize"))
@@ -296,6 +255,89 @@ public class PDFExportOptionsDialog extends JDialog implements ActionListener {
 				radPortrait.setEnabled(false);
 			}
 		}
+	}
+	
+	/**
+	 * Performs the export operation using the currentChart as the source.
+	 * 
+	 * @return true if the operation completed successfully, false otherwise
+	 */
+	private boolean doExportToPDF() {
+		
+		boolean completedSuccessfully = false;
+		
+		if (currentChart != null)
+		{
+			log.debug("Exporting to PDF...");
+			Document document = null;
+			
+			if (cboPaperSize.getSelectedItem() instanceof Rectangle)
+			{
+				Rectangle rect = (Rectangle) cboPaperSize.getSelectedItem();
+				
+				if (radLandscape.isSelected())
+				{
+					rect = rect.rotate();
+				}
+				
+				document = new Document(rect, 10, 10, 10, 10);
+			}
+			else
+			{
+				Rectangle rect = new Rectangle(currentChart.getTotalWidth(), currentChart.getTotalHeight());
+				document = new Document(rect, 10, 10, 10, 10);
+			}
+			
+			try
+			{
+				currentChart.setVisibilityOfNoExportElements(false);
+				
+				PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(outputFile.getAbsolutePath()));
+				document.open();
+				
+				int width = (int) document.getPageSize().getWidth();
+				int height = (int) document.getPageSize().getHeight();
+				
+				PdfContentByte cb = writer.getDirectContent();
+				PdfTemplate template = cb.createTemplate(width, height);
+				
+				@SuppressWarnings("deprecation")
+				Graphics2D g2 = template.createGraphics(width, height);
+				
+				PrintTranscoder prm = new PrintTranscoder();
+				TranscoderInput ti = new TranscoderInput(currentChart.getSVGDocument());
+				prm.transcode(ti, null);
+				
+				PageFormat pg = new PageFormat();
+				Paper pp = new Paper();
+				pp.setSize(width, height);
+				pp.setImageableArea(0, 0, width, height);
+				pg.setPaper(pp);
+				prm.print(g2, pg, 0);
+				g2.dispose();
+				
+				ImgTemplate img = new ImgTemplate(template);
+				document.add(img);
+				
+				completedSuccessfully = true;
+			}
+			catch (DocumentException e)
+			{
+				System.err.println(e);
+			}
+			catch (IOException e)
+			{
+				System.err.println(e);
+			}
+			finally
+			{
+				currentChart.setVisibilityOfNoExportElements(true);
+			}
+			
+			document.close();
+		}
+		
+		return completedSuccessfully;
 	}
 	
 	/**

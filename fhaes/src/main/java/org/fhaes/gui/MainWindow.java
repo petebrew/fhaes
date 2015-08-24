@@ -596,6 +596,7 @@ public class MainWindow implements PrefsListener {
 					for (int i = 0; i < fileListModel.getSize(); i++)
 					{
 						reportPanel.setFile(fileListModel.getElementAt(i));
+						reportPanel.setFocusToChartTab();
 						
 						String fileNameWithoutExtension = fileListModel.getElementAt(i).getFileNameWithoutExtension();
 						File outputFile = new File(outputDirectory + File.separator + fileNameWithoutExtension);

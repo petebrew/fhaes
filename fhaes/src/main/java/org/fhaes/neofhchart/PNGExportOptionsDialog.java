@@ -82,10 +82,11 @@ public class PNGExportOptionsDialog extends JDialog implements ActionListener {
 	/**
 	 * Create the dialog.
 	 * 
-	 * @param outputFile
 	 * @param currentChart
+	 * @param outputFile
+	 * @param isBulkExport
 	 */
-	public PNGExportOptionsDialog(FireChartSVG currentChart, File outputFile) {
+	public PNGExportOptionsDialog(FireChartSVG currentChart, File outputFile, boolean isBulkExport) {
 		
 		this.currentChart = currentChart;
 		this.outputFile = outputFile;
@@ -182,7 +183,16 @@ public class PNGExportOptionsDialog extends JDialog implements ActionListener {
 		cancelButton.addActionListener(this);
 		buttonPane.add(cancelButton);
 		
-		this.setLocationRelativeTo(App.mainFrame);
+		if (isBulkExport)
+		{
+			doExportToPNG();
+			this.dispose();
+		}
+		else
+		{
+			this.setLocationRelativeTo(App.mainFrame);
+			this.setVisible(true);
+		}
 	}
 	
 	/**
@@ -193,10 +203,40 @@ public class PNGExportOptionsDialog extends JDialog implements ActionListener {
 		
 		if (evt.getActionCommand().equals("OK"))
 		{
-			if (currentChart == null)
-				return;
-				
-			log.debug("Exporting to PNG....");
+			// Perform the export operation
+			boolean completedSuccessfully = doExportToPNG();
+			
+			if (completedSuccessfully)
+			{
+				MainWindow.getInstance().getFeedbackMessagePanel().updateFeedbackMessage(FeedbackMessageType.INFO,
+						FeedbackDisplayProtocol.AUTO_HIDE, FeedbackDictionary.NEOFHCHART_PNG_EXPORT_MESSAGE.toString());
+			}
+			else
+			{
+				MainWindow.getInstance().getFeedbackMessagePanel().updateFeedbackMessage(FeedbackMessageType.ERROR,
+						FeedbackDisplayProtocol.MANUAL_HIDE, "An error occured while attempting to export chart as PNG.");
+			}
+			
+			this.dispose();
+		}
+		else if (evt.getActionCommand().equals("Cancel"))
+		{
+			this.dispose();
+		}
+	}
+	
+	/**
+	 * Performs the export operation using the currentChart as the source.
+	 * 
+	 * @return true if the operation completed successfully, false otherwise
+	 */
+	private boolean doExportToPNG() {
+		
+		boolean completedSuccessfully = false;
+		
+		if (currentChart != null)
+		{
+			log.debug("Exporting to PNG...");
 			
 			try
 			{
@@ -210,7 +250,6 @@ public class PNGExportOptionsDialog extends JDialog implements ActionListener {
 				t.addTranscodingHint(PNGTranscoder.KEY_HEIGHT, height);
 				
 				TranscoderInput input = new TranscoderInput(currentChart.getSVGDocument());
-				
 				String path = outputFile.getAbsolutePath();
 				
 				if (!path.toLowerCase().endsWith(".png"))
@@ -226,20 +265,15 @@ public class PNGExportOptionsDialog extends JDialog implements ActionListener {
 				currentChart.setVisibilityOfNoExportElements(true);
 				// svgCanvas.setDocument(currentChart.doc);
 				
-				MainWindow.getInstance().getFeedbackMessagePanel().updateFeedbackMessage(FeedbackMessageType.INFO,
-						FeedbackDisplayProtocol.AUTO_HIDE, FeedbackDictionary.NEOFHCHART_PNG_EXPORT_MESSAGE.toString());
+				completedSuccessfully = true;
 			}
 			catch (Exception e)
 			{
 				log.error("Error charting chart");
 				e.printStackTrace();
 			}
-			
-			this.dispose();
 		}
-		else if (evt.getActionCommand().equals("Cancel"))
-		{
-			this.dispose();
-		}
+		
+		return completedSuccessfully;
 	}
 }
