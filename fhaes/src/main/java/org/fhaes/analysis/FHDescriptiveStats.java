@@ -1,3 +1,20 @@
+/**************************************************************************************************
+ * Fire History Analysis and Exploration System (FHAES), Copyright (C) 2015
+ * 
+ * Contributors: Elena Velasquez and Peter Brewer
+ * 
+ * 		This program is free software: you can redistribute it and/or modify it under the terms of
+ * 		the GNU General Public License as published by the Free Software Foundation, either version
+ * 		3 of the License, or (at your option) any later version.
+ * 
+ * 		This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * 		without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * 		See the GNU General Public License for more details.
+ * 
+ * 		You should have received a copy of the GNU General Public License along with this program.
+ * 		If not, see <http://www.gnu.org/licenses/>.
+ * 
+ *************************************************************************************************/
 package org.fhaes.analysis;
 
 import java.util.ArrayList;
@@ -12,6 +29,12 @@ import org.fhaes.model.ReadOnlyDefaultTableModel;
 import org.fhaes.preferences.App;
 import org.fhaes.preferences.FHAESPreferences.PrefKey;
 
+/**
+ * Provide some simple descriptive statistics for a single FHFile
+ * 
+ * @author pbrewer
+ *
+ */
 public class FHDescriptiveStats {
 	
 	public static DefaultTableModel getDescriptiveStatsTableModel(FHFile file) {
@@ -21,10 +44,6 @@ public class FHDescriptiveStats {
 		int[] sampledepths = fr.getSampleDepths();
 		int[] recordingdepths = fr.getRecordingDepths();
 		
-		// Get a multi-dimensional array with rows = number of years, and columns = 3.
-		// Column 0 = number of events
-		// Column 1 = number of trees
-		// Column 2 = percentage of scarred trees
 		EventTypeToProcess eventType = App.prefs.getEventTypePref(PrefKey.EVENT_TYPE_TO_PROCESS, EventTypeToProcess.FIRE_AND_INJURY_EVENT);
 		ArrayList<ArrayList<Double>> filterArray = fr.getFilterArrays(eventType);
 		

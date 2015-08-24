@@ -249,10 +249,7 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 	
 		seasonalitySummaryModel = f;
 		if (f != null)
-		{
 			setResultsEnabled(true);
-		}
-		
 		setSeasonalitySummaryStatus();
 	}
 	
@@ -273,10 +270,7 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 	
 		intervalsSummaryModel = f;
 		if (f != null)
-		{
 			setResultsEnabled(true);
-			this.itemIntervalSummary.setEnabled(true);
-		}
 		setIntervalsSummaryStatus();
 	}
 	
@@ -297,10 +291,7 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 	
 		intervalsExceedenceModel = f;
 		if (f != null)
-		{
 			setResultsEnabled(true);
-			this.itemExceedence.setEnabled(true);
-		}
 		setIntervalsExceedenceStatus();
 	}
 	
@@ -321,14 +312,16 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 	
 		this.bin00Model = f;
 		if (f != null)
-		{
 			setResultsEnabled(true);
-			this.itemBin00.setEnabled(true);
-		}
-		else
-		{
-			this.itemBin00.setEnabled(false);
-		}
+		setBin00Status();
+	}
+	
+	/**
+	 * Enabled/Disable Binary00 item depending on whether there is a model or not
+	 */
+	public void setBin00Status() {
+	
+		this.itemBin00.setEnabled(this.bin00Model != null);
 	}
 	
 	/**
@@ -340,14 +333,16 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 	
 		this.bin01Model = f;
 		if (f != null)
-		{
 			setResultsEnabled(true);
-			this.itemBin01.setEnabled(true);
-		}
-		else
-		{
-			this.itemBin01.setEnabled(false);
-		}
+		setBin01Status();
+	}
+	
+	/**
+	 * Enabled/Disable Binary01 item depending on whether there is a model or not
+	 */
+	public void setBin01Status() {
+	
+		this.itemBin01.setEnabled(this.bin01Model != null);
 	}
 	
 	/**
@@ -359,14 +354,16 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 	
 		this.bin10Model = f;
 		if (f != null)
-		{
 			setResultsEnabled(true);
-			this.itemBin10.setEnabled(true);
-		}
-		else
-		{
-			this.itemBin10.setEnabled(false);
-		}
+		setBin10Status();
+	}
+	
+	/**
+	 * Enabled/Disable Binary10 item depending on whether there is a model or not
+	 */
+	public void setBin10Status() {
+	
+		this.itemBin10.setEnabled(this.bin10Model != null);
 	}
 	
 	/**
@@ -378,14 +375,17 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 	
 		this.bin11Model = f;
 		if (f != null)
-		{
 			setResultsEnabled(true);
-			this.itemBin11.setEnabled(true);
-		}
-		else
-		{
-			this.itemBin11.setEnabled(false);
-		}
+		
+		setBin11Status();
+	}
+	
+	/**
+	 * Enabled/Disable Binary11 item depending on whether there is a model or not
+	 */
+	public void setBin11Status() {
+	
+		this.itemBin11.setEnabled(this.bin11Model != null);
 	}
 	
 	/**
@@ -397,14 +397,17 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 	
 		this.binSumModel = f;
 		if (f != null)
-		{
 			setResultsEnabled(true);
-			this.itemBinSum.setEnabled(true);
-		}
-		else
-		{
-			this.itemBinSum.setEnabled(false);
-		}
+		
+		setBinSumStatus();
+	}
+	
+	/**
+	 * Enabled/Disable BinarySum item depending on whether there is a model or not
+	 */
+	public void setBinSumStatus() {
+	
+		this.itemBinSum.setEnabled(this.bin11Model != null);
 	}
 	
 	/**
@@ -416,15 +419,16 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 	
 		this.DSCOHModel = f;
 		if (f != null)
-		{
 			setResultsEnabled(true);
-			this.itemCohenD.setEnabled(true);
-		}
-		else
-		{
-			this.itemCohenD.setEnabled(false);
-		}
-		
+		setDSCOHStatus();
+	}
+	
+	/**
+	 * Enabled/Disable Cohen Dissimilarity item depending on whether there is a model or not
+	 */
+	public void setDSCOHStatus() {
+	
+		this.itemCohenD.setEnabled(this.DSCOHModel != null);
 	}
 	
 	/**
@@ -436,14 +440,16 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 	
 		this.DSJACModel = f;
 		if (f != null)
-		{
 			setResultsEnabled(true);
-			this.itemJaccardD.setEnabled(true);
-		}
-		else
-		{
-			this.itemJaccardD.setEnabled(false);
-		}
+		setDSCOHStatus();
+	}
+	
+	/**
+	 * Enabled/Disable Jaccard Dissimilarity item depending on whether there is a model or not
+	 */
+	public void setDSJACStatus() {
+	
+		this.itemJaccardD.setEnabled(this.DSJACModel != null);
 	}
 	
 	/**
@@ -455,14 +461,16 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 	
 		this.SCOHModel = f;
 		if (f != null)
-		{
 			setResultsEnabled(true);
-			this.itemCohen.setEnabled(true);
-		}
-		else
-		{
-			this.itemCohen.setEnabled(false);
-		}
+		setSCOHStatus();
+	}
+	
+	/**
+	 * Enabled/Disable Cohen similarity item depending on whether there is a model or not
+	 */
+	public void setSCOHStatus() {
+	
+		this.itemCohen.setEnabled(this.SCOHModel != null);
 	}
 	
 	/**
@@ -474,14 +482,16 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 	
 		this.SJACModel = f;
 		if (f != null)
-		{
 			setResultsEnabled(true);
-			this.itemJaccard.setEnabled(true);
-		}
-		else
-		{
-			this.itemJaccard.setEnabled(false);
-		}
+		setSJACStatus();
+	}
+	
+	/**
+	 * Enabled/Disable Jaccard similarity item depending on whether there is a model or not
+	 */
+	public void setSJACStatus() {
+	
+		this.itemJaccard.setEnabled(this.SJACModel != null);
 	}
 	
 	/**
@@ -493,14 +503,16 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 	
 		this.NTPModel = f;
 		if (f != null)
-		{
 			setResultsEnabled(true);
-			this.itemNTP.setEnabled(true);
-		}
-		else
-		{
-			this.itemNTP.setEnabled(false);
-		}
+		setNTPStatus();
+	}
+	
+	/**
+	 * Enabled/Disable NTP item depending on whether there is a model or not
+	 */
+	public void setNTPStatus() {
+	
+		this.itemNTP.setEnabled(this.NTPModel != null);
 	}
 	
 	/**
@@ -512,11 +524,7 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 	
 		this.generalSummaryModel = f;
 		if (f != null)
-		{
 			setResultsEnabled(true);
-			this.itemGeneralSummary.setEnabled(true);
-		}
-		
 		setGeneralSummaryStatus();
 	}
 	
@@ -537,14 +545,16 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 	
 		this.siteSummaryModel = f;
 		if (f != null)
-		{
 			setResultsEnabled(true);
-			this.itemBinSiteSummary.setEnabled(true);
-		}
-		else
-		{
-			this.itemBinSiteSummary.setEnabled(false);
-		}
+		setSiteSummaryStatus();
+	}
+	
+	/**
+	 * Enabled/Disable Site Summary item depending on whether there is a model or not
+	 */
+	public void setSiteSummaryStatus() {
+	
+		this.itemBinSiteSummary.setEnabled(siteSummaryModel != null);
 	}
 	
 	/**
@@ -556,14 +566,16 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 	
 		this.treeSummaryModel = f;
 		if (f != null)
-		{
 			setResultsEnabled(true);
-			this.itemBinTreeSummary.setEnabled(true);
-		}
-		else
-		{
-			this.itemBinTreeSummary.setEnabled(false);
-		}
+		setTreeSummaryStatus();
+	}
+	
+	/**
+	 * Enabled/Disable Tree Summary item depending on whether there is a model or not
+	 */
+	public void setTreeSummaryStatus() {
+	
+		this.itemBinTreeSummary.setEnabled(treeSummaryModel != null);
 	}
 	
 	/**
@@ -1435,7 +1447,17 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 			setGeneralSummaryStatus();
 			setIntervalsSummaryStatus();
 			setIntervalsExceedenceStatus();
-			
+			setBin00Status();
+			setBin01Status();
+			setBin10Status();
+			setBin11Status();
+			setDSCOHStatus();
+			setSCOHStatus();
+			setDSJACStatus();
+			setSJACStatus();
+			setNTPStatus();
+			setSiteSummaryStatus();
+			setTreeSummaryStatus();
 		}
 	}
 	
