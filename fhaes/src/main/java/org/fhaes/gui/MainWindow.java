@@ -77,6 +77,7 @@ import org.fhaes.enums.FeedbackMessageType;
 import org.fhaes.exceptions.CompositeFileException;
 import org.fhaes.feedback.FeedbackMessagePanel;
 import org.fhaes.feedback.FeedbackPreferenceManager;
+import org.fhaes.feedback.FeedbackPreferenceManager.FeedbackDictionary;
 import org.fhaes.fhfilereader.FHCategoryReader;
 import org.fhaes.fhrecorder.controller.FileController;
 import org.fhaes.fhrecorder.view.FireHistoryRecorder;
@@ -85,6 +86,9 @@ import org.fhaes.filefilter.CSVFileFilter;
 import org.fhaes.filefilter.CSVZipFileFilter;
 import org.fhaes.filefilter.FHAESFileFilter;
 import org.fhaes.filefilter.FHXFileFilter;
+import org.fhaes.filefilter.PDFFilter;
+import org.fhaes.filefilter.PNGFilter;
+import org.fhaes.filefilter.SVGFilter;
 import org.fhaes.filefilter.TXTFileFilter;
 import org.fhaes.filefilter.XLSXFileFilter;
 import org.fhaes.help.RemoteHelp;
@@ -534,6 +538,96 @@ public class MainWindow implements PrefsListener {
 		}
 		
 		return JOptionPane.OK_OPTION;
+	}
+	
+	/**
+	 * Handles bulk exporting of charts for all currently loaded files.
+	 * 
+	 * @param format
+	 */
+	public void bulkExportCharts(String format) {
+		
+		if (fileListModel.getSize() > 0)
+		{
+			String lastVisitedFolder = App.prefs.getPref(PrefKey.CHART_LAST_EXPORT_FOLDER, null);
+			final JFileChooser fc = new JFileChooser(lastVisitedFolder);
+			
+			PDFFilter pdff = new PDFFilter();
+			PNGFilter pngf = new PNGFilter();
+			SVGFilter svgf = new SVGFilter();
+			
+			String outputDirectory = null;
+			
+			if (reportPanel.panelChart != null)
+			{
+				if (format == "PDF")
+				{
+					fc.addChoosableFileFilter(pdff);
+					fc.setFileFilter(pdff);
+				}
+				else if (format == "PNG")
+				{
+					fc.addChoosableFileFilter(pngf);
+					fc.setFileFilter(pngf);
+				}
+				else
+				{
+					fc.addChoosableFileFilter(svgf);
+					fc.setFileFilter(svgf);
+				}
+				
+				fc.setAcceptAllFileFilterUsed(false);
+				fc.setMultiSelectionEnabled(false);
+				fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+				fc.setDialogTitle("Choose directory to bulk export charts...");
+				
+				int returnVal = fc.showOpenDialog(App.mainFrame);
+				if (returnVal == JFileChooser.APPROVE_OPTION)
+				{
+					outputDirectory = fc.getSelectedFile().getAbsolutePath();
+					App.prefs.setPref(PrefKey.CHART_LAST_EXPORT_FOLDER, outputDirectory);
+				}
+			}
+			
+			if (outputDirectory != null)
+			{
+				try
+				{
+					for (int i = 0; i < fileListModel.getSize(); i++)
+					{
+						reportPanel.setFile(fileListModel.getElementAt(i));
+						
+						String fileNameWithoutExtension = fileListModel.getElementAt(i).getFileNameWithoutExtension();
+						File outputFile = new File(outputDirectory + File.separator + fileNameWithoutExtension);
+						
+						if (fc.getFileFilter().getDescription().equals(pdff.getDescription()))
+						{
+							log.debug("Adding pdf extension to output file name");
+							outputFile = new File(outputFile.getAbsolutePath() + ".pdf");
+						}
+						else if (fc.getFileFilter().getDescription().equals(pngf.getDescription()))
+						{
+							log.debug("Adding png extension to output file name");
+							outputFile = new File(outputFile.getAbsolutePath() + ".png");
+						}
+						else if (fc.getFileFilter().getDescription().equals(svgf.getDescription()))
+						{
+							log.debug("Adding svg extension to output file name");
+							outputFile = new File(outputFile.getAbsolutePath() + ".svg");
+						}
+						
+						reportPanel.panelChart.doBulkExport(fc.getFileFilter(), pdff, pngf, svgf, outputFile);
+					}
+					
+					MainWindow.getInstance().getFeedbackMessagePanel().updateFeedbackMessage(FeedbackMessageType.INFO,
+							FeedbackDisplayProtocol.AUTO_HIDE, FeedbackDictionary.NEOFHCHART_BULK_EXPORT_MESSAGE.toString());
+				}
+				catch (Exception ex)
+				{
+					ex.printStackTrace();
+				}
+			}
+		}
 	}
 	
 	/**
@@ -1285,6 +1379,7 @@ public class MainWindow implements PrefsListener {
 					
 					App.prefs.setStringArrayPref(PrefKey.RECENT_DOCUMENT_LIST, null);
 				}
+				
 			});
 			
 			mnOpenRecent.add(clearHistory);
@@ -1380,7 +1475,6 @@ public class MainWindow implements PrefsListener {
 				
 				handleFileSelectionChanged();
 			}
-			
 		});
 		
 		fileListModel.addListDataListener(new ListDataListener() {
@@ -1427,7 +1521,6 @@ public class MainWindow implements PrefsListener {
 		
 		fhxFileList.setDragEnabled(true);
 		fhxFileList.setDropMode(DropMode.INSERT);
-		
 		fhxFileList.addKeyListener(new KeyListener() {
 			
 			@Override
@@ -2289,11 +2382,14 @@ public class MainWindow implements PrefsListener {
 		}
 		mnFile.add(mnSave);
 		
-		JMenu exportMenu = new JMenu(chartActions.actionExportChart);
-		exportMenu.add(new FHAESMenuItem(chartActions.actionExportChartSVG));
-		exportMenu.add(new FHAESMenuItem(chartActions.actionExportChartPDF));
-		exportMenu.add(new FHAESMenuItem(chartActions.actionExportChartPNG));
-		mnFile.add(exportMenu);
+		JMenu mnExport = new JMenu("Export chart...");
+		mnExport.setIcon(Builder.getImageIcon("document_export.png"));
+		mnExport.add(new FHAESMenuItem(chartActions.actionExportCurrentChart));
+		mnExport.addSeparator();
+		mnExport.add(new FHAESMenuItem(chartActions.actionBulkExportChartsAsSVG));
+		mnExport.add(new FHAESMenuItem(chartActions.actionBulkExportChartsAsPDF));
+		mnExport.add(new FHAESMenuItem(chartActions.actionBulkExportChartsAsPNG));
+		mnFile.add(mnExport);
 		
 		mnSave.add(new FHAESMenuItem(this.actionSaveCurrentSummary));
 		mnSave.add(new FHAESMenuItem(this.actionSaveAllSummaries));
@@ -2436,7 +2532,7 @@ public class MainWindow implements PrefsListener {
 		JToolBarButton btnNew = new JToolBarButton(this.actionFileNew);
 		JToolBarButton btnOpen = new JToolBarButton(this.actionFileOpen);
 		JToolBarButton btnSaveAll = new JToolBarButton(this.actionSaveResults);
-		JToolBarButton btnExportChart = new JToolBarButton(MainWindow.chartActions.actionExportChart);
+		JToolBarButton btnExportChart = new JToolBarButton(MainWindow.chartActions.actionExportCurrentChart);
 		JToolBarButton btnEditFile = new JToolBarButton(this.actionEditFile);
 		JToolBarButton btnSelectAll = new JToolBarButton(reportPanel.actionSelectAll);
 		JToolBarButton btnCopy = new JToolBarButton(reportPanel.actionCopy);

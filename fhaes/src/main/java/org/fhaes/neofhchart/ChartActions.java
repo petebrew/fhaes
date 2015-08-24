@@ -23,6 +23,7 @@ import javax.swing.Action;
 import javax.swing.ActionMap;
 
 import org.apache.batik.swing.JSVGCanvas;
+import org.fhaes.gui.MainWindow;
 import org.fhaes.preferences.App;
 import org.fhaes.preferences.FHAESPreferences.PrefKey;
 import org.fhaes.util.FHAESAction;
@@ -58,10 +59,10 @@ public class ChartActions {
 	public FHAESAction actionShowRecorderDepth;
 	
 	// Declare export actions
-	public FHAESAction actionExportChart;
-	public FHAESAction actionExportChartSVG;
-	public FHAESAction actionExportChartPNG;
-	public FHAESAction actionExportChartPDF;
+	public FHAESAction actionExportCurrentChart;
+	public FHAESAction actionBulkExportChartsAsSVG;
+	public FHAESAction actionBulkExportChartsAsPNG;
+	public FHAESAction actionBulkExportChartsAsPDF;
 	
 	// Declare sort actions
 	public FHAESAction actionSortStartYear;
@@ -232,58 +233,65 @@ public class ChartActions {
 		actionZoomReset.setEnabled(false);
 		
 		/*
-		 * EXPORT CHART
+		 * EXPORT CURRENT CHART
 		 */
-		actionExportChart = new FHAESAction("Export chart as...", "document_export.png", "Export Chart", "Export current chart to disk") {
-			
+		actionExportCurrentChart = new FHAESAction("Export current chart as...", "document_export.png", "Export Chart",
+				"Export current chart to disk") {
+				
 			private static final long serialVersionUID = 1L;
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
 				
-				exportChart(null);
+				if (neoFHChart == null)
+					return;
+					
+				neoFHChart.doSingleExport();
 			}
 		};
 		
 		/*
-		 * EXPORT CHART SVG
+		 * BULK EXPORT CHARTS AS PDF
 		 */
-		actionExportChartSVG = new FHAESAction("SVG file", "svg22.png", "Chart as SVG", "Export current chart as an SVG file") {
-			
+		actionBulkExportChartsAsPDF = new FHAESAction("Bulk export to PDF", "pdf22.png", "Chart as PDF",
+				"Export charts from all loaded files to PDF documents") {
+				
 			private static final long serialVersionUID = 1L;
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
 				
-				exportChart("SVG");
+				MainWindow.getInstance().bulkExportCharts("PDF");
 			}
 		};
 		
 		/*
-		 * EXPORT CHART PNG
+		 * BULK EXPORT CHARTS AS PNG
 		 */
-		actionExportChartPNG = new FHAESAction("PNG image", "png.png", "Chart as PNG", "Export current chart as a PNG image") {
-			
+		actionBulkExportChartsAsPNG = new FHAESAction("Bulk export to PNG", "png.png", "Chart as PNG",
+				"Export charts from all loaded files to PNG images") {
+				
 			private static final long serialVersionUID = 1L;
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
 				
-				exportChart("PNG");
+				MainWindow.getInstance().bulkExportCharts("PNG");
 			}
 		};
 		
 		/*
-		 * EXPORT CHART PDF
+		 * BULK EXPORT CHARTS AS SVG
 		 */
-		actionExportChartPDF = new FHAESAction("PDF document", "pdf22.png", "Chart as PDF", "Export current chart as a PDF document") {
-			
+		actionBulkExportChartsAsSVG = new FHAESAction("Bulk export to SVG", "svg22.png", "Chart as SVG",
+				"Export charts from all loaded files to SVG files") {
+				
 			private static final long serialVersionUID = 1L;
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
 				
-				exportChart("PDF");
+				MainWindow.getInstance().bulkExportCharts("SVG");
 			}
 		};
 		
@@ -457,10 +465,10 @@ public class ChartActions {
 		actionZoomIn.setEnabled(chart != null);
 		actionZoomOut.setEnabled(chart != null);
 		actionZoomReset.setEnabled(chart != null);
-		actionExportChart.setEnabled(chart != null);
-		actionExportChartPDF.setEnabled(chart != null);
-		actionExportChartPNG.setEnabled(chart != null);
-		actionExportChartSVG.setEnabled(chart != null);
+		actionExportCurrentChart.setEnabled(chart != null);
+		actionBulkExportChartsAsPDF.setEnabled(chart != null);
+		actionBulkExportChartsAsPNG.setEnabled(chart != null);
+		actionBulkExportChartsAsSVG.setEnabled(chart != null);
 		actionShowCommonTickLine.setEnabled(chart != null);
 		actionShowMinorTickMarks.setEnabled(chart != null);
 		actionShowSampleDepthThreshold.setEnabled(chart != null);
@@ -527,26 +535,6 @@ public class ChartActions {
 		};
 		
 		neoFHChart.svgCanvas.getUpdateManager().getUpdateRunnableQueue().invokeLater(r);
-	}
-	
-	/**
-	 * Handles exporting of the neoFHChart.
-	 * 
-	 * @param format
-	 */
-	private void exportChart(String format) {
-		
-		if (neoFHChart == null)
-			return;
-			
-		if (format == null)
-		{
-			neoFHChart.doExport();
-		}
-		else
-		{
-			neoFHChart.doExport(format);
-		}
 	}
 	
 	// private void setTickColor() {

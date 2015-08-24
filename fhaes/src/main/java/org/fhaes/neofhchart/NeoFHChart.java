@@ -39,12 +39,9 @@ import org.apache.batik.swing.JSVGScrollPane;
 import org.apache.batik.swing.gvt.AbstractPanInteractor;
 import org.codehaus.plexus.util.FileUtils;
 import org.fhaes.fhfilereader.AbstractFireHistoryReader;
-import org.fhaes.filefilter.CSVFileFilter;
-import org.fhaes.filefilter.FHXFileFilter;
 import org.fhaes.filefilter.PDFFilter;
 import org.fhaes.filefilter.PNGFilter;
 import org.fhaes.filefilter.SVGFilter;
-import org.fhaes.filefilter.TXTFileFilter;
 import org.fhaes.neofhchart.svg.FireChartSVG;
 import org.fhaes.preferences.App;
 import org.fhaes.preferences.FHAESPreferences.PrefKey;
@@ -84,10 +81,18 @@ public class NeoFHChart extends JPanel implements PrefsListener {
 	public NeoFHChart() {
 		
 		App.prefs.addPrefsListener(this);
-		setLayout(new BorderLayout());
+		this.setLayout(new BorderLayout());
 		
 		JSVGScrollPane scrollPane = new JSVGScrollPane(svgCanvas);
-		svgCanvas.getInteractors().add(this.panInteractor);
+		svgCanvas.getInteractors().add(new AbstractPanInteractor() {
+			
+			@Override
+			public boolean startInteraction(InputEvent ie) {
+				
+				int mods = ie.getModifiers();
+				return ie.getID() == MouseEvent.MOUSE_PRESSED && (mods & InputEvent.BUTTON1_MASK) != 0;
+			}
+		});
 		svgCanvas.addMouseWheelListener(new MouseWheelListener() {
 			
 			@Override
@@ -142,25 +147,20 @@ public class NeoFHChart extends JPanel implements PrefsListener {
 	}
 	
 	/**
-	 * Custom interactor for panning with mouse drags.
-	 */
-	protected AbstractPanInteractor panInteractor = new AbstractPanInteractor() {
-		
-		@Override
-		public boolean startInteraction(InputEvent ie) {
-			
-			int mods = ie.getModifiers();
-			return ie.getID() == MouseEvent.MOUSE_PRESSED && (mods & InputEvent.BUTTON1_MASK) != 0;
-		}
-	};
-	
-	/**
 	 * Clear the current chart from the canvas.
 	 */
 	public void clearChart() {
 		
 		currentChart = null;
 		svgCanvas.setDocument(null);
+	}
+	
+	/**
+	 * This method creates the series list dialog if it doesn't exist yet
+	 */
+	protected void showSeriesPane() {
+		
+		SeriesListDialog.showDialog(currentChart, svgCanvas);
 	}
 	
 	/**
@@ -195,27 +195,143 @@ public class NeoFHChart extends JPanel implements PrefsListener {
 	}
 	
 	/**
-	 * This method creates the series list dialog if it doesn't exist yet
+	 * Export the current chart as a PDF document, PNG image, or SVG file.
 	 */
-	protected void showSeriesPane() {
+	public void doSingleExport() {
 		
-		SeriesListDialog.showDialog(currentChart, svgCanvas);
+		if (currentChart != null)
+		{
+			String lastVisitedFolder = App.prefs.getPref(PrefKey.CHART_LAST_EXPORT_FOLDER, null);
+			final JFileChooser fc = new JFileChooser(lastVisitedFolder);
+			
+			PDFFilter pdff = new PDFFilter();
+			PNGFilter pngf = new PNGFilter();
+			SVGFilter svgf = new SVGFilter();
+			
+			fc.addChoosableFileFilter(pdff);
+			fc.addChoosableFileFilter(pngf);
+			fc.addChoosableFileFilter(svgf);
+			fc.setFileFilter(svgf);
+			
+			fc.setAcceptAllFileFilterUsed(false);
+			fc.setMultiSelectionEnabled(false);
+			fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+			fc.setDialogTitle("Export current chart as...");
+			
+			// In response to a button click:
+			int returnVal = fc.showOpenDialog(App.mainFrame);
+			if (returnVal == JFileChooser.APPROVE_OPTION)
+			{
+				File outputFile = fc.getSelectedFile();
+				
+				if (FileUtils.getExtension(outputFile.getAbsolutePath()) == "")
+				{
+					log.debug("Output file extension not set by user");
+					
+					// Make sure to add the file extension if it was not specified
+					if (fc.getFileFilter().getDescription().equals(pdff.getDescription()))
+					{
+						log.debug("Adding pdf extension to output file name");
+						outputFile = new File(outputFile.getAbsolutePath() + ".pdf");
+					}
+					else if (fc.getFileFilter().getDescription().equals(pngf.getDescription()))
+					{
+						log.debug("Adding png extension to output file name");
+						outputFile = new File(outputFile.getAbsolutePath() + ".png");
+					}
+					else if (fc.getFileFilter().getDescription().equals(svgf.getDescription()))
+					{
+						log.debug("Adding svg extension to output file name");
+						outputFile = new File(outputFile.getAbsolutePath() + ".svg");
+					}
+				}
+				else
+				{
+					log.debug("Output file extension set my user to '" + FileUtils.getExtension(outputFile.getAbsolutePath()) + "'");
+				}
+				
+				App.prefs.setPref(PrefKey.CHART_LAST_EXPORT_FOLDER, outputFile.getAbsolutePath());
+				FileFilter selectedFilter = fc.getFileFilter();
+				
+				if (outputFile.exists())
+				{
+					Object[] options = { "Overwrite", "No", "Cancel" };
+					int response = JOptionPane.showOptionDialog(App.mainFrame,
+							"The file '" + outputFile.getName() + "' already exists.  Are you sure you want to overwrite?", "Confirm",
+							JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, // do not use a custom Icon
+							options, // the titles of buttons
+							options[0]); // default button title
+							
+					// Go back and redo the file selection in case the user does not want to overwrite the existing file
+					if (response != JOptionPane.YES_OPTION)
+					{
+						doSingleExport();
+						return;
+					}
+				}
+				
+				if (selectedFilter.equals(pdff))
+				{
+					PDFExportOptionsDialog exp = new PDFExportOptionsDialog(currentChart, outputFile);
+					exp.setVisible(true);
+				}
+				else if (selectedFilter.equals(pngf))
+				{
+					PNGExportOptionsDialog exp = new PNGExportOptionsDialog(currentChart, outputFile);
+					exp.setVisible(true);
+				}
+				else if (selectedFilter.equals(svgf))
+				{
+					currentChart.saveSVGToDisk(outputFile);
+				}
+			}
+		}
 	}
 	
+	/**
+	 * Bulk exports charts for all currently loaded files as PDF documents, PNG images, or SVG files.
+	 * 
+	 * @param selectedFilter
+	 * @param pdff
+	 * @param pngf
+	 * @param svgf
+	 * @param outputFile
+	 */
+	public void doBulkExport(FileFilter selectedFilter, PDFFilter pdff, PNGFilter pngf, SVGFilter svgf, File outputFile) {
+		
+		if (selectedFilter.equals(pdff))
+		{
+			PDFExportOptionsDialog exp = new PDFExportOptionsDialog(currentChart, outputFile);
+			exp.setVisible(true);
+		}
+		else if (selectedFilter.equals(pngf))
+		{
+			PNGExportOptionsDialog exp = new PNGExportOptionsDialog(currentChart, outputFile);
+			exp.setVisible(true);
+		}
+		else if (selectedFilter.equals(svgf))
+		{
+			currentChart.saveSVGToDisk(outputFile);
+		}
+	}
+	
+	/**
+	 * Handles when a preference is changed on the NeoFHChart.
+	 */
 	@Override
 	public void prefChanged(PrefsEvent e) {
 		
-		if (currentChart == null)
-			return;
-			
-		if (e.getPref().getValue().toLowerCase().startsWith("chart"))
+		if (currentChart != null)
 		{
-			// currentChart.positionChartGroupersAndDrawTimeAxis();
-			log.debug("Preference change for key " + e.getPref() + " picked up by NeoFHChart");
-			
-			App.prefs.setSilentMode(false);
-			redrawChart();
-			App.prefs.setSilentMode(false);
+			if (e.getPref().getValue().toLowerCase().startsWith("chart"))
+			{
+				// currentChart.positionChartGroupersAndDrawTimeAxis();
+				log.debug("Preference change for key " + e.getPref() + " picked up by NeoFHChart");
+				
+				App.prefs.setSilentMode(false);
+				redrawChart();
+				App.prefs.setSilentMode(false);
+			}
 		}
 	}
 	
@@ -234,151 +350,5 @@ public class NeoFHChart extends JPanel implements PrefsListener {
 		};
 		
 		svgCanvas.getUpdateManager().getUpdateRunnableQueue().invokeLater(r);
-	}
-	
-	/**
-	 * Export the chart to SVG
-	 */
-	public void doExport() {
-		
-		doExport("SVG");
-	}
-	
-	/**
-	 * Export the chart to one of the following formats: SVG, PDF or PNG.
-	 * 
-	 * @param format
-	 */
-	public void doExport(String format) {
-		
-		if (currentChart == null)
-			return;
-			
-		File outputFile;
-		FileFilter selectedFilter;
-		String lastVisitedFolder = App.prefs.getPref(PrefKey.PREF_LAST_EXPORT_FOLDER, null);
-		
-		// Create a file chooser
-		final JFileChooser fc = new JFileChooser(lastVisitedFolder);
-		
-		SVGFilter svgf = new SVGFilter();
-		PNGFilter pngf = new PNGFilter();
-		PDFFilter pdff = new PDFFilter();
-		
-		if (format == null)
-		{
-			fc.addChoosableFileFilter(pngf);
-			fc.addChoosableFileFilter(pdff);
-			fc.addChoosableFileFilter(svgf);
-			fc.setFileFilter(svgf);
-		}
-		else if (format.equals("SVG"))
-		{
-			fc.addChoosableFileFilter(svgf);
-			fc.setFileFilter(svgf);
-		}
-		else if (format.equals("PNG"))
-		{
-			fc.addChoosableFileFilter(pngf);
-			fc.setFileFilter(pngf);
-		}
-		else if (format.equals("PDF"))
-		{
-			fc.addChoosableFileFilter(pdff);
-			fc.setFileFilter(pdff);
-		}
-		
-		fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
-		fc.setAcceptAllFileFilterUsed(false);
-		fc.setMultiSelectionEnabled(false);
-		fc.setDialogTitle("Save as...");
-		
-		// In response to a button click:
-		int returnVal = fc.showOpenDialog(App.mainFrame);
-		
-		if (returnVal == JFileChooser.APPROVE_OPTION)
-		{
-			outputFile = fc.getSelectedFile();
-			
-			if (FileUtils.getExtension(outputFile.getAbsolutePath()) == "")
-			{
-				log.debug("Output file extension not set by user");
-				
-				if (fc.getFileFilter().getDescription().equals(new FHXFileFilter().getDescription()))
-				{
-					log.debug("Adding fhx extension to output file name");
-					outputFile = new File(outputFile.getAbsolutePath() + ".fhx");
-				}
-				else if (fc.getFileFilter().getDescription().equals(new TXTFileFilter().getDescription()))
-				{
-					log.debug("Adding txt extension to output file name");
-					outputFile = new File(outputFile.getAbsolutePath() + ".txt");
-				}
-				else if (fc.getFileFilter().getDescription().equals(new CSVFileFilter().getDescription()))
-				{
-					log.debug("Adding csv extension to output file name");
-					outputFile = new File(outputFile.getAbsolutePath() + ".csv");
-				}
-				else if (fc.getFileFilter().getDescription().equals(new PDFFilter().getDescription()))
-				{
-					log.debug("Adding pdf extension to output file name");
-					outputFile = new File(outputFile.getAbsolutePath() + ".pdf");
-				}
-				else if (fc.getFileFilter().getDescription().equals(new PNGFilter().getDescription()))
-				{
-					log.debug("Adding png extension to output file name");
-					outputFile = new File(outputFile.getAbsolutePath() + ".png");
-				}
-				else if (fc.getFileFilter().getDescription().equals(new SVGFilter().getDescription()))
-				{
-					log.debug("Adding svg extension to output file name");
-					outputFile = new File(outputFile.getAbsolutePath() + ".svg");
-				}
-			}
-			else
-			{
-				log.debug("Output file extension set my user to '" + FileUtils.getExtension(outputFile.getAbsolutePath()) + "'");
-			}
-			
-			App.prefs.setPref(PrefKey.PREF_LAST_EXPORT_FOLDER, outputFile.getAbsolutePath());
-			
-			selectedFilter = fc.getFileFilter();
-		}
-		else
-		{
-			return;
-		}
-		
-		if (outputFile.exists())
-		{
-			Object[] options = { "Overwrite", "No", "Cancel" };
-			int response = JOptionPane.showOptionDialog(App.mainFrame,
-					"The file '" + outputFile.getName() + "' already exists.  Are you sure you want to overwrite?", "Confirm",
-					JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, // do not use a custom Icon
-					options, // the titles of buttons
-					options[0]); // default button title
-					
-			if (response != JOptionPane.YES_OPTION)
-			{
-				doExport();
-				return;
-			}
-		}
-		
-		if (selectedFilter.equals(svgf))
-		{
-			currentChart.saveSVGToDisk(outputFile);
-			return;
-		}
-		else if (selectedFilter.equals(pdff))
-		{
-			PDFExportOptionsDialog exp = new PDFExportOptionsDialog(currentChart, outputFile);
-			exp.setVisible(true);
-		}
-		else if (selectedFilter.equals(pngf))
-		{
-			PNGExportOptionsDialog exp = new PNGExportOptionsDialog(currentChart, outputFile);
-			exp.setVisible(true);
-		}
 	}
 }

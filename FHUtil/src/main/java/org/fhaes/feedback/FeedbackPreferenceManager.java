@@ -35,6 +35,8 @@ public class FeedbackPreferenceManager {
 		
 		FHRECORDER_FILE_SAVED_MESSAGE("FHX file was saved successfully.", PrefKey.SHOW_FHRECORDER_FILE_SAVED_MESSAGE),
 		
+		NEOFHCHART_BULK_EXPORT_MESSAGE("Bulk chart export completed successfully.", PrefKey.SHOW_NEOFHCHART_BULK_EXPORT_MESSAGE),
+		
 		NEOFHCHART_PDF_EXPORT_MESSAGE("PDF file was exported successfully.", PrefKey.SHOW_NEOFHCHART_PDF_EXPORT_MESSAGE),
 		
 		NEOFHCHART_PNG_EXPORT_MESSAGE("PNG file was exported successfully.", PrefKey.SHOW_NEOFHCHART_PNG_EXPORT_MESSAGE),
@@ -107,6 +109,8 @@ public class FeedbackPreferenceManager {
 		App.prefs.setBooleanPref(PrefKey.SHOW_CATEGORY_FILE_SAVED_MESSAGE, true);
 		
 		App.prefs.setBooleanPref(PrefKey.SHOW_FHRECORDER_FILE_SAVED_MESSAGE, true);
+		
+		App.prefs.setBooleanPref(PrefKey.SHOW_NEOFHCHART_BULK_EXPORT_MESSAGE, true);
 		
 		App.prefs.setBooleanPref(PrefKey.SHOW_NEOFHCHART_PDF_EXPORT_MESSAGE, true);
 		

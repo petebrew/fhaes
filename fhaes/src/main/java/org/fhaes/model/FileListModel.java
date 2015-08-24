@@ -39,13 +39,24 @@ import edu.emory.mathcs.backport.java.util.Collections;
 public class FileListModel extends AbstractListModel {
 	
 	private static final long serialVersionUID = 1L;
+	
+	// Declare logger
 	private static final Logger log = LoggerFactory.getLogger(FileListModel.class);
 	
+	// Declare local variables
 	private ArrayList<FHFile> list;
 	private boolean listenersEnabled = true;
 	
 	/**
-	 * TODO
+	 * Creates a new FileListModel.
+	 */
+	public FileListModel() {
+		
+		this.list = new ArrayList<FHFile>();
+	}
+	
+	/**
+	 * Creates a new FileListModel based on the input list.
 	 * 
 	 * @param list
 	 */
@@ -59,14 +70,6 @@ public class FileListModel extends AbstractListModel {
 		{
 			this.list = list;
 		}
-	}
-	
-	/**
-	 * TODO
-	 */
-	public FileListModel() {
-		
-		this.list = new ArrayList<FHFile>();
 	}
 	
 	/**
@@ -125,6 +128,16 @@ public class FileListModel extends AbstractListModel {
 		}
 	}
 	
+	/**
+	 * Get a list of *all* files from this model, regardless of whether they are valid or not.
+	 * 
+	 * @return
+	 */
+	public ArrayList<FHFile> getCompleteFileList() {
+		
+		return list;
+	}
+
 	/**
 	 * Get an ArrayList of all the *valid* FHFiles in this model.
 	 * 
@@ -210,17 +223,13 @@ public class FileListModel extends AbstractListModel {
 			}
 			else if (eventType.equals(EventTypeToProcess.INJURY_EVENT))
 			{
-				
 				if (f.isValidFHXFile() && f.hasInjuryEvents())
 					tempList.add(f);
-					
 			}
 			else if (eventType.equals(EventTypeToProcess.FIRE_AND_INJURY_EVENT))
 			{
-				
 				if (f.isValidFHXFile() && (f.hasInjuryEvents() || f.hasInjuryEvents()))
 					tempList.add(f);
-					
 			}
 			else
 			{
@@ -275,16 +284,6 @@ public class FileListModel extends AbstractListModel {
 		log.debug("getValidFileListWithEvents() returning a list of " + tempList.size() + " items");
 		
 		return tempList;
-	}
-	
-	/**
-	 * Get a list of *all* files from this model, regardless of whether they are valid or not.
-	 * 
-	 * @return
-	 */
-	public ArrayList<FHFile> getCompleteFileList() {
-		
-		return list;
 	}
 	
 	/**

@@ -335,6 +335,8 @@ public class FHAESPreferences {
 		
 		CHART_FONT_FAMILY("chartFontFamily"),
 		
+		CHART_LAST_EXPORT_FOLDER("chartLastExportFolder"),
+		
 		CHART_AXIS_X_AUTO_RANGE("chartAxisXAutoRange"),
 		
 		CHART_AXIS_X_MIN("chartAxisXMin"),
@@ -426,6 +428,8 @@ public class FHAESPreferences {
 		SHOW_CATEGORY_FILE_SAVED_MESSAGE("showCategoryFileSavedMessage"),
 		
 		SHOW_FHRECORDER_FILE_SAVED_MESSAGE("showFHRecorderFileSavedMessage"),
+		
+		SHOW_NEOFHCHART_BULK_EXPORT_MESSAGE("showNeoFHChartBulkExportMessage"),
 		
 		SHOW_NEOFHCHART_PDF_EXPORT_MESSAGE("showNeoFHChartPDFExportMessage"),
 		
