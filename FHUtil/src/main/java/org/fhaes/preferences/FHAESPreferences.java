@@ -333,6 +333,10 @@ public class FHAESPreferences {
 		
 		CHART_SHOW_LEGEND("chartShowLegend"),
 		
+		CHART_SHOW_CATEGORY_GROUPS("chartShowCategoryGroups"),
+		
+		CHART_SHOW_CATEGORY_LABELS("chartShowCategoryLabels"),
+		
 		CHART_FONT_FAMILY("chartFontFamily"),
 		
 		CHART_LAST_EXPORT_FOLDER("chartLastExportFolder"),

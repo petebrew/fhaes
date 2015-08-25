@@ -378,17 +378,7 @@ public class FireChartSVG {
 	 */
 	private int applyBCYearOffset(int originalYear) {
 		
-		int effectiveFirstYear;
-		
-		// Determine what to reference as the first year during the transformation
-		if (App.prefs.getBooleanPref(PrefKey.CHART_AXIS_X_AUTO_RANGE, true))
-		{
-			effectiveFirstYear = reader.getFirstYear();
-		}
-		else
-		{
-			effectiveFirstYear = App.prefs.getIntPref(PrefKey.CHART_AXIS_X_MIN, 1900);
-		}
+		int effectiveFirstYear = getEffectiveFirstYear();
 		
 		// Apply the offset transformation
 		if (effectiveFirstYear < 0 && originalYear < 0)
@@ -413,17 +403,7 @@ public class FireChartSVG {
 	 */
 	private int removeBCYearOffset(int offsetYear) {
 		
-		int effectiveFirstYear;
-		
-		// Determine what to reference as the first year during the transformation
-		if (App.prefs.getBooleanPref(PrefKey.CHART_AXIS_X_AUTO_RANGE, true))
-		{
-			effectiveFirstYear = reader.getFirstYear();
-		}
-		else
-		{
-			effectiveFirstYear = App.prefs.getIntPref(PrefKey.CHART_AXIS_X_MIN, 1900);
-		}
+		int effectiveFirstYear = getEffectiveFirstYear();
 		
 		// Remove the offset transformation
 		if (effectiveFirstYear < 0 && offsetYear - Math.abs(effectiveFirstYear) < 0)
@@ -437,6 +417,24 @@ public class FireChartSVG {
 		else
 		{
 			return offsetYear;
+		}
+	}
+	
+	/**
+	 * Determines what year to use as the effective first year when applying or removing the BC offset.
+	 * 
+	 * @return the effective first year
+	 */
+	private int getEffectiveFirstYear() {
+		
+		// Determine what to reference as the first year during the transformation
+		if (App.prefs.getBooleanPref(PrefKey.CHART_AXIS_X_AUTO_RANGE, true))
+		{
+			return reader.getFirstYear();
+		}
+		else
+		{
+			return App.prefs.getIntPref(PrefKey.CHART_AXIS_X_MIN, reader.getFirstYear());
 		}
 	}
 	
