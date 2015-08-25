@@ -43,7 +43,7 @@ public class FHSeriesSVG extends FHSeries {
 	public FHSeriesSVG(FHSeries series) throws Exception {
 		
 		super(series.getTitle(), series.getFirstYear(), series.hasPith(), series.hasBark(), series.getRecordingYears(),
-				series.getEventYears(), series.getInjuryYears());
+				series.getEventYears(), series.getInjuryYears(), series.getCategoryEntries());
 	}
 	
 	/**
@@ -56,7 +56,7 @@ public class FHSeriesSVG extends FHSeries {
 	public FHSeriesSVG(FHSeries series, String taxon) throws Exception {
 		
 		super(series.getTitle(), series.getFirstYear(), series.hasPith(), series.hasBark(), series.getRecordingYears(),
-				series.getEventYears(), series.getInjuryYears());
+				series.getEventYears(), series.getInjuryYears(), series.getCategoryEntries());
 				
 		this.taxon = taxon;
 	}

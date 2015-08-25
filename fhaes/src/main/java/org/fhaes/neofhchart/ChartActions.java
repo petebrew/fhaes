@@ -27,6 +27,8 @@ import org.fhaes.gui.MainWindow;
 import org.fhaes.preferences.App;
 import org.fhaes.preferences.FHAESPreferences.PrefKey;
 import org.fhaes.util.FHAESAction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * ChartActions Class.
@@ -39,6 +41,9 @@ public class ChartActions {
 	public enum SeriesSortType {
 		NAME, CATEGORY, FIRST_FIRE_YEAR, START_YEAR, END_YEAR;
 	};
+	
+	// Declare logger
+	private static final Logger log = LoggerFactory.getLogger(ChartActions.class);
 	
 	// Declare chart instance
 	protected NeoFHChart neoFHChart;
@@ -533,22 +538,27 @@ public class ChartActions {
 				
 				if (type.equals(SeriesSortType.NAME))
 				{
+					log.debug("Sorting chart series by name...");
 					neoFHChart.currentChart.sortByName();
 				}
 				else if (type.equals(SeriesSortType.CATEGORY))
 				{
+					log.debug("Sorting chart series by category...");
 					neoFHChart.currentChart.sortByCategory();
 				}
 				else if (type.equals(SeriesSortType.FIRST_FIRE_YEAR))
 				{
+					log.debug("Sorting chart series by first fire year...");
 					neoFHChart.currentChart.sortByFirstFireYear();
 				}
 				else if (type.equals(SeriesSortType.START_YEAR))
 				{
+					log.debug("Sorting chart series by start year...");
 					neoFHChart.currentChart.sortBySampleStartYear();
 				}
 				else if (type.equals(SeriesSortType.END_YEAR))
 				{
+					log.debug("Sorting chart series by end year...");
 					neoFHChart.currentChart.sortBySampleEndYear();
 				}
 			}

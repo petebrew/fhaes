@@ -32,7 +32,7 @@ public class FHSeries {
 	private final boolean[] recordingYears;
 	private final boolean[] eventYears;
 	private final boolean[] injuryYears;
-	private final ArrayList<FHCategoryEntry> categoryEntries;
+	private final ArrayList<FHCategoryEntry> categoryEntries = new ArrayList<FHCategoryEntry>();
 	
 	/**
 	 * This class is a container for data about a single series within a fire history data file.
@@ -70,7 +70,33 @@ public class FHSeries {
 		this.recordingYears = recordingYears;
 		this.eventYears = eventYears;
 		this.injuryYears = injuryYears;
-		this.categoryEntries = new ArrayList<FHCategoryEntry>();
+	}
+	
+	public FHSeries(String title, int firstYear, boolean hasPith, boolean hasBark, boolean[] recordingYears, boolean[] eventYears,
+			boolean[] injuryYears, ArrayList<FHCategoryEntry> categoryEntries) throws Exception {
+			
+		// Sanity checks
+		if (title == null)
+			throw new NullPointerException();
+		if (recordingYears == null)
+			throw new NullPointerException();
+		if (eventYears == null)
+			throw new NullPointerException();
+		if (injuryYears == null)
+			throw new NullPointerException();
+		if (recordingYears.length != eventYears.length || recordingYears.length != injuryYears.length)
+		{
+			throw new Exception("Reading years, event years and injury years arrays must be the same size");
+		}
+		
+		this.title = title;
+		this.firstYear = firstYear;
+		this.pith = hasPith;
+		this.bark = hasBark;
+		this.recordingYears = recordingYears;
+		this.eventYears = eventYears;
+		this.injuryYears = injuryYears;
+		this.categoryEntries.addAll(categoryEntries);
 	}
 	
 	/**
@@ -87,7 +113,6 @@ public class FHSeries {
 		this.recordingYears = inSeries.recordingYears;
 		this.eventYears = inSeries.eventYears;
 		this.injuryYears = inSeries.injuryYears;
-		this.categoryEntries = new ArrayList<FHCategoryEntry>();
 		this.categoryEntries.addAll(inSeries.getCategoryEntries());
 	}
 	
