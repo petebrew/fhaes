@@ -348,7 +348,7 @@ public class FireChartSVG {
 		}
 		else
 		{
-			return applyBCYearOffset(App.prefs.getIntPref(PrefKey.CHART_AXIS_X_MIN, 1900));
+			return applyBCYearOffset(App.prefs.getIntPref(PrefKey.CHART_AXIS_X_MIN, reader.getFirstYear()));
 		}
 	}
 	
@@ -365,7 +365,7 @@ public class FireChartSVG {
 		}
 		else
 		{
-			return applyBCYearOffset(App.prefs.getIntPref(PrefKey.CHART_AXIS_X_MAX, 2000));
+			return applyBCYearOffset(App.prefs.getIntPref(PrefKey.CHART_AXIS_X_MAX, reader.getLastYear()));
 		}
 	}
 	
