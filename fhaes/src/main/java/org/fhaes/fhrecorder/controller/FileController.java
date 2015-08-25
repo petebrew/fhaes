@@ -25,7 +25,6 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import javax.swing.JFileChooser;
@@ -54,8 +53,6 @@ public class FileController {
 	private static final Logger log = LoggerFactory.getLogger(FileController.class);
 	
 	// Declare public constants
-	public static final int CURRENT_YEAR = Calendar.getInstance().get(Calendar.YEAR);
-	public static final int EARLIEST_ALLOWED_YEAR = -99999;
 	public static final int MAX_VISIBLE_GRAPH_COLUMNS = 20;
 	public static final int FHX2_MAX_FILE_NAME_LENGTH = 8;
 	public static final int FHX2_MAX_SAMPLE_NAME_LENGTH = 8;

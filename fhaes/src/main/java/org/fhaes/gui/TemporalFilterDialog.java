@@ -34,7 +34,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import org.fhaes.fhrecorder.controller.FileController;
+import org.fhaes.util.SharedConstants;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -81,7 +81,7 @@ public class TemporalFilterDialog extends JDialog implements ActionListener {
 			JLabel lblStartYear = new JLabel("Start year:");
 			contentPanel.add(lblStartYear, "cell 0 1");
 		}
-		int thisyear = FileController.CURRENT_YEAR;
+		int thisyear = SharedConstants.CURRENT_YEAR;
 		{
 			spnStart = new JSpinner();
 			spnStart.setModel(new SpinnerNumberModel(thisyear - 1, null, thisyear - 1, new Integer(1)));

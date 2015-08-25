@@ -22,6 +22,7 @@ import java.util.Collections;
 import org.fhaes.fhrecorder.model.FHX2_FileRequiredPart;
 import org.fhaes.fhrecorder.model.FHX2_Sample;
 import org.fhaes.fhrecorder.view.MetaDataPanel;
+import org.fhaes.util.SharedConstants;
 
 /**
  * SampleController Class. This file contains the sample management functions of the service layer.
@@ -96,7 +97,7 @@ public class SampleController {
 		else
 		{
 			// Return a value that is outside of the valid year range so that there is no erroneous behavior
-			return FileController.EARLIEST_ALLOWED_YEAR - 1;
+			return SharedConstants.EARLIEST_ALLOWED_YEAR - 1;
 		}
 	}
 	
@@ -120,7 +121,7 @@ public class SampleController {
 		else
 		{
 			// Return a value that is outside of the valid year range so that there is no erroneous behavior
-			return FileController.CURRENT_YEAR + 1;
+			return SharedConstants.CURRENT_YEAR + 1;
 		}
 	}
 	

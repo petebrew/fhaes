@@ -15,12 +15,11 @@
  * 		If not, see <http://www.gnu.org/licenses/>.
  * 
  *************************************************************************************************/
-package org.fhaes.fhrecorder.view;
+package org.fhaes.components;
 
 import java.awt.Dimension;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.text.ParseException;
 
 import javax.swing.SpinnerNumberModel;
 import javax.swing.text.NumberFormatter;
@@ -139,11 +138,20 @@ public class BCADYearSpinner extends javax.swing.JSpinner {
 				{
 					try
 					{
-						getNumberEditor().getTextField().commitEdit();
+						Integer textAsInteger = new Integer(getNumberEditor().getTextField().toString());
+						
+						if (textAsInteger != 0)
+						{
+							getNumberEditor().getTextField().commitEdit();
+						}
+						else
+						{
+							getNumberEditor().getTextField().setText(getMostRecentValue().toString());
+						}
 					}
-					catch (ParseException ex)
+					catch (Exception ex)
 					{
-						// Do nothing!
+						getNumberEditor().getTextField().setText(getMostRecentValue().toString());
 					}
 				}
 			}
@@ -174,12 +182,18 @@ public class BCADYearSpinner extends javax.swing.JSpinner {
 			minimum = minimumValue;
 		}
 		
+		/**
+		 * Gets the current value of the spinner.
+		 */
 		@Override
 		public Object getValue() {
 			
 			return super.getValue();
 		}
 		
+		/**
+		 * Gets the next value of the spinner (the value returned if the up arrow is pressed).
+		 */
 		@Override
 		public Object getNextValue() {
 			
@@ -206,6 +220,9 @@ public class BCADYearSpinner extends javax.swing.JSpinner {
 			}
 		}
 		
+		/**
+		 * Gets the previous value of the spinner (the value returned if the down arrow is pressed).
+		 */
 		@Override
 		public Object getPreviousValue() {
 			
@@ -232,30 +249,34 @@ public class BCADYearSpinner extends javax.swing.JSpinner {
 			}
 		}
 		
+		/**
+		 * Sets the value of the spinner according to the input parameter.
+		 */
 		@Override
 		public void setValue(Object object) {
 			
+			Integer inputValue = (Integer) object;
 			Integer currentValue = (Integer) super.getValue();
 			
-			if ((Integer) object > maximum)
+			if (inputValue > maximum)
 			{
 				super.setValue(maximum);
 			}
-			else if ((Integer) object < minimum)
+			else if (inputValue < minimum)
 			{
 				super.setValue(minimum);
 			}
-			else if ((Integer) object == 0 && currentValue > 0)
+			else if (inputValue == 0 && currentValue >= 0)
 			{
 				super.setValue(1);
 			}
-			else if ((Integer) object == 0 && currentValue < 0)
+			else if (inputValue == 0 && currentValue < 0)
 			{
 				super.setValue(-1);
 			}
 			else
 			{
-				super.setValue(object);
+				super.setValue(inputValue);
 			}
 		}
 	}

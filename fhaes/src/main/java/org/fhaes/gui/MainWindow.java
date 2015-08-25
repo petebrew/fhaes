@@ -150,6 +150,7 @@ public class MainWindow implements PrefsListener {
 	private JFrame frame;
 	private JMenu mnOpenRecent;
 	private JMenu mnSave;
+	private JMenu mnExport;
 	private JComboBox fileSortComboBox;
 	private JSplitPane splitPane;
 	private JPanel fileListDisplayPanel;
@@ -1178,9 +1179,10 @@ public class MainWindow implements PrefsListener {
 		boolean isFileListPopulated = fileListModel.getSize() > 0;
 		
 		// Enabled/Disable buttons depending
+		mnSave.setEnabled(isFileListPopulated);
+		mnExport.setEnabled(isFileListPopulated);
 		actionClearList.setEnabled(isFileListPopulated);
 		actionClearCurrent.setEnabled(isFileListPopulated);
-		mnSave.setEnabled(isFileListPopulated);
 		actionSaveAll.setEnabled(isFileListPopulated);
 		actionSaveCurrentSummary.setEnabled(isFileListPopulated);
 		actionSaveAllSummaries.setEnabled(isFileListPopulated);
@@ -1190,7 +1192,6 @@ public class MainWindow implements PrefsListener {
 		reportPanel.actionParamConfig.setEnabled(isFileListPopulated);
 		actionCreateCompositeFile.setEnabled(isFileListPopulated);
 		actionCreateEventFile.setEnabled(isFileListPopulated);
-		// rightSplitPanel.actionResultsHelp.setEnabled(isFileListPopulated);
 		reportPanel.panelResults.showRunAnalysisTab();
 		
 		// If list is empty set file to null
@@ -2383,7 +2384,8 @@ public class MainWindow implements PrefsListener {
 		}
 		mnFile.add(mnSave);
 		
-		JMenu mnExport = new JMenu("Export chart...");
+		mnExport = new JMenu("Export chart...");
+		mnExport.setEnabled(false);
 		mnExport.setIcon(Builder.getImageIcon("document_export.png"));
 		mnExport.add(new FHAESMenuItem(chartActions.actionExportCurrentChart));
 		mnExport.addSeparator();
@@ -2407,6 +2409,7 @@ public class MainWindow implements PrefsListener {
 		
 		mnFile.addSeparator();
 		mnFile.add(new FHAESMenuItem(actionClearList));
+		mnFile.addSeparator();
 		
 		// mnFile.add(new FHAESMenuItem(actionPrintSetup));
 		

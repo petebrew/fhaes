@@ -63,6 +63,7 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import org.fhaes.components.BCADYearSpinner;
 import org.fhaes.enums.FeedbackDisplayProtocol;
 import org.fhaes.enums.FeedbackMessageType;
 import org.fhaes.fhrecorder.controller.EventController;
@@ -75,6 +76,7 @@ import org.fhaes.fhrecorder.model.FHX2_Sample;
 import org.fhaes.fhrecorder.util.LengthRestrictedDocument;
 import org.fhaes.fhrecorder.util.SampleSorters;
 import org.fhaes.util.Builder;
+import org.fhaes.util.SharedConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -260,8 +262,8 @@ public class SampleInputPanel extends JPanel implements ChangeListener, Property
 		});
 		sampleNameContainer.add(sampleNameTextBox, "cell 2 0,growx,aligny center");
 		
-		firstYearSpinner = new BCADYearSpinner(FileController.CURRENT_YEAR - 1, FileController.EARLIEST_ALLOWED_YEAR,
-				FileController.CURRENT_YEAR - 1);
+		firstYearSpinner = new BCADYearSpinner(SharedConstants.CURRENT_YEAR - 1, SharedConstants.EARLIEST_ALLOWED_YEAR,
+				SharedConstants.CURRENT_YEAR - 1);
 				
 		// Updates the first year of the sample when the value is changed
 		firstYearSpinner.addChangeListener(new ChangeListener() {
@@ -298,8 +300,8 @@ public class SampleInputPanel extends JPanel implements ChangeListener, Property
 		sampleNameContainer.add(firstYearLabel, "cell 4 0,alignx right,aligny baseline");
 		sampleNameContainer.add(firstYearSpinner, "cell 5 0,growx,aligny center");
 		
-		lastYearSpinner = new BCADYearSpinner(FileController.CURRENT_YEAR, FileController.EARLIEST_ALLOWED_YEAR,
-				FileController.CURRENT_YEAR);
+		lastYearSpinner = new BCADYearSpinner(SharedConstants.CURRENT_YEAR, SharedConstants.EARLIEST_ALLOWED_YEAR,
+				SharedConstants.CURRENT_YEAR);
 				
 		// Updates the last year of the sample when the value is changed
 		lastYearSpinner.addChangeListener(new ChangeListener() {

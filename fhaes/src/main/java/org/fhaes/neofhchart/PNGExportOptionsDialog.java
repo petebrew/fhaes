@@ -221,6 +221,7 @@ public class PNGExportOptionsDialog extends JDialog implements ActionListener {
 		}
 		else if (evt.getActionCommand().equals("Cancel"))
 		{
+			// Close the dialog
 			this.dispose();
 		}
 	}

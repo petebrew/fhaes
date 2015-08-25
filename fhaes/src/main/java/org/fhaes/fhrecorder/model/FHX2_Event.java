@@ -19,7 +19,7 @@ package org.fhaes.fhrecorder.model;
 
 import java.io.Serializable;
 
-import org.fhaes.fhrecorder.controller.FileController;
+import org.fhaes.util.SharedConstants;
 
 /**
  * FHX2_Event Class. This class is used to represent fire scars and other events corresponding to the event year.
@@ -31,7 +31,7 @@ public class FHX2_Event implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	public static int DEFAULT_EVENT_FIRST_YEAR = 0;
-	public static int DEFAULT_EVENT_LAST_YEAR = FileController.CURRENT_YEAR;
+	public static int DEFAULT_EVENT_LAST_YEAR = SharedConstants.CURRENT_YEAR;
 	
 	private char eventType; // Event type could be 'D', 'E', 'M', 'L', or 'A'
 	private int eventYear;

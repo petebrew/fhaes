@@ -29,6 +29,7 @@ import javax.swing.event.ChangeListener;
 import org.fhaes.fhrecorder.controller.FileController;
 import org.fhaes.fhrecorder.util.ErrorTrackerInterface;
 import org.fhaes.fhrecorder.util.SampleErrorModel;
+import org.fhaes.util.SharedConstants;
 
 /**
  * FHX2_FileRequiredPart Class. This class contains the required part of the FHX file data. This includes samples, events, and recording
@@ -58,8 +59,8 @@ public class FHX2_FileRequiredPart implements Serializable, ChangeListener, Erro
 		// idLength is the number of lines used to display the sample name
 		idLength = MINIMUM_ID_LENGTH;
 		
-		dataSetFirstYear = FileController.CURRENT_YEAR - 1;
-		dataSetLastYear = FileController.CURRENT_YEAR;
+		dataSetFirstYear = SharedConstants.CURRENT_YEAR - 1;
+		dataSetLastYear = SharedConstants.CURRENT_YEAR;
 		sampleList = new LinkedList<FHX2_Sample>();
 	}
 	
@@ -244,7 +245,7 @@ public class FHX2_FileRequiredPart implements Serializable, ChangeListener, Erro
 		
 		if (sampleList.size() > 0)
 		{
-			int newFirstYear = FileController.CURRENT_YEAR;
+			int newFirstYear = SharedConstants.CURRENT_YEAR;
 			
 			for (int i = 0; i < sampleList.size(); i++)
 				if (newFirstYear > sampleList.get(i).getSampleFirstYear())
@@ -254,7 +255,7 @@ public class FHX2_FileRequiredPart implements Serializable, ChangeListener, Erro
 		}
 		else
 		{
-			dataSetFirstYear = FileController.CURRENT_YEAR - 1;
+			dataSetFirstYear = SharedConstants.CURRENT_YEAR - 1;
 		}
 		
 		FileController.checkIfYearLowerBoundaryIsWithinFHX2Reqs();
@@ -267,7 +268,7 @@ public class FHX2_FileRequiredPart implements Serializable, ChangeListener, Erro
 		
 		if (sampleList.size() > 0)
 		{
-			int newLastYear = FileController.EARLIEST_ALLOWED_YEAR;
+			int newLastYear = SharedConstants.EARLIEST_ALLOWED_YEAR;
 			
 			for (int i = 0; i < sampleList.size(); i++)
 				if (newLastYear < sampleList.get(i).getSampleLastYear())
@@ -277,7 +278,7 @@ public class FHX2_FileRequiredPart implements Serializable, ChangeListener, Erro
 		}
 		else
 		{
-			dataSetLastYear = FileController.CURRENT_YEAR;
+			dataSetLastYear = SharedConstants.CURRENT_YEAR;
 		}
 		
 		FileController.checkIfYearUpperBoundaryIsWithinFHX2Reqs();

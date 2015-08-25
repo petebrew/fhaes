@@ -41,13 +41,13 @@ import javax.swing.event.ChangeListener;
 
 import org.fhaes.enums.AnalysisType;
 import org.fhaes.enums.FireFilterType;
-import org.fhaes.fhrecorder.controller.FileController;
 import org.fhaes.preferences.FHAESPreferences.PrefKey;
 import org.fhaes.preferences.wrappers.AnalysisTypeWrapper;
 import org.fhaes.preferences.wrappers.CheckBoxWrapper;
 import org.fhaes.preferences.wrappers.FireFilterTypeWrapper;
 import org.fhaes.preferences.wrappers.SpinnerWrapper;
 import org.fhaes.util.Builder;
+import org.fhaes.util.SharedConstants;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -247,12 +247,11 @@ public class IntervalConfigDialog extends JDialog implements ActionListener, Cha
 		}
 		else
 		{
-			spnFirstYear.setValue(FileController.CURRENT_YEAR - 1);
-			spnLastYear.setValue(FileController.CURRENT_YEAR);
+			spnFirstYear.setValue(SharedConstants.CURRENT_YEAR - 1);
+			spnLastYear.setValue(SharedConstants.CURRENT_YEAR);
 			spnFirstYear.setEnabled(true);
 			spnLastYear.setEnabled(true);
 		}
-		
 	}
 	
 	private boolean validateChoices() {

@@ -348,7 +348,7 @@ public class FireChartSVG {
 		}
 		else
 		{
-			return App.prefs.getIntPref(PrefKey.CHART_AXIS_X_MIN, applyBCYearOffset(reader.getFirstYear()));
+			return applyBCYearOffset(App.prefs.getIntPref(PrefKey.CHART_AXIS_X_MIN, 1900));
 		}
 	}
 	
@@ -365,7 +365,7 @@ public class FireChartSVG {
 		}
 		else
 		{
-			return App.prefs.getIntPref(PrefKey.CHART_AXIS_X_MAX, applyBCYearOffset(reader.getLastYear()));
+			return applyBCYearOffset(App.prefs.getIntPref(PrefKey.CHART_AXIS_X_MAX, 2000));
 		}
 	}
 	
@@ -378,13 +378,26 @@ public class FireChartSVG {
 	 */
 	private int applyBCYearOffset(int originalYear) {
 		
-		if (reader.getFirstYear() < 0 && originalYear < 0)
+		int effectiveFirstYear;
+		
+		// Determine what to reference as the first year during the transformation
+		if (App.prefs.getBooleanPref(PrefKey.CHART_AXIS_X_AUTO_RANGE, true))
 		{
-			return originalYear + Math.abs(reader.getFirstYear());
+			effectiveFirstYear = reader.getFirstYear();
 		}
-		else if (reader.getFirstYear() < 0 && originalYear >= 0)
+		else
 		{
-			return originalYear + Math.abs(reader.getFirstYear()) + 1;
+			effectiveFirstYear = App.prefs.getIntPref(PrefKey.CHART_AXIS_X_MIN, 1900);
+		}
+		
+		// Apply the offset transformation
+		if (effectiveFirstYear < 0 && originalYear < 0)
+		{
+			return originalYear + Math.abs(effectiveFirstYear);
+		}
+		else if (effectiveFirstYear < 0 && originalYear >= 0)
+		{
+			return originalYear + Math.abs(effectiveFirstYear) + 1;
 		}
 		else
 		{
@@ -400,13 +413,26 @@ public class FireChartSVG {
 	 */
 	private int removeBCYearOffset(int offsetYear) {
 		
-		if (reader.getFirstYear() < 0 && offsetYear - Math.abs(reader.getFirstYear()) < 0)
+		int effectiveFirstYear;
+		
+		// Determine what to reference as the first year during the transformation
+		if (App.prefs.getBooleanPref(PrefKey.CHART_AXIS_X_AUTO_RANGE, true))
 		{
-			return offsetYear - Math.abs(reader.getFirstYear());
+			effectiveFirstYear = reader.getFirstYear();
 		}
-		else if (reader.getFirstYear() < 0 && offsetYear - Math.abs(reader.getFirstYear()) >= 0)
+		else
 		{
-			return offsetYear - Math.abs(reader.getFirstYear()) - 1;
+			effectiveFirstYear = App.prefs.getIntPref(PrefKey.CHART_AXIS_X_MIN, 1900);
+		}
+		
+		// Remove the offset transformation
+		if (effectiveFirstYear < 0 && offsetYear - Math.abs(effectiveFirstYear) < 0)
+		{
+			return offsetYear - Math.abs(effectiveFirstYear);
+		}
+		else if (effectiveFirstYear < 0 && offsetYear - Math.abs(effectiveFirstYear) >= 0)
+		{
+			return offsetYear - Math.abs(effectiveFirstYear) - 1;
 		}
 		else
 		{
@@ -1532,7 +1558,6 @@ public class FireChartSVG {
 		// Limit to specified years if necessary
 		if (!App.prefs.getBooleanPref(PrefKey.CHART_AXIS_X_AUTO_RANGE, true))
 		{
-			
 			int startindex_file = this.getFirstChartYear() - applyBCYearOffset(reader.getFirstYear());
 			double[] percent_file = percent_arr.clone();
 			percent_arr = new double[(this.getLastChartYear() - this.getFirstChartYear()) + 1];
@@ -1663,7 +1688,6 @@ public class FireChartSVG {
 		// Limit to specified years if necessary
 		if (!App.prefs.getBooleanPref(PrefKey.CHART_AXIS_X_AUTO_RANGE, true))
 		{
-			
 			int startindex_file = this.getFirstChartYear() - applyBCYearOffset(reader.getFirstYear());
 			int[] sample_depths_file = sample_depths.clone();
 			sample_depths = new int[(this.getLastChartYear() - this.getFirstChartYear()) + 1];

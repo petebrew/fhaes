@@ -51,9 +51,10 @@ import javax.swing.TransferHandler;
 import org.fhaes.fhrecorder.controller.FileController;
 import org.fhaes.fhrecorder.util.ColorBar;
 import org.fhaes.fhrecorder.util.CustomOptions;
-import org.fhaes.fhrecorder.util.YearSummary;
 import org.fhaes.fhrecorder.util.CustomOptions.DataItem;
+import org.fhaes.fhrecorder.util.YearSummary;
 import org.fhaes.util.Builder;
+import org.fhaes.util.SharedConstants;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -71,7 +72,7 @@ public class CustomizeDialog extends javax.swing.JDialog {
 	private final JScrollPane listGroup0, listGroup1, listGroup2, listGroup3, listGroup4, listGroup5, listGroup6;
 	private final ColorBar colorBar;
 	private CustomOptions options = FileController.getCustomOptions();
-	private YearSummary previewSummary = new YearSummary(FileController.CURRENT_YEAR, 1, 2, 1, 1, 1, 1, 1, 1);
+	private YearSummary previewSummary = new YearSummary(SharedConstants.CURRENT_YEAR, 1, 2, 1, 1, 1, 1, 1, 1);
 	private JPanel panel;
 	
 	/**

@@ -19,7 +19,7 @@ package org.fhaes.fhrecorder.model;
 
 import java.io.Serializable;
 
-import org.fhaes.fhrecorder.controller.FileController;
+import org.fhaes.util.SharedConstants;
 
 /**
  * FHX2_Recording Class. This class is used to represent a recording year in the FHX2 data.
@@ -38,7 +38,7 @@ public class FHX2_Recording implements Serializable {
 	public FHX2_Recording() {
 		
 		recordingStartYear = 1;
-		recordingEndYear = FileController.CURRENT_YEAR;
+		recordingEndYear = SharedConstants.CURRENT_YEAR;
 	}
 	
 	/**
@@ -62,7 +62,7 @@ public class FHX2_Recording implements Serializable {
 	public FHX2_Recording(int startYear) {
 		
 		recordingStartYear = startYear;
-		recordingEndYear = FileController.CURRENT_YEAR;
+		recordingEndYear = SharedConstants.CURRENT_YEAR;
 	}
 	
 	/**

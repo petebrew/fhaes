@@ -27,9 +27,9 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 
 import org.fhaes.fhrecorder.compare.CompareRecordings;
-import org.fhaes.fhrecorder.controller.FileController;
 import org.fhaes.fhrecorder.model.FHX2_Recording;
 import org.fhaes.fhrecorder.model.FHX2_Sample;
+import org.fhaes.util.SharedConstants;
 
 /**
  * RecordingTable Class. A class that is a table for holding the information regarding the recording years.
@@ -208,7 +208,7 @@ public class RecordingTable extends JTable {
 		while (recordings.size() > 0 && index >= 0)
 		{
 			FHX2_Recording tempRecording = recordings.get(index);
-			if (tempRecording.getEndYear() == FileController.CURRENT_YEAR)
+			if (tempRecording.getEndYear() == SharedConstants.CURRENT_YEAR)
 				return index;
 			index--;
 		}

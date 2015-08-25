@@ -37,9 +37,9 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import org.fhaes.enums.FireFilterType;
-import org.fhaes.fhrecorder.controller.FileController;
 import org.fhaes.preferences.FHAESPreferences.PrefKey;
 import org.fhaes.preferences.wrappers.SpinnerWrapper;
+import org.fhaes.util.SharedConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -106,7 +106,7 @@ public class CompositeFilterDialog extends JDialog implements ActionListener {
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(new MigLayout("", "[grow,right][grow]", "[][][grow]"));
-		int thisyear = FileController.CURRENT_YEAR;
+		int thisYear = SharedConstants.CURRENT_YEAR;
 		{
 			JPanel panel = new JPanel();
 			panel.setBorder(new TitledBorder(null, "Year range", TitledBorder.LEADING, TitledBorder.TOP, null, null));
@@ -130,7 +130,7 @@ public class CompositeFilterDialog extends JDialog implements ActionListener {
 			{
 				spnStart = new JSpinner();
 				panel.add(spnStart, "cell 1 1");
-				spnStart.setModel(new SpinnerNumberModel(thisyear - 1, null, thisyear - 1, new Integer(1)));
+				spnStart.setModel(new SpinnerNumberModel(thisYear - 1, null, thisYear - 1, new Integer(1)));
 				spnStart.setEditor(new JSpinner.NumberEditor(spnStart, "####"));
 				{
 					JLabel lblEndYear = new JLabel("End year:");
@@ -139,7 +139,7 @@ public class CompositeFilterDialog extends JDialog implements ActionListener {
 				{
 					spnEnd = new JSpinner();
 					panel.add(spnEnd, "cell 1 2");
-					spnEnd.setModel(new SpinnerNumberModel(thisyear, null, thisyear, new Integer(1)));
+					spnEnd.setModel(new SpinnerNumberModel(thisYear, null, thisYear, new Integer(1)));
 					spnEnd.setEditor(new JSpinner.NumberEditor(spnEnd, "####"));
 					spnEnd.addChangeListener(new ChangeListener() {
 						
@@ -232,7 +232,7 @@ public class CompositeFilterDialog extends JDialog implements ActionListener {
 	}
 	
 	/**
-	 * Set whether the comments field should be visible or not
+	 * Set whether the comments field should be visible or not.
 	 * 
 	 * @param b
 	 */
@@ -240,12 +240,10 @@ public class CompositeFilterDialog extends JDialog implements ActionListener {
 		
 		panelComments.setVisible(b);
 		txtComments.setVisible(b);
-		
 	}
 	
 	/**
-	 * Update the gui depending on current selections
-	 * 
+	 * Update the GUI depending on current selections.
 	 */
 	private void updateGUI() {
 		

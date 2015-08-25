@@ -47,7 +47,10 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
+import org.fhaes.components.BCADYearSpinner;
 import org.fhaes.enums.FireFilterType;
 import org.fhaes.enums.LabelOrientation;
 import org.fhaes.enums.LineStyle;
@@ -55,6 +58,7 @@ import org.fhaes.preferences.App;
 import org.fhaes.preferences.FHAESPreferences.PrefKey;
 import org.fhaes.util.Builder;
 import org.fhaes.util.FontChooserComboBox;
+import org.fhaes.util.SharedConstants;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -74,8 +78,8 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 	private JTextField txtAxisY1Label;
 	private JTextField txtAxisY2Label;
 	private FontChooserComboBox cboFontFamily;
-	private JSpinner spnFirstYear;
-	private JSpinner spnLastYear;
+	private BCADYearSpinner firstYearSpinner;
+	private BCADYearSpinner lastYearSpinner;
 	private JButton btnVerticalGuideColor;
 	private JSpinner spnVerticalGuideWeight;
 	private JComboBox<LineStyle> cboVerticalGuideStyle;
@@ -191,13 +195,13 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 		
 		if (this.chkAutoRangeXAxis.isSelected())
 		{
-			this.spnFirstYear.setEnabled(false);
-			this.spnLastYear.setEnabled(false);
+			this.firstYearSpinner.setEnabled(false);
+			this.lastYearSpinner.setEnabled(false);
 		}
 		else
 		{
-			this.spnFirstYear.setEnabled(true);
-			this.spnLastYear.setEnabled(true);
+			this.firstYearSpinner.setEnabled(true);
+			this.lastYearSpinner.setEnabled(true);
 		}
 	}
 	
@@ -515,8 +519,8 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 		App.prefs.setBooleanPref(PrefKey.CHART_SHOW_LEGEND, chkShowLegend.isSelected());
 		App.prefs.setPref(PrefKey.CHART_FONT_FAMILY, cboFontFamily.getSelectedFontName());
 		App.prefs.setBooleanPref(PrefKey.CHART_AXIS_X_AUTO_RANGE, chkAutoRangeXAxis.isSelected());
-		App.prefs.setIntPref(PrefKey.CHART_AXIS_X_MIN, (Integer) spnFirstYear.getValue());
-		App.prefs.setIntPref(PrefKey.CHART_AXIS_X_MAX, (Integer) spnLastYear.getValue());
+		App.prefs.setIntPref(PrefKey.CHART_AXIS_X_MIN, (Integer) firstYearSpinner.getValue());
+		App.prefs.setIntPref(PrefKey.CHART_AXIS_X_MAX, (Integer) lastYearSpinner.getValue());
 		App.prefs.setBooleanPref(PrefKey.CHART_VERTICAL_GUIDES, chkVerticalGuides.isSelected());
 		App.prefs.setColorPref(PrefKey.CHART_VERTICAL_GUIDE_COLOR, btnVerticalGuideColor.getBackground());
 		App.prefs.setIntPref(PrefKey.CHART_VERTICAL_GUIDE_WEIGHT, (Integer) spnVerticalGuideWeight.getValue());
@@ -591,8 +595,8 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 		chkShowLegend.setSelected(App.prefs.getBooleanPref(PrefKey.CHART_SHOW_LEGEND, true));
 		cboFontFamily.setSelectedItem(App.prefs.getPref(PrefKey.CHART_FONT_FAMILY, "Verdana"));
 		chkAutoRangeXAxis.setSelected(App.prefs.getBooleanPref(PrefKey.CHART_AXIS_X_AUTO_RANGE, true));
-		spnFirstYear.setValue(App.prefs.getIntPref(PrefKey.CHART_AXIS_X_MIN, 1900));
-		spnLastYear.setValue(App.prefs.getIntPref(PrefKey.CHART_AXIS_X_MAX, 2000));
+		firstYearSpinner.setValue(App.prefs.getIntPref(PrefKey.CHART_AXIS_X_MIN, 1900));
+		lastYearSpinner.setValue(App.prefs.getIntPref(PrefKey.CHART_AXIS_X_MAX, 2000));
 		chkVerticalGuides.setSelected(App.prefs.getBooleanPref(PrefKey.CHART_VERTICAL_GUIDES, true));
 		setComponentColours(btnVerticalGuideColor, App.prefs.getColorPref(PrefKey.CHART_VERTICAL_GUIDE_COLOR, Color.DARK_GRAY));
 		spnVerticalGuideWeight.setValue(App.prefs.getIntPref(PrefKey.CHART_VERTICAL_GUIDE_WEIGHT, 1));
@@ -718,7 +722,6 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 				{
 					App.prefs.setPref(PrefKey.CHART_FONT_FAMILY, font);
 				}
-				
 			}
 		});
 		
@@ -808,18 +811,46 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 		JLabel lblNewLabel = new JLabel("Year range:");
 		panel_2.add(lblNewLabel, "cell 0 0 1 2,alignx right,aligny center");
 		
-		spnFirstYear = new JSpinner();
-		JSpinner.NumberEditor editor = new JSpinner.NumberEditor(spnFirstYear, "#");
-		spnFirstYear.setEditor(editor);
-		panel_2.add(spnFirstYear, "cell 1 1");
+		firstYearSpinner = new BCADYearSpinner(neoFHChart.currentChart.getReader().getFirstYear(), SharedConstants.EARLIEST_ALLOWED_YEAR,
+				SharedConstants.CURRENT_YEAR - 1);
+				
+		firstYearSpinner.addChangeListener(new ChangeListener() {
+			
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				
+				// If spinner year is moved above or equal to the last year spinner's value
+				if (firstYearSpinner.getValueAsInteger() >= lastYearSpinner.getValueAsInteger())
+				{
+					firstYearSpinner.setValue(firstYearSpinner.getMostRecentValue());
+				}
+				
+				firstYearSpinner.updateMostRecentValue();
+			}
+		});
+		panel_2.add(firstYearSpinner, "cell 1 1");
 		
 		JLabel lblTo = new JLabel("to");
 		panel_2.add(lblTo, "cell 2 1");
 		
-		spnLastYear = new JSpinner();
-		JSpinner.NumberEditor editor2 = new JSpinner.NumberEditor(spnLastYear, "#");
-		spnLastYear.setEditor(editor2);
-		panel_2.add(spnLastYear, "cell 3 1");
+		lastYearSpinner = new BCADYearSpinner(neoFHChart.currentChart.getReader().getLastYear(), SharedConstants.EARLIEST_ALLOWED_YEAR,
+				SharedConstants.CURRENT_YEAR);
+				
+		lastYearSpinner.addChangeListener(new ChangeListener() {
+			
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				
+				// If spinner year is moved below or equal to the first year spinner's value
+				if (lastYearSpinner.getValueAsInteger() <= firstYearSpinner.getValueAsInteger())
+				{
+					lastYearSpinner.setValue(lastYearSpinner.getMostRecentValue());
+				}
+				
+				lastYearSpinner.updateMostRecentValue();
+			}
+		});
+		panel_2.add(lastYearSpinner, "cell 3 1");
 		
 		JPanel panel_3 = new JPanel();
 		panel_3.setBorder(new TitledBorder(null, "Ticks and vertical guides", TitledBorder.LEADING, TitledBorder.TOP, null, null));

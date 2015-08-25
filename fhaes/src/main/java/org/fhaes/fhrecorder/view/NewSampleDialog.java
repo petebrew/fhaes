@@ -38,6 +38,7 @@ import javax.swing.border.SoftBevelBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import org.fhaes.components.BCADYearSpinner;
 import org.fhaes.enums.FeedbackDisplayProtocol;
 import org.fhaes.enums.FeedbackMessageType;
 import org.fhaes.fhrecorder.controller.FileController;
@@ -46,6 +47,7 @@ import org.fhaes.fhrecorder.controller.SampleController;
 import org.fhaes.fhrecorder.model.FHX2_Sample;
 import org.fhaes.fhrecorder.util.LengthRestrictedDocument;
 import org.fhaes.util.Builder;
+import org.fhaes.util.SharedConstants;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -83,8 +85,8 @@ public class NewSampleDialog extends JDialog implements KeyListener {
 	 */
 	public NewSampleDialog(Frame parent) {
 		
-		int firstYearToSet = FileController.CURRENT_YEAR - 1;
-		int lastYearToSet = FileController.CURRENT_YEAR;
+		int firstYearToSet = SharedConstants.CURRENT_YEAR - 1;
+		int lastYearToSet = SharedConstants.CURRENT_YEAR;
 		
 		if (SampleController.getSelectedSampleIndex() != SampleController.INDEX_REPRESENTING_NO_SAMPLES)
 		{
@@ -134,7 +136,7 @@ public class NewSampleDialog extends JDialog implements KeyListener {
 		firstYearLabel.setText("First year:");
 		basePanel.add(firstYearLabel, "cell 0 1,alignx right,aligny center");
 		
-		firstYearSpinner = new BCADYearSpinner(firstYearToSet, FileController.EARLIEST_ALLOWED_YEAR, FileController.CURRENT_YEAR - 1);
+		firstYearSpinner = new BCADYearSpinner(firstYearToSet, SharedConstants.EARLIEST_ALLOWED_YEAR, SharedConstants.CURRENT_YEAR - 1);
 		firstYearSpinner.addChangeListener(new ChangeListener() {
 			
 			@Override
@@ -159,7 +161,7 @@ public class NewSampleDialog extends JDialog implements KeyListener {
 		lastYearLabel.setText("Last year:");
 		basePanel.add(lastYearLabel, "cell 0 2,alignx right,aligny center");
 		
-		lastYearSpinner = new BCADYearSpinner(lastYearToSet, FileController.EARLIEST_ALLOWED_YEAR, FileController.CURRENT_YEAR);
+		lastYearSpinner = new BCADYearSpinner(lastYearToSet, SharedConstants.EARLIEST_ALLOWED_YEAR, SharedConstants.CURRENT_YEAR);
 		lastYearSpinner.addChangeListener(new ChangeListener() {
 			
 			@Override
