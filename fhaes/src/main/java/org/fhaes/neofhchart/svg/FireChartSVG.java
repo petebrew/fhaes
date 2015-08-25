@@ -53,6 +53,7 @@ import org.fhaes.enums.LabelOrientation;
 import org.fhaes.feedback.FeedbackPreferenceManager.FeedbackDictionary;
 import org.fhaes.fhfilereader.AbstractFireHistoryReader;
 import org.fhaes.gui.MainWindow;
+import org.fhaes.model.FHCategoryEntry;
 import org.fhaes.model.FHFile;
 import org.fhaes.model.FHSeries;
 import org.fhaes.neofhchart.FHSeriesSVG;
@@ -2134,6 +2135,37 @@ public class FireChartSVG {
 			public int compare(FHSeriesSVG c1, FHSeriesSVG c2) {
 				
 				return c1.getTitle().compareTo(c2.getTitle());
+			}
+		};
+		
+		Collections.sort(seriesSVGList, comparator);
+		positionSeriesLines();
+	}
+	
+	/**
+	 * Sort the series by category. Currently this only sorts by the first entry of a series. This will need to be changed once the TRIDAS
+	 * format is implemented. TODO
+	 */
+	public void sortByCategory() {
+		
+		Comparator<FHSeriesSVG> comparator = new Comparator<FHSeriesSVG>() {
+			
+			@Override
+			public int compare(FHSeriesSVG c1, FHSeriesSVG c2) {
+				
+				if (c1.getCategoryEntries().isEmpty())
+				{
+					c1.getCategoryEntries().add(new FHCategoryEntry(c1.getTitle(), "default", "default"));
+				}
+				if (c2.getCategoryEntries().isEmpty())
+				{
+					c2.getCategoryEntries().add(new FHCategoryEntry(c2.getTitle(), "default", "default"));
+				}
+				
+				ArrayList<FHCategoryEntry> c1_entries = c1.getCategoryEntries();
+				ArrayList<FHCategoryEntry> c2_entries = c2.getCategoryEntries();
+				
+				return c1_entries.get(0).getContent().compareTo(c2_entries.get(0).getContent());
 			}
 		};
 		

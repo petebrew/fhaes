@@ -37,7 +37,7 @@ public class ChartActions {
 	 * SeriesSortType Enum.
 	 */
 	public enum SeriesSortType {
-		START_YEAR, END_YEAR, FIRST_FIRE_YEAR, NAME
+		NAME, CATEGORY, FIRST_FIRE_YEAR, START_YEAR, END_YEAR;
 	};
 	
 	// Declare chart instance
@@ -65,11 +65,12 @@ public class ChartActions {
 	public FHAESAction actionBulkExportChartsAsPDF;
 	
 	// Declare sort actions
+	public FHAESAction actionSortSeriesBy;
+	public FHAESAction actionSortName;
+	public FHAESAction actionSortCategory;
+	public FHAESAction actionSortFirstFireYear;
 	public FHAESAction actionSortStartYear;
 	public FHAESAction actionSortEndYear;
-	public FHAESAction actionSortFirstFireYear;
-	public FHAESAction actionSortName;
-	public FHAESAction actionSortSeriesBy;
 	
 	// Declare zoom actions
 	public FHAESAction actionZoomIn;
@@ -389,6 +390,48 @@ public class ChartActions {
 		};
 		
 		/*
+		 * SORT BY NAME
+		 */
+		this.actionSortName = new FHAESAction("Name") {
+			
+			private static final long serialVersionUID = 1L;
+			
+			@Override
+			public void actionPerformed(ActionEvent event) {
+				
+				sortSeries(SeriesSortType.NAME);
+			}
+		};
+		
+		/*
+		 * SORT BY CATEGORY
+		 */
+		this.actionSortCategory = new FHAESAction("Category") {
+			
+			private static final long serialVersionUID = 1L;
+			
+			@Override
+			public void actionPerformed(ActionEvent event) {
+				
+				sortSeries(SeriesSortType.CATEGORY);
+			}
+		};
+		
+		/*
+		 * SORT BY FIRST FIRE YEAR
+		 */
+		this.actionSortFirstFireYear = new FHAESAction("First fire year") {
+			
+			private static final long serialVersionUID = 1L;
+			
+			@Override
+			public void actionPerformed(ActionEvent event) {
+				
+				sortSeries(SeriesSortType.FIRST_FIRE_YEAR);
+			}
+		};
+		
+		/*
 		 * SORT BY START YEAR
 		 */
 		this.actionSortStartYear = new FHAESAction("Start year") {
@@ -413,34 +456,6 @@ public class ChartActions {
 			public void actionPerformed(ActionEvent event) {
 				
 				sortSeries(SeriesSortType.END_YEAR);
-			}
-		};
-		
-		/*
-		 * SORT BY FIRST FIRE YEAR
-		 */
-		this.actionSortFirstFireYear = new FHAESAction("First fire year") {
-			
-			private static final long serialVersionUID = 1L;
-			
-			@Override
-			public void actionPerformed(ActionEvent event) {
-				
-				sortSeries(SeriesSortType.FIRST_FIRE_YEAR);
-			}
-		};
-		
-		/*
-		 * SORT BY NAME
-		 */
-		this.actionSortName = new FHAESAction("Name") {
-			
-			private static final long serialVersionUID = 1L;
-			
-			@Override
-			public void actionPerformed(ActionEvent event) {
-				
-				sortSeries(SeriesSortType.NAME);
 			}
 		};
 		
@@ -474,11 +489,12 @@ public class ChartActions {
 		actionShowSampleDepthThreshold.setEnabled(chart != null);
 		actionShowSeriesLabels.setEnabled(chart != null);
 		actionShowSeriesList.setEnabled(chart != null);
-		actionSortEndYear.setEnabled(chart != null);
-		actionSortFirstFireYear.setEnabled(chart != null);
-		actionSortName.setEnabled(chart != null);
-		actionSortStartYear.setEnabled(chart != null);
 		actionSortSeriesBy.setEnabled(chart != null);
+		actionSortName.setEnabled(chart != null);
+		actionSortCategory.setEnabled(chart != null);
+		actionSortFirstFireYear.setEnabled(chart != null);
+		actionSortStartYear.setEnabled(chart != null);
+		actionSortEndYear.setEnabled(chart != null);
 	}
 	
 	/**
@@ -515,21 +531,25 @@ public class ChartActions {
 			@Override
 			public void run() {
 				
-				if (type.equals(SeriesSortType.START_YEAR))
+				if (type.equals(SeriesSortType.NAME))
+				{
+					neoFHChart.currentChart.sortByName();
+				}
+				else if (type.equals(SeriesSortType.CATEGORY))
+				{
+					neoFHChart.currentChart.sortByCategory();
+				}
+				else if (type.equals(SeriesSortType.FIRST_FIRE_YEAR))
+				{
+					neoFHChart.currentChart.sortByFirstFireYear();
+				}
+				else if (type.equals(SeriesSortType.START_YEAR))
 				{
 					neoFHChart.currentChart.sortBySampleStartYear();
 				}
 				else if (type.equals(SeriesSortType.END_YEAR))
 				{
 					neoFHChart.currentChart.sortBySampleEndYear();
-				}
-				else if (type.equals(SeriesSortType.FIRST_FIRE_YEAR))
-				{
-					neoFHChart.currentChart.sortByFirstFireYear();
-				}
-				else if (type.equals(SeriesSortType.NAME))
-				{
-					neoFHChart.currentChart.sortByName();
 				}
 			}
 		};

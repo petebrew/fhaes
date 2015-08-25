@@ -2475,9 +2475,10 @@ public class MainWindow implements PrefsListener {
 		mnChart.add(mnSort);
 		
 		mnSort.add(new FHAESMenuItem(chartActions.actionSortName));
+		mnSort.add(new FHAESMenuItem(chartActions.actionSortCategory));
+		mnSort.add(new FHAESMenuItem(chartActions.actionSortFirstFireYear));
 		mnSort.add(new FHAESMenuItem(chartActions.actionSortStartYear));
 		mnSort.add(new FHAESMenuItem(chartActions.actionSortEndYear));
-		mnSort.add(new FHAESMenuItem(chartActions.actionSortFirstFireYear));
 		
 		mnChart.addSeparator();
 		mnChart.add(new FHAESMenuItem(actionEditCategories));
