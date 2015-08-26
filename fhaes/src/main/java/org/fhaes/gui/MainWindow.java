@@ -2403,6 +2403,7 @@ public class MainWindow implements PrefsListener {
 		// mnSave.addSeparator();
 		// mnSave.add(new FHAESMenuItem(actionSaveAll));
 		
+		mnSave.addSeparator();
 		mnSave.add(new FHAESMenuItem(this.actionSaveResults));
 		
 		// mnFile.add(new FHAESMenuItem(actionSaveAll));

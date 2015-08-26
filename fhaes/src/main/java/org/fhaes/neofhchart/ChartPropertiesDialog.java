@@ -146,9 +146,6 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 	private JLabel lblPx;
 	private JLabel lblLabelOrientation;
 	private JComboBox<LabelOrientation> cboLabelOrientation;
-	
-	// Declare local variables
-	private boolean preferencesChanged;
 	private JLabel lblChartTitleFontSize;
 	private JSpinner spnChartTitleFontSize;
 	private JLabel lblUseDefaultChartTitle;
@@ -158,6 +155,9 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 	private JPanel panelChronoPlotCategories;
 	private JCheckBox chkShowCategoryGroups;
 	private JCheckBox chkShowCategoryLabels;
+	
+	// Declare local variables
+	private boolean preferencesChanged;
 	
 	/**
 	 * Create the dialog.

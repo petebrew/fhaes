@@ -515,10 +515,10 @@ public class ChartActions {
 	 */
 	private void showSeriesList() {
 		
-		if (neoFHChart == null)
-			return;
-			
-		SeriesListDialog.showDialog(neoFHChart.currentChart, neoFHChart.svgCanvas);
+		if (neoFHChart != null)
+		{
+			SeriesListDialog.showDialog(neoFHChart.currentChart, neoFHChart.svgCanvas);
+		}
 	}
 	
 	/**
@@ -528,43 +528,43 @@ public class ChartActions {
 	 */
 	private void sortSeries(final SeriesSortType type) {
 		
-		if (neoFHChart == null)
-			return;
-			
-		Runnable r = new Runnable() {
-			
-			@Override
-			public void run() {
+		if (neoFHChart != null)
+		{
+			Runnable r = new Runnable() {
 				
-				if (type.equals(SeriesSortType.NAME))
-				{
-					log.debug("Sorting chart series by name...");
-					neoFHChart.currentChart.sortByName();
+				@Override
+				public void run() {
+					
+					if (type.equals(SeriesSortType.NAME))
+					{
+						log.debug("Sorting chart series by name...");
+						neoFHChart.currentChart.sortByName();
+					}
+					else if (type.equals(SeriesSortType.CATEGORY))
+					{
+						log.debug("Sorting chart series by category...");
+						neoFHChart.currentChart.sortByCategory();
+					}
+					else if (type.equals(SeriesSortType.FIRST_FIRE_YEAR))
+					{
+						log.debug("Sorting chart series by first fire year...");
+						neoFHChart.currentChart.sortByFirstFireYear();
+					}
+					else if (type.equals(SeriesSortType.START_YEAR))
+					{
+						log.debug("Sorting chart series by start year...");
+						neoFHChart.currentChart.sortBySampleStartYear();
+					}
+					else if (type.equals(SeriesSortType.END_YEAR))
+					{
+						log.debug("Sorting chart series by end year...");
+						neoFHChart.currentChart.sortBySampleEndYear();
+					}
 				}
-				else if (type.equals(SeriesSortType.CATEGORY))
-				{
-					log.debug("Sorting chart series by category...");
-					neoFHChart.currentChart.sortByCategory();
-				}
-				else if (type.equals(SeriesSortType.FIRST_FIRE_YEAR))
-				{
-					log.debug("Sorting chart series by first fire year...");
-					neoFHChart.currentChart.sortByFirstFireYear();
-				}
-				else if (type.equals(SeriesSortType.START_YEAR))
-				{
-					log.debug("Sorting chart series by start year...");
-					neoFHChart.currentChart.sortBySampleStartYear();
-				}
-				else if (type.equals(SeriesSortType.END_YEAR))
-				{
-					log.debug("Sorting chart series by end year...");
-					neoFHChart.currentChart.sortBySampleEndYear();
-				}
-			}
-		};
-		
-		neoFHChart.svgCanvas.getUpdateManager().getUpdateRunnableQueue().invokeLater(r);
+			};
+			
+			neoFHChart.svgCanvas.getUpdateManager().getUpdateRunnableQueue().invokeLater(r);
+		}
 	}
 	
 	// private void setTickColor() {

@@ -24,11 +24,11 @@ import org.fhaes.model.FHSeries;
 import org.fhaes.neofhchart.FHSeriesSVG;
 
 /**
- * FireChartConversionUtil Class.
+ * FireChartConversions Class.
  * 
  * @author Joshua Brogan and Peter Brewer
  */
-public class FireChartConversionUtil {
+public class FireChartConversions {
 	
 	/**
 	 * Converts an array list of FHseries objects to an array list of FHSeriesSVG objects.

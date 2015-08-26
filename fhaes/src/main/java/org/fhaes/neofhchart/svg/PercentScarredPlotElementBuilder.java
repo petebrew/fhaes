@@ -51,7 +51,7 @@ public class PercentScarredPlotElementBuilder {
 		borderLine1.setAttributeNS(null, "x2", "0");
 		borderLine1.setAttributeNS(null, "y2", "100");
 		borderLine1.setAttributeNS(null, "stroke-width",
-				FireChartConversionUtil.pixelsToYears(1, chartWidth, firstChartYear, lastChartYear) + "");
+				FireChartConversions.pixelsToYears(1, chartWidth, firstChartYear, lastChartYear) + "");
 		borderLine1.setAttributeNS(null, "stroke", "black");
 		borderLine1.setAttributeNS(null, "stroke-linecap", "butt");
 		
@@ -102,7 +102,7 @@ public class PercentScarredPlotElementBuilder {
 		borderLine3.setAttributeNS(null, "x2", Integer.toString(lastChartYear - firstChartYear));
 		borderLine3.setAttributeNS(null, "y2", "0");
 		borderLine3.setAttributeNS(null, "stroke-width",
-				FireChartConversionUtil.pixelsToYears(1, chartWidth, firstChartYear, lastChartYear) + "");
+				FireChartConversions.pixelsToYears(1, chartWidth, firstChartYear, lastChartYear) + "");
 		borderLine3.setAttributeNS(null, "stroke", "black");
 		borderLine3.setAttributeNS(null, "stroke-linecap", "butt");
 		
@@ -178,7 +178,7 @@ public class PercentScarredPlotElementBuilder {
 		horizontalTick.setAttributeNS(null, "x2", "5");
 		horizontalTick.setAttributeNS(null, "y2", "0");
 		horizontalTick.setAttributeNS(null, "stroke",
-				FireChartConversionUtil.colorToHexString(App.prefs.getColorPref(PrefKey.CHART_PERCENT_SCARRED_COLOR, Color.BLACK)));
+				FireChartConversions.colorToHexString(App.prefs.getColorPref(PrefKey.CHART_PERCENT_SCARRED_COLOR, Color.BLACK)));
 		horizontalTick.setAttributeNS(null, "stroke-width", Double.toString(0 - unscaleY));
 		
 		return horizontalTick;
@@ -207,7 +207,7 @@ public class PercentScarredPlotElementBuilder {
 		verticalLine.setAttributeNS(null, "y2", Double.toString(percent));
 		verticalLine.setAttributeNS(null, "stroke", "black");
 		verticalLine.setAttributeNS(null, "stroke-width",
-				Double.toString(FireChartConversionUtil.pixelsToYears(1, chartWidth, firstChartYear, lastChartYear)));
+				Double.toString(FireChartConversions.pixelsToYears(1, chartWidth, firstChartYear, lastChartYear)));
 				
 		return verticalLine;
 	}
