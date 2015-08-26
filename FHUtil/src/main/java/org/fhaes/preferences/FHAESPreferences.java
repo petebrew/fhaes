@@ -337,6 +337,8 @@ public class FHAESPreferences {
 		
 		CHART_SHOW_CATEGORY_LABELS("chartShowCategoryLabels"),
 		
+		CHART_SORT_BY_PREFERENCE("chartSortByPreference"),
+		
 		CHART_FONT_FAMILY("chartFontFamily"),
 		
 		CHART_LAST_EXPORT_FOLDER("chartLastExportFolder"),

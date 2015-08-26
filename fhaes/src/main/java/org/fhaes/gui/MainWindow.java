@@ -149,8 +149,9 @@ public class MainWindow implements PrefsListener {
 	// Declare GUI components
 	private JFrame frame;
 	private JMenu mnOpenRecent;
-	private JMenu mnSave;
 	private JMenu mnExport;
+	private JMenu mnSave;
+	private JMenu mnSort;
 	private JComboBox fileSortComboBox;
 	private JSplitPane splitPane;
 	private JPanel fileListDisplayPanel;
@@ -1179,8 +1180,9 @@ public class MainWindow implements PrefsListener {
 		boolean isFileListPopulated = fileListModel.getSize() > 0;
 		
 		// Enabled/Disable buttons depending
-		mnSave.setEnabled(isFileListPopulated);
 		mnExport.setEnabled(isFileListPopulated);
+		mnSave.setEnabled(isFileListPopulated);
+		mnSort.setEnabled(isFileListPopulated);
 		actionClearList.setEnabled(isFileListPopulated);
 		actionClearCurrent.setEnabled(isFileListPopulated);
 		actionSaveAll.setEnabled(isFileListPopulated);
@@ -1696,6 +1698,7 @@ public class MainWindow implements PrefsListener {
 					// Reload the categories from the file as it was saved in the category editor
 					selectedFile.clearAllCategoryEntries();
 					openCategoryFile(new File(selectedFile.getCategoryFilePath()));
+					reportPanel.setFile(selectedFile);
 				}
 				else
 				{
@@ -2472,7 +2475,8 @@ public class MainWindow implements PrefsListener {
 		mnChart.addSeparator();
 		mnChart.add(new FHAESMenuItem(chartActions.actionShowSeriesList));
 		
-		JMenu mnSort = new JMenu(chartActions.actionSortSeriesBy);
+		mnSort = new JMenu("Sort series by...");
+		mnSort.setIcon(Builder.getImageIcon("sort.png"));
 		mnChart.add(mnSort);
 		
 		mnSort.add(new FHAESMenuItem(chartActions.actionSortName));

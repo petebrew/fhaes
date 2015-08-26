@@ -27,23 +27,11 @@ import org.fhaes.gui.MainWindow;
 import org.fhaes.preferences.App;
 import org.fhaes.preferences.FHAESPreferences.PrefKey;
 import org.fhaes.util.FHAESAction;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * ChartActions Class.
  */
 public class ChartActions {
-	
-	/**
-	 * SeriesSortType Enum.
-	 */
-	public enum SeriesSortType {
-		NAME, CATEGORY, FIRST_FIRE_YEAR, START_YEAR, END_YEAR;
-	};
-	
-	// Declare logger
-	private static final Logger log = LoggerFactory.getLogger(ChartActions.class);
 	
 	// Declare chart instance
 	protected NeoFHChart neoFHChart;
@@ -70,7 +58,6 @@ public class ChartActions {
 	public FHAESAction actionBulkExportChartsAsPDF;
 	
 	// Declare sort actions
-	public FHAESAction actionSortSeriesBy;
 	public FHAESAction actionSortName;
 	public FHAESAction actionSortCategory;
 	public FHAESAction actionSortFirstFireYear;
@@ -382,19 +369,6 @@ public class ChartActions {
 		};
 		
 		/*
-		 * SORT SERIES BY
-		 */
-		this.actionSortSeriesBy = new FHAESAction("Sort series by...", "sort.png", "Sort series", "Sort series by...") {
-			
-			private static final long serialVersionUID = 1L;
-			
-			@Override
-			public void actionPerformed(ActionEvent event) {
-			
-			}
-		};
-		
-		/*
 		 * SORT BY NAME
 		 */
 		this.actionSortName = new FHAESAction("Name") {
@@ -446,7 +420,7 @@ public class ChartActions {
 			@Override
 			public void actionPerformed(ActionEvent event) {
 				
-				sortSeries(SeriesSortType.START_YEAR);
+				sortSeries(SeriesSortType.SAMPLE_START_YEAR);
 			}
 		};
 		
@@ -460,7 +434,7 @@ public class ChartActions {
 			@Override
 			public void actionPerformed(ActionEvent event) {
 				
-				sortSeries(SeriesSortType.END_YEAR);
+				sortSeries(SeriesSortType.SAMPLE_END_YEAR);
 			}
 		};
 		
@@ -494,7 +468,6 @@ public class ChartActions {
 		actionShowSampleDepthThreshold.setEnabled(chart != null);
 		actionShowSeriesLabels.setEnabled(chart != null);
 		actionShowSeriesList.setEnabled(chart != null);
-		actionSortSeriesBy.setEnabled(chart != null);
 		actionSortName.setEnabled(chart != null);
 		actionSortCategory.setEnabled(chart != null);
 		actionSortFirstFireYear.setEnabled(chart != null);
@@ -537,33 +510,71 @@ public class ChartActions {
 					
 					if (type.equals(SeriesSortType.NAME))
 					{
+						App.prefs.setPref(PrefKey.CHART_SORT_BY_PREFERENCE, SeriesSortType.NAME.toString());
 						neoFHChart.currentChart.sortByName();
-						log.debug("Finished sorting chart series by name");
 					}
 					else if (type.equals(SeriesSortType.CATEGORY))
 					{
+						App.prefs.setPref(PrefKey.CHART_SORT_BY_PREFERENCE, SeriesSortType.CATEGORY.toString());
 						neoFHChart.currentChart.sortByCategory();
-						log.debug("Finished sorting chart series by category");
 					}
 					else if (type.equals(SeriesSortType.FIRST_FIRE_YEAR))
 					{
+						App.prefs.setPref(PrefKey.CHART_SORT_BY_PREFERENCE, SeriesSortType.FIRST_FIRE_YEAR.toString());
 						neoFHChart.currentChart.sortByFirstFireYear();
-						log.debug("Finished sorting chart series by first fire year");
 					}
-					else if (type.equals(SeriesSortType.START_YEAR))
+					else if (type.equals(SeriesSortType.SAMPLE_START_YEAR))
 					{
+						App.prefs.setPref(PrefKey.CHART_SORT_BY_PREFERENCE, SeriesSortType.SAMPLE_START_YEAR.toString());
 						neoFHChart.currentChart.sortBySampleStartYear();
-						log.debug("Finished sorting chart series by start year");
 					}
-					else if (type.equals(SeriesSortType.END_YEAR))
+					else if (type.equals(SeriesSortType.SAMPLE_END_YEAR))
 					{
+						App.prefs.setPref(PrefKey.CHART_SORT_BY_PREFERENCE, SeriesSortType.SAMPLE_END_YEAR.toString());
 						neoFHChart.currentChart.sortBySampleEndYear();
-						log.debug("Finished sorting chart series by end year");
 					}
 				}
 			};
 			
 			neoFHChart.svgCanvas.getUpdateManager().getUpdateRunnableQueue().invokeLater(r);
+		}
+	}
+	
+	/**
+	 * SeriesSortType Enum.
+	 */
+	public enum SeriesSortType {
+		
+		NAME("name"),
+		
+		CATEGORY("category"),
+		
+		FIRST_FIRE_YEAR("firstFireYear"),
+		
+		SAMPLE_START_YEAR("sampleStartYear"),
+		
+		SAMPLE_END_YEAR("sampleEndYear");
+		
+		// Declare local variables
+		private String humanReadable;
+		
+		/**
+		 * Initialize the human-readable string for the SeriesSortType.
+		 * 
+		 * @param str
+		 */
+		SeriesSortType(String str) {
+			
+			humanReadable = str;
+		}
+		
+		/**
+		 * Get the human-readable string name for this SeriesSortType.
+		 */
+		@Override
+		public String toString() {
+			
+			return humanReadable;
 		}
 	}
 	

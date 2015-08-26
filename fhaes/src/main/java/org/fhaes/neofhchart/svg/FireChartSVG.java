@@ -80,13 +80,13 @@ public class FireChartSVG {
 	private static final Logger log = LoggerFactory.getLogger(FireChartSVG.class);
 	
 	// Declare DOMImplementation (this is the Document Object Model API which is used for creating SVG documents)
-	private static DOMImplementation impl = SVGDOMImplementation.getDOMImplementation();
+	private DOMImplementation impl = SVGDOMImplementation.getDOMImplementation();
 	
 	// Declare SVG document namespace (this is what tells the API that we are creating an SVG document)
-	protected static String svgNS = SVGDOMImplementation.SVG_NAMESPACE_URI;
+	private String svgNS = SVGDOMImplementation.SVG_NAMESPACE_URI;
 	
 	// Declare SVG document instance (this is the actual SVG document)
-	protected static Document doc = impl.createDocument(svgNS, "svg", null);
+	private Document doc = impl.createDocument(svgNS, "svg", null);
 	
 	// Declare protected constants
 	protected static final int SERIES_HEIGHT = 10;
@@ -236,6 +236,7 @@ public class FireChartSVG {
 		buildElements();
 		positionSeriesLines();
 		positionChartGroupersAndDrawTimeAxis();
+		sortSeriesAccordingToPreference();
 	};
 	
 	/**
@@ -2173,6 +2174,35 @@ public class FireChartSVG {
 	}
 	
 	/**
+	 * Sorts the series according to the sort by preference.
+	 */
+	private void sortSeriesAccordingToPreference() {
+		
+		String sortByPreference = App.prefs.getPref(PrefKey.CHART_SORT_BY_PREFERENCE, SeriesSortType.NAME.toString());
+		
+		if (sortByPreference.equals(SeriesSortType.NAME.toString()))
+		{
+			sortByName();
+		}
+		else if (sortByPreference.equals(SeriesSortType.CATEGORY.toString()))
+		{
+			sortByCategory();
+		}
+		else if (sortByPreference.equals(SeriesSortType.FIRST_FIRE_YEAR.toString()))
+		{
+			sortByFirstFireYear();
+		}
+		else if (sortByPreference.equals(SeriesSortType.SAMPLE_START_YEAR.toString()))
+		{
+			sortBySampleStartYear();
+		}
+		else if (sortByPreference.equals(SeriesSortType.SAMPLE_END_YEAR.toString()))
+		{
+			sortBySampleEndYear();
+		}
+	}
+	
+	/**
 	 * Sort the series by name.
 	 */
 	public void sortByName() {
@@ -2189,6 +2219,8 @@ public class FireChartSVG {
 		Collections.sort(seriesSVGList, comparator);
 		lastTypeSortedBy = SeriesSortType.NAME;
 		rebuildChronologyPlot();
+		
+		log.debug("Finished sorting chart series by name");
 	}
 	
 	/**
@@ -2212,6 +2244,8 @@ public class FireChartSVG {
 		Collections.sort(seriesSVGList, comparator);
 		lastTypeSortedBy = SeriesSortType.CATEGORY;
 		rebuildChronologyPlot();
+		
+		log.debug("Finished sorting chart series by category");
 	}
 	
 	/**
@@ -2248,6 +2282,8 @@ public class FireChartSVG {
 		Collections.sort(seriesSVGList, comparator);
 		lastTypeSortedBy = SeriesSortType.FIRST_FIRE_YEAR;
 		rebuildChronologyPlot();
+		
+		log.debug("Finished sorting chart series by first fire year");
 	}
 	
 	/**
@@ -2265,8 +2301,10 @@ public class FireChartSVG {
 		};
 		
 		Collections.sort(seriesSVGList, comparator);
-		lastTypeSortedBy = SeriesSortType.START_YEAR;
+		lastTypeSortedBy = SeriesSortType.SAMPLE_START_YEAR;
 		rebuildChronologyPlot();
+		
+		log.debug("Finished sorting chart series by series start year");
 	}
 	
 	/**
@@ -2284,8 +2322,10 @@ public class FireChartSVG {
 		};
 		
 		Collections.sort(seriesSVGList, comparator);
-		lastTypeSortedBy = SeriesSortType.END_YEAR;
+		lastTypeSortedBy = SeriesSortType.SAMPLE_END_YEAR;
 		rebuildChronologyPlot();
+		
+		log.debug("Finished sorting chart series by series end year");
 	}
 	
 	// public boolean setCommonTickAttrib(int weight, Color color, LineStyle style) {

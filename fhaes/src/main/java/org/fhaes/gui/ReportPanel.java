@@ -72,11 +72,11 @@ public class ReportPanel extends JPanel implements PrefsListener {
 	private static final Logger log = LoggerFactory.getLogger(ReportPanel.class);
 	
 	// Declare local constants
-	private static final int TABBED_PANE_FILE_VIEWER_INDEX = 0;
-	private static final int TABBED_PANE_FILE_SUMMARY_INDEX = 1;
-	private static final int TABBED_PANE_ANALYSIS_INDEX = 2;
-	private static final int TABBED_PANE_MAP_INDEX = 3;
-	private static final int TABBED_PANE_CHART_INDEX = 4;
+	private static final int FILE_VIEWER_INDEX = 0;
+	private static final int FILE_SUMMARY_INDEX = 1;
+	private static final int ANALYSIS_INDEX = 2;
+	private static final int MAP_INDEX = 3;
+	private static final int CHART_INDEX = 4;
 	private static final int FIVE_MEGABYTE_LENGTH = 5242880;
 	
 	// Declare GUI components
@@ -107,18 +107,224 @@ public class ReportPanel extends JPanel implements PrefsListener {
 	}
 	
 	/**
+	 * Returns a value indicating whether the file has been populated.
+	 * 
+	 * @return
+	 */
+	public Boolean isFilePopulated() {
+		
+		return fhxFile != null;
+	}
+	
+	/**
+	 * Populate the reports for a specific file.
+	 * 
+	 * @param inFile
+	 */
+	public void setFile(FHFile inFile) {
+		
+		log.debug("setFile called with file: \"" + inFile + "\"");
+		
+		if (inFile != null && !inFile.exists())
+		{
+			JOptionPane.showMessageDialog(App.mainFrame, "The file '" + inFile.getName() + "' does not exist.", "File not found",
+					JOptionPane.ERROR_MESSAGE);
+					
+			fhxFile = null;
+		}
+		else
+		{
+			fhxFile = inFile;
+		}
+		
+		populateSingleFileReports();
+	}
+	
+	/**
+	 * Populate reports that work on all files in the workspace.
+	 * 
+	 * @param files
+	 */
+	public void setFiles(ArrayList<FHFile> files) {
+		
+		fhxFiles = new ArrayList<FHFile>();
+		
+		// Check the files passed still exist
+		for (FHFile file : files)
+		{
+			if (file.exists())
+			{
+				fhxFiles.add(file);
+			}
+			else
+			{
+				JOptionPane.showMessageDialog(App.mainFrame, "The file '" + file.getName() + "' does not exist.", "File not found",
+						JOptionPane.ERROR_MESSAGE);
+			}
+		}
+		
+		populateMultiFileReports();
+	}
+	
+	/**
+	 * Populate the reports that take a single file as input.
+	 */
+	private void populateSingleFileReports() {
+		
+		// **********
+		// First Handle the FHX Viewer panel
+		// **********
+		
+		// Scrub viewer
+		txtFHX.setText("");
+		txtSummary.setText("");
+		errorMessage.setText("");
+		errorMessage.setVisible(false);
+		
+		populateFileReaderTab();
+		populateSummaryTab();
+		txtFHX.repaint();
+		
+		// Hide error panel by default
+		errorMessage.setText("");
+		errorMessage.setVisible(false);
+		btnEditFile.setVisible(false);
+		
+		if (fhxFile != null)
+		{
+			// Set the error message if necessary
+			if (fhxFile.getErrorMessage() != null)
+			{
+				errorMessage.setText(fhxFile.getErrorMessage());
+				errorMessage.setVisible(true);
+				
+				if (!fhxFile.isValidFHXFile())
+				{
+					// Show edit file button
+					btnEditFile.setVisible(true);
+				}
+				
+				// Change focus to 'File Viewer' to highlight problem with file
+				tabbedPane.setSelectedIndex(FILE_VIEWER_INDEX);
+			}
+			
+			if (fhxFile.isValidFHXFile())
+			{
+				panelChart.loadFile(fhxFile.getFireHistoryReader());
+				panelResults.setSingleFileSummaryModel(FHDescriptiveStats.getDescriptiveStatsTableModel(fhxFile));
+			}
+			else
+			{
+				panelChart.clearChart();
+			}
+		}
+		else
+		{
+			panelChart.clearChart();
+		}
+	}
+	
+	/**
+	 * TODO
+	 */
+	private void populateMultiFileReports() {
+		
+		if (fhxFiles == null || fhxFiles.size() == 0)
+		{
+			fhxFile = null;
+			panelMap.setFHFiles(null);
+			panelResults.clearResults();
+			populateFileReaderTab();
+			populateSummaryTab();
+			return;
+		}
+		
+		panelMap.setFHFiles(fhxFiles);
+	}
+	
+	/**
+	 * Populates the summary tab only if the file and report exist.
+	 */
+	private void populateSummaryTab() {
+		
+		if (fhxFile == null || fhxFile.getReport() == null)
+		{
+			txtSummary.setText("");
+			return;
+		}
+		
+		txtSummary.setText(fhxFile.getReport());
+		txtSummary.setCaretPosition(0);
+	}
+	
+	/**
+	 * Populates the file reader tab only if the file exists.
+	 */
+	private void populateFileReaderTab() {
+		
+		if (fhxFile == null)
+		{
+			txtFHX.setText("");
+			txtFHX.getHighlighter().removeAllHighlights();
+			return;
+		}
+		
+		try
+		{
+			// Try to read file into FHX viewer tab
+			FileReader reader = new FileReader(fhxFile);
+			BufferedReader br = new BufferedReader(reader);
+			if (fhxFile.length() < FIVE_MEGABYTE_LENGTH) // 5mb
+			{
+				txtFHX.read(br, txtFHX);
+				br.close();
+			}
+			else
+			{
+				txtFHX.setText("File too large to display");
+			}
+			
+			// If there are errors in the file try to highlight the offensive line
+			txtFHX.getHighlighter().removeAllHighlights();
+			if (fhxFile.getErrorLine() != null && fhxFile.getErrorLine() <= txtFHX.getLineCount())
+			{
+				DefaultHighlightPainter painter = new DefaultHighlighter.DefaultHighlightPainter(Color.YELLOW);
+				try
+				{
+					int start = txtFHX.getLineStartOffset(fhxFile.getErrorLine() - 1);
+					int end = txtFHX.getLineStartOffset(fhxFile.getErrorLine());
+					log.debug("Line number offset to highlight: " + start);
+					txtFHX.getHighlighter().addHighlight(start, end, painter);
+					txtFHX.setCaretPosition(start);
+				}
+				catch (BadLocationException e)
+				{
+					log.error("Unable to move caret to position in file. BadLocationException");
+					e.printStackTrace();
+				}
+			}
+		}
+		catch (Exception e2)
+		{
+			log.error("Problems setting up file viewer");
+			e2.printStackTrace();
+		}
+		
+		txtFHX.setCaretPosition(0);
+	}
+	
+	/**
 	 * Select all text within the currently focused text area.
 	 */
 	public void selectAll() {
 		
 		JComponent focusedComponent = getFocusedReportTab();
 		
-		log.debug("Focused component is: " + focusedComponent.getName());
-		
 		if (focusedComponent != null)
 		{
-			
+			log.debug("Focused component is: " + focusedComponent.getName());
 			focusedComponent.requestFocusInWindow();
+			
 			if (focusedComponent instanceof JTextArea)
 			{
 				((JTextArea) focusedComponent).selectAll();
@@ -131,6 +337,7 @@ public class ReportPanel extends JPanel implements PrefsListener {
 			{
 				javax.swing.Action select = focusedComponent.getActionMap().get("selectAll");
 				ActionEvent ae = new ActionEvent(focusedComponent, ActionEvent.ACTION_PERFORMED, "");
+				
 				try
 				{
 					select.actionPerformed(ae);
@@ -144,32 +351,60 @@ public class ReportPanel extends JPanel implements PrefsListener {
 	}
 	
 	/**
+	 * Copy the currently focused text area to the clipboard.
+	 */
+	public void copyCurrentReportToClipboard() {
+		
+		JComponent focusedComponent = getFocusedReportTab();
+		
+		if (focusedComponent != null)
+		{
+			if (focusedComponent instanceof JXTable)
+			{
+				if (focusedComponent.equals(panelResults.table))
+				{
+					panelResults.adapter.doCopy();
+				}
+			}
+			else if (focusedComponent instanceof JTextArea)
+			{
+				((JTextArea) focusedComponent).copy();
+			}
+		}
+	}
+	
+	/**
 	 * Get the currently focused text area.
 	 * 
 	 * @return
 	 */
-	public JComponent getFocusedReportTab() {
+	private JComponent getFocusedReportTab() {
 		
 		int selectedIndex = tabbedPane.getSelectedIndex();
 		
-		if (selectedIndex == TABBED_PANE_FILE_VIEWER_INDEX)
+		if (selectedIndex == FILE_VIEWER_INDEX)
 		{
-			// Show file viewer
+			// Show the file viewer component
 			return txtFHX;
 		}
-		else if (selectedIndex == TABBED_PANE_FILE_SUMMARY_INDEX)
+		else if (selectedIndex == FILE_SUMMARY_INDEX)
 		{
-			// Show file summary
+			// Show the file summary component
 			return txtSummary;
 		}
-		else if (selectedIndex == TABBED_PANE_ANALYSIS_INDEX)
+		else if (selectedIndex == ANALYSIS_INDEX)
 		{
-			// Show analysis results
+			// Show the analysis results component
 			return panelResults.table;
 		}
-		else if (selectedIndex == TABBED_PANE_MAP_INDEX)
+		else if (selectedIndex == MAP_INDEX)
 		{
-			// Show map
+			// Do not show the map
+			return null;
+		}
+		else if (selectedIndex == CHART_INDEX)
+		{
+			// Do not show the chart
 			return null;
 		}
 		
@@ -191,33 +426,7 @@ public class ReportPanel extends JPanel implements PrefsListener {
 	 */
 	protected void setFocusToChartTab() {
 		
-		tabbedPane.setSelectedIndex(TABBED_PANE_CHART_INDEX);
-	}
-	
-	/**
-	 * Copy the currently focused text area to the clipboard.
-	 */
-	public void copyCurrentReportToClipboard() {
-		
-		JComponent focusedComponent = getFocusedReportTab();
-		
-		if (focusedComponent != null)
-		{
-			
-			if (focusedComponent instanceof JXTable)
-			{
-				
-				if (focusedComponent.equals(panelResults.table))
-				{
-					panelResults.adapter.doCopy();
-				}
-				
-			}
-			else if (focusedComponent instanceof JTextArea)
-			{
-				((JTextArea) focusedComponent).copy();
-			}
-		}
+		tabbedPane.setSelectedIndex(CHART_INDEX);
 	}
 	
 	/**
@@ -324,213 +533,6 @@ public class ReportPanel extends JPanel implements PrefsListener {
 	
 	/**
 	 * TODO
-	 * 
-	 * @return
-	 */
-	public Boolean isFilePopulated() {
-		
-		return fhxFile != null;
-	}
-	
-	/**
-	 * Populate the reports for a specific file.
-	 * 
-	 * @param inFile
-	 */
-	public void setFile(FHFile inFile) {
-		
-		log.debug("setFile called with file: \"" + inFile + "\"");
-		
-		if (inFile != null && !inFile.exists())
-		{
-			JOptionPane.showMessageDialog(App.mainFrame, "The file '" + inFile.getName() + "' does not exist.", "File not found",
-					JOptionPane.ERROR_MESSAGE);
-					
-			fhxFile = null;
-		}
-		else
-		{
-			fhxFile = inFile;
-		}
-		
-		populateSingleFileReports();
-	}
-	
-	/**
-	 * Populate reports that work on all files in the workspace.
-	 * 
-	 * @param files
-	 */
-	public void setFiles(ArrayList<FHFile> files) {
-		
-		fhxFiles = new ArrayList<FHFile>();
-		
-		// Check the files passed still exist
-		for (FHFile file : files)
-		{
-			if (file.exists())
-			{
-				fhxFiles.add(file);
-			}
-			else
-			{
-				JOptionPane.showMessageDialog(App.mainFrame, "The file '" + file.getName() + "' does not exist.", "File not found",
-						JOptionPane.ERROR_MESSAGE);
-			}
-		}
-		
-		populateMultiFileReports();
-	}
-	
-	/**
-	 * Populate the reports that take a single file as input.
-	 */
-	private void populateSingleFileReports() {
-		
-		// **********
-		// First Handle the FHX Viewer panel
-		// **********
-		
-		// Scrub viewer
-		txtFHX.setText("");
-		txtSummary.setText("");
-		errorMessage.setText("");
-		errorMessage.setVisible(false);
-		
-		populateFileReaderTab();
-		populateSummaryTab();
-		txtFHX.repaint();
-		
-		// Hide error panel by default
-		errorMessage.setText("");
-		errorMessage.setVisible(false);
-		btnEditFile.setVisible(false);
-		
-		if (fhxFile != null)
-		{
-			// Set the error message if necessary
-			if (fhxFile.getErrorMessage() != null)
-			{
-				errorMessage.setText(fhxFile.getErrorMessage());
-				errorMessage.setVisible(true);
-				
-				if (!fhxFile.isValidFHXFile())
-				{
-					// Show edit file button
-					btnEditFile.setVisible(true);
-				}
-				
-				// Change focus to 'File Viewer' to highlight problem with file
-				tabbedPane.setSelectedIndex(TABBED_PANE_FILE_VIEWER_INDEX);
-			}
-			
-			if (fhxFile.isValidFHXFile())
-			{
-				panelChart.loadFile(fhxFile.getFireHistoryReader());
-				panelResults.setSingleFileSummaryModel(FHDescriptiveStats.getDescriptiveStatsTableModel(fhxFile));
-			}
-			else
-			{
-				panelChart.clearChart();
-			}
-		}
-		else
-		{
-			panelChart.clearChart();
-		}
-	}
-	
-	/**
-	 * TODO
-	 */
-	private void populateMultiFileReports() {
-		
-		if (fhxFiles == null || fhxFiles.size() == 0)
-		{
-			fhxFile = null;
-			panelMap.setFHFiles(null);
-			panelResults.clearResults();
-			populateFileReaderTab();
-			populateSummaryTab();
-			return;
-		}
-		
-		panelMap.setFHFiles(fhxFiles);
-	}
-	
-	/**
-	 * Populates the summary tab only if the file and report exist.
-	 */
-	private void populateSummaryTab() {
-		
-		if (fhxFile == null || fhxFile.getReport() == null)
-		{
-			txtSummary.setText("");
-			return;
-		}
-		
-		txtSummary.setText(fhxFile.getReport());
-		txtSummary.setCaretPosition(0);
-	}
-	
-	/**
-	 * TODO
-	 */
-	private void populateFileReaderTab() {
-		
-		if (fhxFile == null)
-		{
-			txtFHX.setText("");
-			txtFHX.getHighlighter().removeAllHighlights();
-			return;
-		}
-		
-		try
-		{
-			// Try to read file into FHX viewer tab
-			FileReader reader = new FileReader(fhxFile);
-			BufferedReader br = new BufferedReader(reader);
-			if (fhxFile.length() < FIVE_MEGABYTE_LENGTH) // 5mb
-			{
-				txtFHX.read(br, txtFHX);
-				br.close();
-			}
-			else
-			{
-				txtFHX.setText("File too large to display");
-			}
-			
-			// If there are errors in the file try to highlight the offensive line
-			txtFHX.getHighlighter().removeAllHighlights();
-			if (fhxFile.getErrorLine() != null && fhxFile.getErrorLine() <= txtFHX.getLineCount())
-			{
-				DefaultHighlightPainter painter = new DefaultHighlighter.DefaultHighlightPainter(Color.YELLOW);
-				try
-				{
-					int start = txtFHX.getLineStartOffset(fhxFile.getErrorLine() - 1);
-					int end = txtFHX.getLineStartOffset(fhxFile.getErrorLine());
-					log.debug("Line number offset to highlight: " + start);
-					txtFHX.getHighlighter().addHighlight(start, end, painter);
-					txtFHX.setCaretPosition(start);
-				}
-				catch (BadLocationException e)
-				{
-					log.error("Unable to move caret to position in file. BadLocationException");
-					e.printStackTrace();
-				}
-			}
-		}
-		catch (Exception e2)
-		{
-			log.error("Problems setting up file viewer");
-			e2.printStackTrace();
-		}
-		
-		txtFHX.setCaretPosition(0);
-	}
-	
-	/**
-	 * TODO
 	 */
 	@Override
 	public void prefChanged(PrefsEvent e) {
@@ -606,7 +608,6 @@ public class ReportPanel extends JPanel implements PrefsListener {
 		tabbedPane = new JTabbedPane(JTabbedPane.BOTTOM);
 		if (Platform.isOSX())
 			tabbedPane.setBackground(MainWindow.MAC_BACKGROUND_COLOR);
-			
 		panelRight.add(tabbedPane);
 		
 		// Create FHX viewer tab
@@ -730,6 +731,7 @@ public class ReportPanel extends JPanel implements PrefsListener {
 			panelMap.setBackground(MainWindow.MAC_BACKGROUND_COLOR);
 		tabbedPane.addTab("Map  ", Builder.getImageIcon("map.png"), panelMap, null);
 		
+		// Chart panel
 		panelChart = new NeoFHChart();
 		MainWindow.chartActions = new ChartActions(panelChart);
 		tabbedPane.addTab("Chart  ", Builder.getImageIcon("chart.png"), panelChart, null);
