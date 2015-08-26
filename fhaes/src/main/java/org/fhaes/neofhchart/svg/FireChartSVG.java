@@ -70,7 +70,7 @@ import org.w3c.dom.Text;
 import org.w3c.dom.svg.SVGRect;
 
 /**
- * FireChartSVG Class. Graphs a fire history chart as an svg using FHUtil's AbstractFireHistoryReader.
+ * FireChartSVG Class. Graphs a fire history chart as an SVG using FHUtil's AbstractFireHistoryReader.
  * 
  * @author Aaron Decker, Michael Ababio, Zachariah Ferree, Matthew Willie, Peter Brewer
  */
@@ -80,21 +80,25 @@ public class FireChartSVG {
 	private static final Logger log = LoggerFactory.getLogger(FireChartSVG.class);
 	
 	// Declare DOMImplementation (this is the Document Object Model API which is used for creating SVG documents)
-	private DOMImplementation impl = SVGDOMImplementation.getDOMImplementation();
+	private static DOMImplementation impl = SVGDOMImplementation.getDOMImplementation();
 	
 	// Declare SVG document namespace (this is what tells the API that we are creating an SVG document)
-	private String svgNS = SVGDOMImplementation.SVG_NAMESPACE_URI;
+	protected static String svgNS = SVGDOMImplementation.SVG_NAMESPACE_URI;
 	
 	// Declare SVG document instance (this is the actual SVG document)
-	private Document doc = impl.createDocument(svgNS, "svg", null);
+	protected static Document doc = impl.createDocument(svgNS, "svg", null);
 	
 	// Declare protected constants
 	protected static final int SERIES_HEIGHT = 10;
+	
+	// Declare local constants
+	private static final int CATEGORY_PADDING_AMOUNT = 40;
 	
 	// Declare local variables
 	private AbstractFireHistoryReader reader;
 	private int chartXOffset = 50;
 	private int chartWidth = 1000;
+	private int categoryGroupPadding = 0;
 	private int widestChronologyLabelSize = 0;
 	private boolean showFires = true;
 	private boolean showInjuries = true;
@@ -136,17 +140,25 @@ public class FireChartSVG {
 		chart_map.put(chartNum, this);
 		
 		reader = f;
+		ArrayList<FHSeriesSVG> seriesToAdd = FireChartConversions.seriesListToSeriesSVGList(f.getSeriesList());
 		
-		ArrayList<FHSeriesSVG> tempList = FireChartConversions.seriesListToSeriesSVGList(f.getSeriesList());
 		if (!seriesSVGList.isEmpty())
 		{
 			seriesSVGList.clear();
 		}
-		for (int i = 0; i < tempList.size(); i++)
+		for (int i = 0; i < seriesToAdd.size(); i++)
 		{
 			try
 			{
-				seriesSVGList.add(new FHSeriesSVG(tempList.get(i)));
+				FHSeries currentSeries = seriesToAdd.get(i);
+				
+				// Add the default category entry if the current series has no defined entries (this is necessary for category groupings)
+				if (currentSeries.getCategoryEntries().isEmpty())
+				{
+					currentSeries.getCategoryEntries().add(new FHCategoryEntry(currentSeries.getTitle(), "default", "default"));
+				}
+				
+				seriesSVGList.add(new FHSeriesSVG(seriesToAdd.get(i)));
 			}
 			catch (Exception e)
 			{
@@ -578,16 +590,53 @@ public class FireChartSVG {
 		int series_spacing_and_height = App.prefs.getIntPref(PrefKey.CHART_CHRONOLOGY_PLOT_SPACING, 5) + SERIES_HEIGHT;
 		int hidden = 0;
 		
+		// Reset the amount of padding necessary for category groupings
+		categoryGroupPadding = 0;
+		
+		// Define a string for keeping track of the category groups
+		ArrayList<String> categoryGroupsProcessed = new ArrayList<String>();
+		
 		for (int i = 0; i < seriesSVGList.size(); i++)
 		{
-			FHSeries series = seriesSVGList.get(i);
-			Element series_group = doc.getElementById("series_group_" + series.getTitle());
+			FHSeries seriesSVG = seriesSVGList.get(i);
+			Element series_group = doc.getElementById("series_group_" + seriesSVG.getTitle());
 			String visibility_string = seriesSVGList.get(i).isVisible() ? "inline" : "none";
 			
 			if (seriesSVGList.get(i).isVisible())
 			{
+				// Inject the category group spacing and label text as different category groups are positioned
+				if (lastTypeSortedBy == SeriesSortType.CATEGORY && App.prefs.getBooleanPref(PrefKey.CHART_SHOW_CATEGORY_GROUPS, true))
+				{
+					String currentCategoryGroup = seriesSVG.getCategoryEntries().get(0).getContent();
+					
+					if (!categoryGroupsProcessed.contains(currentCategoryGroup))
+					{
+						Element label_text_g = doc.createElementNS(svgNS, "g");
+						label_text_g.setAttributeNS(null, "transform",
+								"translate(0," + Integer.toString(-(CATEGORY_PADDING_AMOUNT / 2)) + ")");
+						label_text_g.appendChild(
+								SeriesElementBuilder.getCategoryLabelTextElement(doc, svgNS, currentCategoryGroup, fontFamily, chartWidth));
+						series_group.appendChild(label_text_g);
+						
+						// Handle the padding of category groups depending on whether the label is shown
+						if (App.prefs.getBooleanPref(PrefKey.CHART_SHOW_CATEGORY_LABELS, true))
+						{
+							label_text_g.setAttributeNS(null, "display", "inline");
+							categoryGroupPadding += CATEGORY_PADDING_AMOUNT;
+						}
+						else
+						{
+							label_text_g.setAttributeNS(null, "display", "none");
+							categoryGroupPadding += CATEGORY_PADDING_AMOUNT / 2;
+						}
+						
+						// Keep track of which category groups have already been processed
+						categoryGroupsProcessed.add(currentCategoryGroup);
+					}
+				}
+				
 				series_group.setAttributeNS(null, "transform",
-						"translate(0," + Integer.toString((i - hidden) * series_spacing_and_height) + ")");
+						"translate(0," + Integer.toString(((i - hidden) * series_spacing_and_height) + categoryGroupPadding) + ")");
 			}
 			else
 			{
@@ -634,7 +683,7 @@ public class FireChartSVG {
 		
 		if (App.prefs.getBooleanPref(PrefKey.CHART_SHOW_CHRONOLOGY_PLOT, true))
 		{
-			cur_bottom += chronology_plot_height + series_spacing_and_height;
+			cur_bottom += chronology_plot_height + series_spacing_and_height + categoryGroupPadding;
 		}
 		
 		int composite_plot_y = cur_bottom;
@@ -805,7 +854,6 @@ public class FireChartSVG {
 		series_group.appendChild(line_group);
 		
 		// add in fire events
-		
 		if (showFires)
 		{
 			Element series_fire_events = doc.createElementNS(svgNS, "g");
@@ -974,9 +1022,6 @@ public class FireChartSVG {
 		widestChronologyLabelSize = getStringWidth(fontFamily, Font.PLAIN,
 				App.prefs.getIntPref(PrefKey.CHART_CHRONOLOGY_PLOT_LABEL_FONT_SIZE, 10), longestLabel);
 				
-		// Define a string for keeping track of the category groups
-		String previousCategoryGroup = "";
-		
 		for (int i = 0; i < series_arr.size(); i++)
 		{
 			series_visible.add(true);
@@ -984,18 +1029,6 @@ public class FireChartSVG {
 			
 			Element series_group = doc.createElementNS(svgNS, "g");
 			series_group.setAttributeNS(null, "id", "series_group_" + seriesSVG.getTitle());
-			
-			// Inject the category group spacing and label text as different category groups are positioned
-			if (lastTypeSortedBy == SeriesSortType.CATEGORY && App.prefs.getBooleanPref(PrefKey.CHART_SHOW_CATEGORY_GROUPS, true))
-			{
-				String currentCategoryGroup = series_arr.get(i).getCategoryEntries().get(0).getContent();
-				
-				if (currentCategoryGroup != previousCategoryGroup)
-				{
-					series_group.appendChild(getCategoryLabelWithSpacing(currentCategoryGroup));
-					previousCategoryGroup = currentCategoryGroup;
-				}
-			}
 			
 			// Add in the series group, which has the lines and ticks
 			Element series_line = buildSingleSeriesLine(seriesSVG);
@@ -1036,9 +1069,18 @@ public class FireChartSVG {
 			// Determine whether to draw the chronology plot labels
 			if (App.prefs.getBooleanPref(PrefKey.CHART_SHOW_CHRONOLOGY_PLOT_LABELS, true))
 			{
-				series_name.setAttributeNS(null, "display", "inline");
-				up_button_g.setAttributeNS(null, "display", "inline");
-				down_button_g.setAttributeNS(null, "display", "inline");
+				if (lastTypeSortedBy == SeriesSortType.CATEGORY && App.prefs.getBooleanPref(PrefKey.CHART_SHOW_CATEGORY_GROUPS, true))
+				{
+					// Do not show the up/down buttons if grouping series by category
+					up_button_g.setAttributeNS(null, "display", "none");
+					down_button_g.setAttributeNS(null, "display", "none");
+				}
+				else
+				{
+					series_name.setAttributeNS(null, "display", "inline");
+					up_button_g.setAttributeNS(null, "display", "inline");
+					down_button_g.setAttributeNS(null, "display", "inline");
+				}
 			}
 			else
 			{
@@ -1831,39 +1873,6 @@ public class FireChartSVG {
 	}
 	
 	/**
-	 * Returns a category label element containing the input text. This also adds in the necessary spacing.
-	 * 
-	 * @param categoryLabel
-	 * @return categoryLabelElement
-	 */
-	private Element getCategoryLabelWithSpacing(String categoryLabel) {
-		
-		Element categoryLabelElement = doc.createElementNS(svgNS, "g");
-		Element categoryLabelPaddingElement = doc.createElementNS(svgNS, "text");
-		
-		Text categoryLabelPadding = doc.createTextNode("TODO");
-		categoryLabelPaddingElement.setAttributeNS(null, "x", Integer.toString(widestChronologyLabelSize / 2));
-		categoryLabelPaddingElement.setAttributeNS(null, "y", "0");
-		categoryLabelPaddingElement.setAttributeNS(null, "font-family", fontFamily);
-		categoryLabelPaddingElement.setAttributeNS(null, "font-size", Integer.toString(20));
-		categoryLabelPaddingElement.appendChild(categoryLabelPadding);
-		
-		if (App.prefs.getBooleanPref(PrefKey.CHART_SHOW_CATEGORY_LABELS, true))
-		{
-			Text categoryLabelText = doc.createTextNode(categoryLabel);
-			categoryLabelElement.setAttributeNS(null, "x", Integer.toString(widestChronologyLabelSize / 2));
-			categoryLabelElement.setAttributeNS(null, "y", "0");
-			categoryLabelElement.setAttributeNS(null, "font-family", fontFamily);
-			categoryLabelElement.setAttributeNS(null, "font-size", Integer.toString(16));
-			categoryLabelElement.appendChild(categoryLabelPaddingElement);
-			categoryLabelElement.appendChild(categoryLabelText);
-		}
-		categoryLabelElement.appendChild(categoryLabelPaddingElement);
-		
-		return categoryLabelElement;
-	}
-	
-	/**
 	 * Replaces the currently displayed (or hidden) chronology plot with a freshly generated chronology plot.
 	 */
 	private void rebuildChronologyPlot() {
@@ -1872,6 +1881,7 @@ public class FireChartSVG {
 		deleteAllChildren(chrono_plot_g);
 		chrono_plot_g.appendChild(getChronologyPlot());
 		positionSeriesLines();
+		positionChartGroupersAndDrawTimeAxis();
 	}
 	
 	/**
@@ -2212,19 +2222,10 @@ public class FireChartSVG {
 			@Override
 			public int compare(FHSeriesSVG c1, FHSeriesSVG c2) {
 				
-				if (c1.getCategoryEntries().isEmpty())
-				{
-					c1.getCategoryEntries().add(new FHCategoryEntry(c1.getTitle(), "default", "default"));
-				}
-				if (c2.getCategoryEntries().isEmpty())
-				{
-					c2.getCategoryEntries().add(new FHCategoryEntry(c2.getTitle(), "default", "default"));
-				}
+				String c1_first_category_entry = c1.getCategoryEntries().get(0).getContent();
+				String c2_first_category_entry = c2.getCategoryEntries().get(0).getContent();
 				
-				ArrayList<FHCategoryEntry> c1_entries = c1.getCategoryEntries();
-				ArrayList<FHCategoryEntry> c2_entries = c2.getCategoryEntries();
-				
-				return c1_entries.get(0).getContent().compareTo(c2_entries.get(0).getContent());
+				return c1_first_category_entry.compareTo(c2_first_category_entry);
 			}
 		};
 		

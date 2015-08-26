@@ -152,12 +152,7 @@ public class ReportPanel extends JPanel implements PrefsListener {
 		
 		int selectedIndex = tabbedPane.getSelectedIndex();
 		
-		if (selectedIndex == TABBED_PANE_ANALYSIS_INDEX)
-		{
-			// Show analysis results
-			return panelResults.table;
-		}
-		else if (selectedIndex == TABBED_PANE_FILE_VIEWER_INDEX)
+		if (selectedIndex == TABBED_PANE_FILE_VIEWER_INDEX)
 		{
 			// Show file viewer
 			return txtFHX;
@@ -166,6 +161,11 @@ public class ReportPanel extends JPanel implements PrefsListener {
 		{
 			// Show file summary
 			return txtSummary;
+		}
+		else if (selectedIndex == TABBED_PANE_ANALYSIS_INDEX)
+		{
+			// Show analysis results
+			return panelResults.table;
 		}
 		else if (selectedIndex == TABBED_PANE_MAP_INDEX)
 		{
@@ -433,7 +433,6 @@ public class ReportPanel extends JPanel implements PrefsListener {
 			{
 				panelChart.clearChart();
 			}
-			
 		}
 		else
 		{
@@ -765,6 +764,9 @@ public class ReportPanel extends JPanel implements PrefsListener {
 	 */
 	private void initActions() {
 		
+		/*
+		 * SELECT ALL
+		 */
 		actionSelectAll = new FHAESAction("Select all", "selectall.png") {
 			
 			private static final long serialVersionUID = 1L;
@@ -776,6 +778,9 @@ public class ReportPanel extends JPanel implements PrefsListener {
 			}
 		};
 		
+		/*
+		 * COPY
+		 */
 		actionCopy = new FHAESAction("Copy", "edit_copy.png") {
 			
 			private static final long serialVersionUID = 1L;
@@ -787,6 +792,9 @@ public class ReportPanel extends JPanel implements PrefsListener {
 			}
 		};
 		
+		/*
+		 * ANALYSIS OPTIONS
+		 */
 		actionParamConfig = new FHAESAction("Analysis options", "configure.png", "Configure") {
 			
 			private static final long serialVersionUID = 1L;
@@ -799,6 +807,9 @@ public class ReportPanel extends JPanel implements PrefsListener {
 		};
 		actionParamConfig.setToolTipText("View/edit analysis options");
 		
+		/*
+		 * HELP
+		 */
 		actionResultsHelp = new FHAESAction("Help", "help.png") {
 			
 			private static final long serialVersionUID = 1L;

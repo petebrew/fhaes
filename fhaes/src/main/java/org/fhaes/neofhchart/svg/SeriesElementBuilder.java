@@ -33,6 +33,59 @@ import org.w3c.dom.Text;
 public class SeriesElementBuilder {
 	
 	/**
+	 * Returns a series name text element based on the input parameters.
+	 * 
+	 * @param doc
+	 * @param svgNS
+	 * @param seriesSVG
+	 * @param fontFamily
+	 * @param fontSize
+	 * @param chartWidth
+	 * @return seriesNameTextElement
+	 */
+	protected static Element getSeriesNameElement(Document doc, String svgNS, FHSeriesSVG seriesSVG, String fontFamily, int fontSize,
+			int chartWidth) {
+			
+		Element seriesNameTextElement = doc.createElementNS(svgNS, "text");
+		
+		Text seriesNameText = doc.createTextNode(seriesSVG.getTitle());
+		seriesNameTextElement.setAttribute("id", "series_label_" + seriesSVG.getTitle());
+		seriesNameTextElement.setAttribute("x", Double.toString(chartWidth + 10));
+		seriesNameTextElement.setAttribute("y", Integer.toString((FireChartSVG.SERIES_HEIGHT / 2)));
+		seriesNameTextElement.setAttribute("font-family", fontFamily);
+		seriesNameTextElement.setAttribute("font-size", +fontSize + "");
+		seriesNameTextElement.setAttribute("fill", FireChartConversions.colorToHexString(seriesSVG.getLabelColor()));
+		seriesNameTextElement.appendChild(seriesNameText);
+		
+		return seriesNameTextElement;
+	}
+	
+	/**
+	 * Returns a category label text element based on the input parameters.
+	 * 
+	 * @param doc
+	 * @param svgNS
+	 * @param categoryLabel
+	 * @param fontFamily
+	 * @param chartWidth
+	 * @return categoryLabelTextElement
+	 */
+	protected static Element getCategoryLabelTextElement(Document doc, String svgNS, String categoryLabel, String fontFamily,
+			int chartWidth) {
+			
+		Element categoryLabelTextElement = doc.createElementNS(svgNS, "text");
+		
+		Text categoryLabelText = doc.createTextNode(categoryLabel.toUpperCase());
+		categoryLabelTextElement.setAttributeNS(null, "x", Integer.toString(chartWidth / 2));
+		categoryLabelTextElement.setAttributeNS(null, "y", "0");
+		categoryLabelTextElement.setAttributeNS(null, "font-family", fontFamily);
+		categoryLabelTextElement.setAttributeNS(null, "font-size", "16");
+		categoryLabelTextElement.appendChild(categoryLabelText);
+		
+		return categoryLabelTextElement;
+	}
+	
+	/**
 	 * Returns a recorder line that is pre-configured. You will probably need to change the x1 y1 x2 y2 attributes to your liking.
 	 * 
 	 * @param doc
@@ -194,34 +247,6 @@ public class SeriesElementBuilder {
 			
 			return noBarkMarker;
 		}
-	}
-	
-	/**
-	 * Returns a series name text element based on the input parameters.
-	 * 
-	 * @param doc
-	 * @param svgNS
-	 * @param seriesSVG
-	 * @param fontFamily
-	 * @param fontSize
-	 * @param chartWidth
-	 * @return seriesNameTextElement
-	 */
-	protected static Element getSeriesNameElement(Document doc, String svgNS, FHSeriesSVG seriesSVG, String fontFamily, int fontSize,
-			int chartWidth) {
-			
-		Element seriesNameTextElement = doc.createElementNS(svgNS, "text");
-		
-		Text seriesNameText = doc.createTextNode(seriesSVG.getTitle());
-		seriesNameTextElement.setAttribute("id", "series_label_" + seriesSVG.getTitle());
-		seriesNameTextElement.setAttribute("x", Double.toString(chartWidth + 10));
-		seriesNameTextElement.setAttribute("y", Integer.toString((FireChartSVG.SERIES_HEIGHT / 2)));
-		seriesNameTextElement.setAttribute("font-family", fontFamily);
-		seriesNameTextElement.setAttribute("font-size", +fontSize + "");
-		seriesNameTextElement.setAttribute("fill", FireChartConversions.colorToHexString(seriesSVG.getLabelColor()));
-		seriesNameTextElement.appendChild(seriesNameText);
-		
-		return seriesNameTextElement;
 	}
 	
 	/**

@@ -537,28 +537,28 @@ public class ChartActions {
 					
 					if (type.equals(SeriesSortType.NAME))
 					{
-						log.debug("Sorting chart series by name...");
 						neoFHChart.currentChart.sortByName();
+						log.debug("Finished sorting chart series by name");
 					}
 					else if (type.equals(SeriesSortType.CATEGORY))
 					{
-						log.debug("Sorting chart series by category...");
 						neoFHChart.currentChart.sortByCategory();
+						log.debug("Finished sorting chart series by category");
 					}
 					else if (type.equals(SeriesSortType.FIRST_FIRE_YEAR))
 					{
-						log.debug("Sorting chart series by first fire year...");
 						neoFHChart.currentChart.sortByFirstFireYear();
+						log.debug("Finished sorting chart series by first fire year");
 					}
 					else if (type.equals(SeriesSortType.START_YEAR))
 					{
-						log.debug("Sorting chart series by start year...");
 						neoFHChart.currentChart.sortBySampleStartYear();
+						log.debug("Finished sorting chart series by start year");
 					}
 					else if (type.equals(SeriesSortType.END_YEAR))
 					{
-						log.debug("Sorting chart series by end year...");
 						neoFHChart.currentChart.sortBySampleEndYear();
+						log.debug("Finished sorting chart series by end year");
 					}
 				}
 			};
