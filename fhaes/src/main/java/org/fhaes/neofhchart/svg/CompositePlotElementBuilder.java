@@ -17,6 +17,7 @@
  *************************************************************************************************/
 package org.fhaes.neofhchart.svg;
 
+import org.apache.batik.dom.svg.SVGDOMImplementation;
 import org.fhaes.preferences.App;
 import org.fhaes.preferences.FHAESPreferences.PrefKey;
 import org.w3c.dom.Document;
@@ -34,14 +35,13 @@ public class CompositePlotElementBuilder {
 	 * Returns one part of the rectangular box which surrounds the composite plot.
 	 * 
 	 * @param doc
-	 * @param svgNS
 	 * @param firstChartYear
 	 * @param lastChartYear
 	 * @return borderLine1
 	 */
-	protected static Element getBorderLine1(Document doc, String svgNS, int firstChartYear, int lastChartYear) {
+	protected static Element getBorderLine1(Document doc, int firstChartYear, int lastChartYear) {
 		
-		Element borderLine1 = doc.createElementNS(svgNS, "line");
+		Element borderLine1 = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
 		
 		borderLine1.setAttributeNS(null, "x1", Double.toString(firstChartYear));
 		borderLine1.setAttributeNS(null, "x2", Double.toString(lastChartYear));
@@ -58,15 +58,14 @@ public class CompositePlotElementBuilder {
 	 * Returns one part of the rectangular box which surrounds the composite plot.
 	 * 
 	 * @param doc
-	 * @param svgNS
 	 * @param chartHeight
 	 * @param firstChartYear
 	 * @param lastChartYear
 	 * @return borderLine2
 	 */
-	protected static Element getBorderLine2(Document doc, String svgNS, double chartHeight, int firstChartYear, int lastChartYear) {
+	protected static Element getBorderLine2(Document doc, double chartHeight, int firstChartYear, int lastChartYear) {
 		
-		Element borderLine2 = doc.createElementNS(svgNS, "line");
+		Element borderLine2 = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
 		
 		borderLine2.setAttributeNS(null, "x1", Integer.toString(firstChartYear));
 		borderLine2.setAttributeNS(null, "x2", Integer.toString(lastChartYear));
@@ -83,17 +82,15 @@ public class CompositePlotElementBuilder {
 	 * Returns one part of the rectangular box which surrounds the composite plot.
 	 * 
 	 * @param doc
-	 * @param svgNS
 	 * @param chartHeight
 	 * @param chartWidth
 	 * @param firstChartYear
 	 * @param lastChartYear
 	 * @return borderLine3
 	 */
-	protected static Element getBorderLine3(Document doc, String svgNS, double chartHeight, int chartWidth, int firstChartYear,
-			int lastChartYear) {
-			
-		Element borderLine3 = doc.createElementNS(svgNS, "line");
+	protected static Element getBorderLine3(Document doc, double chartHeight, int chartWidth, int firstChartYear, int lastChartYear) {
+		
+		Element borderLine3 = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
 		
 		borderLine3.setAttributeNS(null, "x1", Integer.toString(firstChartYear));
 		borderLine3.setAttributeNS(null, "x2", Integer.toString(firstChartYear));
@@ -111,17 +108,15 @@ public class CompositePlotElementBuilder {
 	 * Returns one part of the rectangular box which surrounds the composite plot.
 	 * 
 	 * @param doc
-	 * @param svgNS
 	 * @param chartHeight
 	 * @param chartWidth
 	 * @param firstChartYear
 	 * @param lastChartYear
 	 * @return borderLine4
 	 */
-	protected static Element getBorderLine4(Document doc, String svgNS, double chartHeight, int chartWidth, int firstChartYear,
-			int lastChartYear) {
-			
-		Element borderLine4 = doc.createElementNS(svgNS, "line");
+	protected static Element getBorderLine4(Document doc, double chartHeight, int chartWidth, int firstChartYear, int lastChartYear) {
+		
+		Element borderLine4 = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
 		
 		borderLine4.setAttributeNS(null, "x1", Integer.toString(lastChartYear));
 		borderLine4.setAttributeNS(null, "x2", Integer.toString(lastChartYear));
@@ -139,18 +134,16 @@ public class CompositePlotElementBuilder {
 	 * Returns a composite name text element based on the input parameters.
 	 * 
 	 * @param doc
-	 * @param svgNS
-	 * @param fontFamily
 	 * @return compositeNameTextElement
 	 */
-	protected static Element getCompositeNameTextElement(Document doc, String svgNS, String fontFamily) {
+	protected static Element getCompositeNameTextElement(Document doc) {
 		
-		Element compositeNameTextElement = doc.createElementNS(svgNS, "text");
+		Element compositeNameTextElement = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "text");
 		
 		Text compositeNameText = doc.createTextNode(App.prefs.getPref(PrefKey.CHART_COMPOSITE_LABEL_TEXT, "Composite"));
 		compositeNameTextElement.setAttributeNS(null, "x", "0");
 		compositeNameTextElement.setAttributeNS(null, "y", "0");
-		compositeNameTextElement.setAttributeNS(null, "font-family", fontFamily);
+		compositeNameTextElement.setAttributeNS(null, "font-family", App.prefs.getPref(PrefKey.CHART_FONT_FAMILY, "Verdana"));
 		compositeNameTextElement.setAttributeNS(null, "font-size",
 				Integer.toString(App.prefs.getIntPref(PrefKey.CHART_COMPOSITE_PLOT_LABEL_FONT_SIZE, 10)));
 		compositeNameTextElement.appendChild(compositeNameText);
@@ -162,7 +155,6 @@ public class CompositePlotElementBuilder {
 	 * Returns an event line element based on the input parameters.
 	 * 
 	 * @param doc
-	 * @param svgNS
 	 * @param yearPosition
 	 * @param chartWidth
 	 * @param chartHeight
@@ -170,10 +162,10 @@ public class CompositePlotElementBuilder {
 	 * @param lastChartYear
 	 * @return eventLine
 	 */
-	protected static Element getEventLine(Document doc, String svgNS, int yearPosition, double chartHeight, int chartWidth,
-			int firstChartYear, int lastChartYear) {
+	protected static Element getEventLine(Document doc, int yearPosition, double chartHeight, int chartWidth, int firstChartYear,
+			int lastChartYear) {
 			
-		Element eventLine = doc.createElementNS(svgNS, "line");
+		Element eventLine = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
 		
 		eventLine.setAttributeNS(null, "x1", Integer.toString(yearPosition));
 		eventLine.setAttributeNS(null, "x2", Integer.toString(yearPosition));

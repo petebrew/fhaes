@@ -17,7 +17,10 @@
  *************************************************************************************************/
 package org.fhaes.neofhchart.svg;
 
+import org.apache.batik.dom.svg.SVGDOMImplementation;
 import org.fhaes.enums.LineStyle;
+import org.fhaes.preferences.App;
+import org.fhaes.preferences.FHAESPreferences.PrefKey;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Text;
@@ -36,21 +39,19 @@ public class LegendElementBuilder {
 	 * Returns a description text element based on the input parameters.
 	 * 
 	 * @param doc
-	 * @param svgNS
 	 * @param text, the description to be entered
-	 * @param fontFamily
 	 * @param xLoc, the x-location of the text
 	 * @param yLoc, the y-location of the text
 	 * @return descriptionTextElement
 	 */
-	protected static Element getDescriptionTextElement(Document doc, String svgNS, String fontFamily, String text, int xLoc, int yLoc) {
+	protected static Element getDescriptionTextElement(Document doc, String text, int xLoc, int yLoc) {
 		
-		Element descriptionTextElement = doc.createElementNS(svgNS, "text");
+		Element descriptionTextElement = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "text");
 		
 		Text descriptionText = doc.createTextNode(text);
 		descriptionTextElement.setAttributeNS(null, "x", Integer.toString(xLoc));
 		descriptionTextElement.setAttributeNS(null, "y", Integer.toString(yLoc));
-		descriptionTextElement.setAttributeNS(null, "font-family", fontFamily);
+		descriptionTextElement.setAttributeNS(null, "font-family", App.prefs.getPref(PrefKey.CHART_FONT_FAMILY, "Verdana"));
 		descriptionTextElement.setAttributeNS(null, "font-size", Integer.toString(DESCRIPTION_FONT_SIZE));
 		descriptionTextElement.appendChild(descriptionText);
 		
@@ -61,14 +62,13 @@ public class LegendElementBuilder {
 	 * Returns the rectangle which is drawn around the legend.
 	 * 
 	 * @param doc
-	 * @param svgNS
 	 * @param labelWidth
 	 * @param currentY
 	 * @return chartRectangle
 	 */
-	protected static Element getChartRectangle(Document doc, String svgNS, int labelWidth, int currentY) {
+	protected static Element getChartRectangle(Document doc, int labelWidth, int currentY) {
 		
-		Element chartRectangle = doc.createElementNS(svgNS, "rect");
+		Element chartRectangle = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "rect");
 		
 		chartRectangle.setAttributeNS(null, "x", "-10");
 		chartRectangle.setAttributeNS(null, "y", "-10");
@@ -85,12 +85,11 @@ public class LegendElementBuilder {
 	 * Returns a recorder year example image to be used in the legend.
 	 * 
 	 * @param doc
-	 * @param svgNS
 	 * @return recorderYearExample
 	 */
-	protected static Element getRecorderYearExample(Document doc, String svgNS) {
+	protected static Element getRecorderYearExample(Document doc) {
 		
-		Element recorderYearExample = doc.createElementNS(svgNS, "line");
+		Element recorderYearExample = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
 		
 		recorderYearExample.setAttributeNS(null, "x1", "0");
 		recorderYearExample.setAttributeNS(null, "y1", "0");
@@ -106,13 +105,12 @@ public class LegendElementBuilder {
 	 * Returns a non-recorder year example image to be used in the legend.
 	 * 
 	 * @param doc
-	 * @param svgNS
 	 * @param currentY
 	 * @return nonRecorderYearExample
 	 */
-	protected static Element getNonRecorderYearExample(Document doc, String svgNS, int currentY) {
+	protected static Element getNonRecorderYearExample(Document doc, int currentY) {
 		
-		Element nonRecorderYearExample = doc.createElementNS(svgNS, "line");
+		Element nonRecorderYearExample = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
 		
 		nonRecorderYearExample.setAttributeNS(null, "x1", "0");
 		nonRecorderYearExample.setAttributeNS(null, "y1", Integer.toString(currentY));
@@ -129,12 +127,11 @@ public class LegendElementBuilder {
 	 * Returns a pith with non-recorder line example image to be used in the legend.
 	 * 
 	 * @param doc
-	 * @param svgNS
 	 * @return pithWithNonRecorderLineExample
 	 */
-	protected static Element getPithWithNonRecorderLineExample(Document doc, String svgNS) {
+	protected static Element getPithWithNonRecorderLineExample(Document doc) {
 		
-		Element pithWithNonRecorderLineExample = doc.createElementNS(svgNS, "line");
+		Element pithWithNonRecorderLineExample = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
 		
 		pithWithNonRecorderLineExample.setAttributeNS(null, "x1", "0");
 		pithWithNonRecorderLineExample.setAttributeNS(null, "y1", "0");
@@ -151,12 +148,11 @@ public class LegendElementBuilder {
 	 * Returns a no pith with non-recorder line example image to be used in the legend.
 	 * 
 	 * @param doc
-	 * @param svgNS
 	 * @return noPithWithNonRecorderLineExample
 	 */
-	protected static Element getNoPithWithNonRecorderLineExample(Document doc, String svgNS) {
+	protected static Element getNoPithWithNonRecorderLineExample(Document doc) {
 		
-		Element noPithWithNonRecorderLineExample = doc.createElementNS(svgNS, "line");
+		Element noPithWithNonRecorderLineExample = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
 		
 		noPithWithNonRecorderLineExample.setAttributeNS(null, "x1", "0");
 		noPithWithNonRecorderLineExample.setAttributeNS(null, "y1", "-0.5");
@@ -173,12 +169,11 @@ public class LegendElementBuilder {
 	 * Returns a bark with recorder line example image to be used in the legend.
 	 * 
 	 * @param doc
-	 * @param svgNS
 	 * @return barkWithRecorderLineExample
 	 */
-	protected static Element getBarkWithRecorderLineExample(Document doc, String svgNS) {
+	protected static Element getBarkWithRecorderLineExample(Document doc) {
 		
-		Element barkWithRecorderLineExample = doc.createElementNS(svgNS, "line");
+		Element barkWithRecorderLineExample = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
 		
 		barkWithRecorderLineExample.setAttributeNS(null, "x1", "0");
 		barkWithRecorderLineExample.setAttributeNS(null, "y1", "0");
@@ -194,12 +189,11 @@ public class LegendElementBuilder {
 	 * Returns a no bark with recorder line example image to be used in the legend.
 	 * 
 	 * @param doc
-	 * @param svgNS
 	 * @return noBarkWithRecorderLineExample
 	 */
-	protected static Element getNoBarkWithRecorderLineExample(Document doc, String svgNS) {
+	protected static Element getNoBarkWithRecorderLineExample(Document doc) {
 		
-		Element noBarkWithRecorderLineExample = doc.createElementNS(svgNS, "line");
+		Element noBarkWithRecorderLineExample = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
 		
 		noBarkWithRecorderLineExample.setAttributeNS(null, "x1", "0");
 		noBarkWithRecorderLineExample.setAttributeNS(null, "y1", "-0.5");

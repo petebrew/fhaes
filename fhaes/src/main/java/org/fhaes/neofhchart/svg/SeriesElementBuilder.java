@@ -19,8 +19,11 @@ package org.fhaes.neofhchart.svg;
 
 import java.awt.Color;
 
+import org.apache.batik.dom.svg.SVGDOMImplementation;
 import org.fhaes.enums.LineStyle;
 import org.fhaes.neofhchart.FHSeriesSVG;
+import org.fhaes.preferences.App;
+import org.fhaes.preferences.FHAESPreferences.PrefKey;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Text;
@@ -36,23 +39,20 @@ public class SeriesElementBuilder {
 	 * Returns a series name text element based on the input parameters.
 	 * 
 	 * @param doc
-	 * @param svgNS
 	 * @param seriesSVG
-	 * @param fontFamily
 	 * @param fontSize
 	 * @param chartWidth
 	 * @return seriesNameTextElement
 	 */
-	protected static Element getSeriesNameElement(Document doc, String svgNS, FHSeriesSVG seriesSVG, String fontFamily, int fontSize,
-			int chartWidth) {
-			
-		Element seriesNameTextElement = doc.createElementNS(svgNS, "text");
+	protected static Element getSeriesNameElement(Document doc, FHSeriesSVG seriesSVG, int fontSize, int chartWidth) {
+		
+		Element seriesNameTextElement = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "text");
 		
 		Text seriesNameText = doc.createTextNode(seriesSVG.getTitle());
 		seriesNameTextElement.setAttribute("id", "series_label_" + seriesSVG.getTitle());
 		seriesNameTextElement.setAttribute("x", Double.toString(chartWidth + 10));
 		seriesNameTextElement.setAttribute("y", Integer.toString((FireChartSVG.SERIES_HEIGHT / 2)));
-		seriesNameTextElement.setAttribute("font-family", fontFamily);
+		seriesNameTextElement.setAttribute("font-family", App.prefs.getPref(PrefKey.CHART_FONT_FAMILY, "Verdana"));
 		seriesNameTextElement.setAttribute("font-size", +fontSize + "");
 		seriesNameTextElement.setAttribute("fill", FireChartConversions.colorToHexString(seriesSVG.getLabelColor()));
 		seriesNameTextElement.appendChild(seriesNameText);
@@ -64,21 +64,18 @@ public class SeriesElementBuilder {
 	 * Returns a category label text element based on the input parameters.
 	 * 
 	 * @param doc
-	 * @param svgNS
 	 * @param categoryLabel
-	 * @param fontFamily
 	 * @param chartWidth
 	 * @return categoryLabelTextElement
 	 */
-	protected static Element getCategoryLabelTextElement(Document doc, String svgNS, String categoryLabel, String fontFamily,
-			int chartWidth) {
-			
-		Element categoryLabelTextElement = doc.createElementNS(svgNS, "text");
+	protected static Element getCategoryLabelTextElement(Document doc, String categoryLabel, int chartWidth) {
+		
+		Element categoryLabelTextElement = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "text");
 		
 		Text categoryLabelText = doc.createTextNode(categoryLabel.toUpperCase());
 		categoryLabelTextElement.setAttributeNS(null, "x", Integer.toString(chartWidth / 2));
 		categoryLabelTextElement.setAttributeNS(null, "y", "0");
-		categoryLabelTextElement.setAttributeNS(null, "font-family", fontFamily);
+		categoryLabelTextElement.setAttributeNS(null, "font-family", App.prefs.getPref(PrefKey.CHART_FONT_FAMILY, "Verdana"));
 		categoryLabelTextElement.setAttributeNS(null, "font-size", "16");
 		categoryLabelTextElement.appendChild(categoryLabelText);
 		
@@ -89,12 +86,11 @@ public class SeriesElementBuilder {
 	 * Returns a recorder line that is pre-configured. You will probably need to change the x1 y1 x2 y2 attributes to your liking.
 	 * 
 	 * @param doc
-	 * @param svgNS
 	 * @return recorderLine
 	 */
-	protected static Element getRecorderLine(Document doc, String svgNS) {
+	protected static Element getRecorderLine(Document doc) {
 		
-		Element recorderLine = doc.createElementNS(svgNS, "line");
+		Element recorderLine = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
 		
 		recorderLine.setAttributeNS(null, "x1", "0");
 		recorderLine.setAttributeNS(null, "y1", "0");
@@ -110,14 +106,13 @@ public class SeriesElementBuilder {
 	 * Returns a non-recorder line that is pre-configured. You will probably need to change the x1 y1 x2 y2 attributes to your liking.
 	 * 
 	 * @param doc
-	 * @param svgNS
 	 * @param firstChartYear
 	 * @param lastChartYear
 	 * @return nonRecorderLine
 	 */
-	protected static Element getNonRecorderLine(Document doc, String svgNS, int firstChartYear, int lastChartYear) {
+	protected static Element getNonRecorderLine(Document doc, int firstChartYear, int lastChartYear) {
 		
-		Element nonRecorderLine = doc.createElementNS(svgNS, "line");
+		Element nonRecorderLine = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
 		
 		nonRecorderLine.setAttributeNS(null, "x1", "0");
 		nonRecorderLine.setAttributeNS(null, "y1", "0");
@@ -134,13 +129,12 @@ public class SeriesElementBuilder {
 	 * Returns a fire year marker element based on the input color.
 	 * 
 	 * @param doc
-	 * @param svgNS
 	 * @param color
 	 * @return fireYearMarker
 	 */
-	protected static Element getFireYearMarker(Document doc, String svgNS, Color color) {
+	protected static Element getFireYearMarker(Document doc, Color color) {
 		
-		Element fireYearMarker = doc.createElementNS(svgNS, "rect");
+		Element fireYearMarker = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "rect");
 		
 		fireYearMarker.setAttributeNS(null, "x", "0");
 		fireYearMarker.setAttributeNS(null, "y", "0");
@@ -156,14 +150,13 @@ public class SeriesElementBuilder {
 	 * Returns an injury year marker element based on the input width and color.
 	 * 
 	 * @param doc
-	 * @param svgNS
 	 * @param width
 	 * @param color
 	 * @return injuryYearMarker
 	 */
-	protected static Element getInjuryYearMarker(Document doc, String svgNS, int width, Color color) {
+	protected static Element getInjuryYearMarker(Document doc, int width, Color color) {
 		
-		Element injuryYearMarker = doc.createElementNS(svgNS, "rect");
+		Element injuryYearMarker = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "rect");
 		
 		injuryYearMarker.setAttributeNS(null, "x", "0");
 		injuryYearMarker.setAttributeNS(null, "y", "0");
@@ -179,17 +172,16 @@ public class SeriesElementBuilder {
 	 * Returns an inner-year pith marker based on the input pith value, height, and color.
 	 * 
 	 * @param doc
-	 * @param svgNS
 	 * @param hasPith
 	 * @param height
 	 * @param color
 	 * @return innerYearPithMarker
 	 */
-	protected static Element getInnerYearPithMarker(Document doc, String svgNS, boolean hasPith, int height, Color color) {
+	protected static Element getInnerYearPithMarker(Document doc, boolean hasPith, int height, Color color) {
 		
 		if (hasPith)
 		{
-			Element pithMarker = doc.createElementNS(svgNS, "rect");
+			Element pithMarker = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "rect");
 			
 			pithMarker.setAttributeNS(null, "x", "0");
 			pithMarker.setAttributeNS(null, "y", Integer.toString(-height / 2));
@@ -202,7 +194,7 @@ public class SeriesElementBuilder {
 		}
 		else
 		{
-			Element noPithMarker = doc.createElementNS(svgNS, "polygon");
+			Element noPithMarker = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "polygon");
 			
 			noPithMarker.setAttributeNS(null, "points", "-2,0.5 5,-5 2,0.5");
 			noPithMarker.setAttributeNS(null, "fill", FireChartConversions.colorToHexString(color));
@@ -216,17 +208,16 @@ public class SeriesElementBuilder {
 	 * Returns an outer-year bark marker based on the input bark value, height, and color.
 	 * 
 	 * @param doc
-	 * @param svgNS
 	 * @param hasBark
 	 * @param height
 	 * @param color
 	 * @return outerYearBarkMarker
 	 */
-	protected static Element getOuterYearBarkMarker(Document doc, String svgNS, boolean hasBark, int height, Color color) {
+	protected static Element getOuterYearBarkMarker(Document doc, boolean hasBark, int height, Color color) {
 		
 		if (hasBark)
 		{
-			Element barkMarker = doc.createElementNS(svgNS, "rect");
+			Element barkMarker = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "rect");
 			
 			barkMarker.setAttributeNS(null, "x", "0");
 			barkMarker.setAttributeNS(null, "y", Integer.toString(-height / 2));
@@ -239,7 +230,7 @@ public class SeriesElementBuilder {
 		}
 		else
 		{
-			Element noBarkMarker = doc.createElementNS(svgNS, "polygon");
+			Element noBarkMarker = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "polygon");
 			
 			noBarkMarker.setAttributeNS(null, "points", "2,0.5 -5,-5 -2,0.5");
 			noBarkMarker.setAttributeNS(null, "fill", FireChartConversions.colorToHexString(color));
@@ -253,12 +244,11 @@ public class SeriesElementBuilder {
 	 * Returns an up button.
 	 * 
 	 * @param doc
-	 * @param svgNS
 	 * @return upButton
 	 */
-	protected static Element getUpButton(Document doc, String svgNS) {
+	protected static Element getUpButton(Document doc) {
 		
-		Element upButton = doc.createElementNS(svgNS, "polygon");
+		Element upButton = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "polygon");
 		
 		upButton.setAttributeNS(null, "points", "2,8 2,4 0,4 4,0 8,4 8,4 6,4 6,8");
 		upButton.setAttributeNS(null, "fill", "black");
@@ -271,12 +261,11 @@ public class SeriesElementBuilder {
 	 * Returns a down button.
 	 * 
 	 * @param doc
-	 * @param svgNS
 	 * @return downButton
 	 */
-	protected static Element getDownButton(Document doc, String svgNS) {
+	protected static Element getDownButton(Document doc) {
 		
-		Element downButton = doc.createElementNS(svgNS, "polygon");
+		Element downButton = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "polygon");
 		
 		downButton.setAttributeNS(null, "points", "2,0 2,4 0,4 4,8 8,4 8,4 6,4 6,0");
 		downButton.setAttributeNS(null, "fill", "black");

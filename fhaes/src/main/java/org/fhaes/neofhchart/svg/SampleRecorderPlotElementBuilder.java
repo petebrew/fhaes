@@ -19,6 +19,7 @@ package org.fhaes.neofhchart.svg;
 
 import java.awt.Color;
 
+import org.apache.batik.dom.svg.SVGDOMImplementation;
 import org.fhaes.preferences.App;
 import org.fhaes.preferences.FHAESPreferences.PrefKey;
 import org.w3c.dom.Document;
@@ -37,8 +38,6 @@ public class SampleRecorderPlotElementBuilder {
 	 * Returns a depth text element based on the input parameters.
 	 * 
 	 * @param doc
-	 * @param svgNS
-	 * @param fontFamily
 	 * @param fontSize
 	 * @param scaleY
 	 * @param tickNum
@@ -47,15 +46,15 @@ public class SampleRecorderPlotElementBuilder {
 	 * @param labelHeight
 	 * @return depthTextElement
 	 */
-	protected static Element getDepthTextElement(Document doc, String svgNS, String fontFamily, int fontSize, double scaleY, int tickNum,
-			int tickSpacing, int labelWidth, int labelHeight) {
+	protected static Element getDepthTextElement(Document doc, int fontSize, double scaleY, int tickNum, int tickSpacing, int labelWidth,
+			int labelHeight) {
 			
-		Element depthTextElement = doc.createElementNS(svgNS, "text");
+		Element depthTextElement = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "text");
 		
 		Text depthText = doc.createTextNode(Integer.toString(tickNum * tickSpacing));
 		depthTextElement.setAttributeNS(null, "x", 0 - labelWidth + "");
 		depthTextElement.setAttributeNS(null, "y", Double.toString(0 - (labelHeight / 2.0) * (1.0 / scaleY) + 2));
-		depthTextElement.setAttributeNS(null, "font-family", fontFamily);
+		depthTextElement.setAttributeNS(null, "font-family", App.prefs.getPref(PrefKey.CHART_FONT_FAMILY, "Verdana"));
 		depthTextElement.setAttributeNS(null, "font-size", fontSize + "");
 		depthTextElement.appendChild(depthText);
 		
@@ -66,18 +65,16 @@ public class SampleRecorderPlotElementBuilder {
 	 * Returns a sample depth text element based on the input parameters.
 	 * 
 	 * @param doc
-	 * @param svgNS
-	 * @param fontFamily
 	 * @return sampleDepthTextElement
 	 */
-	protected static Element getSampleDepthTextElement(Document doc, String svgNS, String fontFamily) {
+	protected static Element getSampleDepthTextElement(Document doc) {
 		
-		Element sampleDepthTextElement = doc.createElementNS(svgNS, "text");
+		Element sampleDepthTextElement = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "text");
 		
 		Text sampleDepthText = doc.createTextNode(App.prefs.getPref(PrefKey.CHART_AXIS_Y1_LABEL, "Sample Depth"));
 		sampleDepthTextElement.setAttributeNS(null, "x", "0");
 		sampleDepthTextElement.setAttributeNS(null, "y", "0");
-		sampleDepthTextElement.setAttributeNS(null, "font-family", fontFamily);
+		sampleDepthTextElement.setAttributeNS(null, "font-family", App.prefs.getPref(PrefKey.CHART_FONT_FAMILY, "Verdana"));
 		sampleDepthTextElement.setAttributeNS(null, "font-size", App.prefs.getIntPref(PrefKey.CHART_AXIS_Y1_FONT_SIZE, 10) + "");
 		sampleDepthTextElement.appendChild(sampleDepthText);
 		
@@ -88,15 +85,14 @@ public class SampleRecorderPlotElementBuilder {
 	 * Returns a horizontal tick to be used in the sample or recorder depths plot.
 	 * 
 	 * @param doc
-	 * @param svgNS
 	 * @param unscaleY
 	 * @param tickNum
 	 * @param tickSpacing
 	 * @return horizontalTick
 	 */
-	protected static Element getHorizontalTick(Document doc, String svgNS, double unscaleY, int tickNum, int tickSpacing) {
+	protected static Element getHorizontalTick(Document doc, double unscaleY, int tickNum, int tickSpacing) {
 		
-		Element horizontalTick = doc.createElementNS(svgNS, "line");
+		Element horizontalTick = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
 		
 		horizontalTick.setAttributeNS(null, "x1", "-5");
 		horizontalTick.setAttributeNS(null, "y1", Integer.toString(tickNum * tickSpacing));
@@ -112,7 +108,6 @@ public class SampleRecorderPlotElementBuilder {
 	 * Returns a horizontal trend line part to be used in the sample or recorder depths plot.
 	 * 
 	 * @param doc
-	 * @param svgNS
 	 * @param lineColor
 	 * @param scaleY
 	 * @param startingX
@@ -120,10 +115,10 @@ public class SampleRecorderPlotElementBuilder {
 	 * @param sampleDepthsBegin
 	 * @return horizontalTrendLinePart
 	 */
-	protected static Element getHorizontalTrendLinePart(Document doc, String svgNS, String lineColor, double scaleY, int startingX,
-			int beginIndex, int sampleDepthsBegin) {
+	protected static Element getHorizontalTrendLinePart(Document doc, String lineColor, double scaleY, int startingX, int beginIndex,
+			int sampleDepthsBegin) {
 			
-		Element horizontalTrendLinePart = doc.createElementNS(svgNS, "line");
+		Element horizontalTrendLinePart = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
 		
 		horizontalTrendLinePart.setAttributeNS(null, "x1", Double.toString(beginIndex));
 		horizontalTrendLinePart.setAttributeNS(null, "y1", Double.toString(sampleDepthsBegin));
@@ -139,7 +134,6 @@ public class SampleRecorderPlotElementBuilder {
 	 * Returns a vertical trend line part to be used in the sample or recorder depths plot.
 	 * 
 	 * @param doc
-	 * @param svgNS
 	 * @param lineColor
 	 * @param startingX
 	 * @param sampleDepthsBegin
@@ -149,10 +143,10 @@ public class SampleRecorderPlotElementBuilder {
 	 * @param lastChartYear
 	 * @return verticalTrendLinePart
 	 */
-	protected static Element getVerticalTrendLinePart(Document doc, String svgNS, String lineColor, int startingX, int sampleDepthsBegin,
+	protected static Element getVerticalTrendLinePart(Document doc, String lineColor, int startingX, int sampleDepthsBegin,
 			int sampleDepthsCurrent, int chartWidth, int firstChartYear, int lastChartYear) {
 			
-		Element verticalTrendLinePart = doc.createElementNS(svgNS, "line");
+		Element verticalTrendLinePart = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
 		
 		verticalTrendLinePart.setAttributeNS(null, "x1", Double.toString(startingX));
 		verticalTrendLinePart.setAttributeNS(null, "y1", Double.toString(sampleDepthsBegin));
@@ -169,17 +163,15 @@ public class SampleRecorderPlotElementBuilder {
 	 * Returns a threshold line to be used in the sample or recorder depths plot.
 	 * 
 	 * @param doc
-	 * @param svgNS
 	 * @param scaleY
 	 * @param largestSampleDepth
 	 * @param firstChartYear
 	 * @param lastChartYear
 	 * @return thresholdLine
 	 */
-	protected static Element getThresholdLine(Document doc, String svgNS, double scaleY, int largestSampleDepth, int firstChartYear,
-			int lastChartYear) {
-			
-		Element thresholdLine = doc.createElementNS(svgNS, "line");
+	protected static Element getThresholdLine(Document doc, double scaleY, int largestSampleDepth, int firstChartYear, int lastChartYear) {
+		
+		Element thresholdLine = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
 		
 		int thresholdSampleDepthValue = App.prefs.getIntPref(PrefKey.CHART_DEPTH_THRESHOLD_VALUE, 10);
 		thresholdLine.setAttributeNS(null, "id", "threshold_line");

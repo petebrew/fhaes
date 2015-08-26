@@ -19,6 +19,7 @@ package org.fhaes.neofhchart.svg;
 
 import java.awt.Color;
 
+import org.apache.batik.dom.svg.SVGDOMImplementation;
 import org.fhaes.enums.LineStyle;
 import org.fhaes.preferences.App;
 import org.fhaes.preferences.FHAESPreferences.PrefKey;
@@ -40,15 +41,14 @@ public class TimeAxisElementBuilder {
 	 * Returns a time axis element based on the input parameters.
 	 * 
 	 * @param doc
-	 * @param svgNS
 	 * @param height
 	 * @param firstChartYear
 	 * @param lastChartYear
 	 * @return timeAxis
 	 */
-	protected static Element getTimeAxis(Document doc, String svgNS, int height, int firstChartYear, int lastChartYear) {
+	protected static Element getTimeAxis(Document doc, int height, int firstChartYear, int lastChartYear) {
 		
-		Element timeAxis = doc.createElementNS(svgNS, "line");
+		Element timeAxis = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
 		
 		timeAxis.setAttributeNS(null, "x1", firstChartYear + "");
 		timeAxis.setAttributeNS(null, "x2", lastChartYear + "");
@@ -64,7 +64,6 @@ public class TimeAxisElementBuilder {
 	 * Returns a major tick element based on the input parameters.
 	 * 
 	 * @param doc
-	 * @param svgNS
 	 * @param yearPosition
 	 * @param chartWidth
 	 * @param height
@@ -72,10 +71,10 @@ public class TimeAxisElementBuilder {
 	 * @param lastChartYear
 	 * @return majorTick
 	 */
-	protected static Element getMajorTick(Document doc, String svgNS, int yearPosition, int chartWidth, int height, int firstChartYear,
+	protected static Element getMajorTick(Document doc, int yearPosition, int chartWidth, int height, int firstChartYear,
 			int lastChartYear) {
 			
-		Element majorTick = doc.createElementNS(svgNS, "line");
+		Element majorTick = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
 		
 		majorTick.setAttributeNS(null, "x1", Integer.toString(yearPosition));
 		majorTick.setAttributeNS(null, "x2", Integer.toString(yearPosition));
@@ -93,7 +92,6 @@ public class TimeAxisElementBuilder {
 	 * Returns a minor tick element based on the input parameters.
 	 * 
 	 * @param doc
-	 * @param svgNS
 	 * @param yearPosition
 	 * @param chartWidth
 	 * @param height
@@ -101,10 +99,10 @@ public class TimeAxisElementBuilder {
 	 * @param lastChartYear
 	 * @return minorTick
 	 */
-	protected static Element getMinorTick(Document doc, String svgNS, int yearPosition, int chartWidth, int height, int firstChartYear,
+	protected static Element getMinorTick(Document doc, int yearPosition, int chartWidth, int height, int firstChartYear,
 			int lastChartYear) {
 			
-		Element minorTick = doc.createElementNS(svgNS, "line");
+		Element minorTick = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
 		
 		minorTick.setAttributeNS(null, "x1", Integer.toString(yearPosition));
 		minorTick.setAttributeNS(null, "x2", Integer.toString(yearPosition));
@@ -122,7 +120,6 @@ public class TimeAxisElementBuilder {
 	 * Returns a highlight line element based on the input parameters.
 	 * 
 	 * @param doc
-	 * @param svgNS
 	 * @param yearPosition
 	 * @param chartWidth
 	 * @param height
@@ -131,10 +128,10 @@ public class TimeAxisElementBuilder {
 	 * @param lastChartYear
 	 * @return highlightLine
 	 */
-	protected static Element getHighlightLine(Document doc, String svgNS, int yearPosition, int chartWidth, int height, int firstChartYear,
+	protected static Element getHighlightLine(Document doc, int yearPosition, int chartWidth, int height, int firstChartYear,
 			int lastChartYear) {
 			
-		Element highlightLine = doc.createElementNS(svgNS, "line");
+		Element highlightLine = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
 		
 		highlightLine.setAttributeNS(null, "x1", Integer.toString(yearPosition));
 		highlightLine.setAttributeNS(null, "x2", Integer.toString(yearPosition));
@@ -154,7 +151,6 @@ public class TimeAxisElementBuilder {
 	 * Returns a highlight line element based on the input parameters.
 	 * 
 	 * @param doc
-	 * @param svgNS
 	 * @param yearPosition
 	 * @param vertGuidesOffsetAmount
 	 * @param chartWidth
@@ -163,10 +159,10 @@ public class TimeAxisElementBuilder {
 	 * @param lastChartYear
 	 * @return verticalGuide
 	 */
-	protected static Element getVerticalGuide(Document doc, String svgNS, int yearPosition, int vertGuidesOffsetAmount, int chartWidth,
-			int height, int firstChartYear, int lastChartYear) {
+	protected static Element getVerticalGuide(Document doc, int yearPosition, int vertGuidesOffsetAmount, int chartWidth, int height,
+			int firstChartYear, int lastChartYear) {
 			
-		Element verticalGuide = doc.createElementNS(svgNS, "line");
+		Element verticalGuide = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
 		
 		verticalGuide.setAttributeNS(null, "x1", Integer.toString(yearPosition));
 		verticalGuide.setAttributeNS(null, "x2", Integer.toString(yearPosition));
@@ -186,8 +182,6 @@ public class TimeAxisElementBuilder {
 	 * Returns a year text element based on the input parameters.
 	 * 
 	 * @param doc
-	 * @param svgNS
-	 * @param fontFamily
 	 * @param yearToDisplay
 	 * @param yearPosition
 	 * @param chartWidth
@@ -196,9 +190,9 @@ public class TimeAxisElementBuilder {
 	 * @param lastChartYear
 	 * @return yearTextElement
 	 */
-	protected static Element getYearTextElement(Document doc, String svgNS, String fontFamily, int yearToDisplay, int readerFirstYear) {
+	protected static Element getYearTextElement(Document doc, int yearToDisplay, int readerFirstYear) {
 		
-		Element yearTextElement = doc.createElementNS(svgNS, "text");
+		Element yearTextElement = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "text");
 		
 		// Display the year text with the correct BC and zero cases accounted for
 		if (yearToDisplay >= -1 && readerFirstYear < 0)
@@ -207,7 +201,7 @@ public class TimeAxisElementBuilder {
 		Text yearText = doc.createTextNode(Integer.toString(yearToDisplay));
 		yearTextElement.setAttributeNS(null, "x", "0");
 		yearTextElement.setAttributeNS(null, "y", "0");
-		yearTextElement.setAttributeNS(null, "font-family", fontFamily);
+		yearTextElement.setAttributeNS(null, "font-family", App.prefs.getPref(PrefKey.CHART_FONT_FAMILY, "Verdana"));
 		yearTextElement.setAttributeNS(null, "font-size", "8");
 		yearTextElement.appendChild(yearText);
 		
