@@ -81,7 +81,7 @@ public class IOController {
 	 * Instantiates a new FHX2 file.
 	 */
 	protected static void createNewFile() {
-		
+	
 		theFHX2File = new FHX2_File();
 	}
 	
@@ -91,7 +91,7 @@ public class IOController {
 	 * @return theFHX2File
 	 */
 	public static FHX2_File getFile() {
-		
+	
 		return theFHX2File;
 	}
 	
@@ -103,7 +103,7 @@ public class IOController {
 	 * @throws FileNotFoundException
 	 */
 	public static String getOldFile() throws FileNotFoundException {
-		
+	
 		return oldFile;
 	}
 	
@@ -115,7 +115,7 @@ public class IOController {
 	 * @throws CompositeFileException
 	 */
 	public static void readFileFromBufferedReader(BufferedReader br) throws IOException, CompositeFileException {
-		
+	
 		oldFile = "";
 		FileController.setCorruptedState(false);
 		createNewFile();
@@ -131,14 +131,18 @@ public class IOController {
 	 * @throws IOException
 	 */
 	private static void readOptionalPartFromFile(BufferedReader br) throws IOException {
-		
+	
 		String line;
 		while (((line = br.readLine()) != null) && !line.equals("FHX2 FORMAT") && !line.equals("FIRE2 FORMAT"))
 		{
 			if (!line.startsWith(BEGIN_COMMENTS_OLD_PREFIX))
 				oldFile += line + "\r\n";
-				
-			if (line.startsWith(SITE_NAME_PREFIX))
+			
+			if (line.length() <= START_OF_VALUE)
+			{
+				// Line too short to be of use
+			}
+			else if (line.startsWith(SITE_NAME_PREFIX))
 				theFHX2File.getOptionalPart().setNameOfSite(line.substring(START_OF_VALUE));
 			else if (line.startsWith(SITE_CODE_PREFIX))
 				theFHX2File.getOptionalPart().setSiteCode(line.substring(START_OF_VALUE));
@@ -215,7 +219,7 @@ public class IOController {
 	 * @throws IOException
 	 */
 	private static void readCommentsFromFile(BufferedReader br, String line, Boolean usesOldPrefix) throws IOException {
-		
+	
 		String theComments = "";
 		try
 		{
@@ -250,7 +254,7 @@ public class IOController {
 	 * @throws CompositeFileException
 	 */
 	private static void readRequiredPartFromFile(BufferedReader br) throws IOException, CompositeFileException {
-		
+	
 		String line = br.readLine(); // This has the 3 important numbers. Missing feature 2
 		if (line != null)
 		{
@@ -262,7 +266,7 @@ public class IOController {
 			
 			if (dataSetFirstYear == 0)
 				dataSetFirstYear = -1;
-				
+			
 			theFHX2File.getRequiredPart().setDataSetFirstYear(dataSetFirstYear);
 			theFHX2File.getRequiredPart().setIDLength(idLength);
 			
@@ -279,7 +283,7 @@ public class IOController {
 	 * @return
 	 */
 	private static boolean isSamplePotentiallyCompositeStyle(String sampledata) {
-		
+	
 		String[] standardChars = { "[", "]", "u", "d", "e", "l", "a", "m", "D", "E", "L", "A", "M" };
 		
 		for (String thischar : standardChars)
@@ -303,9 +307,9 @@ public class IOController {
 	 * @param idLength
 	 * @throws CompositeFileException
 	 */
-	private static void readSamplesFromFile(BufferedReader br, int dataSetFirstYear, int numSamples, int idLength)
-			throws IOException, CompositeFileException {
-			
+	private static void readSamplesFromFile(BufferedReader br, int dataSetFirstYear, int numSamples, int idLength) throws IOException,
+			CompositeFileException {
+	
 		String[] sampleNameArray = new String[numSamples];
 		for (int i = 0; i < sampleNameArray.length; i++)
 			sampleNameArray[i] = "";
@@ -335,7 +339,7 @@ public class IOController {
 		
 		for (int i = 0; i < sampleDataArray.length; i++)
 			sampleDataArray[i] = "";
-			
+		
 		while ((line = br.readLine()) != null && line.length() > 0)
 		{
 			oldFile += line + "\r\n";
@@ -377,10 +381,10 @@ public class IOController {
 		theFHX2File.getRequiredPart().setDataSetFirstYear(dataSetFirstYear);
 		if (theFHX2File.getRequiredPart().getDataSetLastYear() == 0)
 		{
-			theFHX2File.getRequiredPart()
-					.setDataSetLastYear(theFHX2File.getRequiredPart().getDataSetFirstYear() + sampleDataArray[0].length() - 1);
-			FHX2_Sample newSample = new FHX2_Sample("<temporary_name>", theFHX2File.getRequiredPart().getDataSetFirstYear(),
-					theFHX2File.getRequiredPart().getDataSetLastYear(), false, false);
+			theFHX2File.getRequiredPart().setDataSetLastYear(
+					theFHX2File.getRequiredPart().getDataSetFirstYear() + sampleDataArray[0].length() - 1);
+			FHX2_Sample newSample = new FHX2_Sample("<temporary_name>", theFHX2File.getRequiredPart().getDataSetFirstYear(), theFHX2File
+					.getRequiredPart().getDataSetLastYear(), false, false);
 			theFHX2File.getRequiredPart().addSample(newSample);
 			FileController.setLastYearDefinedInFile(false);
 		}
@@ -394,7 +398,7 @@ public class IOController {
 	 * @throws IOException
 	 */
 	public static void writeFileToDisk(Writer bw) throws IOException {
-		
+	
 		writeOptionalPartToDisk(bw);
 		SampleController.updateAllSampleOpeningAndClosingChars();
 		if (theFHX2File.getRequiredPart().getNumSamples() != 0)
@@ -408,7 +412,7 @@ public class IOController {
 	 * @throws IOException
 	 */
 	private static void writeOptionalPartToDisk(Writer bw) throws IOException {
-		
+	
 		bw.write(SITE_NAME_PREFIX + " " + theFHX2File.getOptionalPart().getNameOfSite() + "\r\n");
 		bw.write(SITE_CODE_PREFIX + " " + theFHX2File.getOptionalPart().getSiteCode() + "\r\n");
 		bw.write(COLLECTION_DATE_PREFIX + " " + theFHX2File.getOptionalPart().getCollectionDate() + "\r\n");
@@ -452,7 +456,7 @@ public class IOController {
 	 * @throws IOException
 	 */
 	private static void writeRequiredPartToDisk(Writer bw) throws IOException {
-		
+	
 		int firstYear = theFHX2File.getRequiredPart().getDataSetFirstYear();
 		int lastYear = theFHX2File.getRequiredPart().getDataSetLastYear();
 		int idLength = theFHX2File.getRequiredPart().getIDLength();
