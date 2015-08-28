@@ -38,6 +38,13 @@ import org.fhaes.preferences.FHAESPreferences.PrefKey;
  */
 public class FireChartUtil {
 	
+	// Define local constants
+	private static final Color MS_OFFICE_BLUE = new Color(75, 172, 198);
+	private static final Color MS_OFFICE_GREEN = new Color(155, 187, 89);
+	private static final Color MS_OFFICE_ORANGE = new Color(247, 150, 70);
+	private static final Color MS_OFFICE_PURPLE = new Color(128, 100, 162);
+	private static final Color MS_OFFICE_RED = new Color(192, 80, 77);
+	
 	/**
 	 * Converts an array list of FHseries objects to an array list of FHSeriesSVG objects.
 	 * 
@@ -64,7 +71,7 @@ public class FireChartUtil {
 	}
 	
 	/**
-	 * Converts a java.awt.Color into a hexadecimal string.
+	 * Converts a color into a hexadecimal string.
 	 * 
 	 * @param color
 	 * @return the converted color value
@@ -122,7 +129,7 @@ public class FireChartUtil {
 	 * @param chartWidth
 	 * @param firstChartYear
 	 * @param lastChartYear
-	 * @return
+	 * @return a converted value
 	 */
 	protected static double pixelsToYears(double dim, int chartWidth, int firstChartYear, int lastChartYear) {
 		
@@ -135,7 +142,7 @@ public class FireChartUtil {
 	 * @param chartWidth
 	 * @param firstChartYear
 	 * @param lastChartYear
-	 * @return
+	 * @return a converted value
 	 */
 	protected static double pixelsToYears(int chartWidth, int firstChartYear, int lastChartYear) {
 		
@@ -149,7 +156,7 @@ public class FireChartUtil {
 	 * @param chartWidth
 	 * @param firstChartYear
 	 * @param lastChartYear
-	 * @return
+	 * @return a converted value
 	 */
 	protected static double yearsToPixels(double dim, int chartWidth, int firstChartYear, int lastChartYear) {
 		
@@ -162,10 +169,61 @@ public class FireChartUtil {
 	 * @param chartWidth
 	 * @param firstChartYear
 	 * @param lastChartYear
-	 * @return
+	 * @return a converted value
 	 */
 	protected static double yearsToPixels(int chartWidth, int firstChartYear, int lastChartYear) {
 		
 		return yearsToPixels(1.0, chartWidth, firstChartYear, lastChartYear);
+	}
+	
+	/**
+	 * Picks a display color based on the input integer value. This is used to automatically colorize series and labels which have been
+	 * grouped by category on the chart.
+	 * 
+	 * @param index
+	 * @return a color based on the input integer value
+	 */
+	protected static Color pickColorFromInteger(int index) {
+		
+		if (index % 9 == 0)
+		{
+			return MS_OFFICE_BLUE;
+		}
+		else if (index % 8 == 0)
+		{
+			return MS_OFFICE_GREEN;
+		}
+		else if (index % 7 == 0)
+		{
+			return MS_OFFICE_ORANGE;
+		}
+		else if (index % 6 == 0)
+		{
+			return MS_OFFICE_PURPLE;
+		}
+		else if (index % 5 == 0)
+		{
+			return MS_OFFICE_RED;
+		}
+		else if (index % 4 == 0)
+		{
+			return MS_OFFICE_BLUE;
+		}
+		else if (index % 3 == 0)
+		{
+			return MS_OFFICE_GREEN;
+		}
+		else if (index % 2 == 0)
+		{
+			return MS_OFFICE_ORANGE;
+		}
+		else if (index % 1 == 0)
+		{
+			return MS_OFFICE_PURPLE;
+		}
+		else
+		{
+			return MS_OFFICE_RED;
+		}
 	}
 }

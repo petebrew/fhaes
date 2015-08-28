@@ -337,6 +337,10 @@ public class FHAESPreferences {
 		
 		CHART_SHOW_CATEGORY_LABELS("chartShowCategoryLabels"),
 		
+		CHART_AUTOMATICALLY_COLORIZE_SERIES("chartAutomaticallyColorizeSeries"),
+		
+		CHART_AUTOMATICALLY_COLORIZE_LABELS("chartAutomaticallyColorizeLabels"),
+		
 		CHART_SORT_BY_PREFERENCE("chartSortByPreference"),
 		
 		CHART_FONT_FAMILY("chartFontFamily"),

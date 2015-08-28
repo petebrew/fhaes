@@ -566,10 +566,25 @@ public class FireChartSVG {
 					
 					if (!categoryGroupsProcessed.contains(currentCategoryGroup))
 					{
+						// Keep track of which category groups have already been processed
+						categoryGroupsProcessed.add(currentCategoryGroup);
+						
 						Element label_text_g = doc.createElementNS(svgNS, "g");
 						label_text_g.setAttributeNS(null, "transform",
 								"translate(0," + Integer.toString(-(CATEGORY_PADDING_AMOUNT / 2)) + ")");
-						label_text_g.appendChild(SeriesElementBuilder.getCategoryLabelTextElement(doc, currentCategoryGroup, chartWidth));
+								
+						// Apply the label coloring as necessary
+						if (App.prefs.getBooleanPref(PrefKey.CHART_AUTOMATICALLY_COLORIZE_LABELS, false))
+						{
+							Color labelColor = FireChartUtil.pickColorFromInteger(categoryGroupsProcessed.size());
+							label_text_g.appendChild(
+									SeriesElementBuilder.getCategoryLabelTextElement(doc, currentCategoryGroup, labelColor, chartWidth));
+						}
+						else
+						{
+							label_text_g.appendChild(
+									SeriesElementBuilder.getCategoryLabelTextElement(doc, currentCategoryGroup, Color.BLACK, chartWidth));
+						}
 						series_group.appendChild(label_text_g);
 						
 						// Handle the padding of category groups depending on whether the label is shown
@@ -583,9 +598,6 @@ public class FireChartSVG {
 							label_text_g.setAttributeNS(null, "display", "none");
 							categoryGroupPadding += CATEGORY_PADDING_AMOUNT / 2;
 						}
-						
-						// Keep track of which category groups have already been processed
-						categoryGroupsProcessed.add(currentCategoryGroup);
 					}
 				}
 				
@@ -950,7 +962,6 @@ public class FireChartSVG {
 		
 		// Build all of the series
 		ArrayList<Boolean> series_visible = new ArrayList<Boolean>();
-		ArrayList<FHSeriesSVG> series_arr = FireChartUtil.seriesListToSeriesSVGList(reader.getSeriesList());
 		
 		this.showPith = App.prefs.getBooleanPref(PrefKey.CHART_SHOW_PITH_SYMBOL, true);
 		this.showBark = App.prefs.getBooleanPref(PrefKey.CHART_SHOW_BARK_SYMBOL, true);
@@ -961,9 +972,9 @@ public class FireChartSVG {
 		int fontSize = App.prefs.getIntPref(PrefKey.CHART_CHRONOLOGY_PLOT_LABEL_FONT_SIZE, 8);
 		
 		String longestLabel = "A";
-		for (int i = 0; i < series_arr.size(); i++)
+		for (int i = 0; i < seriesSVGList.size(); i++)
 		{
-			FHSeries series = series_arr.get(i);
+			FHSeries series = seriesSVGList.get(i);
 			if (series.getTitle().length() > longestLabel.length())
 				longestLabel = series.getTitle();
 		}
@@ -971,10 +982,36 @@ public class FireChartSVG {
 		widestChronologyLabelSize = FireChartUtil.getStringWidth(Font.PLAIN,
 				App.prefs.getIntPref(PrefKey.CHART_CHRONOLOGY_PLOT_LABEL_FONT_SIZE, 10), longestLabel);
 				
-		for (int i = 0; i < series_arr.size(); i++)
+		// Define a string for keeping track of the category groups
+		ArrayList<String> categoryGroupsProcessed = new ArrayList<String>();
+		
+		for (int i = 0; i < seriesSVGList.size(); i++)
 		{
+			if (lastTypeSortedBy == SeriesSortType.CATEGORY && App.prefs.getBooleanPref(PrefKey.CHART_SHOW_CATEGORY_GROUPS, true))
+			{
+				String currentCategoryGroup = seriesSVGList.get(i).getCategoryEntries().get(0).getContent();
+				
+				// Keep track of which category groups have already been processed
+				if (!categoryGroupsProcessed.contains(currentCategoryGroup))
+				{
+					categoryGroupsProcessed.add(currentCategoryGroup);
+				}
+				
+				// Apply the series coloring as necessary
+				if (App.prefs.getBooleanPref(PrefKey.CHART_AUTOMATICALLY_COLORIZE_SERIES, false))
+				{
+					seriesSVGList.get(i).setLabelColor(FireChartUtil.pickColorFromInteger(categoryGroupsProcessed.size()));
+					seriesSVGList.get(i).setLineColor(FireChartUtil.pickColorFromInteger(categoryGroupsProcessed.size()));
+				}
+				else
+				{
+					seriesSVGList.get(i).setLabelColor(Color.BLACK);
+					seriesSVGList.get(i).setLineColor(Color.BLACK);
+				}
+			}
+			
+			FHSeriesSVG seriesSVG = seriesSVGList.get(i);
 			series_visible.add(true);
-			FHSeriesSVG seriesSVG = series_arr.get(i);
 			
 			Element series_group = doc.createElementNS(svgNS, "g");
 			series_group.setAttributeNS(null, "id", "series_group_" + seriesSVG.getTitle());

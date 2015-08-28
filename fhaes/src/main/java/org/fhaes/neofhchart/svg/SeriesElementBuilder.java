@@ -69,7 +69,7 @@ public class SeriesElementBuilder {
 	 * @param chartWidth
 	 * @return categoryLabelTextElement
 	 */
-	protected static Element getCategoryLabelTextElement(Document doc, String categoryLabel, int chartWidth) {
+	protected static Element getCategoryLabelTextElement(Document doc, String categoryLabel, Color labelColor, int chartWidth) {
 		
 		Element categoryLabelTextElement = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "text");
 		
@@ -79,6 +79,7 @@ public class SeriesElementBuilder {
 		categoryLabelTextElement.setAttributeNS(null, "y", "0");
 		categoryLabelTextElement.setAttributeNS(null, "font-family", App.prefs.getPref(PrefKey.CHART_FONT_FAMILY, "Verdana"));
 		categoryLabelTextElement.setAttributeNS(null, "font-size", "16");
+		categoryLabelTextElement.setAttribute("fill", FireChartUtil.colorToHexString(labelColor));
 		categoryLabelTextElement.appendChild(categoryLabelText);
 		
 		return categoryLabelTextElement;
