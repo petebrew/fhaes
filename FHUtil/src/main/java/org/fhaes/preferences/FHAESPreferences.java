@@ -349,6 +349,8 @@ public class FHAESPreferences {
 		
 		CHART_AXIS_X_MAX("chartAxisXMax"),
 		
+		CHART_TIMELINE_FONT_SIZE("chartTimelineFontSize"),
+		
 		CHART_VERTICAL_GUIDES("chartVerticalGuides"),
 		
 		CHART_XAXIS_MAJOR_TICK_SPACING("chartXAxisMajorTickSpacing"),

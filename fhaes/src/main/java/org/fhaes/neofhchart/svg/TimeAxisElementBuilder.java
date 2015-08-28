@@ -202,7 +202,7 @@ public class TimeAxisElementBuilder {
 		yearTextElement.setAttributeNS(null, "x", "0");
 		yearTextElement.setAttributeNS(null, "y", "0");
 		yearTextElement.setAttributeNS(null, "font-family", App.prefs.getPref(PrefKey.CHART_FONT_FAMILY, "Verdana"));
-		yearTextElement.setAttributeNS(null, "font-size", "8");
+		yearTextElement.setAttributeNS(null, "font-size", Integer.toString(App.prefs.getIntPref(PrefKey.CHART_TIMELINE_FONT_SIZE, 8)));
 		yearTextElement.appendChild(yearText);
 		
 		return yearTextElement;

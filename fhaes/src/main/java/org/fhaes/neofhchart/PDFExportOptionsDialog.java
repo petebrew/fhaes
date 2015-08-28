@@ -170,7 +170,7 @@ public class PDFExportOptionsDialog extends JDialog implements ActionListener {
 	}
 	
 	/**
-	 * TODO
+	 * Handles when actions are performed on the dialog.
 	 */
 	@Override
 	public void actionPerformed(ActionEvent evt) {

@@ -85,7 +85,7 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 	private JComboBox<LineStyle> cboVerticalGuideStyle;
 	private JSpinner spnMajorSpacing;
 	private JCheckBox chkVerticalGuides;
-	private JCheckBox chkAutoRangeXAxis;
+	private JCheckBox chkAutoAdjustRange;
 	private JCheckBox chkIndexPlot;
 	private JSpinner spnIndexPlotHeight;
 	private JRadioButton chkSampleDepth;
@@ -158,6 +158,9 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 	
 	// Declare local variables
 	private boolean preferencesChanged;
+	private JLabel lblAutoAdjustRange;
+	private JLabel lblTimelineFontSize;
+	private JSpinner spnTimelineFontSize;
 	
 	/**
 	 * Create the dialog.
@@ -196,7 +199,7 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 	 */
 	private void setXAxisGui() {
 		
-		if (this.chkAutoRangeXAxis.isSelected())
+		if (this.chkAutoAdjustRange.isSelected())
 		{
 			this.firstYearSpinner.setEnabled(false);
 			this.lastYearSpinner.setEnabled(false);
@@ -521,9 +524,10 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 		App.prefs.setPref(PrefKey.CHART_TITLE_OVERRIDE_VALUE, chartTitleOverrideText.getText());
 		App.prefs.setBooleanPref(PrefKey.CHART_SHOW_LEGEND, chkShowLegend.isSelected());
 		App.prefs.setPref(PrefKey.CHART_FONT_FAMILY, cboFontFamily.getSelectedFontName());
-		App.prefs.setBooleanPref(PrefKey.CHART_AXIS_X_AUTO_RANGE, chkAutoRangeXAxis.isSelected());
+		App.prefs.setBooleanPref(PrefKey.CHART_AXIS_X_AUTO_RANGE, chkAutoAdjustRange.isSelected());
 		App.prefs.setIntPref(PrefKey.CHART_AXIS_X_MIN, (Integer) firstYearSpinner.getValue());
 		App.prefs.setIntPref(PrefKey.CHART_AXIS_X_MAX, (Integer) lastYearSpinner.getValue());
+		App.prefs.setIntPref(PrefKey.CHART_TIMELINE_FONT_SIZE, (Integer) spnTimelineFontSize.getValue());
 		App.prefs.setBooleanPref(PrefKey.CHART_VERTICAL_GUIDES, chkVerticalGuides.isSelected());
 		App.prefs.setColorPref(PrefKey.CHART_VERTICAL_GUIDE_COLOR, btnVerticalGuideColor.getBackground());
 		App.prefs.setIntPref(PrefKey.CHART_VERTICAL_GUIDE_WEIGHT, (Integer) spnVerticalGuideWeight.getValue());
@@ -599,9 +603,10 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 		chartTitleOverrideText.setText(App.prefs.getPref(PrefKey.CHART_TITLE_OVERRIDE_VALUE, "Fire Chart"));
 		chkShowLegend.setSelected(App.prefs.getBooleanPref(PrefKey.CHART_SHOW_LEGEND, true));
 		cboFontFamily.setSelectedItem(App.prefs.getPref(PrefKey.CHART_FONT_FAMILY, "Verdana"));
-		chkAutoRangeXAxis.setSelected(App.prefs.getBooleanPref(PrefKey.CHART_AXIS_X_AUTO_RANGE, true));
+		chkAutoAdjustRange.setSelected(App.prefs.getBooleanPref(PrefKey.CHART_AXIS_X_AUTO_RANGE, true));
 		firstYearSpinner.setValue(App.prefs.getIntPref(PrefKey.CHART_AXIS_X_MIN, 1900));
 		lastYearSpinner.setValue(App.prefs.getIntPref(PrefKey.CHART_AXIS_X_MAX, 2000));
+		spnTimelineFontSize.setValue(App.prefs.getIntPref(PrefKey.CHART_TIMELINE_FONT_SIZE, 8));
 		chkVerticalGuides.setSelected(App.prefs.getBooleanPref(PrefKey.CHART_VERTICAL_GUIDES, true));
 		setComponentColours(btnVerticalGuideColor, App.prefs.getColorPref(PrefKey.CHART_VERTICAL_GUIDE_COLOR, Color.DARK_GRAY));
 		spnVerticalGuideWeight.setValue(App.prefs.getIntPref(PrefKey.CHART_VERTICAL_GUIDE_WEIGHT, 1));
@@ -710,7 +715,7 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 		lblShowLegend = new JLabel("Show legend:");
 		panelGenericOptionsGeneral.add(lblShowLegend, "cell 0 0,alignx right,aligny center");
 		
-		chkShowLegend = new JCheckBox("");
+		chkShowLegend = new JCheckBox();
 		chkShowLegend.setSelected(true);
 		panelGenericOptionsGeneral.add(chkShowLegend, "cell 1 0,alignx left");
 		
@@ -746,7 +751,7 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 		lblShowChartTitle = new JLabel("Show chart title:");
 		panelGenericOptionsGeneral.add(lblShowChartTitle, "cell 0 1,alignx right,aligny center");
 		
-		chkShowChartTitle = new JCheckBox("");
+		chkShowChartTitle = new JCheckBox();
 		chkShowChartTitle.addActionListener(new ActionListener() {
 			
 			@Override
@@ -773,7 +778,7 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 		lblUseDefaultChartTitle = new JLabel("Use default chart title:");
 		panelGenericOptionsGeneral.add(lblUseDefaultChartTitle, "cell 0 2,alignx right,aligny center");
 		
-		chkUseDefaultName = new JCheckBox("");
+		chkUseDefaultName = new JCheckBox();
 		chkUseDefaultName.addActionListener(new ActionListener() {
 			
 			@Override
@@ -799,12 +804,16 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 		panelGenericOptionsGeneral.add(chartTitleOverrideText, "cell 3 2,growx,aligny center");
 		
 		JPanel panelGenericOptionsXAxis = new JPanel();
-		panelGenericOptionsXAxis.setBorder(new TitledBorder(null, "X Axis", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		panelGenericOptionsXAxis.setBorder(new TitledBorder(null, "Timeline (X Axis)", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		genericOptionsPanel.add(panelGenericOptionsXAxis, "cell 0 1,grow");
-		panelGenericOptionsXAxis.setLayout(new MigLayout("", "[180px][67.00,fill][][62.00,fill][grow,fill]", "[][15px]"));
+		panelGenericOptionsXAxis
+				.setLayout(new MigLayout("", "[180px][80,fill][150px,right][67.00,grow,fill][][62.00,grow,fill]", "[][15px]"));
+				
+		lblAutoAdjustRange = new JLabel("Auto adjust range:");
+		panelGenericOptionsXAxis.add(lblAutoAdjustRange, "cell 0 0,alignx right,aligny center");
 		
-		chkAutoRangeXAxis = new JCheckBox("Auto adjust");
-		chkAutoRangeXAxis.addActionListener(new ActionListener() {
+		chkAutoAdjustRange = new JCheckBox();
+		chkAutoAdjustRange.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -813,10 +822,10 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 			}
 			
 		});
-		panelGenericOptionsXAxis.add(chkAutoRangeXAxis, "cell 1 0 3 1,growx");
+		panelGenericOptionsXAxis.add(chkAutoAdjustRange, "cell 1 0,alignx left");
 		
 		JLabel lblNewLabel = new JLabel("Year range:");
-		panelGenericOptionsXAxis.add(lblNewLabel, "cell 0 0 1 2,alignx right,aligny center");
+		panelGenericOptionsXAxis.add(lblNewLabel, "cell 2 0,alignx right,aligny center");
 		
 		firstYearSpinner = new BCADYearSpinner(neoFHChart.currentChart.getReader().getFirstYear(), SharedConstants.EARLIEST_ALLOWED_YEAR,
 				SharedConstants.CURRENT_YEAR - 1);
@@ -835,10 +844,7 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 				firstYearSpinner.updateMostRecentValue();
 			}
 		});
-		panelGenericOptionsXAxis.add(firstYearSpinner, "cell 1 1");
-		
-		JLabel lblTo = new JLabel("to");
-		panelGenericOptionsXAxis.add(lblTo, "cell 2 1");
+		panelGenericOptionsXAxis.add(firstYearSpinner, "cell 3 0");
 		
 		lastYearSpinner = new BCADYearSpinner(neoFHChart.currentChart.getReader().getLastYear(), SharedConstants.EARLIEST_ALLOWED_YEAR,
 				SharedConstants.CURRENT_YEAR);
@@ -857,7 +863,16 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 				lastYearSpinner.updateMostRecentValue();
 			}
 		});
-		panelGenericOptionsXAxis.add(lastYearSpinner, "cell 3 1");
+		
+		JLabel lblTo = new JLabel("to");
+		panelGenericOptionsXAxis.add(lblTo, "cell 4 0,alignx center,aligny center");
+		panelGenericOptionsXAxis.add(lastYearSpinner, "cell 5 0");
+		
+		lblTimelineFontSize = new JLabel("Timeline font size:");
+		panelGenericOptionsXAxis.add(lblTimelineFontSize, "cell 0 1,alignx right,aligny center");
+		
+		spnTimelineFontSize = new JSpinner();
+		panelGenericOptionsXAxis.add(spnTimelineFontSize, "cell 1 1,alignx center,aligny center");
 		
 		JPanel panelGenericOptionsTicksAndGuides = new JPanel();
 		panelGenericOptionsTicksAndGuides
