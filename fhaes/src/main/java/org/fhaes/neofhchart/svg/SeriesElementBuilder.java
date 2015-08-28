@@ -18,6 +18,7 @@
 package org.fhaes.neofhchart.svg;
 
 import java.awt.Color;
+import java.awt.Font;
 
 import org.apache.batik.dom.svg.SVGDOMImplementation;
 import org.fhaes.enums.LineStyle;
@@ -54,7 +55,7 @@ public class SeriesElementBuilder {
 		seriesNameTextElement.setAttribute("y", Integer.toString((FireChartSVG.SERIES_HEIGHT / 2)));
 		seriesNameTextElement.setAttribute("font-family", App.prefs.getPref(PrefKey.CHART_FONT_FAMILY, "Verdana"));
 		seriesNameTextElement.setAttribute("font-size", +fontSize + "");
-		seriesNameTextElement.setAttribute("fill", FireChartConversions.colorToHexString(seriesSVG.getLabelColor()));
+		seriesNameTextElement.setAttribute("fill", FireChartUtil.colorToHexString(seriesSVG.getLabelColor()));
 		seriesNameTextElement.appendChild(seriesNameText);
 		
 		return seriesNameTextElement;
@@ -73,7 +74,8 @@ public class SeriesElementBuilder {
 		Element categoryLabelTextElement = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "text");
 		
 		Text categoryLabelText = doc.createTextNode(categoryLabel.toUpperCase());
-		categoryLabelTextElement.setAttributeNS(null, "x", Integer.toString(chartWidth / 2));
+		int paddingAmountToCenterText = FireChartUtil.getStringWidth(Font.PLAIN, 16, categoryLabel.toUpperCase());
+		categoryLabelTextElement.setAttributeNS(null, "x", Integer.toString((chartWidth / 2) - (paddingAmountToCenterText / 2)));
 		categoryLabelTextElement.setAttributeNS(null, "y", "0");
 		categoryLabelTextElement.setAttributeNS(null, "font-family", App.prefs.getPref(PrefKey.CHART_FONT_FAMILY, "Verdana"));
 		categoryLabelTextElement.setAttributeNS(null, "font-size", "16");
@@ -140,8 +142,8 @@ public class SeriesElementBuilder {
 		fireYearMarker.setAttributeNS(null, "y", "0");
 		fireYearMarker.setAttributeNS(null, "width", "1");
 		fireYearMarker.setAttributeNS(null, "height", Integer.toString(FireChartSVG.SERIES_HEIGHT));
-		fireYearMarker.setAttributeNS(null, "fill", FireChartConversions.colorToHexString(color));
-		fireYearMarker.setAttributeNS(null, "stroke", FireChartConversions.colorToHexString(color));
+		fireYearMarker.setAttributeNS(null, "fill", FireChartUtil.colorToHexString(color));
+		fireYearMarker.setAttributeNS(null, "stroke", FireChartUtil.colorToHexString(color));
 		
 		return fireYearMarker;
 	}
@@ -163,7 +165,7 @@ public class SeriesElementBuilder {
 		injuryYearMarker.setAttributeNS(null, "width", Integer.toString(width));
 		injuryYearMarker.setAttributeNS(null, "height", Integer.toString(FireChartSVG.SERIES_HEIGHT));
 		injuryYearMarker.setAttributeNS(null, "fill", "none");
-		injuryYearMarker.setAttributeNS(null, "stroke", FireChartConversions.colorToHexString(color));
+		injuryYearMarker.setAttributeNS(null, "stroke", FireChartUtil.colorToHexString(color));
 		
 		return injuryYearMarker;
 	}
@@ -187,8 +189,8 @@ public class SeriesElementBuilder {
 			pithMarker.setAttributeNS(null, "y", Integer.toString(-height / 2));
 			pithMarker.setAttributeNS(null, "width", "1");
 			pithMarker.setAttributeNS(null, "height", Integer.toString(height));
-			pithMarker.setAttributeNS(null, "fill", FireChartConversions.colorToHexString(color));
-			pithMarker.setAttributeNS(null, "stroke", FireChartConversions.colorToHexString(color));
+			pithMarker.setAttributeNS(null, "fill", FireChartUtil.colorToHexString(color));
+			pithMarker.setAttributeNS(null, "stroke", FireChartUtil.colorToHexString(color));
 			
 			return pithMarker;
 		}
@@ -197,8 +199,8 @@ public class SeriesElementBuilder {
 			Element noPithMarker = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "polygon");
 			
 			noPithMarker.setAttributeNS(null, "points", "-2,0.5 5,-5 2,0.5");
-			noPithMarker.setAttributeNS(null, "fill", FireChartConversions.colorToHexString(color));
-			noPithMarker.setAttributeNS(null, "stroke", FireChartConversions.colorToHexString(color));
+			noPithMarker.setAttributeNS(null, "fill", FireChartUtil.colorToHexString(color));
+			noPithMarker.setAttributeNS(null, "stroke", FireChartUtil.colorToHexString(color));
 			
 			return noPithMarker;
 		}
@@ -223,8 +225,8 @@ public class SeriesElementBuilder {
 			barkMarker.setAttributeNS(null, "y", Integer.toString(-height / 2));
 			barkMarker.setAttributeNS(null, "width", "1");
 			barkMarker.setAttributeNS(null, "height", Integer.toString(height));
-			barkMarker.setAttributeNS(null, "fill", FireChartConversions.colorToHexString(color));
-			barkMarker.setAttributeNS(null, "stroke", FireChartConversions.colorToHexString(color));
+			barkMarker.setAttributeNS(null, "fill", FireChartUtil.colorToHexString(color));
+			barkMarker.setAttributeNS(null, "stroke", FireChartUtil.colorToHexString(color));
 			
 			return barkMarker;
 		}
@@ -233,8 +235,8 @@ public class SeriesElementBuilder {
 			Element noBarkMarker = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "polygon");
 			
 			noBarkMarker.setAttributeNS(null, "points", "2,0.5 -5,-5 -2,0.5");
-			noBarkMarker.setAttributeNS(null, "fill", FireChartConversions.colorToHexString(color));
-			noBarkMarker.setAttributeNS(null, "stroke", FireChartConversions.colorToHexString(color));
+			noBarkMarker.setAttributeNS(null, "fill", FireChartUtil.colorToHexString(color));
+			noBarkMarker.setAttributeNS(null, "stroke", FireChartUtil.colorToHexString(color));
 			
 			return noBarkMarker;
 		}

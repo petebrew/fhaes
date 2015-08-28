@@ -19,7 +19,6 @@ package org.fhaes.neofhchart.svg;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.FontMetrics;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
@@ -32,9 +31,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
@@ -137,7 +133,7 @@ public class FireChartSVG {
 		chart_map.put(chartNum, this);
 		
 		reader = f;
-		ArrayList<FHSeriesSVG> seriesToAdd = FireChartConversions.seriesListToSeriesSVGList(f.getSeriesList());
+		ArrayList<FHSeriesSVG> seriesToAdd = FireChartUtil.seriesListToSeriesSVGList(f.getSeriesList());
 		
 		if (!seriesSVGList.isEmpty())
 		{
@@ -472,43 +468,6 @@ public class FireChartSVG {
 	}
 	
 	/**
-	 * Get an approximate width for a string with the specified font. The should really be taken from the SVG but I haven't worked out a
-	 * good way to do this without rendering first.
-	 * 
-	 * @param fontSize
-	 * @param fontStyle
-	 * @param text
-	 * @return
-	 */
-	private Integer getStringWidth(int fontStyle, int fontSize, String text) {
-		
-		Font font = new Font(App.prefs.getPref(PrefKey.CHART_FONT_FAMILY, "Verdana"), fontStyle, fontSize);
-		
-		JComponent graphics = new JLabel(text);
-		FontMetrics metrics = graphics.getFontMetrics(font);
-		int val = metrics.stringWidth(text);
-		return val;
-	}
-	
-	/**
-	 * Get an approximate height for a string with the specified font. The should really be taken from the SVG but I haven't worked out a
-	 * good way to do this without rendering first.
-	 * 
-	 * @param fontSize
-	 * @param fontStyle
-	 * @param text
-	 * @return
-	 */
-	private Integer getStringHeight(int fontStyle, int fontSize, String text) {
-		
-		Font font = new Font(App.prefs.getPref(PrefKey.CHART_FONT_FAMILY, "Verdana"), fontStyle, fontSize);
-		
-		JComponent graphics = new JPanel();
-		FontMetrics metrics = graphics.getFontMetrics(font);
-		return metrics.getMaxAscent();
-	}
-	
-	/**
 	 * This method swaps the selected series with the series above it.
 	 * 
 	 * @param series_name: Name of the series to move up
@@ -829,7 +788,7 @@ public class FireChartSVG {
 							: SeriesElementBuilder.getNonRecorderLine(doc, getFirstChartYear(), getLastChartYear());
 					series_line.setAttributeNS(null, "x1", Integer.toString(begin_index));
 					series_line.setAttributeNS(null, "y1", "0");
-					series_line.setAttributeNS(null, "stroke", FireChartConversions.colorToHexString(seriesSVG.getLineColor()));
+					series_line.setAttributeNS(null, "stroke", FireChartUtil.colorToHexString(seriesSVG.getLineColor()));
 					
 					// Following kludge fixes but I don't understand why.
 					/*
@@ -857,13 +816,12 @@ public class FireChartSVG {
 				{
 					Element fire_event_g = doc.createElementNS(svgNS, "g");
 					fire_event_g.setAttributeNS(null, "class", "fire_marker");
-					fire_event_g.setAttributeNS(null, "stroke", FireChartConversions.colorToHexString(seriesSVG.getLineColor()));
+					fire_event_g.setAttributeNS(null, "stroke", FireChartUtil.colorToHexString(seriesSVG.getLineColor()));
 					String translate = "translate("
-							+ Double.toString(
-									j - FireChartConversions.pixelsToYears(0.5, chartWidth, getFirstChartYear(), getLastChartYear()))
+							+ Double.toString(j - FireChartUtil.pixelsToYears(0.5, chartWidth, getFirstChartYear(), getLastChartYear()))
 							+ "," + Integer.toString(-SERIES_HEIGHT / 2) + ")";
 					fire_event_g.setAttributeNS(null, "transform", translate + "scale("
-							+ FireChartConversions.pixelsToYears(chartWidth, getFirstChartYear(), getLastChartYear()) + ",1)");
+							+ FireChartUtil.pixelsToYears(chartWidth, getFirstChartYear(), getLastChartYear()) + ",1)");
 					fire_event_g.appendChild(SeriesElementBuilder.getFireYearMarker(doc, seriesSVG.getLineColor()));
 					series_fire_events.appendChild(fire_event_g);
 				}
@@ -882,13 +840,11 @@ public class FireChartSVG {
 				{
 					Element injury_event_g = doc.createElementNS(svgNS, "g");
 					injury_event_g.setAttributeNS(null, "class", "injury_marker");
-					injury_event_g.setAttributeNS(null, "stroke", FireChartConversions.colorToHexString(seriesSVG.getLineColor()));
+					injury_event_g.setAttributeNS(null, "stroke", FireChartUtil.colorToHexString(seriesSVG.getLineColor()));
 					String transform = "translate("
-							+ Double.toString(
-									j - FireChartConversions.pixelsToYears(1.5, chartWidth, getFirstChartYear(), getLastChartYear()))
+							+ Double.toString(j - FireChartUtil.pixelsToYears(1.5, chartWidth, getFirstChartYear(), getLastChartYear()))
 							+ "," + Integer.toString(-SERIES_HEIGHT / 2) + ")";
-					String scale = "scale(" + FireChartConversions.pixelsToYears(chartWidth, getFirstChartYear(), getLastChartYear())
-							+ ",1)";
+					String scale = "scale(" + FireChartUtil.pixelsToYears(chartWidth, getFirstChartYear(), getLastChartYear()) + ",1)";
 					injury_event_g.setAttributeNS(null, "transform", transform + " " + scale);
 					injury_event_g.appendChild(SeriesElementBuilder.getInjuryYearMarker(doc, 3, seriesSVG.getLineColor()));
 					
@@ -906,9 +862,9 @@ public class FireChartSVG {
 				Element pith_marker_g = doc.createElementNS(svgNS, "g");
 				// no translation because the inner year is at year=0
 				String translate = "translate("
-						+ (0 - FireChartConversions.pixelsToYears(0.5, chartWidth, getFirstChartYear(), getLastChartYear())) + ",0)";
-				pith_marker_g.setAttributeNS(null, "transform", translate + "scale("
-						+ FireChartConversions.pixelsToYears(chartWidth, getFirstChartYear(), getLastChartYear()) + ",1)");
+						+ (0 - FireChartUtil.pixelsToYears(0.5, chartWidth, getFirstChartYear(), getLastChartYear())) + ",0)";
+				pith_marker_g.setAttributeNS(null, "transform",
+						translate + "scale(" + FireChartUtil.pixelsToYears(chartWidth, getFirstChartYear(), getLastChartYear()) + ",1)");
 				pith_marker_g
 						.appendChild(SeriesElementBuilder.getInnerYearPithMarker(doc, seriesSVG.hasPith(), 5, seriesSVG.getLineColor()));
 				series_group.appendChild(pith_marker_g);
@@ -926,8 +882,8 @@ public class FireChartSVG {
 				// one
 				// because
 				// the
-				bark_marker_g.setAttribute("transform", translate + " scale("
-						+ FireChartConversions.pixelsToYears(chartWidth, getFirstChartYear(), getLastChartYear()) + ",1)");
+				bark_marker_g.setAttribute("transform",
+						translate + " scale(" + FireChartUtil.pixelsToYears(chartWidth, getFirstChartYear(), getLastChartYear()) + ",1)");
 				bark_marker_g
 						.appendChild(SeriesElementBuilder.getOuterYearBarkMarker(doc, seriesSVG.hasBark(), 5, seriesSVG.getLineColor()));
 				series_group.appendChild(bark_marker_g);
@@ -994,7 +950,7 @@ public class FireChartSVG {
 		
 		// Build all of the series
 		ArrayList<Boolean> series_visible = new ArrayList<Boolean>();
-		ArrayList<FHSeriesSVG> series_arr = FireChartConversions.seriesListToSeriesSVGList(reader.getSeriesList());
+		ArrayList<FHSeriesSVG> series_arr = FireChartUtil.seriesListToSeriesSVGList(reader.getSeriesList());
 		
 		this.showPith = App.prefs.getBooleanPref(PrefKey.CHART_SHOW_PITH_SYMBOL, true);
 		this.showBark = App.prefs.getBooleanPref(PrefKey.CHART_SHOW_BARK_SYMBOL, true);
@@ -1012,8 +968,8 @@ public class FireChartSVG {
 				longestLabel = series.getTitle();
 		}
 		
-		widestChronologyLabelSize = getStringWidth(Font.PLAIN, App.prefs.getIntPref(PrefKey.CHART_CHRONOLOGY_PLOT_LABEL_FONT_SIZE, 10),
-				longestLabel);
+		widestChronologyLabelSize = FireChartUtil.getStringWidth(Font.PLAIN,
+				App.prefs.getIntPref(PrefKey.CHART_CHRONOLOGY_PLOT_LABEL_FONT_SIZE, 10), longestLabel);
 				
 		for (int i = 0; i < series_arr.size(); i++)
 		{
@@ -1028,8 +984,7 @@ public class FireChartSVG {
 			series_line.setAttributeNS(null, "id", "series_line_" + seriesSVG.getTitle());
 			int x_offset = applyBCYearOffset(seriesSVG.getFirstYear()) - getFirstChartYear();
 			String translate_string = "translate(" + Integer.toString(x_offset) + ",0)";
-			String scale_string = "scale(" + FireChartConversions.yearsToPixels(chartWidth, getFirstChartYear(), getLastChartYear())
-					+ ",1)";
+			String scale_string = "scale(" + FireChartUtil.yearsToPixels(chartWidth, getFirstChartYear(), getLastChartYear()) + ",1)";
 			series_line.setAttributeNS(null, "transform", scale_string + " " + translate_string);
 			
 			// Add in the label for the series
@@ -1127,12 +1082,12 @@ public class FireChartSVG {
 		
 		if (rotateLabelsAngle == 0)
 		{
-			compositeYearLabelMaxWidth = getStringWidth(Font.PLAIN, compositeYearLabelFontSize, textStr) + stringbuffer;
-			compositeYearLabelHeight = getStringHeight(Font.PLAIN, compositeYearLabelFontSize, textStr);
+			compositeYearLabelMaxWidth = FireChartUtil.getStringWidth(Font.PLAIN, compositeYearLabelFontSize, textStr) + stringbuffer;
+			compositeYearLabelHeight = FireChartUtil.getStringHeight(Font.PLAIN, compositeYearLabelFontSize, textStr);
 		}
 		else if (rotateLabelsAngle == 315)
 		{
-			int width = getStringWidth(Font.PLAIN, compositeYearLabelFontSize, textStr);
+			int width = FireChartUtil.getStringWidth(Font.PLAIN, compositeYearLabelFontSize, textStr);
 			
 			double widthsq = width * width;
 			double hyp = Math.sqrt(widthsq + widthsq);
@@ -1142,16 +1097,16 @@ public class FireChartSVG {
 		}
 		else
 		{
-			compositeYearLabelMaxWidth = getStringHeight(Font.PLAIN, compositeYearLabelFontSize, textStr);
-			compositeYearLabelHeight = getStringWidth(Font.PLAIN, compositeYearLabelFontSize, textStr) + stringbuffer;
+			compositeYearLabelMaxWidth = FireChartUtil.getStringHeight(Font.PLAIN, compositeYearLabelFontSize, textStr);
+			compositeYearLabelHeight = FireChartUtil.getStringWidth(Font.PLAIN, compositeYearLabelFontSize, textStr) + stringbuffer;
 		}
 		
 		// compositePlot is centered off of the year 0 A.D.
 		Element compositePlot = doc.createElementNS(svgNS, "g");
 		compositePlot.setAttributeNS(null, "id", "comp_plot");
 		compositePlot.setAttributeNS(null, "transform",
-				"scale(" + FireChartConversions.yearsToPixels(chartWidth, getFirstChartYear(), getLastChartYear()) + "," + 1
-						+ ") translate(-" + getFirstChartYear() + ",0) ");
+				"scale(" + FireChartUtil.yearsToPixels(chartWidth, getFirstChartYear(), getLastChartYear()) + "," + 1 + ") translate(-"
+						+ getFirstChartYear() + ",0) ");
 						
 		// draw the vertical lines for fire years
 		ArrayList<Integer> composite_years = reader.getCompositeFireYears(fireEventType,
@@ -1185,8 +1140,8 @@ public class FireChartSVG {
 		{
 			for (int i : composite_years)
 			{
-				double pixelsBetweenLabels = FireChartConversions.yearsToPixels(i, chartWidth, getFirstChartYear(), getLastChartYear())
-						- FireChartConversions.yearsToPixels(prev_i, chartWidth, getFirstChartYear(), getLastChartYear());
+				double pixelsBetweenLabels = FireChartUtil.yearsToPixels(i, chartWidth, getFirstChartYear(), getLastChartYear())
+						- FireChartUtil.yearsToPixels(prev_i, chartWidth, getFirstChartYear(), getLastChartYear());
 				if (pixelsBetweenLabels < overlap_margin)
 				{
 					cur_offset_level = cur_offset_level + 1;
@@ -1238,7 +1193,7 @@ public class FireChartSVG {
 					CompositePlotElementBuilder.getEventLine(doc, i, chart_height, chartWidth, getFirstChartYear(), getLastChartYear()));
 					
 			// calculate the offsets for the labels
-			if (FireChartConversions.yearsToPixels(i - prev_i, chartWidth, getFirstChartYear(), getLastChartYear()) < overlap_margin)
+			if (FireChartUtil.yearsToPixels(i - prev_i, chartWidth, getFirstChartYear(), getLastChartYear()) < overlap_margin)
 			{
 				cur_offset_level = (cur_offset_level + 1) % num_layers;
 			}
@@ -1248,30 +1203,27 @@ public class FireChartSVG {
 			}
 			
 			Element text_g = doc.createElementNS(svgNS, "g");
-			String scale_str = "scale(" + FireChartConversions.pixelsToYears(chartWidth, getFirstChartYear(), getLastChartYear()) + ", 1)";
+			String scale_str = "scale(" + FireChartUtil.pixelsToYears(chartWidth, getFirstChartYear(), getLastChartYear()) + ", 1)";
 			
 			if (rotateLabelsAngle == 270)
 			{
 				double offset = chart_height + (cur_offset_level * compositeYearLabelHeight) + compositeYearLabelHeight;
-				String translate_str = "translate(" + (Double.toString(i + (FireChartConversions
-						.pixelsToYears(compositeYearLabelMaxWidth / 2, chartWidth, getFirstChartYear(), getLastChartYear())))) + ","
-						+ offset + ")";
+				String translate_str = "translate(" + (Double.toString(i + (FireChartUtil.pixelsToYears(compositeYearLabelMaxWidth / 2,
+						chartWidth, getFirstChartYear(), getLastChartYear())))) + "," + offset + ")";
 				text_g.setAttributeNS(null, "transform", translate_str + scale_str + " rotate(" + rotateLabelsAngle + ")");
 			}
 			else if (rotateLabelsAngle == 315)
 			{
 				double offset = chart_height + (cur_offset_level * (compositeYearLabelHeight / 3)) + compositeYearLabelHeight / 1.3;
-				String translate_str = "translate(" + (Double.toString(i - (FireChartConversions
-						.pixelsToYears(compositeYearLabelMaxWidth / 2, chartWidth, getFirstChartYear(), getLastChartYear())))) + ","
-						+ offset + ")";
+				String translate_str = "translate(" + (Double.toString(i - (FireChartUtil.pixelsToYears(compositeYearLabelMaxWidth / 2,
+						chartWidth, getFirstChartYear(), getLastChartYear())))) + "," + offset + ")";
 				text_g.setAttributeNS(null, "transform", translate_str + scale_str + " rotate(" + rotateLabelsAngle + ")");
 			}
 			else
 			{
 				double offset = chart_height + (cur_offset_level * compositeYearLabelHeight) + compositeYearLabelHeight;
-				String translate_str = "translate(" + (Double.toString(i - (FireChartConversions
-						.pixelsToYears(compositeYearLabelMaxWidth / 2, chartWidth, getFirstChartYear(), getLastChartYear())))) + ","
-						+ offset + ")";
+				String translate_str = "translate(" + (Double.toString(i - (FireChartUtil.pixelsToYears(compositeYearLabelMaxWidth / 2,
+						chartWidth, getFirstChartYear(), getLastChartYear())))) + "," + offset + ")";
 				text_g.setAttributeNS(null, "transform", translate_str + scale_str);
 			}
 			
@@ -1328,14 +1280,13 @@ public class FireChartSVG {
 		
 		// add the label
 		String translate_string = "translate("
-				+ Double.toString(
-						getLastChartYear() + FireChartConversions.pixelsToYears(10, chartWidth, getFirstChartYear(), getLastChartYear()))
+				+ Double.toString(getLastChartYear() + FireChartUtil.pixelsToYears(10, chartWidth, getFirstChartYear(), getLastChartYear()))
 				+ ", "
 				+ ((chart_height / 2)
-						+ (this.getStringHeight(Font.PLAIN, App.prefs.getIntPref(PrefKey.CHART_COMPOSITE_PLOT_LABEL_FONT_SIZE, 10),
+						+ (FireChartUtil.getStringHeight(Font.PLAIN, App.prefs.getIntPref(PrefKey.CHART_COMPOSITE_PLOT_LABEL_FONT_SIZE, 10),
 								App.prefs.getPref(PrefKey.CHART_COMPOSITE_LABEL_TEXT, "Composite"))) / 2)
 				+ ")";
-		String scale_string = "scale(" + FireChartConversions.pixelsToYears(chartWidth, getFirstChartYear(), getLastChartYear()) + ", 1)";
+		String scale_string = "scale(" + FireChartUtil.pixelsToYears(chartWidth, getFirstChartYear(), getLastChartYear()) + ", 1)";
 		
 		Element comp_name_text_g = doc.createElementNS(svgNS, "g");
 		comp_name_text_g.setAttributeNS(null, "transform", translate_string + scale_string);
@@ -1361,8 +1312,8 @@ public class FireChartSVG {
 	 */
 	private Element getLegend() {
 		
-		int labelWidth = this.getStringWidth(Font.PLAIN, 8, "Outer year without bark");
-		int labelHeight = this.getStringHeight(Font.PLAIN, 8, "Outer year without bark");
+		int labelWidth = FireChartUtil.getStringWidth(Font.PLAIN, 8, "Outer year without bark");
+		int labelHeight = FireChartUtil.getStringHeight(Font.PLAIN, 8, "Outer year without bark");
 		int currentY = 0; // to help position symbols
 		int moveValue = 20;
 		int leftJustified = 20;
@@ -1507,7 +1458,7 @@ public class FireChartSVG {
 		
 		// Time axis is centered off of the first year in the reader
 		Element timeAxis = doc.createElementNS(svgNS, "g");
-		String scale = "scale(" + FireChartConversions.yearsToPixels(chartWidth, getFirstChartYear(), getLastChartYear()) + ",1)";
+		String scale = "scale(" + FireChartUtil.yearsToPixels(chartWidth, getFirstChartYear(), getLastChartYear()) + ",1)";
 		timeAxis.setAttributeNS(null, "transform", scale + " translate(-" + this.getFirstChartYear() + ",0)");
 		int majorTickInterval = App.prefs.getIntPref(PrefKey.CHART_XAXIS_MAJOR_TICK_SPACING, 50);
 		int minorTickInterval = App.prefs.getIntPref(PrefKey.CHART_XAXIS_MINOR_TICK_SPACING, 10);
@@ -1556,7 +1507,7 @@ public class FireChartSVG {
 				Element year_text_g = doc.createElementNS(svgNS, "g");
 				
 				year_text_g.setAttributeNS(null, "transform", "translate(" + i + "," + height + ") scale("
-						+ FireChartConversions.pixelsToYears(chartWidth, getFirstChartYear(), getLastChartYear()) + ",1)");
+						+ FireChartUtil.pixelsToYears(chartWidth, getFirstChartYear(), getLastChartYear()) + ",1)");
 						
 				year_text_g.appendChild(TimeAxisElementBuilder.getYearTextElement(doc, removeBCYearOffset(i), reader.getFirstYear()));
 				
@@ -1594,7 +1545,7 @@ public class FireChartSVG {
 		// only x-scale the drawn part -- not the labels
 		Element scarred_scale_g = doc.createElementNS(svgNS, "g");
 		scarred_scale_g.setAttributeNS(null, "transform",
-				"scale(" + FireChartConversions.yearsToPixels(chartWidth, getFirstChartYear(), getLastChartYear()) + ",1)");
+				"scale(" + FireChartUtil.yearsToPixels(chartWidth, getFirstChartYear(), getLastChartYear()) + ",1)");
 		scarred_g.appendChild(scarred_scale_g);
 		
 		// draw in vertical bars
@@ -1653,7 +1604,7 @@ public class FireChartSVG {
 				
 		// draw in the labels
 		int yAxisFontSize = App.prefs.getIntPref(PrefKey.CHART_AXIS_Y2_FONT_SIZE, 10);
-		int labelHeight = this.getStringHeight(Font.PLAIN, yAxisFontSize, "100");
+		int labelHeight = FireChartUtil.getStringHeight(Font.PLAIN, yAxisFontSize, "100");
 		for (int i = 0; i <= 100; i += 25)
 		{
 			Element unscale_g = doc.createElementNS(svgNS, "g");
@@ -1683,7 +1634,7 @@ public class FireChartSVG {
 		unscale_g.setAttributeNS(null, "transform", "scale(1," + unscale_y + ")");
 		
 		Element rotate_g = doc.createElementNS(svgNS, "g");
-		String x = Double.toString(chartWidth + 5 + 10 + this.getStringWidth(Font.PLAIN, yAxisFontSize, "100"));
+		String x = Double.toString(chartWidth + 5 + 10 + FireChartUtil.getStringWidth(Font.PLAIN, yAxisFontSize, "100"));
 		String y = Double.toString(scale_y * 100);
 		rotate_g.setAttributeNS(null, "transform", "translate(" + x + "," + y + ") rotate(90)");
 		
@@ -1781,7 +1732,7 @@ public class FireChartSVG {
 		String t = translation + "scale(1," + scale_y + ")";
 		sample_g.setAttributeNS(null, "transform", t);
 		sample_g_chart.setAttributeNS(null, "transform",
-				"scale(" + FireChartConversions.yearsToPixels(chartWidth, getFirstChartYear(), getLastChartYear()) + ",1)");
+				"scale(" + FireChartUtil.yearsToPixels(chartWidth, getFirstChartYear(), getLastChartYear()) + ",1)");
 				
 		// error check
 		if (sample_depths.length == 0)
@@ -1791,8 +1742,7 @@ public class FireChartSVG {
 		
 		// build the trend line
 		int begin_index = 0;
-		String lineColor = FireChartConversions
-				.colorToHexString(App.prefs.getColorPref(PrefKey.CHART_SAMPLE_OR_RECORDER_DEPTH_COLOR, Color.BLUE));
+		String lineColor = FireChartUtil.colorToHexString(App.prefs.getColorPref(PrefKey.CHART_SAMPLE_OR_RECORDER_DEPTH_COLOR, Color.BLUE));
 		for (int i = 1; i < sample_depths.length; i++)
 		{
 			if (sample_depths[i] != sample_depths[begin_index])
@@ -1822,10 +1772,10 @@ public class FireChartSVG {
 		int num_ticks = 4;
 		int tick_spacing = (int) Math.ceil((double) largest_sample_depth / (double) num_ticks);
 		int font_size = App.prefs.getIntPref(PrefKey.CHART_AXIS_Y1_FONT_SIZE, 10);
-		int labelHeight = this.getStringHeight(Font.PLAIN, font_size, "9");
+		int labelHeight = FireChartUtil.getStringHeight(Font.PLAIN, font_size, "9");
 		for (int i = 0; i < num_ticks; i++)
 		{
-			int labelWidth = this.getStringWidth(Font.PLAIN, font_size, i * tick_spacing + "");
+			int labelWidth = FireChartUtil.getStringWidth(Font.PLAIN, font_size, i * tick_spacing + "");
 			
 			sample_g.appendChild(SampleRecorderPlotElementBuilder.getHorizontalTick(doc, unscale_y, i, tick_spacing));
 			
@@ -1839,7 +1789,7 @@ public class FireChartSVG {
 		}
 		
 		// add in label that says "Sample Depth"
-		int labelWidth = this.getStringWidth(Font.PLAIN, font_size, num_ticks * tick_spacing + "");
+		int labelWidth = FireChartUtil.getStringWidth(Font.PLAIN, font_size, num_ticks * tick_spacing + "");
 		
 		Element unscale_g = doc.createElementNS(svgNS, "g");
 		unscale_g.setAttributeNS(null, "transform",
@@ -2146,7 +2096,7 @@ public class FireChartSVG {
 	public Double standardChartUnits(int prop) {
 		
 		Double pixelsForProportion = this.chartWidth * (prop / 1000.0);
-		return FireChartConversions.pixelsToYears(pixelsForProportion, chartWidth, getFirstChartYear(), getLastChartYear());
+		return FireChartUtil.pixelsToYears(pixelsForProportion, chartWidth, getFirstChartYear(), getLastChartYear());
 	}
 	
 	/**

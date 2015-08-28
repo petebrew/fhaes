@@ -18,23 +18,31 @@
 package org.fhaes.neofhchart.svg;
 
 import java.awt.Color;
+import java.awt.Font;
+import java.awt.FontMetrics;
 import java.util.ArrayList;
+
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 
 import org.fhaes.model.FHSeries;
 import org.fhaes.neofhchart.FHSeriesSVG;
+import org.fhaes.preferences.App;
+import org.fhaes.preferences.FHAESPreferences.PrefKey;
 
 /**
  * FireChartConversions Class.
  * 
  * @author Joshua Brogan and Peter Brewer
  */
-public class FireChartConversions {
+public class FireChartUtil {
 	
 	/**
 	 * Converts an array list of FHseries objects to an array list of FHSeriesSVG objects.
 	 * 
 	 * @param seriesList
-	 * @return
+	 * @return the converted list
 	 */
 	protected static ArrayList<FHSeriesSVG> seriesListToSeriesSVGList(ArrayList<FHSeries> seriesList) {
 		
@@ -56,10 +64,10 @@ public class FireChartConversions {
 	}
 	
 	/**
-	 * Converts a java.awt.Color to a hex string.
+	 * Converts a java.awt.Color into a hexadecimal string.
 	 * 
 	 * @param color
-	 * @return
+	 * @return the converted color value
 	 */
 	protected static String colorToHexString(Color color) {
 		
@@ -69,6 +77,42 @@ public class FireChartConversions {
 		}
 		
 		return "#" + Integer.toHexString(color.getRGB()).substring(2);
+	}
+	
+	/**
+	 * Get an approximate height for a string with the specified font. The should really be taken from the SVG but I haven't worked out a
+	 * good way to do this without rendering first.
+	 * 
+	 * @param fontSize
+	 * @param fontStyle
+	 * @param text
+	 * @return string height
+	 */
+	protected static Integer getStringHeight(int fontStyle, int fontSize, String text) {
+		
+		Font font = new Font(App.prefs.getPref(PrefKey.CHART_FONT_FAMILY, "Verdana"), fontStyle, fontSize);
+		
+		JComponent graphics = new JPanel();
+		FontMetrics metrics = graphics.getFontMetrics(font);
+		return metrics.getMaxAscent();
+	}
+	
+	/**
+	 * Get an approximate width for a string with the specified font. The should really be taken from the SVG but I haven't worked out a
+	 * good way to do this without rendering first.
+	 * 
+	 * @param fontSize
+	 * @param fontStyle
+	 * @param text
+	 * @return string width
+	 */
+	protected static Integer getStringWidth(int fontStyle, int fontSize, String text) {
+		
+		Font font = new Font(App.prefs.getPref(PrefKey.CHART_FONT_FAMILY, "Verdana"), fontStyle, fontSize);
+		
+		JComponent graphics = new JLabel(text);
+		FontMetrics metrics = graphics.getFontMetrics(font);
+		return metrics.stringWidth(text);
 	}
 	
 	/**
