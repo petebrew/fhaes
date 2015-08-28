@@ -24,6 +24,9 @@ import java.awt.event.KeyListener;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.text.NumberFormatter;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * BCADYearSpinner Class. A spinner that supports a model for representing BC and AD years.
  * 
@@ -32,6 +35,9 @@ import javax.swing.text.NumberFormatter;
 public class BCADYearSpinner extends javax.swing.JSpinner {
 	
 	private static final long serialVersionUID = 1L;
+	
+	// Declare logger
+	private static final Logger log = LoggerFactory.getLogger(BCADYearSpinner.class);
 	
 	// Declare local constants
 	private final String NUMBER_EDITOR_FORMAT = "#####";
@@ -50,6 +56,19 @@ public class BCADYearSpinner extends javax.swing.JSpinner {
 	 */
 	public BCADYearSpinner(int initialValue, int minimumValue, int maximumValue) {
 		
+		// Account for cases where the initial value may be out of range
+		if (initialValue < minimumValue)
+		{
+			log.warn("Initial value is below minimum value - correcting automatically...");
+			initialValue = minimumValue;
+		}
+		else if (initialValue > maximumValue)
+		{
+			log.warn("Initial value is above maximum value - correcting automatically...");
+			initialValue = maximumValue;
+		}
+		
+		// Setup the year spinner with valid values
 		initGUI(initialValue, minimumValue, maximumValue);
 	}
 	
@@ -277,6 +296,34 @@ public class BCADYearSpinner extends javax.swing.JSpinner {
 			else
 			{
 				super.setValue(inputValue);
+			}
+		}
+	}
+	
+	/**
+	 * BCADYearSpinnerUnitTest Class. This class contains the unit test for BCADYearSpinner.
+	 */
+	public static class BCADYearSpinnerUnitTest {
+		
+		/**
+		 * Runs the unit test for BCADYearSpinner.
+		 */
+		@SuppressWarnings("unused")
+		public static void runTest() {
+			
+			// Create BCADYearSpinner with nominal values
+			{
+				BCADYearSpinner testSpn = new BCADYearSpinner(50, 0, 100);
+			}
+			
+			// Create BCADYearSpinner with initial value below minimum value
+			{
+				BCADYearSpinner testSpn = new BCADYearSpinner(0, 50, 100);
+			}
+			
+			// Create BCADYearSpinner with initial value above maximum value
+			{
+				BCADYearSpinner testSpn = new BCADYearSpinner(100, 0, 50);
 			}
 		}
 	}

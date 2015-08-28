@@ -792,24 +792,28 @@ public class FireChartSVG {
 			}
 			
 			boolean isRecording = recording_years[0];
+			
 			for (int j = 0; j <= last_index; j++)
 			{
 				if (isRecording != recording_years[j] || j == last_index)
-				{ // need to draw a line
-					Element series_line = isRecording ? SeriesElementBuilder.getRecorderLine(doc)
-							: SeriesElementBuilder.getNonRecorderLine(doc, getFirstChartYear(), getLastChartYear());
+				{
+					// Need to draw a line
+					Element series_line;
+					if (isRecording)
+					{
+						series_line = SeriesElementBuilder.getRecorderLine(doc);
+					}
+					else
+					{
+						series_line = SeriesElementBuilder.getNonRecorderLine(doc, getFirstChartYear(), getLastChartYear());
+					}
 					series_line.setAttributeNS(null, "x1", Integer.toString(begin_index));
 					series_line.setAttributeNS(null, "y1", "0");
-					series_line.setAttributeNS(null, "stroke", FireChartUtil.colorToHexString(seriesSVG.getLineColor()));
-					
-					// Following kludge fixes but I don't understand why.
-					/*
-					 * if (j == recording_years.length - 2) { series_line.setAttributeNS(null, "x2", Integer.toString(j + 1)); } else {
-					 */
 					series_line.setAttributeNS(null, "x2", Integer.toString(j));
-					// }
 					series_line.setAttributeNS(null, "y2", "0");
+					series_line.setAttributeNS(null, "stroke", FireChartUtil.colorToHexString(seriesSVG.getLineColor()));
 					line_group.appendChild(series_line);
+					
 					begin_index = j;
 					isRecording = recording_years[j];
 				}
@@ -1327,7 +1331,7 @@ public class FireChartSVG {
 		
 		Element comp_name_text_g = doc.createElementNS(svgNS, "g");
 		comp_name_text_g.setAttributeNS(null, "transform", translate_string + scale_string);
-		comp_name_text_g.appendChild(CompositePlotElementBuilder.getCompositeNameTextElement(doc));
+		comp_name_text_g.appendChild(CompositePlotElementBuilder.getCompositeLabelTextElement(doc));
 		compositePlot.appendChild(comp_name_text_g);
 		
 		if (App.prefs.getBooleanPref(PrefKey.CHART_SHOW_COMPOSITE_PLOT, true))
