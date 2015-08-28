@@ -49,7 +49,7 @@ public class IOUtil {
 	 * @return
 	 */
 	public static File getOutputFolder(Component frame) {
-		
+	
 		String lastVisitedFolder = App.prefs.getPref(PrefKey.PREF_LAST_EXPORT_FOLDER, null);
 		File outputFolder;
 		
@@ -61,7 +61,7 @@ public class IOUtil {
 		fc.setDialogTitle("Select output folder");
 		
 		// In response to a button click:
-		int returnVal = fc.showOpenDialog(frame);
+		int returnVal = fc.showSaveDialog(frame);
 		
 		if (returnVal == JFileChooser.APPROVE_OPTION)
 		{
@@ -83,7 +83,7 @@ public class IOUtil {
 	 * @return
 	 */
 	public static File getOutputFile(FileFilter filter) {
-		
+	
 		String lastVisitedFolder = App.prefs.getPref(PrefKey.PREF_LAST_EXPORT_FOLDER, null);
 		File outputFile;
 		
@@ -103,7 +103,7 @@ public class IOUtil {
 		fc.setDialogTitle("Save as...");
 		
 		// In response to a button click:
-		int returnVal = fc.showOpenDialog(App.mainFrame);
+		int returnVal = fc.showSaveDialog(App.mainFrame);
 		
 		if (returnVal == JFileChooser.APPROVE_OPTION)
 		{
@@ -160,12 +160,12 @@ public class IOUtil {
 		if (outputFile.exists())
 		{
 			Object[] options = { "Overwrite", "No", "Cancel" };
-			int response = JOptionPane.showOptionDialog(App.mainFrame,
-					"The file '" + outputFile.getName() + "' already exists.  Are you sure you want to overwrite?", "Confirm",
-					JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, // do not use a custom Icon
+			int response = JOptionPane.showOptionDialog(App.mainFrame, "The file '" + outputFile.getName()
+					+ "' already exists.  Are you sure you want to overwrite?", "Confirm", JOptionPane.YES_NO_CANCEL_OPTION,
+					JOptionPane.QUESTION_MESSAGE, null, // do not use a custom Icon
 					options, // the titles of buttons
 					options[0]); // default button title
-					
+			
 			if (response != JOptionPane.YES_OPTION)
 			{
 				return null;

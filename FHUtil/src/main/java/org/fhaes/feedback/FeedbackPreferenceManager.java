@@ -53,7 +53,7 @@ public class FeedbackPreferenceManager {
 		 * @param message
 		 */
 		FeedbackDictionary(String str, PrefKey key) {
-			
+		
 			humanReadable = str;
 			associatedKey = key;
 		}
@@ -64,7 +64,7 @@ public class FeedbackPreferenceManager {
 		 * @return associatedKey
 		 */
 		public PrefKey getAssociatedKey() {
-			
+		
 			return associatedKey;
 		}
 		
@@ -75,7 +75,7 @@ public class FeedbackPreferenceManager {
 		 */
 		@Override
 		public String toString() {
-			
+		
 			return humanReadable;
 		}
 	}
@@ -87,7 +87,7 @@ public class FeedbackPreferenceManager {
 	 * @param inText
 	 */
 	public static PrefKey GetAssociatedKeyFromMessageText(String inText) {
-		
+	
 		FeedbackDictionary[] allFeedbackMessages = FeedbackDictionary.values();
 		
 		for (int i = 0; i < allFeedbackMessages.length; i++)
@@ -105,7 +105,7 @@ public class FeedbackPreferenceManager {
 	 * Resets all feedback message preferences so that every message is displayed on default.
 	 */
 	public static void ResetAllFeedbackMessagePrefs() {
-		
+	
 		App.prefs.setBooleanPref(PrefKey.SHOW_CATEGORY_FILE_SAVED_MESSAGE, true);
 		
 		App.prefs.setBooleanPref(PrefKey.SHOW_FHRECORDER_FILE_SAVED_MESSAGE, true);
