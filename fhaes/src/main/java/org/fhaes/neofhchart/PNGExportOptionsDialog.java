@@ -18,6 +18,7 @@
 package org.fhaes.neofhchart;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -249,6 +250,7 @@ public class PNGExportOptionsDialog extends JDialog implements ActionListener {
 				
 				t.addTranscodingHint(PNGTranscoder.KEY_WIDTH, width);
 				t.addTranscodingHint(PNGTranscoder.KEY_HEIGHT, height);
+				t.addTranscodingHint(PNGTranscoder.KEY_BACKGROUND_COLOR, Color.WHITE);
 				
 				TranscoderInput input = new TranscoderInput(currentChart.getSVGDocument());
 				String path = outputFile.getAbsolutePath();
