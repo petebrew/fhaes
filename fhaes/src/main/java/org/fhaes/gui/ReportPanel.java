@@ -101,7 +101,7 @@ public class ReportPanel extends JPanel implements PrefsListener {
 	 * Create the panel.
 	 */
 	public ReportPanel() {
-		
+	
 		initActions();
 		initGUI();
 	}
@@ -112,7 +112,7 @@ public class ReportPanel extends JPanel implements PrefsListener {
 	 * @return
 	 */
 	public Boolean isFilePopulated() {
-		
+	
 		return fhxFile != null;
 	}
 	
@@ -122,14 +122,14 @@ public class ReportPanel extends JPanel implements PrefsListener {
 	 * @param inFile
 	 */
 	public void setFile(FHFile inFile) {
-		
+	
 		log.debug("setFile called with file: \"" + inFile + "\"");
 		
 		if (inFile != null && !inFile.exists())
 		{
 			JOptionPane.showMessageDialog(App.mainFrame, "The file '" + inFile.getName() + "' does not exist.", "File not found",
 					JOptionPane.ERROR_MESSAGE);
-					
+			
 			fhxFile = null;
 		}
 		else
@@ -146,7 +146,7 @@ public class ReportPanel extends JPanel implements PrefsListener {
 	 * @param files
 	 */
 	public void setFiles(ArrayList<FHFile> files) {
-		
+	
 		fhxFiles = new ArrayList<FHFile>();
 		
 		// Check the files passed still exist
@@ -170,7 +170,7 @@ public class ReportPanel extends JPanel implements PrefsListener {
 	 * Populate the reports that take a single file as input.
 	 */
 	private void populateSingleFileReports() {
-		
+	
 		// **********
 		// First Handle the FHX Viewer panel
 		// **********
@@ -212,6 +212,7 @@ public class ReportPanel extends JPanel implements PrefsListener {
 			{
 				panelChart.loadFile(fhxFile.getFireHistoryReader());
 				panelResults.setSingleFileSummaryModel(FHDescriptiveStats.getDescriptiveStatsTableModel(fhxFile));
+				panelResults.singleFileSummaryFile = FHDescriptiveStats.getDescriptiveStatsAsFile(fhxFile, null);
 			}
 			else
 			{
@@ -228,7 +229,7 @@ public class ReportPanel extends JPanel implements PrefsListener {
 	 * TODO
 	 */
 	private void populateMultiFileReports() {
-		
+	
 		if (fhxFiles == null || fhxFiles.size() == 0)
 		{
 			fhxFile = null;
@@ -246,7 +247,7 @@ public class ReportPanel extends JPanel implements PrefsListener {
 	 * Populates the summary tab only if the file and report exist.
 	 */
 	private void populateSummaryTab() {
-		
+	
 		if (fhxFile == null || fhxFile.getReport() == null)
 		{
 			txtSummary.setText("");
@@ -261,7 +262,7 @@ public class ReportPanel extends JPanel implements PrefsListener {
 	 * Populates the file reader tab only if the file exists.
 	 */
 	private void populateFileReaderTab() {
-		
+	
 		if (fhxFile == null)
 		{
 			txtFHX.setText("");
@@ -317,7 +318,7 @@ public class ReportPanel extends JPanel implements PrefsListener {
 	 * Select all text within the currently focused text area.
 	 */
 	public void selectAll() {
-		
+	
 		JComponent focusedComponent = getFocusedReportTab();
 		
 		if (focusedComponent != null)
@@ -354,7 +355,7 @@ public class ReportPanel extends JPanel implements PrefsListener {
 	 * Copy the currently focused text area to the clipboard.
 	 */
 	public void copyCurrentReportToClipboard() {
-		
+	
 		JComponent focusedComponent = getFocusedReportTab();
 		
 		if (focusedComponent != null)
@@ -379,7 +380,7 @@ public class ReportPanel extends JPanel implements PrefsListener {
 	 * @return
 	 */
 	private JComponent getFocusedReportTab() {
-		
+	
 		int selectedIndex = tabbedPane.getSelectedIndex();
 		
 		if (selectedIndex == FILE_VIEWER_INDEX)
@@ -425,7 +426,7 @@ public class ReportPanel extends JPanel implements PrefsListener {
 	 * Sets the focus to the chart.
 	 */
 	protected void setFocusToChartTab() {
-		
+	
 		tabbedPane.setSelectedIndex(CHART_INDEX);
 	}
 	
@@ -435,7 +436,7 @@ public class ReportPanel extends JPanel implements PrefsListener {
 	 * @param calledProgrammatically
 	 */
 	public void showParamsDialog(Boolean calledProgrammatically) {
-		
+	
 		App.prefs.setSilentMode(true);
 		ParamConfigDialog dialog = new ParamConfigDialog(this);
 		
@@ -461,10 +462,10 @@ public class ReportPanel extends JPanel implements PrefsListener {
 	 * TODO
 	 */
 	public void runAnalyses() {
-		
+	
 		if (fhxFiles == null || fhxFiles.size() == 0)
 			return;
-			
+		
 		// Show paramConfigDialog if necessary
 		/*
 		 * Boolean showParamsDialogIfRequired = true; if(showParamsDialogIfRequired &&
@@ -536,7 +537,7 @@ public class ReportPanel extends JPanel implements PrefsListener {
 	 */
 	@Override
 	public void prefChanged(PrefsEvent e) {
-		
+	
 		log.debug("Pref change picked up by ReportPanel");
 		PrefKey key = e.getPref();
 		
@@ -559,12 +560,12 @@ public class ReportPanel extends JPanel implements PrefsListener {
 	 * @param popup
 	 */
 	private static void addPopup(Component component, final JPopupMenu popup) {
-		
+	
 		component.addMouseListener(new MouseAdapter() {
 			
 			@Override
 			public void mousePressed(MouseEvent e) {
-				
+			
 				if (e.isPopupTrigger())
 				{
 					showMenu(e);
@@ -573,7 +574,7 @@ public class ReportPanel extends JPanel implements PrefsListener {
 			
 			@Override
 			public void mouseReleased(MouseEvent e) {
-				
+			
 				if (e.isPopupTrigger())
 				{
 					showMenu(e);
@@ -581,7 +582,7 @@ public class ReportPanel extends JPanel implements PrefsListener {
 			}
 			
 			private void showMenu(MouseEvent e) {
-				
+			
 				popup.show(e.getComponent(), e.getX(), e.getY());
 			}
 		});
@@ -591,16 +592,16 @@ public class ReportPanel extends JPanel implements PrefsListener {
 	 * Initialize the main GUI components.
 	 */
 	public void initGUI() {
-		
+	
 		App.prefs.addPrefsListener(this);
 		if (Platform.isOSX())
 			setBackground(MainWindow.MAC_BACKGROUND_COLOR);
-			
+		
 		setLayout(new BorderLayout(0, 0));
 		JPanel panelRight = new JPanel();
 		if (Platform.isOSX())
 			panelRight.setBackground(MainWindow.MAC_BACKGROUND_COLOR);
-			
+		
 		add(panelRight, BorderLayout.CENTER);
 		panelRight.setLayout(new BorderLayout(0, 0));
 		
@@ -614,7 +615,7 @@ public class ReportPanel extends JPanel implements PrefsListener {
 		JPanel panelFHX = new JPanel();
 		if (Platform.isOSX())
 			panelFHX.setBackground(MainWindow.MAC_BACKGROUND_COLOR);
-			
+		
 		panelFHX.setToolTipText("Original FHX file contents");
 		tabbedPane.addTab("File Viewer  ", Builder.getImageIcon("fileviewer.png"), panelFHX, null);
 		panelFHX.setLayout(new BorderLayout(0, 0));
@@ -622,7 +623,7 @@ public class ReportPanel extends JPanel implements PrefsListener {
 		JPanel fhxButtonPanel = new JPanel();
 		if (Platform.isOSX())
 			fhxButtonPanel.setBackground(MainWindow.MAC_BACKGROUND_COLOR);
-			
+		
 		fhxButtonPanel.setLayout(new BorderLayout());
 		errorMessage = new JTextArea();
 		errorMessage.setEditable(false);
@@ -644,7 +645,7 @@ public class ReportPanel extends JPanel implements PrefsListener {
 		JScrollPane scrollPaneFHX = new JScrollPane();
 		if (Platform.isOSX())
 			scrollPaneFHX.setBackground(MainWindow.MAC_BACKGROUND_COLOR);
-			
+		
 		panelFHX.add(scrollPaneFHX, BorderLayout.CENTER);
 		
 		txtFHX = new JTextArea();
@@ -669,7 +670,7 @@ public class ReportPanel extends JPanel implements PrefsListener {
 		JPanel panelSummary = new JPanel();
 		if (Platform.isOSX())
 			panelSummary.setBackground(MainWindow.MAC_BACKGROUND_COLOR);
-			
+		
 		tabbedPane.addTab("File summary  ", Builder.getImageIcon("info.png"), panelSummary, null);
 		panelSummary.setLayout(new BorderLayout(0, 0));
 		
@@ -765,7 +766,7 @@ public class ReportPanel extends JPanel implements PrefsListener {
 	 * Initialize the menu/toolbar actions.
 	 */
 	private void initActions() {
-		
+	
 		/*
 		 * SELECT ALL
 		 */
@@ -775,7 +776,7 @@ public class ReportPanel extends JPanel implements PrefsListener {
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-				
+			
 				selectAll();
 			}
 		};
@@ -789,7 +790,7 @@ public class ReportPanel extends JPanel implements PrefsListener {
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-				
+			
 				copyCurrentReportToClipboard();
 			}
 		};
@@ -803,7 +804,7 @@ public class ReportPanel extends JPanel implements PrefsListener {
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-				
+			
 				showParamsDialog(false);
 			}
 		};
@@ -818,7 +819,7 @@ public class ReportPanel extends JPanel implements PrefsListener {
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-				
+			
 				Platform.browseWebpage(RemoteHelp.HELP_ANALYSIS_RESULTS, null);
 			}
 		};

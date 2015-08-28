@@ -17,6 +17,9 @@
  *************************************************************************************************/
 package org.fhaes.analysis;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Vector;
 
@@ -28,6 +31,8 @@ import org.fhaes.model.FHFile;
 import org.fhaes.model.ReadOnlyDefaultTableModel;
 import org.fhaes.preferences.App;
 import org.fhaes.preferences.FHAESPreferences.PrefKey;
+
+import au.com.bytecode.opencsv.CSVWriter;
 
 /**
  * Provide some simple descriptive statistics for a single FHFile
@@ -73,5 +78,65 @@ public class FHDescriptiveStats {
 		ReadOnlyDefaultTableModel model = new ReadOnlyDefaultTableModel(rows, headers);
 		
 		return model;
+	}
+	
+	public static File getDescriptiveStatsAsFile(FHFile infile, File outfile) {
+	
+		DefaultTableModel model = getDescriptiveStatsTableModel(infile);
+		
+		if (outfile == null)
+		{
+			try
+			{
+				outfile = File.createTempFile("FHDescriptiveStats", "FileSummary.tmp");
+			}
+			catch (IOException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		CSVWriter writer;
+		try
+		{
+			writer = new CSVWriter(new FileWriter(outfile.getAbsoluteFile().toString()), '\t');
+			// feed in your array (or convert your data to an array)
+			
+			// First write the column names
+			String[] header = new String[model.getColumnCount()];
+			for (int col = 0; col < model.getColumnCount(); col++)
+			{
+				header[col] = model.getColumnName(col);
+			}
+			writer.writeNext(header);
+			
+			// Next write the table values
+			for (int row = 0; row < model.getRowCount(); row++)
+			{
+				String[] entries = new String[model.getColumnCount()];
+				
+				for (int col = 0; col < model.getColumnCount(); col++)
+				{
+					Object value = model.getValueAt(row, col);
+					
+					entries[col] = value.toString();
+					
+				}
+				writer.writeNext(entries);
+				
+			}
+			
+			writer.close();
+			
+		}
+		catch (IOException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return outfile;
+		
 	}
 }
