@@ -87,6 +87,39 @@ public class FireChartUtil {
 	}
 	
 	/**
+	 * Picks a display color based on the input integer value. This is used to automatically colorize series and labels which have been
+	 * grouped by category on the chart.
+	 * 
+	 * @param num
+	 * @return a color based on the input integer value
+	 */
+	protected static Color pickColorFromInteger(int num) {
+		
+		int lastDigitOfInteger = num % 10;
+		
+		if (lastDigitOfInteger == 0 || lastDigitOfInteger == 5)
+		{
+			return MS_OFFICE_GREEN;
+		}
+		else if (lastDigitOfInteger == 1 || lastDigitOfInteger == 6)
+		{
+			return MS_OFFICE_PURPLE;
+		}
+		else if (lastDigitOfInteger == 2 || lastDigitOfInteger == 7)
+		{
+			return MS_OFFICE_BLUE;
+		}
+		else if (lastDigitOfInteger == 3 || lastDigitOfInteger == 8)
+		{
+			return MS_OFFICE_ORANGE;
+		}
+		else
+		{
+			return MS_OFFICE_RED;
+		}
+	}
+	
+	/**
 	 * Get an approximate height for a string with the specified font. The should really be taken from the SVG but I haven't worked out a
 	 * good way to do this without rendering first.
 	 * 
@@ -174,56 +207,5 @@ public class FireChartUtil {
 	protected static double yearsToPixels(int chartWidth, int firstChartYear, int lastChartYear) {
 		
 		return yearsToPixels(1.0, chartWidth, firstChartYear, lastChartYear);
-	}
-	
-	/**
-	 * Picks a display color based on the input integer value. This is used to automatically colorize series and labels which have been
-	 * grouped by category on the chart.
-	 * 
-	 * @param index
-	 * @return a color based on the input integer value
-	 */
-	protected static Color pickColorFromInteger(int index) {
-		
-		if (index % 9 == 0)
-		{
-			return MS_OFFICE_BLUE;
-		}
-		else if (index % 8 == 0)
-		{
-			return MS_OFFICE_GREEN;
-		}
-		else if (index % 7 == 0)
-		{
-			return MS_OFFICE_ORANGE;
-		}
-		else if (index % 6 == 0)
-		{
-			return MS_OFFICE_PURPLE;
-		}
-		else if (index % 5 == 0)
-		{
-			return MS_OFFICE_RED;
-		}
-		else if (index % 4 == 0)
-		{
-			return MS_OFFICE_BLUE;
-		}
-		else if (index % 3 == 0)
-		{
-			return MS_OFFICE_GREEN;
-		}
-		else if (index % 2 == 0)
-		{
-			return MS_OFFICE_ORANGE;
-		}
-		else if (index % 1 == 0)
-		{
-			return MS_OFFICE_PURPLE;
-		}
-		else
-		{
-			return MS_OFFICE_RED;
-		}
 	}
 }
