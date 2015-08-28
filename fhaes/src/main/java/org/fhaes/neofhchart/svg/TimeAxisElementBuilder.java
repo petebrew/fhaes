@@ -55,7 +55,7 @@ public class TimeAxisElementBuilder {
 		timeAxis.setAttributeNS(null, "y1", Integer.toString(height - (2 * FireChartSVG.SERIES_HEIGHT)));
 		timeAxis.setAttributeNS(null, "y2", Integer.toString(height - (2 * FireChartSVG.SERIES_HEIGHT)));
 		timeAxis.setAttributeNS(null, "stroke-dasharray", LineStyle.SOLID.getCode());
-		timeAxis.setAttributeNS(null, "stroke", FireChartConversions.colorToHexString(Color.BLACK));
+		timeAxis.setAttributeNS(null, "stroke", FireChartUtil.colorToHexString(Color.BLACK));
 		
 		return timeAxis;
 	}
@@ -81,9 +81,9 @@ public class TimeAxisElementBuilder {
 		majorTick.setAttributeNS(null, "y1", Integer.toString(height - (2 * TICK_HEIGHT)));
 		majorTick.setAttributeNS(null, "y2", Integer.toString(height - (TICK_HEIGHT)));
 		majorTick.setAttributeNS(null, "stroke-width", Double.toString(App.prefs.getIntPref(PrefKey.CHART_VERTICAL_GUIDE_WEIGHT, 1)
-				* FireChartConversions.pixelsToYears(chartWidth, firstChartYear, lastChartYear)));
+				* FireChartUtil.pixelsToYears(chartWidth, firstChartYear, lastChartYear)));
 		majorTick.setAttributeNS(null, "stroke-dasharray", LineStyle.SOLID.getCode());
-		majorTick.setAttributeNS(null, "stroke", FireChartConversions.colorToHexString(Color.BLACK));
+		majorTick.setAttributeNS(null, "stroke", FireChartUtil.colorToHexString(Color.BLACK));
 		
 		return majorTick;
 	}
@@ -109,9 +109,9 @@ public class TimeAxisElementBuilder {
 		minorTick.setAttributeNS(null, "y1", Integer.toString(height - (2 * TICK_HEIGHT)));
 		minorTick.setAttributeNS(null, "y2", Double.toString(height - (1.5 * TICK_HEIGHT)));
 		minorTick.setAttributeNS(null, "stroke-width", Double.toString(App.prefs.getIntPref(PrefKey.CHART_VERTICAL_GUIDE_WEIGHT, 1)
-				* FireChartConversions.pixelsToYears(chartWidth, firstChartYear, lastChartYear)));
+				* FireChartUtil.pixelsToYears(chartWidth, firstChartYear, lastChartYear)));
 		minorTick.setAttributeNS(null, "stroke-dasharray", LineStyle.SOLID.getCode());
-		minorTick.setAttributeNS(null, "stroke", FireChartConversions.colorToHexString(Color.BLACK));
+		minorTick.setAttributeNS(null, "stroke", FireChartUtil.colorToHexString(Color.BLACK));
 		
 		return minorTick;
 	}
@@ -138,11 +138,11 @@ public class TimeAxisElementBuilder {
 		highlightLine.setAttributeNS(null, "y1", "0");
 		highlightLine.setAttributeNS(null, "y2", Double.toString(height - (2 * TICK_HEIGHT)));
 		highlightLine.setAttributeNS(null, "stroke-width", Double.toString(App.prefs.getIntPref(PrefKey.CHART_HIGHLIGHT_YEARS_WEIGHT, 1)
-				* FireChartConversions.pixelsToYears(chartWidth, firstChartYear, lastChartYear)));
+				* FireChartUtil.pixelsToYears(chartWidth, firstChartYear, lastChartYear)));
 		highlightLine.setAttributeNS(null, "stroke-dasharray",
 				App.prefs.getLineStylePref(PrefKey.CHART_HIGHLIGHT_YEAR_STYLE, LineStyle.SOLID).getCode());
 		highlightLine.setAttributeNS(null, "stroke",
-				FireChartConversions.colorToHexString(App.prefs.getColorPref(PrefKey.CHART_HIGHLIGHT_YEARS_COLOR, Color.YELLOW)));
+				FireChartUtil.colorToHexString(App.prefs.getColorPref(PrefKey.CHART_HIGHLIGHT_YEARS_COLOR, Color.YELLOW)));
 				
 		return highlightLine;
 	}
@@ -169,11 +169,11 @@ public class TimeAxisElementBuilder {
 		verticalGuide.setAttributeNS(null, "y1", Integer.toString(vertGuidesOffsetAmount));
 		verticalGuide.setAttributeNS(null, "y2", Double.toString(height - (2 * TICK_HEIGHT)));
 		verticalGuide.setAttributeNS(null, "stroke-width", Double.toString(App.prefs.getIntPref(PrefKey.CHART_VERTICAL_GUIDE_WEIGHT, 1)
-				* FireChartConversions.pixelsToYears(chartWidth, firstChartYear, lastChartYear)));
+				* FireChartUtil.pixelsToYears(chartWidth, firstChartYear, lastChartYear)));
 		verticalGuide.setAttributeNS(null, "stroke-dasharray",
 				App.prefs.getLineStylePref(PrefKey.CHART_VERTICAL_GUIDE_STYLE, LineStyle.SOLID).getCode());
 		verticalGuide.setAttributeNS(null, "stroke",
-				FireChartConversions.colorToHexString(App.prefs.getColorPref(PrefKey.CHART_VERTICAL_GUIDE_COLOR, Color.BLACK)));
+				FireChartUtil.colorToHexString(App.prefs.getColorPref(PrefKey.CHART_VERTICAL_GUIDE_COLOR, Color.BLACK)));
 				
 		return verticalGuide;
 	}

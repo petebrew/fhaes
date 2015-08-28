@@ -154,7 +154,7 @@ public class SampleRecorderPlotElementBuilder {
 		verticalTrendLinePart.setAttributeNS(null, "y2", Double.toString(sampleDepthsCurrent));
 		verticalTrendLinePart.setAttributeNS(null, "stroke", lineColor);
 		verticalTrendLinePart.setAttributeNS(null, "stroke-width",
-				Double.toString(FireChartConversions.pixelsToYears(1, chartWidth, firstChartYear, lastChartYear)));
+				Double.toString(FireChartUtil.pixelsToYears(1, chartWidth, firstChartYear, lastChartYear)));
 				
 		return verticalTrendLinePart;
 	}
@@ -180,7 +180,7 @@ public class SampleRecorderPlotElementBuilder {
 		thresholdLine.setAttributeNS(null, "x2", Integer.toString(lastChartYear - firstChartYear));
 		thresholdLine.setAttributeNS(null, "y2", Double.toString(thresholdSampleDepthValue));
 		thresholdLine.setAttributeNS(null, "stroke",
-				FireChartConversions.colorToHexString(App.prefs.getColorPref(PrefKey.CHART_DEPTH_THRESHOLD_COLOR, Color.RED)));
+				FireChartUtil.colorToHexString(App.prefs.getColorPref(PrefKey.CHART_DEPTH_THRESHOLD_COLOR, Color.RED)));
 		thresholdLine.setAttributeNS(null, "stroke-width", Double.toString(-1.0 / scaleY));
 		
 		if (!App.prefs.getBooleanPref(PrefKey.CHART_SHOW_DEPTH_THRESHOLD, false) || thresholdSampleDepthValue > largestSampleDepth

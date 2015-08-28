@@ -97,7 +97,7 @@ public class CompositePlotElementBuilder {
 		borderLine3.setAttributeNS(null, "y1", "0");
 		borderLine3.setAttributeNS(null, "y2", Double.toString(chartHeight));
 		borderLine3.setAttributeNS(null, "stroke-width",
-				FireChartConversions.pixelsToYears(1, chartWidth, firstChartYear, lastChartYear) + "");
+				FireChartUtil.pixelsToYears(1, chartWidth, firstChartYear, lastChartYear) + "");
 		borderLine3.setAttributeNS(null, "stroke", "black");
 		borderLine3.setAttributeNS(null, "stroke-linecap", "butt");
 		
@@ -123,7 +123,7 @@ public class CompositePlotElementBuilder {
 		borderLine4.setAttributeNS(null, "y1", "0");
 		borderLine4.setAttributeNS(null, "y2", Double.toString(chartHeight));
 		borderLine4.setAttributeNS(null, "stroke-width",
-				FireChartConversions.pixelsToYears(1, chartWidth, firstChartYear, lastChartYear) + "");
+				FireChartUtil.pixelsToYears(1, chartWidth, firstChartYear, lastChartYear) + "");
 		borderLine4.setAttributeNS(null, "stroke", "black");
 		borderLine4.setAttributeNS(null, "stroke-linecap", "butt");
 		
@@ -172,7 +172,7 @@ public class CompositePlotElementBuilder {
 		eventLine.setAttributeNS(null, "y1", "0");
 		eventLine.setAttributeNS(null, "y2", Double.toString(chartHeight));
 		eventLine.setAttributeNS(null, "stroke-width",
-				Double.toString(FireChartConversions.pixelsToYears(1, chartWidth, firstChartYear, lastChartYear)));
+				Double.toString(FireChartUtil.pixelsToYears(1, chartWidth, firstChartYear, lastChartYear)));
 		eventLine.setAttributeNS(null, "stroke", "black");
 		
 		return eventLine;
