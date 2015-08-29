@@ -17,58 +17,46 @@
  *************************************************************************************************/
 package org.fhaes.testmanager;
 
-import org.fhaes.components.BCADYearSpinner.BCADYearSpinnerUnitTest;
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.JUnitCore;
+import org.junit.runner.Result;
+import org.junit.runner.notification.Failure;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * UnitTestManager Class. This class contains the main method for running all unit tests in the FHAES suite.
+ * UnitTestRunner Class. This class contains the main method for running all unit tests in the FHAES suite.
  * 
  * @author Joshua Brogan and Peter Brewer
  */
-public class UnitTestManager {
+public class UnitTestRunner {
 	
 	// Declare logger
-	private static final Logger log = LoggerFactory.getLogger(UnitTestManager.class);
+	private static final Logger log = LoggerFactory.getLogger(UnitTestRunner.class);
 	
 	/**
-	 * Run the defined unit tests.
+	 * Runs all unit tests defined in the FHAES test suite.
 	 */
-	public static void main(final String[] args) {
+	@Test
+	public void runUnitTests() {
 		
-		try
+		Result result = JUnitCore.runClasses(FHAESTestSuite.class);
+		
+		if (result.getFailureCount() > 0)
 		{
-			/**
-			 * 
-			 * FHAES UNIT TESTS
-			 * 
-			 */
-			
-			// TODO
-			log.info("All unit tests completed successfully for FHAES");
-			
-			/**
-			 * 
-			 * FHSAMPLESIZE UNIT TESTS
-			 * 
-			 */
-			
-			// TODO
-			log.info("All unit tests completed successfully for FHSampleSize");
-			
-			/**
-			 * 
-			 * FHUTIL UNIT TESTS
-			 * 
-			 */
-			
-			BCADYearSpinnerUnitTest.runTest();
-			log.info("All unit tests completed successfully for FHUtil");
+			for (Failure failure : result.getFailures())
+			{
+				log.error(failure.getException().toString());
+				log.error("error occurred in: " + failure.getTestHeader());
+				
+				// Report to the JUnit window that a failure has been encountered
+				Assert.fail(failure.getTrace());
+			}
 		}
-		catch (Exception ex)
+		else
 		{
-			ex.printStackTrace();
-			log.error("Unit testing failed (see stack trace for more information)");
+			log.info("All tests passed for FHAESTestSuite");
 		}
 	}
 }
