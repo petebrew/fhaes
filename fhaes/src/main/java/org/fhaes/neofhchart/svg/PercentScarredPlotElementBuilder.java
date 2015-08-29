@@ -50,8 +50,7 @@ public class PercentScarredPlotElementBuilder {
 		borderLine1.setAttributeNS(null, "y1", "0");
 		borderLine1.setAttributeNS(null, "x2", "0");
 		borderLine1.setAttributeNS(null, "y2", "100");
-		borderLine1.setAttributeNS(null, "stroke-width",
-				FireChartUtil.pixelsToYears(1, chartWidth, firstChartYear, lastChartYear) + "");
+		borderLine1.setAttributeNS(null, "stroke-width", FireChartUtil.pixelsToYears(1, chartWidth, firstChartYear, lastChartYear) + "");
 		borderLine1.setAttributeNS(null, "stroke", "black");
 		borderLine1.setAttributeNS(null, "stroke-linecap", "butt");
 		
@@ -99,8 +98,7 @@ public class PercentScarredPlotElementBuilder {
 		borderLine3.setAttributeNS(null, "y1", "100");
 		borderLine3.setAttributeNS(null, "x2", Integer.toString(lastChartYear - firstChartYear));
 		borderLine3.setAttributeNS(null, "y2", "0");
-		borderLine3.setAttributeNS(null, "stroke-width",
-				FireChartUtil.pixelsToYears(1, chartWidth, firstChartYear, lastChartYear) + "");
+		borderLine3.setAttributeNS(null, "stroke-width", FireChartUtil.pixelsToYears(1, chartWidth, firstChartYear, lastChartYear) + "");
 		borderLine3.setAttributeNS(null, "stroke", "black");
 		borderLine3.setAttributeNS(null, "stroke-linecap", "butt");
 		
@@ -145,11 +143,12 @@ public class PercentScarredPlotElementBuilder {
 		
 		Element percentTickTextElement = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "text");
 		
-		Text percentTickText = doc.createTextNode(Integer.toString(percentTextAsNum));
 		percentTickTextElement.setAttributeNS(null, "x", labelX + "");
 		percentTickTextElement.setAttributeNS(null, "y", labelY + "");
 		percentTickTextElement.setAttributeNS(null, "font-family", App.prefs.getPref(PrefKey.CHART_FONT_FAMILY, "Verdana"));
 		percentTickTextElement.setAttributeNS(null, "font-size", yAxisFontSize + "");
+		
+		Text percentTickText = doc.createTextNode(Integer.toString(percentTextAsNum));
 		percentTickTextElement.appendChild(percentTickText);
 		
 		return percentTickTextElement;

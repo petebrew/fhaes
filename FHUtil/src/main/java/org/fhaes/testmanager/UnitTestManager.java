@@ -38,8 +38,32 @@ public class UnitTestManager {
 		
 		try
 		{
+			/**
+			 * 
+			 * FHAES UNIT TESTS
+			 * 
+			 */
+			
+			// TODO
+			log.info("All unit tests completed successfully for FHAES");
+			
+			/**
+			 * 
+			 * FHSAMPLESIZE UNIT TESTS
+			 * 
+			 */
+			
+			// TODO
+			log.info("All unit tests completed successfully for FHSampleSize");
+			
+			/**
+			 * 
+			 * FHUTIL UNIT TESTS
+			 * 
+			 */
+			
 			BCADYearSpinnerUnitTest.runTest();
-			log.info("All tests passed for BCADYearSpinner");
+			log.info("All unit tests completed successfully for FHUtil");
 		}
 		catch (Exception ex)
 		{

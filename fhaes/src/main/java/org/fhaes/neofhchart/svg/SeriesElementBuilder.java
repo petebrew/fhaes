@@ -21,6 +21,7 @@ import java.awt.Color;
 import java.awt.Font;
 
 import org.apache.batik.dom.svg.SVGDOMImplementation;
+import org.fhaes.enums.JustificationType;
 import org.fhaes.enums.LineStyle;
 import org.fhaes.neofhchart.FHSeriesSVG;
 import org.fhaes.preferences.App;
@@ -49,13 +50,14 @@ public class SeriesElementBuilder {
 		
 		Element seriesNameTextElement = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "text");
 		
-		Text seriesNameText = doc.createTextNode(seriesSVG.getTitle());
 		seriesNameTextElement.setAttribute("id", "series_label_" + seriesSVG.getTitle());
 		seriesNameTextElement.setAttribute("x", Double.toString(chartWidth + 10));
 		seriesNameTextElement.setAttribute("y", Integer.toString((FireChartSVG.SERIES_HEIGHT / 2)));
 		seriesNameTextElement.setAttribute("font-family", App.prefs.getPref(PrefKey.CHART_FONT_FAMILY, "Verdana"));
 		seriesNameTextElement.setAttribute("font-size", +fontSize + "");
 		seriesNameTextElement.setAttribute("fill", FireChartUtil.colorToHexString(seriesSVG.getLabelColor()));
+		
+		Text seriesNameText = doc.createTextNode(seriesSVG.getTitle());
 		seriesNameTextElement.appendChild(seriesNameText);
 		
 		return seriesNameTextElement;
@@ -73,13 +75,31 @@ public class SeriesElementBuilder {
 		
 		Element categoryLabelTextElement = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "text");
 		
-		Text categoryLabelText = doc.createTextNode(categoryLabel.toUpperCase());
-		int paddingAmountToCenterText = FireChartUtil.getStringWidth(Font.PLAIN, 16, categoryLabel.toUpperCase());
-		categoryLabelTextElement.setAttributeNS(null, "x", Integer.toString((chartWidth / 2) - (paddingAmountToCenterText / 2)));
+		JustificationType justification = App.prefs.getJustificationTypePref(PrefKey.CHART_CATEGORY_LABEL_JUSTIFICATION,
+				JustificationType.CENTER);
+				
+		if (justification == JustificationType.LEFT)
+		{
+			categoryLabelTextElement.setAttributeNS(null, "x", "0");
+		}
+		else if (justification == JustificationType.CENTER)
+		{
+			int paddingAmountToCenterText = FireChartUtil.getStringWidth(Font.PLAIN, 16, categoryLabel.toUpperCase());
+			categoryLabelTextElement.setAttributeNS(null, "x", Integer.toString((chartWidth / 2) - (paddingAmountToCenterText / 2)));
+		}
+		else if (justification == JustificationType.RIGHT)
+		{
+			int widthOfLabelString = FireChartUtil.getStringWidth(Font.PLAIN, 16, categoryLabel.toUpperCase());
+			categoryLabelTextElement.setAttributeNS(null, "x", Integer.toString(chartWidth - widthOfLabelString));
+		}
+		
 		categoryLabelTextElement.setAttributeNS(null, "y", "0");
 		categoryLabelTextElement.setAttributeNS(null, "font-family", App.prefs.getPref(PrefKey.CHART_FONT_FAMILY, "Verdana"));
-		categoryLabelTextElement.setAttributeNS(null, "font-size", "16");
+		categoryLabelTextElement.setAttributeNS(null, "font-size",
+				Integer.toString(App.prefs.getIntPref(PrefKey.CHART_CATEGORY_LABEL_FONT_SIZE, 18)));
 		categoryLabelTextElement.setAttribute("fill", FireChartUtil.colorToHexString(labelColor));
+		
+		Text categoryLabelText = doc.createTextNode(categoryLabel.toUpperCase());
 		categoryLabelTextElement.appendChild(categoryLabelText);
 		
 		return categoryLabelTextElement;

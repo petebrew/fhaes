@@ -52,6 +52,7 @@ import javax.swing.event.ChangeListener;
 
 import org.fhaes.components.BCADYearSpinner;
 import org.fhaes.enums.FireFilterType;
+import org.fhaes.enums.JustificationType;
 import org.fhaes.enums.LabelOrientation;
 import org.fhaes.enums.LineStyle;
 import org.fhaes.preferences.App;
@@ -174,6 +175,11 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 	private JLabel lblAutomaticallyColorizeLabels;
 	private JCheckBox chkAutomaticallyColorizeSeries;
 	private JCheckBox chkAutomaticallyColorizeLabels;
+	private JLabel lblCategoryLabelFontSize;
+	private JSpinner spnCategoryLabelFontSize;
+	private JLabel lblCategoryLabelJustification;
+	private JComboBox<JustificationType> cboCategoryLabelJustification;
+	private JLabel lblPt_3;
 	
 	/**
 	 * Create the dialog.
@@ -460,11 +466,16 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 		// Clear preferences first then set all to default
 		
 		// General tab
+		App.prefs.clearPref(PrefKey.CHART_SHOW_CHART_TITLE);
+		App.prefs.clearPref(PrefKey.CHART_TITLE_FONT_SIZE);
+		App.prefs.clearPref(PrefKey.CHART_TITLE_USE_DEFAULT_NAME);
+		App.prefs.clearPref(PrefKey.CHART_TITLE_OVERRIDE_VALUE);
 		App.prefs.clearPref(PrefKey.CHART_SHOW_LEGEND);
 		App.prefs.clearPref(PrefKey.CHART_FONT_FAMILY);
 		App.prefs.clearPref(PrefKey.CHART_AXIS_X_AUTO_RANGE);
 		App.prefs.clearPref(PrefKey.CHART_AXIS_X_MIN);
 		App.prefs.clearPref(PrefKey.CHART_AXIS_X_MAX);
+		App.prefs.clearPref(PrefKey.CHART_TIMELINE_FONT_SIZE);
 		App.prefs.clearPref(PrefKey.CHART_VERTICAL_GUIDES);
 		App.prefs.clearPref(PrefKey.CHART_VERTICAL_GUIDE_COLOR);
 		App.prefs.clearPref(PrefKey.CHART_VERTICAL_GUIDE_WEIGHT);
@@ -507,6 +518,12 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 		App.prefs.clearPref(PrefKey.CHART_SHOW_OUTER_RING_SYMBOL);
 		App.prefs.clearPref(PrefKey.CHART_SHOW_FIRE_EVENT_SYMBOL);
 		App.prefs.clearPref(PrefKey.CHART_SHOW_INJURY_SYMBOL);
+		App.prefs.clearPref(PrefKey.CHART_SHOW_CATEGORY_GROUPS);
+		App.prefs.clearPref(PrefKey.CHART_SHOW_CATEGORY_LABELS);
+		App.prefs.clearPref(PrefKey.CHART_CATEGORY_LABEL_FONT_SIZE);
+		App.prefs.clearPref(PrefKey.CHART_CATEGORY_LABEL_JUSTIFICATION);
+		App.prefs.clearPref(PrefKey.CHART_AUTOMATICALLY_COLORIZE_SERIES);
+		App.prefs.clearPref(PrefKey.CHART_AUTOMATICALLY_COLORIZE_LABELS);
 		
 		// Composite plot tab
 		App.prefs.clearPref(PrefKey.CHART_SHOW_COMPOSITE_PLOT);
@@ -583,6 +600,9 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 		App.prefs.setBooleanPref(PrefKey.CHART_SHOW_INJURY_SYMBOL, chkShowInjuryEvents.isSelected());
 		App.prefs.setBooleanPref(PrefKey.CHART_SHOW_CATEGORY_GROUPS, chkShowCategoryGroups.isSelected());
 		App.prefs.setBooleanPref(PrefKey.CHART_SHOW_CATEGORY_LABELS, chkShowCategoryLabels.isSelected());
+		App.prefs.setIntPref(PrefKey.CHART_CATEGORY_LABEL_FONT_SIZE, (Integer) spnCategoryLabelFontSize.getValue());
+		App.prefs.setJustificationTypePref(PrefKey.CHART_CATEGORY_LABEL_JUSTIFICATION,
+				(JustificationType) cboCategoryLabelJustification.getSelectedItem());
 		App.prefs.setBooleanPref(PrefKey.CHART_AUTOMATICALLY_COLORIZE_SERIES, chkAutomaticallyColorizeSeries.isSelected());
 		App.prefs.setBooleanPref(PrefKey.CHART_AUTOMATICALLY_COLORIZE_LABELS, chkAutomaticallyColorizeLabels.isSelected());
 		
@@ -672,6 +692,9 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 		chkShowInjuryEvents.setSelected(App.prefs.getBooleanPref(PrefKey.CHART_SHOW_INJURY_SYMBOL, true));
 		chkShowCategoryGroups.setSelected(App.prefs.getBooleanPref(PrefKey.CHART_SHOW_CATEGORY_GROUPS, true));
 		chkShowCategoryLabels.setSelected(App.prefs.getBooleanPref(PrefKey.CHART_SHOW_CATEGORY_LABELS, true));
+		spnCategoryLabelFontSize.setValue(App.prefs.getIntPref(PrefKey.CHART_CATEGORY_LABEL_FONT_SIZE, 18));
+		cboCategoryLabelJustification
+				.setSelectedItem(App.prefs.getJustificationTypePref(PrefKey.CHART_CATEGORY_LABEL_JUSTIFICATION, JustificationType.CENTER));
 		chkAutomaticallyColorizeSeries.setSelected(App.prefs.getBooleanPref(PrefKey.CHART_AUTOMATICALLY_COLORIZE_SERIES, false));
 		chkAutomaticallyColorizeLabels.setSelected(App.prefs.getBooleanPref(PrefKey.CHART_AUTOMATICALLY_COLORIZE_LABELS, false));
 		
@@ -1339,7 +1362,7 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 		panelChronoPlotCategories = new JPanel();
 		panelChronoPlotCategories.setBorder(new TitledBorder(null, "Categories", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		chronoPlotPanel.add(panelChronoPlotCategories, "cell 0 3,grow");
-		panelChronoPlotCategories.setLayout(new MigLayout("", "[180px][50][][grow]", "[][]"));
+		panelChronoPlotCategories.setLayout(new MigLayout("", "[180px][67][grow][][]", "[][][][]"));
 		
 		lblShowCategoryGroups = new JLabel("Show category groups on plot:");
 		panelChronoPlotCategories.add(lblShowCategoryGroups, "cell 0 0,alignx right,aligny center");
@@ -1348,11 +1371,11 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 		chkShowCategoryGroups.setSelected(true);
 		panelChronoPlotCategories.add(chkShowCategoryGroups, "cell 1 0,alignx left,aligny center");
 		
-		lblAutomaticallyColorizeSeries = new JLabel("Automatically colorize series graphics based on category:");
-		panelChronoPlotCategories.add(lblAutomaticallyColorizeSeries, "cell 2 0,alignx right,aligny center");
+		lblAutomaticallyColorizeSeries = new JLabel("Automatically colorize series lines based on category:");
+		panelChronoPlotCategories.add(lblAutomaticallyColorizeSeries, "cell 3 0,alignx right,aligny center");
 		
 		chkAutomaticallyColorizeSeries = new JCheckBox("");
-		panelChronoPlotCategories.add(chkAutomaticallyColorizeSeries, "cell 3 0,alignx left,aligny center");
+		panelChronoPlotCategories.add(chkAutomaticallyColorizeSeries, "cell 4 0,alignx left,aligny center");
 		
 		lblShowCategoryLabels = new JLabel("Show labels on category groups:");
 		panelChronoPlotCategories.add(lblShowCategoryLabels, "cell 0 1,alignx right,aligny center");
@@ -1362,10 +1385,29 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 		panelChronoPlotCategories.add(chkShowCategoryLabels, "cell 1 1,alignx left,aligny center");
 		
 		lblAutomaticallyColorizeLabels = new JLabel("Automatically colorize series labels based on category:");
-		panelChronoPlotCategories.add(lblAutomaticallyColorizeLabels, "cell 2 1,alignx right,aligny center");
+		panelChronoPlotCategories.add(lblAutomaticallyColorizeLabels, "cell 3 1,alignx right,aligny center");
 		
 		chkAutomaticallyColorizeLabels = new JCheckBox("");
-		panelChronoPlotCategories.add(chkAutomaticallyColorizeLabels, "cell 3 1,alignx left,aligny center");
+		panelChronoPlotCategories.add(chkAutomaticallyColorizeLabels, "cell 4 1,alignx left,aligny center");
+		
+		lblCategoryLabelFontSize = new JLabel("Category label font size:");
+		panelChronoPlotCategories.add(lblCategoryLabelFontSize, "cell 0 2,alignx right,aligny center");
+		
+		spnCategoryLabelFontSize = new JSpinner();
+		panelChronoPlotCategories.add(spnCategoryLabelFontSize, "cell 1 2,growx,aligny center");
+		
+		lblPt_3 = new JLabel("pt");
+		panelChronoPlotCategories.add(lblPt_3, "cell 2 2,alignx left,aligny center");
+		
+		lblCategoryLabelJustification = new JLabel("Category label justification");
+		panelChronoPlotCategories.add(lblCategoryLabelJustification, "cell 0 3,alignx trailing,aligny center");
+		
+		cboCategoryLabelJustification = new JComboBox<JustificationType>();
+		for (int i = 0; i < JustificationType.values().length; i++)
+		{
+			cboCategoryLabelJustification.addItem(JustificationType.values()[i]);
+		}
+		panelChronoPlotCategories.add(cboCategoryLabelJustification, "cell 1 3 2 1,growx,aligny center");
 		
 		JPanel compositePlotPanel = new JPanel();
 		tabbedPane.addTab("CompositePlot ", Builder.getImageIcon("firecompositeplot.png"), compositePlotPanel, null);
@@ -1417,12 +1459,10 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 		panelCompositePlotFilters.add(lblFilterType, "cell 0 0,alignx right,aligny center");
 		
 		cboFilterType = new JComboBox<FireFilterType>();
-		
 		for (int i = 0; i < FireFilterType.values().length; i++)
 		{
 			cboFilterType.addItem(FireFilterType.values()[i]);
 		}
-		
 		panelCompositePlotFilters.add(cboFilterType, "cell 1 0 2 1,growx,aligny center");
 		
 		JLabel lblValue_1 = new JLabel("Value:");
@@ -1470,12 +1510,10 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 		panelCompositePlotYearLabels.add(lblLabelOrientation, "cell 0 2,alignx right,aligny center");
 		
 		cboLabelOrientation = new JComboBox<LabelOrientation>();
-		
 		for (int i = 0; i < LabelOrientation.values().length; i++)
 		{
 			cboLabelOrientation.addItem(LabelOrientation.values()[i]);
 		}
-		
 		panelCompositePlotYearLabels.add(cboLabelOrientation, "cell 1 2 2 1,growx,aligny center");
 		
 		lblLabelPadding = new JLabel("Padding around labels:");

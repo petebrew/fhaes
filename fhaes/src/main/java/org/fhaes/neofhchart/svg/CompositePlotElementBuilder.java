@@ -138,12 +138,13 @@ public class CompositePlotElementBuilder {
 		
 		Element compositeLabelTextElement = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "text");
 		
-		Text compositeLabelText = doc.createTextNode(App.prefs.getPref(PrefKey.CHART_COMPOSITE_LABEL_TEXT, "Composite"));
 		compositeLabelTextElement.setAttributeNS(null, "x", "0");
 		compositeLabelTextElement.setAttributeNS(null, "y", "0");
 		compositeLabelTextElement.setAttributeNS(null, "font-family", App.prefs.getPref(PrefKey.CHART_FONT_FAMILY, "Verdana"));
 		compositeLabelTextElement.setAttributeNS(null, "font-size",
 				Integer.toString(App.prefs.getIntPref(PrefKey.CHART_COMPOSITE_PLOT_LABEL_FONT_SIZE, 10)));
+				
+		Text compositeLabelText = doc.createTextNode(App.prefs.getPref(PrefKey.CHART_COMPOSITE_LABEL_TEXT, "Composite"));
 		compositeLabelTextElement.appendChild(compositeLabelText);
 		
 		return compositeLabelTextElement;

@@ -59,12 +59,12 @@ public class BCADYearSpinner extends javax.swing.JSpinner {
 		// Account for cases where the initial value may be out of range
 		if (initialValue < minimumValue)
 		{
-			log.warn("Initial value is below minimum value - correcting automatically...");
+			log.warn("initialValue parameter is below minimumValue parameter (please adjust the value in the constucter call)");
 			initialValue = minimumValue;
 		}
 		else if (initialValue > maximumValue)
 		{
-			log.warn("Initial value is above maximum value - correcting automatically...");
+			log.warn("initialValue parameter is below minimumValue parameter (please adjust the value in the constucter call)");
 			initialValue = maximumValue;
 		}
 		
@@ -325,6 +325,9 @@ public class BCADYearSpinner extends javax.swing.JSpinner {
 			{
 				BCADYearSpinner testSpn = new BCADYearSpinner(100, 0, 50);
 			}
+			
+			// Notify that all tests have passed for this unit
+			log.info("All tests passed for BCADYearSpinner");
 		}
 	}
 }
