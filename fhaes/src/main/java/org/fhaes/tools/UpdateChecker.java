@@ -44,13 +44,13 @@ public class UpdateChecker {
 	private static final Logger log = LoggerFactory.getLogger(UpdateChecker.class);
 	
 	private static String downloadURL = "http://download.fhaes.org/";
-	private static String updateCheckURL = "http://download.fhaes.org/.currentversioninfo";
+	private static String updateCheckURL = "http://download.fhaes.org/.currentversiontimestamp";
 	
 	/**
 	 * Standard call for automatic update check.
 	 */
 	public void programmaticCheckForUpdates() {
-		
+	
 		// Only check if the user hasn't forbidden it
 		if (!App.prefs.getBooleanPref(PrefKey.DONT_CHECK_FOR_UPDATES, false))
 		{
@@ -79,7 +79,7 @@ public class UpdateChecker {
 	 * Check for updates, overriding pref that might cause update to skip. Also shows confirmation at end.
 	 */
 	public void manualCheckForUpdates() {
-		
+	
 		log.debug("Forcing check of FHAES server for any available updates...");
 		Task task = new Task(true);
 		task.execute();
@@ -87,7 +87,7 @@ public class UpdateChecker {
 	}
 	
 	private static void showDownloadFailedDialog() {
-		
+	
 		JOptionPane.showMessageDialog(App.mainFrame, "Unable to access download site.  Please update manually.");
 	}
 	
@@ -97,7 +97,7 @@ public class UpdateChecker {
 	 * @return
 	 */
 	private static String getAvailableVersion() {
-		
+	
 		URL url;
 		
 		try
@@ -138,13 +138,13 @@ public class UpdateChecker {
 		private final Logger tasklog = LoggerFactory.getLogger(SwingWorker.class);
 		
 		public Task(Boolean showConfirmation) {
-			
+		
 			this.showConfirmation = showConfirmation;
 		}
 		
 		@Override
 		public Void doInBackground() {
-			
+		
 			// Check server for current available version
 			String availableVersion = getAvailableVersion();
 			if (availableVersion == null)
@@ -155,7 +155,7 @@ public class UpdateChecker {
 			
 			try
 			{
-				available = Integer.parseInt(availableVersion);
+				available = Integer.parseInt(availableVersion.replace("-", ""));
 				tasklog.info("Revision " + available + " is available on the FHAES website");
 			}
 			catch (Exception e)
@@ -166,14 +166,17 @@ public class UpdateChecker {
 			
 			try
 			{
+				String timestmp = Builder.getBuildTimestamp();
+				log.debug("Raw build timestamp = " + timestmp);
 				
-				current = Integer.parseInt(Builder.getRevisionNumber());
+				current = Integer.parseInt(timestmp.replace("-", ""));
 				tasklog.info("You are currently running revision " + current);
 				
 			}
 			catch (Exception e)
 			{
-				tasklog.warn("Unable to determine current version number.  You are probably running a development snapshot.");
+				e.printStackTrace();
+				tasklog.warn("Unable to determine current version.  You are probably running a development snapshot.");
 				return null;
 			}
 			
@@ -185,7 +188,7 @@ public class UpdateChecker {
 		
 		@Override
 		public void done() {
-			
+		
 			int currtime = (int) (System.currentTimeMillis() / 1000);
 			App.prefs.setIntPref(PrefKey.UPDATES_LATE_CHECKED, currtime);
 			
@@ -200,8 +203,9 @@ public class UpdateChecker {
 				{
 					if (current == null)
 					{
-						JOptionPane.showMessageDialog(App.mainFrame,
-								"Failed to determine your current version number.  You are probably running a\ndevelopment snapshot and should check for updates manually.");
+						JOptionPane
+								.showMessageDialog(App.mainFrame,
+										"Failed to determine your current version number.  You are probably running a\ndevelopment snapshot and should check for updates manually.");
 						return;
 					}
 					else if (available == null)
@@ -225,7 +229,7 @@ public class UpdateChecker {
 						JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, // do not use a custom Icon
 						options, // the titles of buttons
 						options[0]); // default button title
-						
+				
 				if (response == JOptionPane.YES_OPTION)
 				{
 					try

@@ -103,9 +103,9 @@
 	</developers>
 
 	<scm>
-		<connection>scm:svn:http://svn.code.sf.net/p/fhaes/code/trunk/FHAES</connection>
-		<developerConnection>scm:svn:http://svn.code.sf.net/p/fhaes/code/trunk/FHAES</developerConnection>
-		<url>http://sf.net/p/fhaes</url>
+		<connection>scm:git:git://github.com/petebrew/fhaes.git</connection>
+		<developerConnection>scm:git:git://github.com/petebrew/fhaes.git</developerConnection>
+		<url>https://github.com/petebrew/fhaes</url>
 	</scm>
 
 	<properties>
@@ -406,7 +406,7 @@
 								<exec dir="${project.build.directory}" executable="install4jc">
 									<arg value="--win-keystore-password" />
 									<arg value="${cert.password}" />
-									<arg value="/home/Peter Brewer/dev/java11/FHAES/Native/fhaes.install4j" />
+									<arg value="../Native/fhaes.install4j" />
 								</exec>
 							</tasks>
 						</configuration>
@@ -673,4 +673,8 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
+	<issueManagement>
+		<url>https://github.com/petebrew/fhaes/issues</url>
+		<system>Github</system>
+	</issueManagement>
 </project>

@@ -1686,7 +1686,7 @@ public class MainWindow implements PrefsListener {
 	
 		chartActions = new ChartActions(null);
 		
-		this.actionEditCategories = new FHAESAction("Edit categories", "category.png") {
+		this.actionEditCategories = new FHAESAction("Edit categories", "category.png", "Categories") {
 			
 			private static final long serialVersionUID = 1L;
 			
@@ -1734,7 +1734,7 @@ public class MainWindow implements PrefsListener {
 		 * actionOpenCategoryFile.setEnabled(false);
 		 */
 		
-		this.actionFHSampleSize = new FHAESAction("Sample size analysis", "samplesize.png") { //$NON-NLS-1$
+		this.actionFHSampleSize = new FHAESAction("Sample size analysis", "samplesize.png", "SSIZ") { //$NON-NLS-1$
 		
 			private static final long serialVersionUID = 1L;
 			
@@ -1759,7 +1759,7 @@ public class MainWindow implements PrefsListener {
 		};
 		actionEditFile.setEnabled(false);
 		
-		this.actionFileOpen = new FHAESAction("Open...", "fileopen.png") { //$NON-NLS-1$
+		this.actionFileOpen = new FHAESAction("Open...", "fileopen.png", "Open") { //$NON-NLS-1$
 		
 			private static final long serialVersionUID = 1L;
 			
@@ -1770,7 +1770,7 @@ public class MainWindow implements PrefsListener {
 			}
 		};
 		
-		this.actionFileNew = new FHAESAction("FHX file", "file.png") { //$NON-NLS-1$
+		this.actionFileNew = new FHAESAction("New...", "file.png", "New") { //$NON-NLS-1$
 		
 			private static final long serialVersionUID = 1L;
 			
@@ -2021,7 +2021,7 @@ public class MainWindow implements PrefsListener {
 				fc.setFileFilter(new FHXFileFilter());
 				fc.setDialogTitle("Open file...");
 				
-				int returnVal = fc.showOpenDialog(frame);
+				int returnVal = fc.showSaveDialog(frame);
 				if (returnVal != JFileChooser.APPROVE_OPTION)
 					return;
 				
@@ -2071,7 +2071,8 @@ public class MainWindow implements PrefsListener {
 				try
 				{
 					File file = FHOperations.createCompositeFile(frame, getSelectedValidFiles(), dialog.getStartYear(),
-							dialog.getEndYear(), dialog.getFireFilterType(), dialog.getFireFilterValue(), dialog.getMinNumberOfSamples());
+							dialog.getEndYear(), dialog.getFireFilterType(), dialog.getFireFilterValue(), dialog.getMinNumberOfSamples(),
+							dialog.getMinNumberOfRecordingSamples());
 					
 					if (file != null)
 					{
@@ -2122,7 +2123,7 @@ public class MainWindow implements PrefsListener {
 				fc.setMultiSelectionEnabled(true);
 				fc.setDialogTitle("Open file");
 				
-				int returnVal = fc.showOpenDialog(frame);
+				int returnVal = fc.showSaveDialog(frame);
 				if (returnVal != JFileChooser.APPROVE_OPTION)
 					return;
 				
@@ -2140,7 +2141,8 @@ public class MainWindow implements PrefsListener {
 					return;
 				
 				File file = FHOperations.createCompositeFile(frame, files, dialog.getStartYear(), dialog.getEndYear(),
-						dialog.getFireFilterType(), dialog.getFireFilterValue(), dialog.getMinNumberOfSamples());
+						dialog.getFireFilterType(), dialog.getFireFilterValue(), dialog.getMinNumberOfSamples(),
+						dialog.getMinNumberOfRecordingSamples());
 				
 				if (file != null)
 				{
@@ -2221,7 +2223,7 @@ public class MainWindow implements PrefsListener {
 				fc.setDialogTitle("Save as...");
 				
 				// In response to a button click:
-				int returnVal = fc.showOpenDialog(frame);
+				int returnVal = fc.showSaveDialog(frame);
 				
 				if (returnVal == JFileChooser.APPROVE_OPTION)
 				{
@@ -2475,6 +2477,7 @@ public class MainWindow implements PrefsListener {
 		mnSort.add(new FHAESMenuItem(chartActions.actionSortFirstFireYear));
 		mnSort.add(new FHAESMenuItem(chartActions.actionSortStartYear));
 		mnSort.add(new FHAESMenuItem(chartActions.actionSortEndYear));
+		mnSort.add(new FHAESMenuItem(chartActions.actionSortAsInFile));
 		
 		mnChart.addSeparator();
 		mnChart.add(new FHAESMenuItem(actionEditCategories));

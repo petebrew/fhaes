@@ -31,11 +31,11 @@ import javax.swing.JPanel;
 import javax.swing.JTextPane;
 import javax.swing.border.EmptyBorder;
 
+import net.miginfocom.swing.MigLayout;
+
 import org.fhaes.help.RemoteHelp;
 import org.fhaes.util.Builder;
 import org.fhaes.util.Platform;
-
-import net.miginfocom.swing.MigLayout;
 
 /**
  * AboutDialog Class. This is a basic about dialog for the application.
@@ -52,7 +52,7 @@ public class AboutDialog extends JDialog implements ActionListener {
 	 * Create the dialog.
 	 */
 	public AboutDialog(Frame parent) {
-		
+	
 		this.parent = parent;
 		init();
 	}
@@ -61,7 +61,7 @@ public class AboutDialog extends JDialog implements ActionListener {
 	 * TODO
 	 */
 	public void init() {
-		
+	
 		getContentPane().setBackground(Color.WHITE);
 		setBounds(100, 100, 608, 499);
 		getContentPane().setLayout(new BorderLayout());
@@ -70,7 +70,7 @@ public class AboutDialog extends JDialog implements ActionListener {
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(new MigLayout("", "[200px:200px:200px,grow,right][71.00,grow][][167.00,grow]",
 				"[43.00][][][38.00][][][grow][41.00,grow][10px:n][grow][]"));
-				
+		
 		JLabel lblNewLabel = new JLabel("");
 		lblNewLabel.setIcon(Builder.getImageIcon("about.png"));
 		contentPanel.add(lblNewLabel, "cell 0 0 2 5");
@@ -84,7 +84,7 @@ public class AboutDialog extends JDialog implements ActionListener {
 		lblF.setFont(new Font("Dialog", Font.BOLD, 10));
 		contentPanel.add(lblF, "cell 2 2 2 1,alignx right,aligny top");
 		
-		JLabel lblVersionsnapshot = new JLabel("version: " + Builder.getVersionAndBuild());
+		JLabel lblVersionsnapshot = new JLabel("version: \n" + Builder.getVersion());
 		lblVersionsnapshot.setFont(new Font("Dialog", Font.PLAIN, 10));
 		contentPanel.add(lblVersionsnapshot, "cell 2 3 2 1,alignx right,aligny bottom");
 		
@@ -101,8 +101,8 @@ public class AboutDialog extends JDialog implements ActionListener {
 		JTextPane txtcontributors = new JTextPane();
 		txtcontributors.setEditable(false);
 		txtcontributors.setFont(new Font("Dialog", Font.BOLD, 11));
-		txtcontributors.setText(
-				"Elaine Kennedy Sutherland; Peter Brown; Donald Falk; Henri Grissino-Mayer; Elena Velasquez; Connie Woodhouse; Peter Brewer.");
+		txtcontributors
+				.setText("Elaine Kennedy Sutherland; Peter Brown; Donald Falk; Henri Grissino-Mayer; Elena Velasquez; Connie Woodhouse; Peter Brewer.");
 		contentPanel.add(txtcontributors, "cell 1 6 3 1,grow");
 		
 		JTextPane txtpnProgrammingContributions = new JTextPane();
@@ -112,15 +112,15 @@ public class AboutDialog extends JDialog implements ActionListener {
 		
 		JTextPane txtProgrammers = new JTextPane();
 		txtProgrammers.setFont(new Font("Dialog", Font.PLAIN, 9));
-		txtProgrammers.setText(
-				"Peter Brewer; Elena Velasquez; Michael Ababio; Hidayatullah Ahsan; Alex Beatty; Clayton Bodendein; Joshua Brogan; Code Calhoun; Brendan Compton; Aaron Decker; Zachariah Ferree; Scott Goble; Wendy Gross; Kyle Hartmann; Dylan Jones; Anthony Messerschmidt; Alex Richter; Chinmay Shah; Chris Wald; Seth Westphal; Matthew Willie.");
+		txtProgrammers
+				.setText("Peter Brewer; Elena Velasquez; Michael Ababio; Hidayatullah Ahsan; Alex Beatty; Clayton Bodendein; Joshua Brogan; Code Calhoun; Brendan Compton; Aaron Decker; Zachariah Ferree; Scott Goble; Wendy Gross; Kyle Hartmann; Dylan Jones; Anthony Messerschmidt; Alex Richter; Chinmay Shah; Chris Wald; Seth Westphal; Matthew Willie.");
 		contentPanel.add(txtProgrammers, "cell 1 7 3 1,grow");
 		
 		JTextPane txtpnThisProgramIs = new JTextPane();
 		txtpnThisProgramIs.setEditable(false);
 		txtpnThisProgramIs.setFont(new Font("Dialog", Font.PLAIN, 8));
-		txtpnThisProgramIs.setText(
-				"This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.\n\nThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details. ");
+		txtpnThisProgramIs
+				.setText("This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.\n\nThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details. ");
 		contentPanel.add(txtpnThisProgramIs, "cell 0 9 4 1,grow");
 		
 		JPanel panel = new JPanel();
@@ -152,7 +152,7 @@ public class AboutDialog extends JDialog implements ActionListener {
 	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		
+	
 		if (e.getActionCommand().equals("License"))
 		{
 			Platform.browseWebpage(RemoteHelp.LICENSE_INFO);

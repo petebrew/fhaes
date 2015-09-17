@@ -51,6 +51,8 @@ import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 import javax.swing.filechooser.FileFilter;
 
+import net.miginfocom.swing.MigLayout;
+
 import org.apache.commons.lang.ArrayUtils;
 import org.codehaus.plexus.util.FileUtils;
 import org.fhaes.analysis.FHMatrix;
@@ -82,7 +84,6 @@ import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
 
 import edu.emory.mathcs.backport.java.util.Arrays;
-import net.miginfocom.swing.MigLayout;
 
 /**
  * ShapeFileDialog Class.
@@ -113,7 +114,7 @@ public class ShapeFileDialog extends JDialog implements ActionListener, Document
 	 * @throws Exception
 	 */
 	public ShapeFileDialog(Component parent, FHMatrix fhm) throws NullPointerException {
-		
+	
 		if (fhm == null)
 			throw new NullPointerException("FHMatrix cannot be null");
 		this.fhm = fhm;
@@ -125,7 +126,7 @@ public class ShapeFileDialog extends JDialog implements ActionListener, Document
 	 * TODO
 	 */
 	private void populate() {
-		
+	
 		Integer startyear = fhm.getEarliestYearInOutput();
 		Integer endyear = fhm.getLatestEndYearInOutput();
 		
@@ -143,7 +144,7 @@ public class ShapeFileDialog extends JDialog implements ActionListener, Document
 	
 	@SuppressWarnings({ "unchecked", "deprecation" })
 	private void addSelectedYear() {
-		
+	
 		if (!this.lstAvailableYears.isSelectionEmpty())
 		{
 			List<Integer> values = Arrays.asList(lstAvailableYears.getSelectedValues());
@@ -175,7 +176,7 @@ public class ShapeFileDialog extends JDialog implements ActionListener, Document
 	
 	@SuppressWarnings({ "unchecked", "deprecation" })
 	private void removeSelectedYear() {
-		
+	
 		if (!this.lstSelectedYears.isSelectionEmpty())
 		{
 			List<Integer> values = Arrays.asList(lstSelectedYears.getSelectedValues());
@@ -199,7 +200,7 @@ public class ShapeFileDialog extends JDialog implements ActionListener, Document
 	
 	@SuppressWarnings("unchecked")
 	private void initGUI() {
-		
+	
 		setBounds(100, 100, 582, 333);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -297,20 +298,20 @@ public class ShapeFileDialog extends JDialog implements ActionListener, Document
 						
 						@Override
 						public void contentsChanged(ListDataEvent arg0) {
-							
+						
 							pingLayout();
 						}
 						
 						@Override
 						public void intervalAdded(ListDataEvent arg0) {
-							
+						
 							pingLayout();
 							
 						}
 						
 						@Override
 						public void intervalRemoved(ListDataEvent arg0) {
-							
+						
 							pingLayout();
 							
 						}
@@ -347,20 +348,20 @@ public class ShapeFileDialog extends JDialog implements ActionListener, Document
 	}
 	
 	public JList getList() {
-		
+	
 		return lstAvailableYears;
 	}
 	
 	public JList getList2() {
-		
+	
 		return lstSelectedYears;
 	}
 	
 	private void pingLayout() {
-		
+	
 		if (this.txtFilename.getText() != null && this.txtFilename.getText().length() > 0)
 		{
-		
+			
 		}
 		else
 		{
@@ -389,7 +390,7 @@ public class ShapeFileDialog extends JDialog implements ActionListener, Document
 	
 	@Override
 	public void actionPerformed(ActionEvent evt) {
-		
+	
 		if (evt.getActionCommand().equals("Cancel"))
 		{
 			dispose();
@@ -443,7 +444,7 @@ public class ShapeFileDialog extends JDialog implements ActionListener, Document
 			{
 				JOptionPane.showMessageDialog(this, "Shapefiles with this attribute table style can only contain data for 255 years.\n"
 						+ "Remove some years and try again", "Too many years", JOptionPane.ERROR_MESSAGE);
-						
+				
 				radStyle2.setSelected(true);
 				return;
 			}
@@ -459,7 +460,7 @@ public class ShapeFileDialog extends JDialog implements ActionListener, Document
 	
 	@SuppressWarnings("unchecked")
 	private void doProcessing() throws IOException {
-		
+	
 		/*
 		 * We use the DataUtilities class to create a FeatureType that will describe the data in our shapefile.
 		 * 
@@ -637,7 +638,7 @@ public class ShapeFileDialog extends JDialog implements ActionListener, Document
 	
 	@SuppressWarnings("unchecked")
 	private void doProcessingStyle2() throws IOException {
-		
+	
 		/*
 		 * We use the DataUtilities class to create a FeatureType that will describe the data in our shapefile.
 		 * 
@@ -823,7 +824,7 @@ public class ShapeFileDialog extends JDialog implements ActionListener, Document
 	 * @return
 	 */
 	private File getOutputFile() {
-		
+	
 		if (txtFilename.getText() == null || txtFilename.getText().length() == 0)
 		{
 			return null;
@@ -838,7 +839,7 @@ public class ShapeFileDialog extends JDialog implements ActionListener, Document
 	}
 	
 	private static SimpleFeatureType createFeatureType(List<Integer> years) {
-		
+	
 		SimpleFeatureTypeBuilder builder = new SimpleFeatureTypeBuilder();
 		builder.setName("FHAES");
 		builder.setCRS(DefaultGeographicCRS.WGS84); // <- Coordinate reference system
@@ -858,7 +859,7 @@ public class ShapeFileDialog extends JDialog implements ActionListener, Document
 	}
 	
 	private static SimpleFeatureType createStyle2FeatureType() {
-		
+	
 		SimpleFeatureTypeBuilder builder = new SimpleFeatureTypeBuilder();
 		builder.setName("FHAES");
 		builder.setCRS(DefaultGeographicCRS.WGS84); // <- Coordinate reference system
@@ -882,7 +883,7 @@ public class ShapeFileDialog extends JDialog implements ActionListener, Document
 	 * @return
 	 */
 	private File getOutputFile(FileFilter filter) {
-		
+	
 		String lastVisitedFolder = App.prefs.getPref(PrefKey.PREF_LAST_EXPORT_FOLDER, null);
 		File outputFile;
 		
@@ -902,7 +903,7 @@ public class ShapeFileDialog extends JDialog implements ActionListener, Document
 		fc.setDialogTitle("Save as...");
 		
 		// In response to a button click:
-		int returnVal = fc.showOpenDialog(this);
+		int returnVal = fc.showSaveDialog(this);
 		
 		if (returnVal == JFileChooser.APPROVE_OPTION)
 		{
@@ -933,12 +934,12 @@ public class ShapeFileDialog extends JDialog implements ActionListener, Document
 		if (outputFile.exists())
 		{
 			Object[] options = { "Overwrite", "No", "Cancel" };
-			int response = JOptionPane.showOptionDialog(this,
-					"The file '" + outputFile.getName() + "' already exists.  Are you sure you want to overwrite?", "Confirm",
-					JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, // do not use a custom Icon
+			int response = JOptionPane.showOptionDialog(this, "The file '" + outputFile.getName()
+					+ "' already exists.  Are you sure you want to overwrite?", "Confirm", JOptionPane.YES_NO_CANCEL_OPTION,
+					JOptionPane.QUESTION_MESSAGE, null, // do not use a custom Icon
 					options, // the titles of buttons
 					options[0]); // default button title
-					
+			
 			if (response != JOptionPane.YES_OPTION)
 			{
 				return null;
@@ -950,21 +951,21 @@ public class ShapeFileDialog extends JDialog implements ActionListener, Document
 	
 	@Override
 	public void changedUpdate(DocumentEvent arg0) {
-		
+	
 		pingLayout();
 		
 	}
 	
 	@Override
 	public void insertUpdate(DocumentEvent arg0) {
-		
+	
 		pingLayout();
 		
 	}
 	
 	@Override
 	public void removeUpdate(DocumentEvent arg0) {
-		
+	
 		pingLayout();
 		
 	}

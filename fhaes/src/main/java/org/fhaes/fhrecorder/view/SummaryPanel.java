@@ -18,6 +18,7 @@
 package org.fhaes.fhrecorder.view;
 
 import java.awt.Component;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -37,6 +38,8 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 
+import net.miginfocom.swing.MigLayout;
+
 import org.codehaus.plexus.util.FileUtils;
 import org.fhaes.fhrecorder.controller.FileController;
 import org.fhaes.fhrecorder.util.ColorBar;
@@ -51,8 +54,6 @@ import org.jdesktop.swingx.JXTable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.miginfocom.swing.MigLayout;
-
 /**
  * SummaryPanel Class.
  * 
@@ -64,7 +65,7 @@ public class SummaryPanel extends javax.swing.JPanel {
 	
 	private static final long serialVersionUID = 1L;
 	protected JTableSpreadsheetByRowAdapter adapter;
-	
+	private static Window parent;
 	private JXTable summaryTable;
 	List<YearSummary> data;
 	
@@ -74,12 +75,13 @@ public class SummaryPanel extends javax.swing.JPanel {
 	
 	private String[] columnHeaders = new String[] { "Year", "Events", "Total Samples", "% Scarred", "D", "E", "M", "L", "A", "U",
 			"Color Bar" };
-			
+	
 	/**
 	 * Constructor for the Summary Panel. Sets up the layout and settings of all components.
 	 */
-	public SummaryPanel() {
-		
+	public SummaryPanel(Window parent) {
+	
+		SummaryPanel.parent = parent;
 		setLayout(new MigLayout("", "[grow,right]", "[fill][300px,grow,fill]"));
 		
 		JButton customizeButton = new JButton("Customize");
@@ -88,7 +90,7 @@ public class SummaryPanel extends javax.swing.JPanel {
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				
+			
 				showCustomizeWindow();
 			}
 		});
@@ -99,7 +101,7 @@ public class SummaryPanel extends javax.swing.JPanel {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
+			
 				exportTable();
 			}
 		});
@@ -116,13 +118,13 @@ public class SummaryPanel extends javax.swing.JPanel {
 			
 			@Override
 			public boolean isCellEditable(int row, int column) {
-				
+			
 				return false;
 			};
 			
 			@Override
 			public String getToolTipText(MouseEvent e) {
-				
+			
 				String tip = null;
 				java.awt.Point p = e.getPoint();
 				int rowIndex = rowAtPoint(p);
@@ -132,9 +134,8 @@ public class SummaryPanel extends javax.swing.JPanel {
 				{
 					if (colIndex == 11)
 					{
-						MouseEvent e2 = new MouseEvent(this, 1, 1, 1,
-								e.getLocationOnScreen().x - (getCellRect(rowIndex, colIndex, true).x + getLocationOnScreen().x), 10, 1,
-								true);
+						MouseEvent e2 = new MouseEvent(this, 1, 1, 1, e.getLocationOnScreen().x
+								- (getCellRect(rowIndex, colIndex, true).x + getLocationOnScreen().x), 10, 1, true);
 						tip = ((ColorBar) getValueAt(rowIndex, colIndex)).getToolTipText(e2);
 					}
 				}
@@ -151,7 +152,7 @@ public class SummaryPanel extends javax.swing.JPanel {
 			
 			@Override
 			public void mousePressed(MouseEvent e) {
-				
+			
 				if (e.isPopupTrigger())
 				{
 					showMenu(e);
@@ -160,7 +161,7 @@ public class SummaryPanel extends javax.swing.JPanel {
 			
 			@Override
 			public void mouseReleased(MouseEvent e) {
-				
+			
 				if (e.isPopupTrigger())
 				{
 					showMenu(e);
@@ -168,7 +169,7 @@ public class SummaryPanel extends javax.swing.JPanel {
 			}
 			
 			private void showMenu(MouseEvent e) {
-				
+			
 				JPopupMenu popup = new JPopupMenu();
 				
 				JMenuItem selectAll = new JMenuItem("Select all");
@@ -176,7 +177,7 @@ public class SummaryPanel extends javax.swing.JPanel {
 					
 					@Override
 					public void actionPerformed(ActionEvent arg0) {
-						
+					
 						summaryTable.selectAll();
 						
 					}
@@ -188,7 +189,7 @@ public class SummaryPanel extends javax.swing.JPanel {
 					
 					@Override
 					public void actionPerformed(ActionEvent e) {
-						
+					
 						adapter.doCopy();
 					}
 					
@@ -199,7 +200,7 @@ public class SummaryPanel extends javax.swing.JPanel {
 					
 					@Override
 					public void actionPerformed(ActionEvent e) {
-						
+					
 						exportTable();
 						
 					}
@@ -226,7 +227,7 @@ public class SummaryPanel extends javax.swing.JPanel {
 	 * Export the summary table to an CSV file
 	 */
 	private void exportTable() {
-		
+	
 		File f = getOutputFile();
 		
 		try
@@ -246,7 +247,7 @@ public class SummaryPanel extends javax.swing.JPanel {
 	 * @return
 	 */
 	public static File getOutputFile() {
-		
+	
 		String lastVisitedFolder = App.prefs.getPref(PrefKey.PREF_LAST_EXPORT_FOLDER, null);
 		File outputFile;
 		CSVFileFilter csvff = new CSVFileFilter();
@@ -267,7 +268,7 @@ public class SummaryPanel extends javax.swing.JPanel {
 		fc.setDialogTitle("Save as...");
 		
 		// In response to a button click:
-		int returnVal = fc.showOpenDialog(App.mainFrame);
+		int returnVal = fc.showSaveDialog(App.mainFrame);
 		
 		if (returnVal == JFileChooser.APPROVE_OPTION)
 		{
@@ -303,12 +304,12 @@ public class SummaryPanel extends javax.swing.JPanel {
 		if (outputFile.exists())
 		{
 			Object[] options = { "Overwrite", "No", "Cancel" };
-			int response = JOptionPane.showOptionDialog(App.mainFrame,
-					"The file '" + outputFile.getName() + "' already exists.  Are you sure you want to overwrite?", "Confirm",
-					JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, // do not use a custom Icon
+			int response = JOptionPane.showOptionDialog(parent, "The file '" + outputFile.getName()
+					+ "' already exists.  Are you sure you want to overwrite?", "Confirm", JOptionPane.YES_NO_CANCEL_OPTION,
+					JOptionPane.QUESTION_MESSAGE, null, // do not use a custom Icon
 					options, // the titles of buttons
 					options[0]); // default button title
-					
+			
 			if (response != JOptionPane.YES_OPTION)
 			{
 				return null;
@@ -324,7 +325,7 @@ public class SummaryPanel extends javax.swing.JPanel {
 	 * @param table the table on which to set the column widths
 	 */
 	private void setColumnWidths(JTable table) {
-		
+	
 		table.getColumnModel().getColumn(0).setPreferredWidth(40);
 		table.getColumnModel().getColumn(0).setMinWidth(40);
 		table.getColumnModel().getColumn(1).setMinWidth(75);
@@ -358,7 +359,7 @@ public class SummaryPanel extends javax.swing.JPanel {
 	 * Refreshes all data in the table, adding years and updating existing year data.
 	 */
 	public void refreshTable() {
-		
+	
 		DefaultTableModel model = (DefaultTableModel) summaryTable.getModel();
 		
 		data = FileController.getYearSummaryList();
@@ -386,7 +387,7 @@ public class SummaryPanel extends javax.swing.JPanel {
 			rows[numRows++] = new Object[] { year.getYear(), year.getNumEvents(), year.getNumSamples(),
 					df.format(year.getPercentScarred()) + "%", year.getNumDormantSeason(), year.getNumEarlyEarlywood(),
 					year.getNumMiddleEarlywood(), year.getNumLateEarlywood(), year.getNumLatewood(), year.getNumUndetermined(), colorBar };
-					
+			
 		}
 		model.setDataVector(rows, columnHeaders);
 		setColumnWidths(summaryTable);
@@ -397,7 +398,7 @@ public class SummaryPanel extends javax.swing.JPanel {
 	 * TODO
 	 */
 	private void showCustomizeWindow() {
-		
+	
 		if (new CustomizeDialog(this, true).showDialog())
 			refreshTable();
 	}
@@ -408,14 +409,13 @@ public class SummaryPanel extends javax.swing.JPanel {
 	private class YearSummaryColorBarRenderer implements TableCellRenderer {
 		
 		@Override
-		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row,
-				int column) {
-				
+		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+		
 			ColorBar panel = (ColorBar) value;
 			
 			if (panel == null)
 				panel = new ColorBar(data.get(row));
-				
+			
 			panel.updateChart(data.get(row), FileController.getCustomOptions());
 			
 			if (isSelected)

@@ -45,6 +45,8 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import net.miginfocom.swing.MigLayout;
+
 import org.fhaes.enums.FireFilterType;
 import org.fhaes.model.FHFile;
 import org.fhaes.model.FHFileGroup;
@@ -61,8 +63,6 @@ import org.fhaes.util.Builder;
 import org.fhaes.util.FHCluster;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import net.miginfocom.swing.MigLayout;
 
 /**
  * SpatialJoinDialog Class.
@@ -85,7 +85,7 @@ public class SpatialJoinDialog extends JDialog implements PrefsListener, ActionL
 	 * Create the dialog.
 	 */
 	public SpatialJoinDialog(ArrayList<FHFile> files) {
-		
+	
 		if (files == null || files.size() == 0)
 		{
 			log.warn("SpatialJoinDialog opened with no files");
@@ -105,7 +105,7 @@ public class SpatialJoinDialog extends JDialog implements PrefsListener, ActionL
 	 * TODO
 	 */
 	private void setGroups() {
-		
+	
 		groupModel = new FHFileGroupTableModel(fhc.getGroups());
 		tblGroups.setModel(groupModel);
 		tblGroups.getColumnModel().getColumn(0).setCellEditor(new FHFileGroupCellEditor());
@@ -117,7 +117,7 @@ public class SpatialJoinDialog extends JDialog implements PrefsListener, ActionL
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private void setFiles() {
-		
+	
 		FHFileGroup g = (FHFileGroup) groupModel.getValueAt(tblGroups.getSelectedRow(), 0);
 		
 		if (g == null)
@@ -126,7 +126,7 @@ public class SpatialJoinDialog extends JDialog implements PrefsListener, ActionL
 			return;
 		if (g.getFiles().size() == 0)
 			return;
-			
+		
 		DefaultListModel fileModel = new DefaultListModel();
 		for (FHFile f : g.getFiles())
 		{
@@ -140,7 +140,7 @@ public class SpatialJoinDialog extends JDialog implements PrefsListener, ActionL
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private void setupGUI() {
-		
+	
 		setBounds(100, 100, 747, 536);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -222,7 +222,7 @@ public class SpatialJoinDialog extends JDialog implements PrefsListener, ActionL
 									
 									@Override
 									public void valueChanged(ListSelectionEvent evt) {
-										
+									
 										setFiles();
 										
 									}
@@ -265,7 +265,7 @@ public class SpatialJoinDialog extends JDialog implements PrefsListener, ActionL
 	}
 	
 	private void setupMap() {
-		
+	
 		panelMap.removeAll();
 		MapPanel map = new MapPanel();
 		map.setFHFileGroups(fhc.getGroups());
@@ -274,7 +274,7 @@ public class SpatialJoinDialog extends JDialog implements PrefsListener, ActionL
 	}
 	
 	private Boolean save() {
-		
+	
 		File file = null;
 		JFileChooser fc;
 		
@@ -346,7 +346,8 @@ public class SpatialJoinDialog extends JDialog implements PrefsListener, ActionL
 				// Composite
 				new FHOperations(App.mainFrame, gr.getFiles().toArray(new File[gr.getFiles().size()]), outputfile,
 						compositeDialog.getStartYear(), compositeDialog.getEndYear(), compositeDialog.getFireFilterValue(),
-						compositeDialog.getFireFilterType(), false, true, false, compositeDialog.getMinNumberOfSamples(), null);
+						compositeDialog.getFireFilterType(), false, true, false, compositeDialog.getMinNumberOfSamples(),
+						compositeDialog.getMinNumberOfRecordingSamples(), null);
 			}
 			else if (cboOutputType.getSelectedIndex() == 1)
 			{
@@ -355,7 +356,7 @@ public class SpatialJoinDialog extends JDialog implements PrefsListener, ActionL
 				// Merge
 				new FHOperations(App.mainFrame, gr.getFiles().toArray(new File[gr.getFiles().size()]), outputfile,
 						temporalDialog.getStartYear(), temporalDialog.getEndYear(), 1.0, FireFilterType.NUMBER_OF_EVENTS, true, false,
-						false, 1, null);
+						false, 1, compositeDialog.getMinNumberOfRecordingSamples(), null);
 			}
 			else if (cboOutputType.getSelectedIndex() == 2)
 			{
@@ -365,8 +366,8 @@ public class SpatialJoinDialog extends JDialog implements PrefsListener, ActionL
 				new FHOperations(App.mainFrame, gr.getFiles().toArray(new File[gr.getFiles().size()]), outputfile,
 						compositeDialog.getStartYear(), compositeDialog.getEndYear(), compositeDialog.getFireFilterValue(),
 						compositeDialog.getFireFilterType(), false, false, true, compositeDialog.getMinNumberOfSamples(),
-						compositeDialog.getComments());
-						
+						compositeDialog.getMinNumberOfRecordingSamples(), compositeDialog.getComments());
+				
 			}
 			
 		}
@@ -375,7 +376,7 @@ public class SpatialJoinDialog extends JDialog implements PrefsListener, ActionL
 	
 	@Override
 	public void prefChanged(PrefsEvent e) {
-		
+	
 		log.debug("Preference change for key " + e.getPref() + " picked up by SpatialJoinDialog");
 		
 		if (e.getPref().equals(PrefKey.COMPOSITE_DISTANCE_THRESHOLD_KM))
@@ -388,7 +389,7 @@ public class SpatialJoinDialog extends JDialog implements PrefsListener, ActionL
 	
 	@Override
 	public void actionPerformed(ActionEvent evt) {
-		
+	
 		if (evt.getActionCommand().equals("Save"))
 		{
 			Boolean success = save();

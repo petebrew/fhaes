@@ -37,6 +37,8 @@ import javax.swing.border.SoftBevelBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import net.miginfocom.swing.MigLayout;
+
 import org.fhaes.enums.FeedbackDisplayProtocol;
 import org.fhaes.enums.FeedbackMessageType;
 import org.fhaes.exceptions.CompositeFileException;
@@ -46,8 +48,6 @@ import org.fhaes.fhrecorder.controller.FileController;
 import org.fhaes.fhrecorder.controller.IOController;
 import org.fhaes.fhrecorder.controller.SampleController;
 import org.fhaes.fhrecorder.model.FHX2_File;
-
-import net.miginfocom.swing.MigLayout;
 
 /**
  * FireHistoryRecorder Class.
@@ -93,7 +93,7 @@ public class FireHistoryRecorder extends JDialog {
 	 * Creates new form PrimaryWindow.
 	 */
 	public FireHistoryRecorder() {
-		
+	
 		initGUI();
 	}
 	
@@ -101,14 +101,14 @@ public class FireHistoryRecorder extends JDialog {
 	 * Closes the dialog but only after running necessary checks to ensure user doesn't inadvertantly lose data.
 	 */
 	private void closeAfterRunningChecks() {
-		
+	
 		if (FileController.isChangedSinceLastSave())
 		{
 			Object[] options = { "Save", "Close without saving", "Cancel" };
 			
 			int n = JOptionPane.showOptionDialog(FileController.thePrimaryWindow, "Save changes to file before closing?", "Confirm",
 					JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[2]);
-					
+			
 			if (n == JOptionPane.YES_OPTION)
 			{
 				FileController.save();
@@ -133,7 +133,7 @@ public class FireHistoryRecorder extends JDialog {
 	 * Selects the first sample of the currently loaded file.
 	 */
 	public void selectFirstSample() {
-		
+	
 		try
 		{
 			this.sampleInput.sampleListBox.setSelectedIndex(0);
@@ -151,7 +151,7 @@ public class FireHistoryRecorder extends JDialog {
 	 * @throws CompositeFileException
 	 */
 	private void doSave(java.awt.event.ActionEvent evt) throws CompositeFileException {
-		
+	
 		updateOptionalData();
 		
 		if (FileController.isFileCorrupted())
@@ -182,7 +182,7 @@ public class FireHistoryRecorder extends JDialog {
 	 * @param inFHX2File
 	 */
 	public void generateScreens(FHX2_File inFHX2File) {
-		
+	
 		if (sampleInput != null)
 			dataTab.remove(sampleInput);
 		if (metaDataPanel != null)
@@ -193,11 +193,11 @@ public class FireHistoryRecorder extends JDialog {
 			summaryTab.remove(summaryPanel);
 		if (graphPanel != null)
 			graphsTab.remove(graphPanel);
-			
+		
 		sampleInput = new SampleInputPanel(inFHX2File.getRequiredPart());
 		metaDataPanel = new MetaDataPanel(inFHX2File.getOptionalPart());
 		commentPanel = new CommentPanel(inFHX2File.getOptionalPart());
-		summaryPanel = new SummaryPanel();
+		summaryPanel = new SummaryPanel(this);
 		graphPanel = new GraphPanel();
 		
 		dataTab.add(sampleInput, BorderLayout.CENTER);
@@ -211,7 +211,7 @@ public class FireHistoryRecorder extends JDialog {
 	 * Refreshes all tab-panels with the most recent information.
 	 */
 	public void showInput() {
-		
+	
 		this.tabbedPane.setEnabled(true);
 		this.tabbedPane.setSelectedIndex(0);
 		
@@ -239,8 +239,9 @@ public class FireHistoryRecorder extends JDialog {
 		// File contains a data set that does not have a defined ending year
 		if (FileController.wasLastYearDefinedInFile() == false)
 		{
-			feedbackMessagePanel.updateFeedbackMessage(FeedbackMessageType.INFO, FeedbackDisplayProtocol.MANUAL_HIDE,
-					"File contains valid data with an unformatted sample. A temporary sample has been generated using the boundaries of the data set.");
+			feedbackMessagePanel
+					.updateFeedbackMessage(FeedbackMessageType.INFO, FeedbackDisplayProtocol.MANUAL_HIDE,
+							"File contains valid data with an unformatted sample. A temporary sample has been generated using the boundaries of the data set.");
 		}
 		
 		// File either has bad data or is not an FHX file
@@ -264,7 +265,7 @@ public class FireHistoryRecorder extends JDialog {
 	 * Displays the data tab.
 	 */
 	public void showInfo() {
-		
+	
 		this.tabbedPane.setSelectedIndex(DATA_TAB_INDEX);
 	}
 	
@@ -272,7 +273,7 @@ public class FireHistoryRecorder extends JDialog {
 	 * Displays the metadata tab.
 	 */
 	public void showComments() {
-		
+	
 		this.tabbedPane.setSelectedIndex(METADATA_TAB_INDEX);
 	}
 	
@@ -280,7 +281,7 @@ public class FireHistoryRecorder extends JDialog {
 	 * TODO
 	 */
 	public void redrawSampleInputPanel() {
-		
+	
 		sampleInput.redrawSampleListPanel();
 	}
 	
@@ -288,7 +289,7 @@ public class FireHistoryRecorder extends JDialog {
 	 * TODO
 	 */
 	public void redrawEventPanel() {
-		
+	
 		sampleInput.redrawSampleDataPanel(SampleController.getSelectedSampleIndex());
 	}
 	
@@ -296,7 +297,7 @@ public class FireHistoryRecorder extends JDialog {
 	 * TODO
 	 */
 	public void enableDependentMenuItems() {
-		
+	
 		this.dataTab.setEnabled(true);
 		this.metadataTab.setEnabled(true);
 	}
@@ -305,7 +306,7 @@ public class FireHistoryRecorder extends JDialog {
 	 * TODO
 	 */
 	public void disableDependentMenuItems() {
-		
+	
 		this.dataTab.setEnabled(false);
 		this.metadataTab.setEnabled(false);
 	}
@@ -314,7 +315,7 @@ public class FireHistoryRecorder extends JDialog {
 	 * Saves the metadata and comments to the FHX file.
 	 */
 	private void updateOptionalData() {
-		
+	
 		metaDataPanel.saveInfoToData();
 		commentPanel.saveComments();
 	}
@@ -323,7 +324,7 @@ public class FireHistoryRecorder extends JDialog {
 	 * Gets the feedbackMessagePanel instance.
 	 */
 	public static FeedbackMessagePanel getFeedbackMessagePanel() {
-		
+	
 		return feedbackMessagePanel;
 	}
 	
@@ -331,7 +332,7 @@ public class FireHistoryRecorder extends JDialog {
 	 * Initializes the GUI.
 	 */
 	private void initGUI() {
-		
+	
 		this.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
 		this.setModalityType(ModalityType.APPLICATION_MODAL);
 		this.setMinimumSize(new Dimension(1000, 700));
@@ -341,7 +342,7 @@ public class FireHistoryRecorder extends JDialog {
 			
 			@Override
 			public void windowClosing(WindowEvent e) {
-				
+			
 				closeAfterRunningChecks();
 			}
 		});
@@ -378,7 +379,7 @@ public class FireHistoryRecorder extends JDialog {
 			// this refreshes the summary and graph tabs whenever they are selected in the window
 			@Override
 			public void stateChanged(ChangeEvent e) {
-				
+			
 				if (tabbedPane.getSelectedIndex() == SUMMARY_TAB_INDEX || tabbedPane.getSelectedIndex() == GRAPH_TAB_INDEX)
 				{
 					if (leftTabsSinceRedraw)
@@ -410,7 +411,7 @@ public class FireHistoryRecorder extends JDialog {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
+			
 				try
 				{
 					doSave(e);
@@ -429,7 +430,7 @@ public class FireHistoryRecorder extends JDialog {
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				
+			
 				closeAfterRunningChecks();
 			}
 			
@@ -441,7 +442,7 @@ public class FireHistoryRecorder extends JDialog {
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				
+			
 				FileController.filePath = null;
 				setVisible(false);
 			}
