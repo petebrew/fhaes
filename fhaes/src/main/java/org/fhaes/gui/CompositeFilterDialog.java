@@ -167,7 +167,7 @@ public class CompositeFilterDialog extends JDialog implements ActionListener {
 			JPanel panel = new JPanel();
 			panel.setBorder(new TitledBorder(null, "Composite filter", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 			contentPanel.add(panel, "cell 0 1,grow");
-			panel.setLayout(new MigLayout("", "[][58.00,grow][21.00][70.00]", "[][][][]"));
+			panel.setLayout(new MigLayout("", "[][58.00,grow][21.00][70.00]", "[][][]"));
 			{
 				JLabel lblFilterType = new JLabel("Filter:");
 				panel.add(lblFilterType, "cell 0 0,alignx right");
@@ -188,21 +188,22 @@ public class CompositeFilterDialog extends JDialog implements ActionListener {
 			}
 			{
 				JLabel lblMinNumberOf = new JLabel("Minimum # of samples:");
-				panel.add(lblMinNumberOf, "cell 0 2 3 1,alignx right");
+				panel.add(lblMinNumberOf, "cell 0 1 3 1,alignx right");
 			}
 			{
 				spnMinSamples = new JSpinner();
 				spnMinSamples.setModel(new SpinnerNumberModel(new Integer(1), new Integer(1), null, new Integer(1)));
 				new SpinnerWrapper(spnMinSamples, PrefKey.COMPOSITE_MIN_SAMPLES, 1);
-				panel.add(spnMinSamples, "cell 3 2,growx");
+				panel.add(spnMinSamples, "cell 3 1,growx");
 			}
 			{
 				JLabel lblMinNumberOf_1 = new JLabel("Minimum # of recorder samples:");
-				panel.add(lblMinNumberOf_1, "cell 0 3 3 1,alignx right");
+				panel.add(lblMinNumberOf_1, "cell 0 2 3 1,alignx right");
 			}
 			{
 				spnMinRecordingSamples = new JSpinner();
-				panel.add(spnMinRecordingSamples, "cell 3 3,growx");
+				spnMinRecordingSamples.setModel(new SpinnerNumberModel(new Integer(0), new Integer(0), null, new Integer(1)));
+				panel.add(spnMinRecordingSamples, "cell 3 2,growx");
 			}
 		}
 		{
