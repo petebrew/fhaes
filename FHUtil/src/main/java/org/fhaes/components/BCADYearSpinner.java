@@ -17,12 +17,19 @@
  *************************************************************************************************/
 package org.fhaes.components;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import java.awt.Dimension;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 import javax.swing.SpinnerNumberModel;
 import javax.swing.text.NumberFormatter;
+
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * BCADYearSpinner Class. A spinner that supports a model for representing BC and AD years.
@@ -32,6 +39,9 @@ import javax.swing.text.NumberFormatter;
 public class BCADYearSpinner extends javax.swing.JSpinner {
 	
 	private static final long serialVersionUID = 1L;
+	
+	// Declare logger
+	private static final Logger log = LoggerFactory.getLogger(BCADYearSpinner.class);
 	
 	// Declare local constants
 	private final String NUMBER_EDITOR_FORMAT = "#####";
@@ -50,6 +60,26 @@ public class BCADYearSpinner extends javax.swing.JSpinner {
 	 */
 	public BCADYearSpinner(int initialValue, int minimumValue, int maximumValue) {
 		
+		// Account for cases where the initial value may be out of range
+		if (initialValue < minimumValue)
+		{
+			log.warn("initialValue parameter was below minimumValue parameter (please adjust the value in the constructer call)");
+			initialValue = minimumValue;
+		}
+		else if (initialValue > maximumValue)
+		{
+			log.warn("initialValue parameter was above maximumValue parameter (please adjust the value in the constructer call)");
+			initialValue = maximumValue;
+		}
+		
+		// Account for cases where the initial value may be zero
+		if (initialValue == 0)
+		{
+			log.warn("initialValue parameter was zero (please adjust the value in the constructer call)");
+			initialValue += 1;
+		}
+		
+		// Setup the year spinner with valid values
 		initGUI(initialValue, minimumValue, maximumValue);
 	}
 	
@@ -81,6 +111,16 @@ public class BCADYearSpinner extends javax.swing.JSpinner {
 	public Integer getValueAsInteger() {
 		
 		return (Integer) this.getModel().getValue();
+	}
+	
+	/**
+	 * Sets the spinner's current value using the input value.
+	 * 
+	 * @param inValue
+	 */
+	public void setValueFromInteger(int inValue) {
+		
+		this.getModel().setValue(inValue);
 	}
 	
 	/**
@@ -278,6 +318,121 @@ public class BCADYearSpinner extends javax.swing.JSpinner {
 			{
 				super.setValue(inputValue);
 			}
+		}
+	}
+	
+	/**
+	 * BCADYearSpinnerUnitTest Class. This class contains the unit test for BCADYearSpinner.
+	 */
+	public static class BCADYearSpinnerUnitTest {
+		
+		/**
+		 * Runs the unit test for BCADYearSpinner.
+		 */
+		@Test
+		public void runTestCases() {
+			
+			// Create BCADYearSpinner with nominal values
+			{
+				BCADYearSpinner testSpinner = new BCADYearSpinner(5, 1, 10);
+				assertNotNull(testSpinner);
+				assertEquals((Integer) 5, testSpinner.getValueAsInteger());
+			}
+			
+			// Create BCADYearSpinner with initial value below minimum value
+			{
+				BCADYearSpinner testSpinner = new BCADYearSpinner(-10, 1, 10);
+				assertNotNull(testSpinner);
+				assertEquals((Integer) 1, testSpinner.getValueAsInteger());
+			}
+			
+			// Create BCADYearSpinner with initial value above maximum value
+			{
+				BCADYearSpinner testSpinner = new BCADYearSpinner(20, 1, 10);
+				assertNotNull(testSpinner);
+				assertEquals((Integer) 10, testSpinner.getValueAsInteger());
+			}
+			
+			// Create BCADYearSpinner with initial value as zero
+			{
+				BCADYearSpinner testSpinner = new BCADYearSpinner(0, -10, 10);
+				assertNotNull(testSpinner);
+				assertEquals((Integer) 1, testSpinner.getValueAsInteger());
+			}
+			
+			// Test behavior of BCAD model when using getters and setters
+			{
+				BCADYearSpinner testSpinner = new BCADYearSpinner(1, -10, 10);
+				
+				// Test nominal value
+				testSpinner.setValueFromInteger(5);
+				assertEquals((Integer) 5, testSpinner.getValueAsInteger());
+				
+				// Test set value below minimum
+				testSpinner.setValueFromInteger(-20);
+				assertEquals((Integer) (-10), testSpinner.getValueAsInteger());
+				
+				// Test zero case with previous value below zero
+				testSpinner.setValueFromInteger(0);
+				assertEquals((Integer) (-1), testSpinner.getValueAsInteger());
+				
+				// Test set value below minimum
+				testSpinner.setValueFromInteger(20);
+				assertEquals((Integer) 10, testSpinner.getValueAsInteger());
+				
+				// Test zero case with previous value above zero
+				testSpinner.setValueFromInteger(0);
+				assertEquals((Integer) 1, testSpinner.getValueAsInteger());
+			}
+			
+			// Test behavior of getNextValue method
+			{
+				BCADYearSpinner testSpinner = new BCADYearSpinner(1, -10, 10);
+				
+				// Test nominal value
+				assertEquals(2, testSpinner.getNextValue());
+				
+				// Test at maximum value
+				testSpinner.setValueFromInteger(10);
+				assertEquals(10, testSpinner.getNextValue());
+				
+				// Test zero case
+				testSpinner.setValueFromInteger(-1);
+				assertEquals(1, testSpinner.getNextValue());
+			}
+			
+			// Test behavior of getPreviousValue method
+			{
+				BCADYearSpinner testSpinner = new BCADYearSpinner(-1, -10, 10);
+				
+				// Test nominal value
+				assertEquals(-2, testSpinner.getPreviousValue());
+				
+				// Test at minimum value
+				testSpinner.setValueFromInteger(-10);
+				assertEquals(-10, testSpinner.getPreviousValue());
+				
+				// Test zero case
+				testSpinner.setValueFromInteger(1);
+				assertEquals(-1, testSpinner.getPreviousValue());
+			}
+			
+			// Test behavior of mostRecentValue
+			{
+				BCADYearSpinner testSpinner = new BCADYearSpinner(1, -10, 10);
+				
+				// Test initial value of mostRecentValue
+				assertEquals((Integer) 1, testSpinner.getMostRecentValue());
+				
+				// Test before and after updating mostRecentValue
+				testSpinner.setValueFromInteger(2);
+				assertEquals((Integer) 1, testSpinner.getMostRecentValue());
+				testSpinner.updateMostRecentValue();
+				assertEquals((Integer) 2, testSpinner.getMostRecentValue());
+			}
+			
+			// Notify that all tests have passed for this unit
+			log.info("All tests passed for BCADYearSpinner");
 		}
 	}
 }

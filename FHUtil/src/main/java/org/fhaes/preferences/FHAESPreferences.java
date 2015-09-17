@@ -27,6 +27,7 @@ import org.fhaes.enums.AnalysisLabelType;
 import org.fhaes.enums.AnalysisType;
 import org.fhaes.enums.EventTypeToProcess;
 import org.fhaes.enums.FireFilterType;
+import org.fhaes.enums.JustificationType;
 import org.fhaes.enums.LabelOrientation;
 import org.fhaes.enums.LineStyle;
 import org.fhaes.enums.NoDataLabel;
@@ -337,6 +338,10 @@ public class FHAESPreferences {
 		
 		CHART_SHOW_CATEGORY_LABELS("chartShowCategoryLabels"),
 		
+		CHART_CATEGORY_LABEL_FONT_SIZE("chartCategoryLabelFontSize"),
+		
+		CHART_CATEGORY_LABEL_JUSTIFICATION("chartCategoryLabelJustification"),
+		
 		CHART_AUTOMATICALLY_COLORIZE_SERIES("chartAutomaticallyColorizeSeries"),
 		
 		CHART_AUTOMATICALLY_COLORIZE_LABELS("chartAutomaticallyColorizeLabels"),
@@ -480,6 +485,26 @@ public class FHAESPreferences {
 	}
 	
 	/**
+	 * Fire a preference change event for a specific PrefKey.
+	 * 
+	 * @param pref
+	 */
+	public void firePrefChanged(PrefKey pref) {
+		
+		if (this.silentMode)
+			return;
+			
+		log.debug("Preference change fired");
+		
+		PrefsEvent e = new PrefsEvent(FHAESPreferences.class, pref);
+		
+		for (PrefsListener l : listeners)
+		{
+			l.prefChanged(e);
+		}
+	}
+	
+	/**
 	 * Sets the silentMode on and off. see isSilentMode.
 	 * 
 	 * @param mode
@@ -525,492 +550,6 @@ public class FHAESPreferences {
 	}
 	
 	/**
-	 * Fire a preference change event for a specific PrefKey.
-	 * 
-	 * @param pref
-	 */
-	public void firePrefChanged(PrefKey pref) {
-		
-		if (this.silentMode)
-			return;
-			
-		log.debug("Preference change fired");
-		
-		PrefsEvent e = new PrefsEvent(FHAESPreferences.class, pref);
-		
-		for (PrefsListener l : listeners)
-		{
-			l.prefChanged(e);
-		}
-	}
-	
-	/**
-	 * Method for getting the string value of a preference.
-	 * 
-	 * @param key
-	 * @param defaultValue
-	 * @return
-	 */
-	public String getPref(PrefKey key, String defaultValue) {
-		
-		return prefs.get(key.getValue(), defaultValue);
-	}
-	
-	/**
-	 * TODO
-	 * 
-	 * @param key
-	 * @param defaultValue
-	 * @return
-	 */
-	public ArrayList<String> getArrayListPref(PrefKey key, ArrayList<String> defaultValue) {
-		
-		String value = prefs.get(key.getValue(), null);
-		if (value == null)
-		{
-			return defaultValue;
-		}
-		
-		String[] values = value.split(ARRAY_DELIMITER);
-		
-		ArrayList<String> arrlist = new ArrayList<String>();
-		
-		for (String v : values)
-		{
-			arrlist.add(v);
-		}
-		
-		if (values.length > 0)
-		{
-			return arrlist;
-		}
-		
-		return defaultValue;
-	}
-	
-	/**
-	 * TODO
-	 * 
-	 * @param key
-	 * @param defaultValue
-	 * @return
-	 */
-	public ArrayList<Integer> getIntegerArrayPref(PrefKey key, ArrayList<Integer> defaultValue) {
-		
-		String value = prefs.get(key.getValue(), null);
-		if (value == null)
-		{
-			return defaultValue;
-		}
-		
-		String[] values = value.split(ARRAY_DELIMITER);
-		
-		ArrayList<Integer> arrlist = new ArrayList<Integer>();
-		
-		for (String v : values)
-		{
-			
-			if (v == null || v.length() == 0)
-				continue;
-				
-			try
-			{
-				
-				arrlist.add(Integer.parseInt(v));
-			}
-			catch (NumberFormatException e)
-			{
-				log.error("Error casting pref value of '" + v + "' for key " + key + " to integer");
-			}
-		}
-		
-		if (values.length > 0)
-		{
-			return arrlist;
-		}
-		
-		return defaultValue;
-	}
-	
-	/**
-	 * Get the value of an AnalysisType preference.
-	 * 
-	 * @param key
-	 * @param defaultValue
-	 * @return
-	 */
-	public AnalysisType getAnalysisTypePref(PrefKey key, AnalysisType defaultValue) {
-		
-		String value = "";
-		if (defaultValue == null)
-		{
-			value = prefs.get(key.getValue(), null);
-		}
-		else
-		{
-			value = prefs.get(key.getValue(), defaultValue.name());
-		}
-		
-		if (value == null)
-			return defaultValue;
-		if (AnalysisType.fromName(value) == null)
-			return defaultValue;
-		return AnalysisType.fromName(value);
-	}
-	
-	/**
-	 * Set the value of a preference.
-	 * 
-	 * @param key
-	 * @param values
-	 */
-	public void setArrayListPref(PrefKey key, ArrayList<String> values) {
-		
-		String pref = key.getValue();
-		String arrAsStr = "";
-		
-		// support removing via set(null)
-		if (values == null)
-		{
-			prefs.remove(pref);
-		}
-		else
-		{
-			
-			for (String value : values)
-			{
-				arrAsStr += value + ARRAY_DELIMITER;
-			}
-			setPref(key, arrAsStr);
-		}
-	}
-	
-	/**
-	 * TODO
-	 * 
-	 * @param key
-	 * @param values
-	 */
-	public void setIntegerArrayPref(PrefKey key, ArrayList<Integer> values) {
-		
-		String pref = key.getValue();
-		String arrAsStr = "";
-		
-		// support removing via set(null)
-		if (values == null)
-		{
-			prefs.remove(pref);
-		}
-		else
-		{
-			
-			for (Integer value : values)
-			{
-				arrAsStr += value + ARRAY_DELIMITER;
-			}
-			setPref(key, arrAsStr);
-		}
-	}
-	
-	/**
-	 * Set the value of a preference to the specified AnalysisType.
-	 * 
-	 * @param key
-	 * @param value
-	 */
-	public void setAnalysisTypePref(PrefKey key, AnalysisType value) {
-		
-		setPref(key, value.toString());
-	}
-	
-	/**
-	 * Get the value of an FireFilterType preference.
-	 * 
-	 * @param key
-	 * @param defaultValue
-	 * @return
-	 */
-	public FireFilterType getFireFilterTypePref(PrefKey key, FireFilterType defaultValue) {
-		
-		String value = "";
-		if (defaultValue == null)
-		{
-			value = prefs.get(key.getValue(), null);
-		}
-		else
-		{
-			value = prefs.get(key.getValue(), defaultValue.name());
-		}
-		if (value == null)
-			return defaultValue;
-		if (FireFilterType.fromName(value) == null)
-			return defaultValue;
-		return FireFilterType.fromName(value);
-	}
-	
-	/**
-	 * Get the value of a EventTypeToProcess preference.
-	 * 
-	 * @param key
-	 * @param defaultValue
-	 * @return
-	 */
-	public EventTypeToProcess getEventTypePref(PrefKey key, EventTypeToProcess defaultValue) {
-		
-		String value = "";
-		if (defaultValue == null)
-		{
-			value = prefs.get(key.getValue(), null);
-		}
-		else
-		{
-			value = prefs.get(key.getValue(), defaultValue.name());
-		}
-		if (value == null)
-			return defaultValue;
-		if (EventTypeToProcess.fromName(value) == null)
-			return defaultValue;
-		return EventTypeToProcess.fromName(value);
-	}
-	
-	/**
-	 * TODO
-	 * 
-	 * @param key
-	 * @param defaultValue
-	 * @return
-	 */
-	public NoDataLabel getNoDataLabelPref(PrefKey key, NoDataLabel defaultValue) {
-		
-		String value = "";
-		if (defaultValue == null)
-		{
-			value = prefs.get(key.getValue(), null);
-		}
-		else
-		{
-			value = prefs.get(key.getValue(), defaultValue.name());
-		}
-		
-		if (value == null)
-			return NoDataLabel.NULL;
-			
-		return NoDataLabel.fromString(value);
-	}
-	
-	/**
-	 * TODO
-	 * 
-	 * @param key
-	 * @param defaultValue
-	 * @return
-	 */
-	public LineStyle getLineStylePref(PrefKey key, LineStyle defaultValue) {
-		
-		String value = "";
-		if (defaultValue == null)
-		{
-			value = prefs.get(key.getValue(), null);
-		}
-		else
-		{
-			value = prefs.get(key.getValue(), defaultValue.name());
-		}
-		
-		if (value == null)
-			return LineStyle.SOLID;
-			
-		return LineStyle.fromString(value);
-	}
-	
-	/**
-	 * Get the value of a AnalysisLabelType preference.
-	 * 
-	 * @param key
-	 * @param defaultValue
-	 * @return
-	 */
-	public AnalysisLabelType getAnalysisLabelTypePref(PrefKey key, AnalysisLabelType defaultValue) {
-		
-		String value = "";
-		if (defaultValue == null)
-		{
-			value = prefs.get(key.getValue(), null);
-		}
-		else
-		{
-			value = prefs.get(key.getValue(), defaultValue.name());
-		}
-		if (value == null)
-			return defaultValue;
-			
-		return AnalysisLabelType.fromName(value);
-	}
-	
-	/**
-	 * Get the value of a LabelAlignment preference.
-	 * 
-	 * @param key
-	 * @param defaultValue
-	 * @return
-	 */
-	public LabelOrientation getLabelOrientationPref(PrefKey key, LabelOrientation defaultValue) {
-		
-		String value = "";
-		if (defaultValue == null)
-		{
-			value = prefs.get(key.getValue(), null);
-		}
-		else
-		{
-			value = prefs.get(key.getValue(), defaultValue.name());
-		}
-		if (value == null)
-			return defaultValue;
-			
-		return LabelOrientation.fromName(value);
-	}
-	
-	/**
-	 * Get the value of a AnalysisLabelType preference.
-	 * 
-	 * @param key
-	 * @param defaultValue
-	 * @return
-	 */
-	public ResamplingType getResamplingTypePref(PrefKey key, ResamplingType defaultValue) {
-		
-		String value = "";
-		if (defaultValue == null)
-		{
-			value = prefs.get(key.getValue(), null);
-		}
-		else
-		{
-			value = prefs.get(key.getValue(), defaultValue.name());
-		}
-		if (value == null)
-			return defaultValue;
-			
-		return ResamplingType.fromName(value);
-	}
-	
-	/**
-	 * Set the value of a preference to the specified color.
-	 * 
-	 * @param pref
-	 * @param value
-	 */
-	public void setColorPref(PrefKey pref, Color value) {
-		
-		String encoded = "#" + Integer.toHexString(value.getRGB() & 0x00ffffff);
-		setPref(pref, encoded);
-	}
-	
-	/**
-	 * Set the value of a preference to the specified AnalysisLabelType.
-	 * 
-	 * @param key
-	 * @param value
-	 */
-	public void setAnalysisLabelTypePref(PrefKey key, AnalysisLabelType value) {
-		
-		if (value == null)
-		{
-			setPref(key, null);
-		}
-		else
-		{
-			setPref(key, value.toString());
-		}
-	}
-	
-	/**
-	 * TODO
-	 * 
-	 * @param key
-	 * @param value
-	 */
-	public void setLabelOrientationPref(PrefKey key, LabelOrientation value) {
-		
-		if (value == null)
-		{
-			setPref(key, null);
-		}
-		else
-		{
-			setPref(key, value.toString());
-		}
-	}
-	
-	/**
-	 * Set the value of a preference to the specified ResamplingType.
-	 * 
-	 * @param key
-	 * @param value
-	 */
-	public void setResamplingTypePref(PrefKey key, ResamplingType value) {
-		
-		setPref(key, value.toString());
-	}
-	
-	/**
-	 * Set the value of a preference to the specified FireFilterType.
-	 * 
-	 * @param key
-	 * @param value
-	 */
-	public void setFireFilterTypePref(PrefKey key, FireFilterType value) {
-		
-		setPref(key, value.toString());
-	}
-	
-	/**
-	 * Set the value of a preference to the specified EventTypeToProcess.
-	 * 
-	 * @param key
-	 * @param value
-	 */
-	public void setEventTypePref(PrefKey key, EventTypeToProcess value) {
-		
-		setPref(key, value.toString());
-	}
-	
-	/**
-	 * TODO
-	 * 
-	 * @param key
-	 * @param value
-	 */
-	public void setNoDataLabelPref(PrefKey key, NoDataLabel value) {
-		
-		setPref(key, value.toString());
-	}
-	
-	/**
-	 * TODO
-	 * 
-	 * @param key
-	 * @param value
-	 */
-	public void setLineStylePref(PrefKey key, LineStyle value) {
-		
-		setPref(key, value.toString());
-	}
-	
-	/**
-	 * Store a string preference for a given key.
-	 * 
-	 * @param key
-	 * @param value
-	 */
-	public void setPref(PrefKey key, String value) {
-		
-		prefs.put(key.getValue(), value);
-		firePrefChanged(key);
-	}
-	
-	/**
 	 * Remove a preference value.
 	 * 
 	 * @param key
@@ -1021,24 +560,13 @@ public class FHAESPreferences {
 	}
 	
 	/**
-	 * Store a string ArrayList preference for a given key.
+	 * Remove a preference value.
 	 * 
 	 * @param key
-	 * @param arr
 	 */
-	public void setStringArrayPref(PrefKey key, List<String> arr) {
+	public static void removePref(PrefKey key) {
 		
-		if (arr == null)
-		{
-			prefs.put(key.getValue(), "");
-		}
-		else
-		{
-			String s = arr.toString();
-			prefs.put(key.getValue(), s);
-		}
-		
-		firePrefChanged(key);
+		prefs.remove(key.getValue());
 	}
 	
 	/**
@@ -1112,64 +640,27 @@ public class FHAESPreferences {
 	}
 	
 	/**
-	 * Get a preference as a ArrayList.
-	 * 
-	 * @param key
-	 * @return
-	 */
-	public LinkedList<String> getStringArrayPref(PrefKey key) {
-		
-		String raw = prefs.get(key.getValue(), null);
-		// log.debug("Raw string array as string is : "+raw);
-		
-		if (raw == null)
-			return null;
-		if (!raw.startsWith("[") || !raw.endsWith("]"))
-		{
-			return null;
-		}
-		
-		raw = raw.substring(1, raw.length() - 1);
-		
-		LinkedList<String> arr = new LinkedList<String>();
-		
-		String[] split = raw.split(", ");
-		
-		// log.debug("Pref array contains "+split.length+" items");
-		
-		if (split.length < 1)
-			return null;
-			
-		for (String s : split)
-		{
-			// Trim off brackets and save
-			arr.add(s.replace("|||", ","));
-		}
-		
-		return arr;
-	}
-	
-	/**
-	 * Get a color for the specified preference key.
+	 * Method for getting the string value of a preference.
 	 * 
 	 * @param key
 	 * @param defaultValue
 	 * @return
 	 */
-	public Color getColorPref(PrefKey key, Color defaultValue) {
+	public String getPref(PrefKey key, String defaultValue) {
 		
-		String value = prefs.get(key.getValue(), null);
-		if (value == null)
-			return defaultValue;
-		try
-		{
-			return Color.decode(value);
-		}
-		catch (NumberFormatException nfe)
-		{
-			log.warn("Invalid color for preference '" + key.getValue() + "': " + value);
-			return defaultValue;
-		}
+		return prefs.get(key.getValue(), defaultValue);
+	}
+	
+	/**
+	 * Store a string preference for a given key.
+	 * 
+	 * @param key
+	 * @param value
+	 */
+	public void setPref(PrefKey key, String value) {
+		
+		prefs.put(key.getValue(), value);
+		firePrefChanged(key);
 	}
 	
 	/**
@@ -1208,29 +699,6 @@ public class FHAESPreferences {
 	}
 	
 	/**
-	 * Set the value of a preference to the specified int.
-	 * 
-	 * @param pref
-	 * @param value
-	 */
-	public void setIntPref(PrefKey pref, int value) {
-		
-		// log.debug("Setting integer pref value for key "+pref+" to value: "+value);
-		setPref(pref, Integer.toString(value));
-	}
-	
-	/**
-	 * Set the value of a preference to the specified Double.
-	 * 
-	 * @param pref
-	 * @param value
-	 */
-	public void setDoublePref(PrefKey pref, Double value) {
-		
-		setPref(pref, Double.toString(value));
-	}
-	
-	/**
 	 * Get the specified preference as an int.
 	 * 
 	 * @param key
@@ -1253,6 +721,18 @@ public class FHAESPreferences {
 			log.warn("Invalid integer for preference '" + key.getValue() + "': " + value);
 			return defaultValue;
 		}
+	}
+	
+	/**
+	 * Set the value of a preference to the specified int.
+	 * 
+	 * @param pref
+	 * @param value
+	 */
+	public void setIntPref(PrefKey pref, int value) {
+		
+		// log.debug("Setting integer pref value for key "+pref+" to value: "+value);
+		setPref(pref, Integer.toString(value));
 	}
 	
 	/**
@@ -1279,12 +759,579 @@ public class FHAESPreferences {
 	}
 	
 	/**
-	 * Remove a preference value.
+	 * Set the value of a preference to the specified Double.
+	 * 
+	 * @param pref
+	 * @param value
+	 */
+	public void setDoublePref(PrefKey pref, Double value) {
+		
+		setPref(pref, Double.toString(value));
+	}
+	
+	/**
+	 * TODO
 	 * 
 	 * @param key
+	 * @param defaultValue
+	 * @return
 	 */
-	public static void removePref(PrefKey key) {
+	public ArrayList<String> getArrayListPref(PrefKey key, ArrayList<String> defaultValue) {
 		
-		prefs.remove(key.getValue());
+		String value = prefs.get(key.getValue(), null);
+		if (value == null)
+		{
+			return defaultValue;
+		}
+		
+		String[] values = value.split(ARRAY_DELIMITER);
+		
+		ArrayList<String> arrlist = new ArrayList<String>();
+		
+		for (String v : values)
+		{
+			arrlist.add(v);
+		}
+		
+		if (values.length > 0)
+		{
+			return arrlist;
+		}
+		
+		return defaultValue;
+	}
+	
+	/**
+	 * Set the value of a preference.
+	 * 
+	 * @param key
+	 * @param values
+	 */
+	public void setArrayListPref(PrefKey key, ArrayList<String> values) {
+		
+		String pref = key.getValue();
+		String arrAsStr = "";
+		
+		// support removing via set(null)
+		if (values == null)
+		{
+			prefs.remove(pref);
+		}
+		else
+		{
+			
+			for (String value : values)
+			{
+				arrAsStr += value + ARRAY_DELIMITER;
+			}
+			setPref(key, arrAsStr);
+		}
+	}
+	
+	/**
+	 * TODO
+	 * 
+	 * @param key
+	 * @param defaultValue
+	 * @return
+	 */
+	public ArrayList<Integer> getIntegerArrayPref(PrefKey key, ArrayList<Integer> defaultValue) {
+		
+		String value = prefs.get(key.getValue(), null);
+		if (value == null)
+		{
+			return defaultValue;
+		}
+		
+		String[] values = value.split(ARRAY_DELIMITER);
+		
+		ArrayList<Integer> arrlist = new ArrayList<Integer>();
+		
+		for (String v : values)
+		{
+			
+			if (v == null || v.length() == 0)
+				continue;
+				
+			try
+			{
+				
+				arrlist.add(Integer.parseInt(v));
+			}
+			catch (NumberFormatException e)
+			{
+				log.error("Error casting pref value of '" + v + "' for key " + key + " to integer");
+			}
+		}
+		
+		if (values.length > 0)
+		{
+			return arrlist;
+		}
+		
+		return defaultValue;
+	}
+	
+	/**
+	 * TODO
+	 * 
+	 * @param key
+	 * @param values
+	 */
+	public void setIntegerArrayPref(PrefKey key, ArrayList<Integer> values) {
+		
+		String pref = key.getValue();
+		String arrAsStr = "";
+		
+		// support removing via set(null)
+		if (values == null)
+		{
+			prefs.remove(pref);
+		}
+		else
+		{
+			
+			for (Integer value : values)
+			{
+				arrAsStr += value + ARRAY_DELIMITER;
+			}
+			setPref(key, arrAsStr);
+		}
+	}
+	
+	/**
+	 * Get a preference as a ArrayList.
+	 * 
+	 * @param key
+	 * @return
+	 */
+	public LinkedList<String> getStringArrayPref(PrefKey key) {
+		
+		String raw = prefs.get(key.getValue(), null);
+		// log.debug("Raw string array as string is : "+raw);
+		
+		if (raw == null)
+			return null;
+		if (!raw.startsWith("[") || !raw.endsWith("]"))
+		{
+			return null;
+		}
+		
+		raw = raw.substring(1, raw.length() - 1);
+		
+		LinkedList<String> arr = new LinkedList<String>();
+		
+		String[] split = raw.split(", ");
+		
+		// log.debug("Pref array contains "+split.length+" items");
+		
+		if (split.length < 1)
+			return null;
+			
+		for (String s : split)
+		{
+			// Trim off brackets and save
+			arr.add(s.replace("|||", ","));
+		}
+		
+		return arr;
+	}
+	
+	/**
+	 * Store a string ArrayList preference for a given key.
+	 * 
+	 * @param key
+	 * @param arr
+	 */
+	public void setStringArrayPref(PrefKey key, List<String> arr) {
+		
+		if (arr == null)
+		{
+			prefs.put(key.getValue(), "");
+		}
+		else
+		{
+			String s = arr.toString();
+			prefs.put(key.getValue(), s);
+		}
+		
+		firePrefChanged(key);
+	}
+	
+	/**
+	 * Get the value of an AnalysisType preference.
+	 * 
+	 * @param key
+	 * @param defaultValue
+	 * @return
+	 */
+	public AnalysisType getAnalysisTypePref(PrefKey key, AnalysisType defaultValue) {
+		
+		String value = "";
+		if (defaultValue == null)
+		{
+			value = prefs.get(key.getValue(), null);
+		}
+		else
+		{
+			value = prefs.get(key.getValue(), defaultValue.name());
+		}
+		
+		if (value == null)
+			return defaultValue;
+		if (AnalysisType.fromName(value) == null)
+			return defaultValue;
+		return AnalysisType.fromName(value);
+	}
+	
+	/**
+	 * Set the value of a preference to the specified AnalysisType.
+	 * 
+	 * @param key
+	 * @param value
+	 */
+	public void setAnalysisTypePref(PrefKey key, AnalysisType value) {
+		
+		setPref(key, value.toString());
+	}
+	
+	/**
+	 * Get the value of a AnalysisLabelType preference.
+	 * 
+	 * @param key
+	 * @param defaultValue
+	 * @return
+	 */
+	public AnalysisLabelType getAnalysisLabelTypePref(PrefKey key, AnalysisLabelType defaultValue) {
+		
+		String value = "";
+		if (defaultValue == null)
+		{
+			value = prefs.get(key.getValue(), null);
+		}
+		else
+		{
+			value = prefs.get(key.getValue(), defaultValue.name());
+		}
+		if (value == null)
+			return defaultValue;
+			
+		return AnalysisLabelType.fromName(value);
+	}
+	
+	/**
+	 * Set the value of a preference to the specified AnalysisLabelType.
+	 * 
+	 * @param key
+	 * @param value
+	 */
+	public void setAnalysisLabelTypePref(PrefKey key, AnalysisLabelType value) {
+		
+		if (value == null)
+		{
+			setPref(key, null);
+		}
+		else
+		{
+			setPref(key, value.toString());
+		}
+	}
+	
+	/**
+	 * Get a color for the specified preference key.
+	 * 
+	 * @param key
+	 * @param defaultValue
+	 * @return
+	 */
+	public Color getColorPref(PrefKey key, Color defaultValue) {
+		
+		String value = prefs.get(key.getValue(), null);
+		if (value == null)
+			return defaultValue;
+		try
+		{
+			return Color.decode(value);
+		}
+		catch (NumberFormatException nfe)
+		{
+			log.warn("Invalid color for preference '" + key.getValue() + "': " + value);
+			return defaultValue;
+		}
+	}
+	
+	/**
+	 * Set the value of a preference to the specified color.
+	 * 
+	 * @param pref
+	 * @param value
+	 */
+	public void setColorPref(PrefKey pref, Color value) {
+		
+		String encoded = "#" + Integer.toHexString(value.getRGB() & 0x00ffffff);
+		setPref(pref, encoded);
+	}
+	
+	/**
+	 * Get the value of a EventTypeToProcess preference.
+	 * 
+	 * @param key
+	 * @param defaultValue
+	 * @return
+	 */
+	public EventTypeToProcess getEventTypePref(PrefKey key, EventTypeToProcess defaultValue) {
+		
+		String value = "";
+		if (defaultValue == null)
+		{
+			value = prefs.get(key.getValue(), null);
+		}
+		else
+		{
+			value = prefs.get(key.getValue(), defaultValue.name());
+		}
+		if (value == null)
+			return defaultValue;
+		if (EventTypeToProcess.fromName(value) == null)
+			return defaultValue;
+		return EventTypeToProcess.fromName(value);
+	}
+	
+	/**
+	 * Set the value of a preference to the specified EventTypeToProcess.
+	 * 
+	 * @param key
+	 * @param value
+	 */
+	public void setEventTypePref(PrefKey key, EventTypeToProcess value) {
+		
+		setPref(key, value.toString());
+	}
+	
+	/**
+	 * Get the value of an FireFilterType preference.
+	 * 
+	 * @param key
+	 * @param defaultValue
+	 * @return
+	 */
+	public FireFilterType getFireFilterTypePref(PrefKey key, FireFilterType defaultValue) {
+		
+		String value = "";
+		if (defaultValue == null)
+		{
+			value = prefs.get(key.getValue(), null);
+		}
+		else
+		{
+			value = prefs.get(key.getValue(), defaultValue.name());
+		}
+		if (value == null)
+			return defaultValue;
+		if (FireFilterType.fromName(value) == null)
+			return defaultValue;
+		return FireFilterType.fromName(value);
+	}
+	
+	/**
+	 * Set the value of a preference to the specified FireFilterType.
+	 * 
+	 * @param key
+	 * @param value
+	 */
+	public void setFireFilterTypePref(PrefKey key, FireFilterType value) {
+		
+		setPref(key, value.toString());
+	}
+	
+	/**
+	 * Get the value of a JustificationType preference.
+	 * 
+	 * @param key
+	 * @param defaultValue
+	 * @return
+	 */
+	public JustificationType getJustificationTypePref(PrefKey key, JustificationType defaultValue) {
+		
+		String value = "";
+		if (defaultValue == null)
+		{
+			value = prefs.get(key.getValue(), null);
+		}
+		else
+		{
+			value = prefs.get(key.getValue(), defaultValue.name());
+		}
+		if (value == null)
+			return defaultValue;
+			
+		return JustificationType.fromName(value);
+	}
+	
+	/**
+	 * TODO
+	 * 
+	 * @param key
+	 * @param value
+	 */
+	public void setJustificationTypePref(PrefKey key, JustificationType value) {
+		
+		if (value == null)
+		{
+			setPref(key, null);
+		}
+		else
+		{
+			setPref(key, value.toString());
+		}
+	}
+	
+	/**
+	 * Get the value of a LabelAlignment preference.
+	 * 
+	 * @param key
+	 * @param defaultValue
+	 * @return
+	 */
+	public LabelOrientation getLabelOrientationPref(PrefKey key, LabelOrientation defaultValue) {
+		
+		String value = "";
+		if (defaultValue == null)
+		{
+			value = prefs.get(key.getValue(), null);
+		}
+		else
+		{
+			value = prefs.get(key.getValue(), defaultValue.name());
+		}
+		if (value == null)
+			return defaultValue;
+			
+		return LabelOrientation.fromName(value);
+	}
+	
+	/**
+	 * TODO
+	 * 
+	 * @param key
+	 * @param value
+	 */
+	public void setLabelOrientationPref(PrefKey key, LabelOrientation value) {
+		
+		if (value == null)
+		{
+			setPref(key, null);
+		}
+		else
+		{
+			setPref(key, value.toString());
+		}
+	}
+	
+	/**
+	 * TODO
+	 * 
+	 * @param key
+	 * @param defaultValue
+	 * @return
+	 */
+	public LineStyle getLineStylePref(PrefKey key, LineStyle defaultValue) {
+		
+		String value = "";
+		if (defaultValue == null)
+		{
+			value = prefs.get(key.getValue(), null);
+		}
+		else
+		{
+			value = prefs.get(key.getValue(), defaultValue.name());
+		}
+		
+		if (value == null)
+			return LineStyle.SOLID;
+			
+		return LineStyle.fromString(value);
+	}
+	
+	/**
+	 * TODO
+	 * 
+	 * @param key
+	 * @param value
+	 */
+	public void setLineStylePref(PrefKey key, LineStyle value) {
+		
+		setPref(key, value.toString());
+	}
+	
+	/**
+	 * TODO
+	 * 
+	 * @param key
+	 * @param defaultValue
+	 * @return
+	 */
+	public NoDataLabel getNoDataLabelPref(PrefKey key, NoDataLabel defaultValue) {
+		
+		String value = "";
+		if (defaultValue == null)
+		{
+			value = prefs.get(key.getValue(), null);
+		}
+		else
+		{
+			value = prefs.get(key.getValue(), defaultValue.name());
+		}
+		
+		if (value == null)
+			return NoDataLabel.NULL;
+			
+		return NoDataLabel.fromString(value);
+	}
+	
+	/**
+	 * TODO
+	 * 
+	 * @param key
+	 * @param value
+	 */
+	public void setNoDataLabelPref(PrefKey key, NoDataLabel value) {
+		
+		setPref(key, value.toString());
+	}
+	
+	/**
+	 * Get the value of a AnalysisLabelType preference.
+	 * 
+	 * @param key
+	 * @param defaultValue
+	 * @return
+	 */
+	public ResamplingType getResamplingTypePref(PrefKey key, ResamplingType defaultValue) {
+		
+		String value = "";
+		if (defaultValue == null)
+		{
+			value = prefs.get(key.getValue(), null);
+		}
+		else
+		{
+			value = prefs.get(key.getValue(), defaultValue.name());
+		}
+		if (value == null)
+			return defaultValue;
+			
+		return ResamplingType.fromName(value);
+	}
+	
+	/**
+	 * Set the value of a preference to the specified ResamplingType.
+	 * 
+	 * @param key
+	 * @param value
+	 */
+	public void setResamplingTypePref(PrefKey key, ResamplingType value) {
+		
+		setPref(key, value.toString());
 	}
 }

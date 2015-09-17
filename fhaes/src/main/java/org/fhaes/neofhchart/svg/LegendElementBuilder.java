@@ -48,11 +48,12 @@ public class LegendElementBuilder {
 		
 		Element descriptionTextElement = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "text");
 		
-		Text descriptionText = doc.createTextNode(text);
 		descriptionTextElement.setAttributeNS(null, "x", Integer.toString(xLoc));
 		descriptionTextElement.setAttributeNS(null, "y", Integer.toString(yLoc));
 		descriptionTextElement.setAttributeNS(null, "font-family", App.prefs.getPref(PrefKey.CHART_FONT_FAMILY, "Verdana"));
 		descriptionTextElement.setAttributeNS(null, "font-size", Integer.toString(DESCRIPTION_FONT_SIZE));
+		
+		Text descriptionText = doc.createTextNode(text);
 		descriptionTextElement.appendChild(descriptionText);
 		
 		return descriptionTextElement;

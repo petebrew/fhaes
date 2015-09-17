@@ -51,11 +51,12 @@ public class SampleRecorderPlotElementBuilder {
 			
 		Element depthTextElement = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "text");
 		
-		Text depthText = doc.createTextNode(Integer.toString(tickNum * tickSpacing));
 		depthTextElement.setAttributeNS(null, "x", 0 - labelWidth + "");
 		depthTextElement.setAttributeNS(null, "y", Double.toString(0 - (labelHeight / 2.0) * (1.0 / scaleY) + 2));
 		depthTextElement.setAttributeNS(null, "font-family", App.prefs.getPref(PrefKey.CHART_FONT_FAMILY, "Verdana"));
 		depthTextElement.setAttributeNS(null, "font-size", fontSize + "");
+		
+		Text depthText = doc.createTextNode(Integer.toString(tickNum * tickSpacing));
 		depthTextElement.appendChild(depthText);
 		
 		return depthTextElement;
@@ -71,11 +72,12 @@ public class SampleRecorderPlotElementBuilder {
 		
 		Element sampleDepthTextElement = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "text");
 		
-		Text sampleDepthText = doc.createTextNode(App.prefs.getPref(PrefKey.CHART_AXIS_Y1_LABEL, "Sample Depth"));
 		sampleDepthTextElement.setAttributeNS(null, "x", "0");
 		sampleDepthTextElement.setAttributeNS(null, "y", "0");
 		sampleDepthTextElement.setAttributeNS(null, "font-family", App.prefs.getPref(PrefKey.CHART_FONT_FAMILY, "Verdana"));
 		sampleDepthTextElement.setAttributeNS(null, "font-size", App.prefs.getIntPref(PrefKey.CHART_AXIS_Y1_FONT_SIZE, 10) + "");
+		
+		Text sampleDepthText = doc.createTextNode(App.prefs.getPref(PrefKey.CHART_AXIS_Y1_LABEL, "Sample Depth"));
 		sampleDepthTextElement.appendChild(sampleDepthText);
 		
 		return sampleDepthTextElement;

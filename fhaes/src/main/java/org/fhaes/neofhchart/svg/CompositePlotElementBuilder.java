@@ -96,8 +96,7 @@ public class CompositePlotElementBuilder {
 		borderLine3.setAttributeNS(null, "x2", Integer.toString(firstChartYear));
 		borderLine3.setAttributeNS(null, "y1", "0");
 		borderLine3.setAttributeNS(null, "y2", Double.toString(chartHeight));
-		borderLine3.setAttributeNS(null, "stroke-width",
-				FireChartUtil.pixelsToYears(1, chartWidth, firstChartYear, lastChartYear) + "");
+		borderLine3.setAttributeNS(null, "stroke-width", FireChartUtil.pixelsToYears(1, chartWidth, firstChartYear, lastChartYear) + "");
 		borderLine3.setAttributeNS(null, "stroke", "black");
 		borderLine3.setAttributeNS(null, "stroke-linecap", "butt");
 		
@@ -122,8 +121,7 @@ public class CompositePlotElementBuilder {
 		borderLine4.setAttributeNS(null, "x2", Integer.toString(lastChartYear));
 		borderLine4.setAttributeNS(null, "y1", "0");
 		borderLine4.setAttributeNS(null, "y2", Double.toString(chartHeight));
-		borderLine4.setAttributeNS(null, "stroke-width",
-				FireChartUtil.pixelsToYears(1, chartWidth, firstChartYear, lastChartYear) + "");
+		borderLine4.setAttributeNS(null, "stroke-width", FireChartUtil.pixelsToYears(1, chartWidth, firstChartYear, lastChartYear) + "");
 		borderLine4.setAttributeNS(null, "stroke", "black");
 		borderLine4.setAttributeNS(null, "stroke-linecap", "butt");
 		
@@ -131,24 +129,25 @@ public class CompositePlotElementBuilder {
 	}
 	
 	/**
-	 * Returns a composite name text element based on the input parameters.
+	 * Returns a composite label text element based on the input parameters.
 	 * 
 	 * @param doc
-	 * @return compositeNameTextElement
+	 * @return compositeLabelTextElement
 	 */
-	protected static Element getCompositeNameTextElement(Document doc) {
+	protected static Element getCompositeLabelTextElement(Document doc) {
 		
-		Element compositeNameTextElement = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "text");
+		Element compositeLabelTextElement = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "text");
 		
-		Text compositeNameText = doc.createTextNode(App.prefs.getPref(PrefKey.CHART_COMPOSITE_LABEL_TEXT, "Composite"));
-		compositeNameTextElement.setAttributeNS(null, "x", "0");
-		compositeNameTextElement.setAttributeNS(null, "y", "0");
-		compositeNameTextElement.setAttributeNS(null, "font-family", App.prefs.getPref(PrefKey.CHART_FONT_FAMILY, "Verdana"));
-		compositeNameTextElement.setAttributeNS(null, "font-size",
+		compositeLabelTextElement.setAttributeNS(null, "x", "0");
+		compositeLabelTextElement.setAttributeNS(null, "y", "0");
+		compositeLabelTextElement.setAttributeNS(null, "font-family", App.prefs.getPref(PrefKey.CHART_FONT_FAMILY, "Verdana"));
+		compositeLabelTextElement.setAttributeNS(null, "font-size",
 				Integer.toString(App.prefs.getIntPref(PrefKey.CHART_COMPOSITE_PLOT_LABEL_FONT_SIZE, 10)));
-		compositeNameTextElement.appendChild(compositeNameText);
+				
+		Text compositeLabelText = doc.createTextNode(App.prefs.getPref(PrefKey.CHART_COMPOSITE_LABEL_TEXT, "Composite"));
+		compositeLabelTextElement.appendChild(compositeLabelText);
 		
-		return compositeNameTextElement;
+		return compositeLabelTextElement;
 	}
 	
 	/**

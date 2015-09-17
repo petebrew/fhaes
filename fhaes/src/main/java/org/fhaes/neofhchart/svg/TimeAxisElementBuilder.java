@@ -198,11 +198,12 @@ public class TimeAxisElementBuilder {
 		if (yearToDisplay >= -1 && readerFirstYear < 0)
 			yearToDisplay += 1;
 			
-		Text yearText = doc.createTextNode(Integer.toString(yearToDisplay));
 		yearTextElement.setAttributeNS(null, "x", "0");
 		yearTextElement.setAttributeNS(null, "y", "0");
 		yearTextElement.setAttributeNS(null, "font-family", App.prefs.getPref(PrefKey.CHART_FONT_FAMILY, "Verdana"));
 		yearTextElement.setAttributeNS(null, "font-size", Integer.toString(App.prefs.getIntPref(PrefKey.CHART_TIMELINE_FONT_SIZE, 8)));
+		
+		Text yearText = doc.createTextNode(Integer.toString(yearToDisplay));
 		yearTextElement.appendChild(yearText);
 		
 		return yearTextElement;

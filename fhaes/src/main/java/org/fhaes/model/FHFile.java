@@ -745,7 +745,6 @@ public class FHFile extends File {
 			errorMessage = "Unable to open file";
 			isFileValid = false;
 			return;
-			
 		}
 		catch (InvalidDendroFileException e)
 		{
