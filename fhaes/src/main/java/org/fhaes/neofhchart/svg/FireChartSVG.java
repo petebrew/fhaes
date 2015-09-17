@@ -730,7 +730,7 @@ public class FireChartSVG {
 			}
 			else
 			{
-				chart_title_g.appendChild(getChartTitle("Fire Chart for: \"" + currentFile.getFileNameWithoutExtension() + "\""));
+				chart_title_g.appendChild(getChartTitle(currentFile.getFileNameWithoutExtension()));
 			}
 		}
 		else

@@ -2071,7 +2071,8 @@ public class MainWindow implements PrefsListener {
 				try
 				{
 					File file = FHOperations.createCompositeFile(frame, getSelectedValidFiles(), dialog.getStartYear(),
-							dialog.getEndYear(), dialog.getFireFilterType(), dialog.getFireFilterValue(), dialog.getMinNumberOfSamples());
+							dialog.getEndYear(), dialog.getFireFilterType(), dialog.getFireFilterValue(), dialog.getMinNumberOfSamples(),
+							dialog.getMinNumberOfRecordingSamples());
 					
 					if (file != null)
 					{
@@ -2140,7 +2141,8 @@ public class MainWindow implements PrefsListener {
 					return;
 				
 				File file = FHOperations.createCompositeFile(frame, files, dialog.getStartYear(), dialog.getEndYear(),
-						dialog.getFireFilterType(), dialog.getFireFilterValue(), dialog.getMinNumberOfSamples());
+						dialog.getFireFilterType(), dialog.getFireFilterValue(), dialog.getMinNumberOfSamples(),
+						dialog.getMinNumberOfRecordingSamples());
 				
 				if (file != null)
 				{
