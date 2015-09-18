@@ -63,6 +63,8 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import net.miginfocom.swing.MigLayout;
+
 import org.fhaes.components.BCADYearSpinner;
 import org.fhaes.enums.FeedbackDisplayProtocol;
 import org.fhaes.enums.FeedbackMessageType;
@@ -79,8 +81,6 @@ import org.fhaes.util.Builder;
 import org.fhaes.util.SharedConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import net.miginfocom.swing.MigLayout;
 
 /**
  * SampleInputPanel Class. User interface for entering and managing fire history sample information.
@@ -170,7 +170,7 @@ public class SampleInputPanel extends JPanel implements ChangeListener, Property
 	 * Constructor for SampleinputPanel.
 	 */
 	public SampleInputPanel() {
-		
+	
 		initGUI();
 	}
 	
@@ -180,12 +180,32 @@ public class SampleInputPanel extends JPanel implements ChangeListener, Property
 	 * @param inReqPart
 	 */
 	public SampleInputPanel(FHX2_FileRequiredPart inReqPart) {
-		
+	
 		this.inReqPart = inReqPart;
 		initGUI();
 		redrawSampleListPanel();
 		headerPanel.setVisible(false);
 		inReqPart.addChangeListener(this);
+	}
+	
+	/**
+	 * Return the recording table
+	 * 
+	 * @return
+	 */
+	public RecordingTable getRecordingTable() {
+	
+		return this.recordingTable;
+	}
+	
+	/**
+	 * Return the event table
+	 * 
+	 * @return
+	 */
+	public EventTable getEventTable() {
+	
+		return this.eventTable;
 	}
 	
 	/**
@@ -195,25 +215,24 @@ public class SampleInputPanel extends JPanel implements ChangeListener, Property
 	 * @param evt
 	 */
 	private void autoPopulateButtonActionPerformed(ActionEvent evt) {
-		
+	
 		String[] options = { "From first event", "From beginning of sample" };
 		
-		String res = (String) JOptionPane.showInputDialog(this,
-				"Note that auto-populating the recording years will remove any\n" + "existing recording entries."
-						+ "\n\nSelect where recording should begin:",
-				"Auto populate recordings", JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
-				
+		String res = (String) JOptionPane.showInputDialog(this, "Note that auto-populating the recording years will remove any\n"
+				+ "existing recording entries." + "\n\nSelect where recording should begin:", "Auto populate recordings",
+				JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+		
 		if (res != options[0] && res != options[1])
 			return;
-			
+		
 		// Remove any existing records
 		if (recordingTable != null)
 			RecordingController.deleteAllRecordingsButNotEvents();
-			
+		
 		// Start recording at first event
 		if (res == options[0])
 			RecordingController.addRecordingFromFirstEventToEnd();
-			
+		
 		// Start recording from beginning of sample
 		else
 			RecordingController.addRecordingFromBeginningToEnd();
@@ -223,13 +242,13 @@ public class SampleInputPanel extends JPanel implements ChangeListener, Property
 	 * Generates the header panel and the components it contains.
 	 */
 	private void createSampleHeaderPanel() {
-		
+	
 		sampleNameContainer = new JPanel();
 		sampleNameContainer.setBorder(new MatteBorder(0, 0, 1, 0, new Color(128, 128, 128)));
 		headerPanel.add(sampleNameContainer, BorderLayout.NORTH);
 		sampleNameContainer.setLayout(new MigLayout("insets 0",
 				"[:2:2][right][150,grow][1:10:10,grow,shrinkprio 200][][][][1:10:10,grow,shrinkprio 200][][][][:2:2]", "[40:40:40]"));
-				
+		
 		sampleNameLabel = new JLabel("Sample Name:");
 		sampleNameContainer.add(sampleNameLabel, "cell 1 0,alignx right,aligny baseline");
 		
@@ -240,7 +259,7 @@ public class SampleInputPanel extends JPanel implements ChangeListener, Property
 			
 			@Override
 			public void focusLost(FocusEvent evt) {
-				
+			
 				updateSampleNameInData();
 			}
 		});
@@ -248,29 +267,33 @@ public class SampleInputPanel extends JPanel implements ChangeListener, Property
 			
 			@Override
 			public void keyPressed(KeyEvent evt) {
-				
+			
 				if (evt.getKeyCode() == KeyEvent.VK_ENTER)
 					updateSampleNameInData();
 			}
 			
 			@Override
-			public void keyReleased(KeyEvent evt) {}
+			public void keyReleased(KeyEvent evt) {
+			
+			}
 			
 			@Override
-			public void keyTyped(KeyEvent evt) {}
+			public void keyTyped(KeyEvent evt) {
+			
+			}
 			
 		});
 		sampleNameContainer.add(sampleNameTextBox, "cell 2 0,growx,aligny center");
 		
 		firstYearSpinner = new BCADYearSpinner(SharedConstants.CURRENT_YEAR - 1, SharedConstants.EARLIEST_ALLOWED_YEAR,
 				SharedConstants.CURRENT_YEAR - 1);
-				
+		
 		// Updates the first year of the sample when the value is changed
 		firstYearSpinner.addChangeListener(new ChangeListener() {
 			
 			@Override
 			public void stateChanged(ChangeEvent e) {
-				
+			
 				if (!selectedSampleIndexChanged)
 				{
 					// If spinner year is moved above or equal to the last year spinner's value
@@ -302,13 +325,13 @@ public class SampleInputPanel extends JPanel implements ChangeListener, Property
 		
 		lastYearSpinner = new BCADYearSpinner(SharedConstants.CURRENT_YEAR, SharedConstants.EARLIEST_ALLOWED_YEAR,
 				SharedConstants.CURRENT_YEAR);
-				
+		
 		// Updates the last year of the sample when the value is changed
 		lastYearSpinner.addChangeListener(new ChangeListener() {
 			
 			@Override
 			public void stateChanged(ChangeEvent e) {
-				
+			
 				if (!selectedSampleIndexChanged)
 				{
 					// If spinner year is moved below or equal to the first year spinner's value
@@ -344,7 +367,7 @@ public class SampleInputPanel extends JPanel implements ChangeListener, Property
 			
 			@Override
 			public void actionPerformed(ActionEvent evt) {
-				
+			
 				SampleController.setSamplePith(pithCheckBox.isSelected());
 			}
 		});
@@ -356,7 +379,7 @@ public class SampleInputPanel extends JPanel implements ChangeListener, Property
 			
 			@Override
 			public void actionPerformed(ActionEvent evt) {
-				
+			
 				SampleController.setSampleBark(barkCheckBox.isSelected());
 			}
 		});
@@ -369,7 +392,7 @@ public class SampleInputPanel extends JPanel implements ChangeListener, Property
 	 * @param evt
 	 */
 	private void newSampleButtonActionPerformed(ActionEvent evt) {
-		
+	
 		NewSampleDialog createNewSampleDialog = new NewSampleDialog(new Frame());
 		createNewSampleDialog.setVisible(true);
 		
@@ -400,7 +423,7 @@ public class SampleInputPanel extends JPanel implements ChangeListener, Property
 	 * @param evt
 	 */
 	private void deleteSampleButtonActionPerformed(ActionEvent evt) {
-		
+	
 		if (sampleListBox.getModel().getSize() > 0)
 		{
 			SampleController.deleteSample();
@@ -427,7 +450,7 @@ public class SampleInputPanel extends JPanel implements ChangeListener, Property
 	 * @param evt
 	 */
 	private void addEventButtonActionPerformed(ActionEvent evt) {
-		
+	
 		if (eventTable != null)
 		{
 			if (recordingTable.getNumOfRecordings() == 0 || eventTable.getNumOfEvents() == recordingTable.getMaxNumOfEvents())
@@ -450,7 +473,7 @@ public class SampleInputPanel extends JPanel implements ChangeListener, Property
 	 * @param evt
 	 */
 	private void deleteEventButtonActionPerformed(ActionEvent evt) {
-		
+	
 		if (eventTable != null)
 		{
 			int row = eventTable.getSelectedRow();
@@ -468,7 +491,7 @@ public class SampleInputPanel extends JPanel implements ChangeListener, Property
 	 * @param evt
 	 */
 	private void addRecordingButtonActionPerformed(ActionEvent evt) {
-		
+	
 		if (recordingTable != null)
 		{
 			RecordingController.addNewRecording();
@@ -482,7 +505,7 @@ public class SampleInputPanel extends JPanel implements ChangeListener, Property
 	 * @param evt
 	 */
 	private void deleteRecordingButtonActionPerformed(ActionEvent evt) {
-		
+	
 		if (recordingTable != null)
 		{
 			int row = recordingTable.getSelectedRow();
@@ -500,7 +523,7 @@ public class SampleInputPanel extends JPanel implements ChangeListener, Property
 	 * @param evt
 	 */
 	private void mergeRecordingsButtonActionPerformed(ActionEvent evt) {
-		
+	
 		IOController.getFile().getRequiredPart().getSample(SampleController.getSelectedSampleIndex()).getRecordingTable()
 				.mergeOverlappingRecordings();
 	}
@@ -511,9 +534,9 @@ public class SampleInputPanel extends JPanel implements ChangeListener, Property
 	 * @param text
 	 */
 	private void setEventBorderText(String text) {
-		
-		sampleDataPanel.setBorder(
-				new TitledBorder(new LineBorder(new Color(171, 173, 179)), text, TitledBorder.LEADING, TitledBorder.TOP, null, null));
+	
+		sampleDataPanel.setBorder(new TitledBorder(new LineBorder(new Color(171, 173, 179)), text, TitledBorder.LEADING, TitledBorder.TOP,
+				null, null));
 	}
 	
 	/**
@@ -522,7 +545,7 @@ public class SampleInputPanel extends JPanel implements ChangeListener, Property
 	 * @param index
 	 */
 	public void setSortByComboBoxValue(int index) {
-		
+	
 		sortByComboBox.setSelectedIndex(index);
 	}
 	
@@ -532,7 +555,7 @@ public class SampleInputPanel extends JPanel implements ChangeListener, Property
 	 * @param name
 	 */
 	private void displaySampleName(String name) {
-		
+	
 		if (name.equals(""))
 		{
 			sampleNameTextBox.setText("");
@@ -550,7 +573,7 @@ public class SampleInputPanel extends JPanel implements ChangeListener, Property
 	 */
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
-		
+	
 		if (!done)
 		{
 			int progress = task.getProgress();
@@ -565,12 +588,12 @@ public class SampleInputPanel extends JPanel implements ChangeListener, Property
 	 */
 	@SuppressWarnings("unchecked")
 	private void updateSampleNameInData() {
-		
+	
 		if (sampleNameTextBox.getText().length() < MINIMUM_SAMPLE_NAME_LENGTH)
 		{
 			FireHistoryRecorder.getFeedbackMessagePanel().updateFeedbackMessage(FeedbackMessageType.WARNING,
 					FeedbackDisplayProtocol.MANUAL_HIDE, MINIMUM_SAMPLE_NAME_LENGTH_MESSAGE);
-					
+			
 			sampleNameTextBox.setForeground(Color.RED);
 		}
 		else
@@ -592,7 +615,7 @@ public class SampleInputPanel extends JPanel implements ChangeListener, Property
 	 */
 	@SuppressWarnings("unchecked")
 	public void redrawSampleListPanel() {
-		
+	
 		FHX2_Sample selected = (FHX2_Sample) sampleListBox.getSelectedValue();
 		@SuppressWarnings("rawtypes")
 		DefaultListModel model = (DefaultListModel) this.sampleListBox.getModel();
@@ -622,7 +645,7 @@ public class SampleInputPanel extends JPanel implements ChangeListener, Property
 	 * @param selectedSampleIndex
 	 */
 	public void redrawSampleDataPanel(int selectedSampleIndex) {
-		
+	
 		displaySampleName("");
 		if (selectedSampleIndex > SampleController.INDEX_REPRESENTING_NO_SAMPLES)
 		{
@@ -674,7 +697,7 @@ public class SampleInputPanel extends JPanel implements ChangeListener, Property
 	 * Enables or disables the pith and bark check-boxes according to whether or not the sample starts or ends with an event.
 	 */
 	public static void setCheckBoxEnabledValues() {
-		
+	
 		FHX2_Sample selectedSample = IOController.getFile().getRequiredPart().getSample(SampleController.getSelectedSampleIndex());
 		
 		if (!selectedSample.sampleStartsWithEvent())
@@ -704,7 +727,7 @@ public class SampleInputPanel extends JPanel implements ChangeListener, Property
 	 * Enables and shows specific components on the sampleDataPanel.
 	 */
 	private void enableAndShowDataPanelComponents() {
-		
+	
 		headerPanel.setVisible(true);
 		eventTable.setVisible(true);
 		recordingTable.setVisible(true);
@@ -746,7 +769,7 @@ public class SampleInputPanel extends JPanel implements ChangeListener, Property
 	 * Disables and hides specific components on the sampleDataPanel.
 	 */
 	private void disableAndHideDataPanelComponents() {
-		
+	
 		try
 		{
 			headerPanel.setVisible(false);
@@ -774,7 +797,7 @@ public class SampleInputPanel extends JPanel implements ChangeListener, Property
 	 * Handles updating of the SampleInputPanel's internal control flags when the selected sample index is changed.
 	 */
 	private void handleUpdatedIndex() {
-		
+	
 		int index = sampleListBox.getSelectedIndex();
 		if (index != SampleController.getSelectedSampleIndex() || needToRefreshPanel || firstTimeLoading)
 		{
@@ -798,10 +821,10 @@ public class SampleInputPanel extends JPanel implements ChangeListener, Property
 	 */
 	@Override
 	public void stateChanged(ChangeEvent e) {
-		
+	
 		if (ignoreEventsFlag)
 			return;
-			
+		
 		redrawSampleListPanel();
 	}
 	
@@ -810,7 +833,7 @@ public class SampleInputPanel extends JPanel implements ChangeListener, Property
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private void initGUI() {
-		
+	
 		jPopupMenu1 = new JPopupMenu();
 		jMenuItem1 = new JMenuItem();
 		jMenuItem2 = new JMenuItem();
@@ -827,7 +850,7 @@ public class SampleInputPanel extends JPanel implements ChangeListener, Property
 			
 			@Override
 			public void componentShown(ComponentEvent evt) {
-				
+			
 				newSampleButton.requestFocusInWindow();
 			}
 		});
@@ -861,7 +884,7 @@ public class SampleInputPanel extends JPanel implements ChangeListener, Property
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
+			
 				if (IOController.getFile().getRequiredPart().getNumSamples() >= 2
 						&& SampleController.getSelectedSampleIndex() != IOController.getFile().getRequiredPart().getNumSamples() - 1)
 				{
@@ -885,7 +908,7 @@ public class SampleInputPanel extends JPanel implements ChangeListener, Property
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				
+			
 				if (IOController.getFile().getRequiredPart().getNumSamples() >= 2 && SampleController.getSelectedSampleIndex() != 0)
 				{
 					SampleController.swapSamples(SampleController.getSelectedSampleIndex(), SampleController.getSelectedSampleIndex() - 1);
@@ -907,7 +930,7 @@ public class SampleInputPanel extends JPanel implements ChangeListener, Property
 			
 			@Override
 			public void actionPerformed(ActionEvent evt) {
-				
+			
 				newSampleButtonActionPerformed(evt);
 			}
 		});
@@ -924,7 +947,7 @@ public class SampleInputPanel extends JPanel implements ChangeListener, Property
 			
 			@Override
 			public void actionPerformed(ActionEvent evt) {
-				
+			
 				deleteSampleButtonActionPerformed(evt);
 			}
 		});
@@ -938,7 +961,7 @@ public class SampleInputPanel extends JPanel implements ChangeListener, Property
 			
 			@Override
 			public void valueChanged(ListSelectionEvent arg0) {
-				
+			
 				handleUpdatedIndex();
 			}
 		});
@@ -958,15 +981,15 @@ public class SampleInputPanel extends JPanel implements ChangeListener, Property
 		
 		sortByComboBox.setModel(new DefaultComboBoxModel(new String[] { "Manually", "Name (ascending)", "Name (descending)",
 				"First Year (ascending)", "First Year (descending)", "Last Year (ascending)", "Last Year (descending)" }));
-				
+		
 		sortByComboBox.addItemListener(new ItemListener() {
 			
 			@Override
 			public void itemStateChanged(ItemEvent arg0) {
-				
+			
 				if (IOController.getFile() == null)
 					return;
-					
+				
 				int index = sortByComboBox.getSelectedIndex();
 				
 				if (index == MANUAL_SORTING) // Manual mode; no sorting applied
@@ -1007,7 +1030,7 @@ public class SampleInputPanel extends JPanel implements ChangeListener, Property
 						SampleSorters.sortSampleLastYearAscending();
 					else if (index == LAST_YEAR_DESCENDING)
 						SampleSorters.sortSampleLastYearDescending();
-						
+					
 					moveDownButton.setEnabled(false);
 					moveUpButton.setEnabled(false);
 				}
@@ -1024,9 +1047,9 @@ public class SampleInputPanel extends JPanel implements ChangeListener, Property
 		sampleDataPanel.setMinimumSize(new Dimension(585, 0));
 		sampleDataPanel.setBorder(new TitledBorder(new LineBorder(new Color(171, 173, 179)), "No sample data to display:",
 				TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		sampleDataPanel.setLayout(
-				new MigLayout("insets 2", "[][][600,grow][][]", "[41:41:41][35:35:35,baseline][70:n,grow][35:35:35,baseline][70:n,grow]"));
-				
+		sampleDataPanel.setLayout(new MigLayout("insets 2", "[][][600,grow][][]",
+				"[41:41:41][35:35:35,baseline][70:n,grow][35:35:35,baseline][70:n,grow]"));
+		
 		headerPanel = new JPanel();
 		sampleDataPanel.add(headerPanel, "cell 0 0 5 0,growx,aligny top");
 		headerPanel.setLayout(new BorderLayout(0, 0));
@@ -1043,7 +1066,7 @@ public class SampleInputPanel extends JPanel implements ChangeListener, Property
 			
 			@Override
 			public void actionPerformed(ActionEvent evt) {
-				
+			
 				addEventButtonActionPerformed(evt);
 			}
 		});
@@ -1061,7 +1084,7 @@ public class SampleInputPanel extends JPanel implements ChangeListener, Property
 			
 			@Override
 			public void actionPerformed(ActionEvent evt) {
-				
+			
 				deleteEventButtonActionPerformed(evt);
 			}
 		});
@@ -1085,7 +1108,7 @@ public class SampleInputPanel extends JPanel implements ChangeListener, Property
 			
 			@Override
 			public void actionPerformed(ActionEvent evt) {
-				
+			
 				addRecordingButtonActionPerformed(evt);
 			}
 		});
@@ -1103,7 +1126,7 @@ public class SampleInputPanel extends JPanel implements ChangeListener, Property
 			
 			@Override
 			public void actionPerformed(ActionEvent evt) {
-				
+			
 				mergeRecordingsButtonActionPerformed(evt);
 			}
 		});
@@ -1120,7 +1143,7 @@ public class SampleInputPanel extends JPanel implements ChangeListener, Property
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				
+			
 				autoPopulateButtonActionPerformed(arg0);
 			}
 			
@@ -1139,7 +1162,7 @@ public class SampleInputPanel extends JPanel implements ChangeListener, Property
 			
 			@Override
 			public void actionPerformed(ActionEvent evt) {
-				
+			
 				deleteRecordingButtonActionPerformed(evt);
 			}
 		});
@@ -1175,7 +1198,7 @@ public class SampleInputPanel extends JPanel implements ChangeListener, Property
 		 * @param sample
 		 */
 		public DrawEventPanelTask(FHX2_Sample sample) {
-			
+		
 			super();
 			done = false;
 			selectedSample = sample;
@@ -1186,7 +1209,7 @@ public class SampleInputPanel extends JPanel implements ChangeListener, Property
 		 */
 		@Override
 		public void done() {
-			
+		
 			done = true;
 			progressBar.setValue(100);
 			setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
@@ -1200,7 +1223,7 @@ public class SampleInputPanel extends JPanel implements ChangeListener, Property
 		 */
 		@Override
 		protected ScrollViewport doInBackground() throws Exception {
-			
+		
 			viewPort = new ScrollViewport();
 			
 			int eventIndex = 0;
@@ -1256,7 +1279,7 @@ public class SampleInputPanel extends JPanel implements ChangeListener, Property
 		 */
 		@Override
 		public Dimension getPreferredScrollableViewportSize() {
-			
+		
 			return getPreferredSize();
 		}
 		
@@ -1265,7 +1288,7 @@ public class SampleInputPanel extends JPanel implements ChangeListener, Property
 		 */
 		@Override
 		public int getScrollableBlockIncrement(Rectangle visibleRect, int orientation, int direction) {
-			
+		
 			return SCROLL_BLOCK_INCREMENT_AMOUNT;
 		}
 		
@@ -1274,7 +1297,7 @@ public class SampleInputPanel extends JPanel implements ChangeListener, Property
 		 */
 		@Override
 		public int getScrollableUnitIncrement(Rectangle visibleRect, int orientation, int direction) {
-			
+		
 			return SCROLL_UNIT_INCREMENT_AMOUNT;
 		}
 		
@@ -1283,7 +1306,7 @@ public class SampleInputPanel extends JPanel implements ChangeListener, Property
 		 */
 		@Override
 		public boolean getScrollableTracksViewportHeight() {
-			
+		
 			return false;
 		}
 		
@@ -1292,7 +1315,7 @@ public class SampleInputPanel extends JPanel implements ChangeListener, Property
 		 */
 		@Override
 		public boolean getScrollableTracksViewportWidth() {
-			
+		
 			return true;
 		}
 	}

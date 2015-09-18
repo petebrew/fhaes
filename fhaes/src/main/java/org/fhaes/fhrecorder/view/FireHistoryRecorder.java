@@ -36,6 +36,7 @@ import javax.swing.border.BevelBorder;
 import javax.swing.border.SoftBevelBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.table.TableCellEditor;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -152,6 +153,22 @@ public class FireHistoryRecorder extends JDialog {
 	 */
 	private void doSave(java.awt.event.ActionEvent evt) throws CompositeFileException {
 	
+		// Make sure the table editing is finished
+		if (this.sampleInput.getEventTable() != null)
+		{
+			TableCellEditor editor = this.sampleInput.getEventTable().getCellEditor();
+			if (editor != null)
+			{
+				editor.stopCellEditing();
+			}
+			
+			editor = this.sampleInput.getRecordingTable().getCellEditor();
+			if (editor != null)
+			{
+				editor.stopCellEditing();
+			}
+		}
+		
 		updateOptionalData();
 		
 		if (FileController.isFileCorrupted())
