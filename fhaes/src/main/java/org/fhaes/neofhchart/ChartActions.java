@@ -63,6 +63,7 @@ public class ChartActions {
 	public FHAESAction actionSortFirstFireYear;
 	public FHAESAction actionSortStartYear;
 	public FHAESAction actionSortEndYear;
+	public FHAESAction actionSortAsInFile;
 	
 	// Declare zoom actions
 	public FHAESAction actionZoomIn;
@@ -89,7 +90,7 @@ public class ChartActions {
 	 * @param neochart
 	 */
 	public ChartActions(NeoFHChart neochart) {
-		
+	
 		/*
 		 * SHOW INDEX PLOT
 		 */
@@ -99,7 +100,7 @@ public class ChartActions {
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-				
+			
 				boolean val = (Boolean) getValue(Action.SELECTED_KEY);
 				App.prefs.setBooleanPref(PrefKey.CHART_SHOW_INDEX_PLOT, val);
 			}
@@ -112,12 +113,12 @@ public class ChartActions {
 		 */
 		actionShowChronologyPlot = new FHAESAction("Chronology plot", "firechronologyplot.png", "Chronology",
 				"Hide/show the chronology plot") {
-				
+			
 			private static final long serialVersionUID = 1L;
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-				
+			
 				boolean val = (Boolean) getValue(Action.SELECTED_KEY);
 				App.prefs.setBooleanPref(PrefKey.CHART_SHOW_CHRONOLOGY_PLOT, val);
 			}
@@ -134,7 +135,7 @@ public class ChartActions {
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-				
+			
 				boolean val = (Boolean) getValue(Action.SELECTED_KEY);
 				App.prefs.setBooleanPref(PrefKey.CHART_SHOW_COMPOSITE_PLOT, val);
 			}
@@ -151,7 +152,7 @@ public class ChartActions {
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-				
+			
 				boolean val = (Boolean) getValue(Action.SELECTED_KEY);
 				App.prefs.setBooleanPref(PrefKey.CHART_SHOW_LEGEND, val);
 			}
@@ -168,7 +169,7 @@ public class ChartActions {
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-				
+			
 				showChartProperties();
 			}
 		};
@@ -183,7 +184,7 @@ public class ChartActions {
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-				
+			
 				ActionMap map = neoFHChart.svgCanvas.getActionMap();
 				Action action = map.get(JSVGCanvasEx.ZOOM_IN_ACTION);
 				action.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, null));
@@ -200,7 +201,7 @@ public class ChartActions {
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-				
+			
 				ActionMap map = neoFHChart.svgCanvas.getActionMap();
 				Action action = map.get(JSVGCanvasEx.ZOOM_OUT_ACTION);
 				action.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, null));
@@ -217,7 +218,7 @@ public class ChartActions {
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-				
+			
 				ActionMap map = neoFHChart.svgCanvas.getActionMap();
 				Action action = map.get(JSVGCanvas.RESET_TRANSFORM_ACTION);
 				action.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, null));
@@ -230,15 +231,15 @@ public class ChartActions {
 		 */
 		actionExportCurrentChart = new FHAESAction("Export current chart as...", "document_export.png", "Export Chart",
 				"Export current chart to disk") {
-				
+			
 			private static final long serialVersionUID = 1L;
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-				
+			
 				if (neoFHChart == null)
 					return;
-					
+				
 				neoFHChart.doSingleExport();
 			}
 		};
@@ -248,12 +249,12 @@ public class ChartActions {
 		 */
 		actionBulkExportChartsAsPDF = new FHAESAction("Bulk export to PDF", "pdf22.png", "Chart as PDF",
 				"Export charts from all loaded files to PDF documents") {
-				
+			
 			private static final long serialVersionUID = 1L;
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-				
+			
 				MainWindow.getInstance().bulkExportCharts("PDF");
 			}
 		};
@@ -263,12 +264,12 @@ public class ChartActions {
 		 */
 		actionBulkExportChartsAsPNG = new FHAESAction("Bulk export to PNG", "png.png", "Chart as PNG",
 				"Export charts from all loaded files to PNG images") {
-				
+			
 			private static final long serialVersionUID = 1L;
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-				
+			
 				MainWindow.getInstance().bulkExportCharts("PNG");
 			}
 		};
@@ -278,12 +279,12 @@ public class ChartActions {
 		 */
 		actionBulkExportChartsAsSVG = new FHAESAction("Bulk export to SVG", "svg22.png", "Chart as SVG",
 				"Export charts from all loaded files to SVG files") {
-				
+			
 			private static final long serialVersionUID = 1L;
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-				
+			
 				MainWindow.getInstance().bulkExportCharts("SVG");
 			}
 		};
@@ -293,12 +294,12 @@ public class ChartActions {
 		 */
 		actionShowSampleDepthThreshold = new FHAESAction("Sample depth threshold", null, "Sample depth",
 				"Hide/show the sample depth threshold line") {
-				
+			
 			private static final long serialVersionUID = 1L;
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-				
+			
 				boolean val = (Boolean) getValue(Action.SELECTED_KEY);
 				App.prefs.setBooleanPref(PrefKey.CHART_SHOW_DEPTH_THRESHOLD, val);
 			}
@@ -314,7 +315,7 @@ public class ChartActions {
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-				
+			
 				boolean val = (Boolean) getValue(Action.SELECTED_KEY);
 				App.prefs.setBooleanPref(PrefKey.CHART_SHOW_CHRONOLOGY_PLOT_LABELS, val);
 			}
@@ -330,7 +331,7 @@ public class ChartActions {
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-				
+			
 				boolean val = (Boolean) getValue(Action.SELECTED_KEY);
 				App.prefs.setBooleanPref(PrefKey.CHART_VERTICAL_GUIDES, val);
 			}
@@ -346,7 +347,7 @@ public class ChartActions {
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-				
+			
 				boolean val = (Boolean) getValue(Action.SELECTED_KEY);
 				App.prefs.setBooleanPref(PrefKey.CHART_XAXIS_MINOR_TICKS, val);
 			}
@@ -358,12 +359,12 @@ public class ChartActions {
 		 */
 		actionShowSeriesList = new FHAESAction("Choose series to plot...", "chooseseries.png", "Choose series",
 				"Choose which series to plot") {
-				
+			
 			private static final long serialVersionUID = 1L;
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-				
+			
 				showSeriesList();
 			}
 		};
@@ -377,7 +378,7 @@ public class ChartActions {
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-				
+			
 				sortSeries(SeriesSortType.NAME);
 			}
 		};
@@ -391,7 +392,7 @@ public class ChartActions {
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-				
+			
 				sortSeries(SeriesSortType.CATEGORY);
 			}
 		};
@@ -405,7 +406,7 @@ public class ChartActions {
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-				
+			
 				sortSeries(SeriesSortType.FIRST_FIRE_YEAR);
 			}
 		};
@@ -419,7 +420,7 @@ public class ChartActions {
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-				
+			
 				sortSeries(SeriesSortType.SAMPLE_START_YEAR);
 			}
 		};
@@ -433,8 +434,22 @@ public class ChartActions {
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-				
+			
 				sortSeries(SeriesSortType.SAMPLE_END_YEAR);
+			}
+		};
+		
+		/*
+		 * SORT AS IN FILE
+		 */
+		this.actionSortAsInFile = new FHAESAction("Position in file") {
+			
+			private static final long serialVersionUID = 1L;
+			
+			@Override
+			public void actionPerformed(ActionEvent event) {
+			
+				sortSeries(SeriesSortType.AS_IN_FILE);
 			}
 		};
 		
@@ -448,7 +463,7 @@ public class ChartActions {
 	 * @param chart
 	 */
 	public void setNeoChart(NeoFHChart chart) {
-		
+	
 		this.neoFHChart = chart;
 		
 		actionShowIndexPlot.setEnabled(chart != null);
@@ -479,7 +494,7 @@ public class ChartActions {
 	 * Shows a dialog containing all of the configurable properties for the neoFHChart.
 	 */
 	public void showChartProperties() {
-		
+	
 		ChartPropertiesDialog.showDialog(App.mainFrame, neoFHChart);
 	}
 	
@@ -487,7 +502,7 @@ public class ChartActions {
 	 * Shows a dialog containing a list of all the series in neoFHChart.
 	 */
 	private void showSeriesList() {
-		
+	
 		if (neoFHChart != null)
 		{
 			SeriesListDialog.showDialog(neoFHChart.currentChart, neoFHChart.svgCanvas);
@@ -500,14 +515,14 @@ public class ChartActions {
 	 * @param type
 	 */
 	private void sortSeries(final SeriesSortType type) {
-		
+	
 		if (neoFHChart != null)
 		{
 			Runnable r = new Runnable() {
 				
 				@Override
 				public void run() {
-					
+				
 					if (type.equals(SeriesSortType.NAME))
 					{
 						App.prefs.setPref(PrefKey.CHART_SORT_BY_PREFERENCE, SeriesSortType.NAME.toString());
@@ -533,6 +548,11 @@ public class ChartActions {
 						App.prefs.setPref(PrefKey.CHART_SORT_BY_PREFERENCE, SeriesSortType.SAMPLE_END_YEAR.toString());
 						neoFHChart.currentChart.sortBySampleEndYear();
 					}
+					else if (type.equals(SeriesSortType.AS_IN_FILE))
+					{
+						App.prefs.setPref(PrefKey.CHART_SORT_BY_PREFERENCE, SeriesSortType.AS_IN_FILE.toString());
+						neoFHChart.currentChart.sortAsInFile();
+					}
 				}
 			};
 			
@@ -553,7 +573,9 @@ public class ChartActions {
 		
 		SAMPLE_START_YEAR("sampleStartYear"),
 		
-		SAMPLE_END_YEAR("sampleEndYear");
+		SAMPLE_END_YEAR("sampleEndYear"),
+		
+		AS_IN_FILE("asInFile");
 		
 		// Declare local variables
 		private String humanReadable;
@@ -564,7 +586,7 @@ public class ChartActions {
 		 * @param str
 		 */
 		SeriesSortType(String str) {
-			
+		
 			humanReadable = str;
 		}
 		
@@ -573,7 +595,7 @@ public class ChartActions {
 		 */
 		@Override
 		public String toString() {
-			
+		
 			return humanReadable;
 		}
 	}

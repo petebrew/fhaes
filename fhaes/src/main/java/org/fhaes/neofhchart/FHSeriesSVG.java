@@ -33,6 +33,7 @@ public class FHSeriesSVG extends FHSeries {
 	private String taxon = "";
 	private Color lineColor = Color.BLACK;
 	private Color labelColor = Color.BLACK;
+	final int sequenceInFile;
 	
 	/**
 	 * Create a series from an FHSeries.
@@ -40,10 +41,11 @@ public class FHSeriesSVG extends FHSeries {
 	 * @param series
 	 * @throws Exception
 	 */
-	public FHSeriesSVG(FHSeries series) throws Exception {
-		
-		super(series.getTitle(), series.getFirstYear(), series.hasPith(), series.hasBark(), series.getRecordingYears(),
-				series.getEventYears(), series.getInjuryYears(), series.getCategoryEntries());
+	public FHSeriesSVG(FHSeries series, int sequenceInFile) throws Exception {
+	
+		super(series.getTitle(), series.getFirstYear(), series.hasPith(), series.hasBark(), series.getRecordingYears(), series
+				.getEventYears(), series.getInjuryYears(), series.getCategoryEntries());
+		this.sequenceInFile = sequenceInFile;
 	}
 	
 	/**
@@ -53,12 +55,23 @@ public class FHSeriesSVG extends FHSeries {
 	 * @param taxon
 	 * @throws Exception
 	 */
-	public FHSeriesSVG(FHSeries series, String taxon) throws Exception {
+	public FHSeriesSVG(FHSeries series, String taxon, int sequenceInFile) throws Exception {
+	
+		super(series.getTitle(), series.getFirstYear(), series.hasPith(), series.hasBark(), series.getRecordingYears(), series
+				.getEventYears(), series.getInjuryYears(), series.getCategoryEntries());
 		
-		super(series.getTitle(), series.getFirstYear(), series.hasPith(), series.hasBark(), series.getRecordingYears(),
-				series.getEventYears(), series.getInjuryYears(), series.getCategoryEntries());
-				
 		this.taxon = taxon;
+		this.sequenceInFile = sequenceInFile;
+	}
+	
+	/**
+	 * Get the index position for this series in the original file
+	 * 
+	 * @return
+	 */
+	public int getSequenceInFile() {
+	
+		return sequenceInFile;
 	}
 	
 	/**
@@ -67,7 +80,7 @@ public class FHSeriesSVG extends FHSeries {
 	 * @return
 	 */
 	public boolean isVisible() {
-		
+	
 		return visible;
 	}
 	
@@ -75,7 +88,7 @@ public class FHSeriesSVG extends FHSeries {
 	 * Toggle whether this series should be visible in charts.
 	 */
 	public void toggleVisibility() {
-		
+	
 		visible = !visible;
 	}
 	
@@ -85,7 +98,7 @@ public class FHSeriesSVG extends FHSeries {
 	 * @return
 	 */
 	public Color getLabelColor() {
-		
+	
 		return labelColor;
 	}
 	
@@ -95,7 +108,7 @@ public class FHSeriesSVG extends FHSeries {
 	 * @param labelColor
 	 */
 	public void setLabelColor(Color labelColor) {
-		
+	
 		this.labelColor = labelColor;
 	}
 	
@@ -105,7 +118,7 @@ public class FHSeriesSVG extends FHSeries {
 	 * @return
 	 */
 	public Color getLineColor() {
-		
+	
 		return lineColor;
 	}
 	
@@ -115,7 +128,7 @@ public class FHSeriesSVG extends FHSeries {
 	 * @param color
 	 */
 	public void setLineColor(Color color) {
-		
+	
 		this.lineColor = color;
 	}
 	
@@ -125,7 +138,7 @@ public class FHSeriesSVG extends FHSeries {
 	 * @return
 	 */
 	public String getTaxon() {
-		
+	
 		return taxon;
 	}
 	
@@ -137,7 +150,7 @@ public class FHSeriesSVG extends FHSeries {
 	 * @param taxon
 	 */
 	public void setTaxon(String taxon) {
-		
+	
 		this.taxon = taxon;
 	}
 }

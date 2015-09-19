@@ -52,19 +52,21 @@ public class FireChartUtil {
 	 * @return the converted list
 	 */
 	protected static ArrayList<FHSeriesSVG> seriesListToSeriesSVGList(ArrayList<FHSeries> seriesList) {
-		
+	
 		ArrayList<FHSeriesSVG> seriesSVGList = new ArrayList<FHSeriesSVG>();
 		
+		int seq = 0;
 		for (FHSeries series : seriesList)
 		{
 			try
 			{
-				seriesSVGList.add(new FHSeriesSVG(series));
+				seriesSVGList.add(new FHSeriesSVG(series, seq));
 			}
 			catch (Exception e)
 			{
 				e.printStackTrace();
 			}
+			seq++;
 		}
 		
 		return seriesSVGList;
@@ -77,7 +79,7 @@ public class FireChartUtil {
 	 * @return the converted color value
 	 */
 	protected static String colorToHexString(Color color) {
-		
+	
 		if (color == null)
 		{
 			return null;
@@ -94,7 +96,7 @@ public class FireChartUtil {
 	 * @return a color based on the input integer value
 	 */
 	protected static Color pickColorFromInteger(int num) {
-		
+	
 		int lastDigitOfInteger = num % 10;
 		
 		if (lastDigitOfInteger == 0 || lastDigitOfInteger == 5)
@@ -129,7 +131,7 @@ public class FireChartUtil {
 	 * @return string height
 	 */
 	protected static Integer getStringHeight(int fontStyle, int fontSize, String text) {
-		
+	
 		Font font = new Font(App.prefs.getPref(PrefKey.CHART_FONT_FAMILY, "Verdana"), fontStyle, fontSize);
 		
 		JComponent graphics = new JPanel();
@@ -147,7 +149,7 @@ public class FireChartUtil {
 	 * @return string width
 	 */
 	protected static Integer getStringWidth(int fontStyle, int fontSize, String text) {
-		
+	
 		Font font = new Font(App.prefs.getPref(PrefKey.CHART_FONT_FAMILY, "Verdana"), fontStyle, fontSize);
 		
 		JComponent graphics = new JLabel(text);
@@ -165,7 +167,7 @@ public class FireChartUtil {
 	 * @return a converted value
 	 */
 	protected static double pixelsToYears(double dim, int chartWidth, int firstChartYear, int lastChartYear) {
-		
+	
 		return dim * 1 / yearsToPixels(chartWidth, firstChartYear, lastChartYear);
 	}
 	
@@ -178,7 +180,7 @@ public class FireChartUtil {
 	 * @return a converted value
 	 */
 	protected static double pixelsToYears(int chartWidth, int firstChartYear, int lastChartYear) {
-		
+	
 		return pixelsToYears(1.0, chartWidth, firstChartYear, lastChartYear);
 	}
 	
@@ -192,7 +194,7 @@ public class FireChartUtil {
 	 * @return a converted value
 	 */
 	protected static double yearsToPixels(double dim, int chartWidth, int firstChartYear, int lastChartYear) {
-		
+	
 		return dim * chartWidth / (lastChartYear - firstChartYear);
 	}
 	
@@ -205,7 +207,7 @@ public class FireChartUtil {
 	 * @return a converted value
 	 */
 	protected static double yearsToPixels(int chartWidth, int firstChartYear, int lastChartYear) {
-		
+	
 		return yearsToPixels(1.0, chartWidth, firstChartYear, lastChartYear);
 	}
 }
