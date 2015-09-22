@@ -47,7 +47,6 @@ import javax.swing.event.ListSelectionListener;
 
 import net.miginfocom.swing.MigLayout;
 
-import org.fhaes.enums.FireFilterType;
 import org.fhaes.model.FHFile;
 import org.fhaes.model.FHFileGroup;
 import org.fhaes.model.FHFileGroupCellEditor;
@@ -346,27 +345,30 @@ public class SpatialJoinDialog extends JDialog implements PrefsListener, ActionL
 				// Composite
 				new FHOperations(App.mainFrame, gr.getFiles().toArray(new File[gr.getFiles().size()]), outputfile,
 						compositeDialog.getStartYear(), compositeDialog.getEndYear(), compositeDialog.getFireFilterValue(),
-						compositeDialog.getFireFilterType(), false, true, false, compositeDialog.getMinNumberOfSamples(),
-						compositeDialog.getMinNumberOfRecordingSamples(), null);
+						compositeDialog.getFireFilterType(), compositeDialog.getSampleDepthFilterType(), false, true, false,
+						compositeDialog.getMinNumberOfSamples(), null);
 			}
 			else if (cboOutputType.getSelectedIndex() == 1)
 			{
 				outputfile = new File(file.getAbsolutePath() + File.separator + gr.getName() + ".fhx");
 				
 				// Merge
-				new FHOperations(App.mainFrame, gr.getFiles().toArray(new File[gr.getFiles().size()]), outputfile,
-						temporalDialog.getStartYear(), temporalDialog.getEndYear(), 1.0, FireFilterType.NUMBER_OF_EVENTS, true, false,
-						false, 1, compositeDialog.getMinNumberOfRecordingSamples(), null);
+				
+				FHOperations.joinFiles(App.mainFrame, gr.getFiles().toArray(new File[gr.getFiles().size()]), outputfile,
+						temporalDialog.getStartYear(), temporalDialog.getEndYear());
+				
+				// * new FHOperations(App.mainFrame, gr.getFiles().toArray(new File[gr.getFiles().size()]), outputfile,
+				// temporalDialog.getStartYear(), temporalDialog.getEndYear(), 1.0, FireFilterType.NUMBER_OF_EVENTS,
+				// SampleDepthFilterType.MIN_NUM_SAMPLES, true, false, false, null);
+				
 			}
 			else if (cboOutputType.getSelectedIndex() == 2)
 			{
 				outputfile = new File(file.getAbsolutePath() + File.separator + gr.getName() + ".txt");
 				
 				// Event file
-				new FHOperations(App.mainFrame, gr.getFiles().toArray(new File[gr.getFiles().size()]), outputfile,
-						compositeDialog.getStartYear(), compositeDialog.getEndYear(), compositeDialog.getFireFilterValue(),
-						compositeDialog.getFireFilterType(), false, false, true, compositeDialog.getMinNumberOfSamples(),
-						compositeDialog.getMinNumberOfRecordingSamples(), compositeDialog.getComments());
+				FHOperations.createEventFile(App.mainFrame, gr.getFiles().toArray(new File[gr.getFiles().size()]), outputfile,
+						compositeDialog.getStartYear(), compositeDialog.getEndYear());
 				
 			}
 			

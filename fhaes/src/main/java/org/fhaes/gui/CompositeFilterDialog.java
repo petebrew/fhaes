@@ -39,7 +39,10 @@ import javax.swing.event.ChangeListener;
 import net.miginfocom.swing.MigLayout;
 
 import org.fhaes.enums.FireFilterType;
+import org.fhaes.enums.SampleDepthFilterType;
 import org.fhaes.preferences.FHAESPreferences.PrefKey;
+import org.fhaes.preferences.wrappers.FireFilterTypeWrapper;
+import org.fhaes.preferences.wrappers.SampleDepthFilterTypeWrapper;
 import org.fhaes.preferences.wrappers.SpinnerWrapper;
 import org.fhaes.util.SharedConstants;
 import org.slf4j.Logger;
@@ -68,7 +71,8 @@ public class CompositeFilterDialog extends JDialog implements ActionListener {
 	private JSpinner spnMinSamples;
 	private JTextArea txtComments;
 	private JPanel panelComments;
-	private JSpinner spnMinRecordingSamples;
+	@SuppressWarnings("rawtypes")
+	private JComboBox cboSampleDepthFilterType;
 	
 	/**
 	 * TODO
@@ -167,43 +171,39 @@ public class CompositeFilterDialog extends JDialog implements ActionListener {
 			JPanel panel = new JPanel();
 			panel.setBorder(new TitledBorder(null, "Composite filter", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 			contentPanel.add(panel, "cell 0 1,grow");
-			panel.setLayout(new MigLayout("", "[][58.00,grow][21.00][70.00]", "[][][]"));
-			{
-				JLabel lblFilterType = new JLabel("Filter:");
-				panel.add(lblFilterType, "cell 0 0,alignx right");
-			}
+			panel.setLayout(new MigLayout("", "[][21.00][70.00,grow,fill]", "[][]"));
 			{
 				cboFilterType = new JComboBox();
-				panel.add(cboFilterType, "cell 1 0,growx");
+				panel.add(cboFilterType, "cell 0 0,growx");
 				cboFilterType.setModel(new DefaultComboBoxModel(FireFilterType.values()));
+				new FireFilterTypeWrapper(cboFilterType, PrefKey.COMPOSITE_FILTER_TYPE, FireFilterType.NUMBER_OF_EVENTS);
+				
 			}
 			{
 				JLabel label = new JLabel(">=");
-				panel.add(label, "cell 2 0");
+				panel.add(label, "cell 1 0");
 			}
 			{
 				spnFilterValue = new JSpinner();
 				spnFilterValue.setModel(new SpinnerNumberModel(new Integer(1), new Integer(1), null, new Integer(1)));
-				panel.add(spnFilterValue, "cell 3 0,growx");
+				panel.add(spnFilterValue, "cell 2 0,growx");
 			}
 			{
-				JLabel lblMinNumberOf = new JLabel("Minimum # of samples:");
-				panel.add(lblMinNumberOf, "cell 0 1 3 1,alignx right");
+				cboSampleDepthFilterType = new JComboBox();
+				cboSampleDepthFilterType.setModel(new DefaultComboBoxModel(SampleDepthFilterType.values()));
+				new SampleDepthFilterTypeWrapper(cboSampleDepthFilterType, PrefKey.COMPOSITE_SAMPLE_DEPTH_TYPE,
+						SampleDepthFilterType.MIN_NUM_SAMPLES);
+				panel.add(cboSampleDepthFilterType, "cell 0 1,alignx left");
+			}
+			{
+				JLabel label = new JLabel(">=");
+				panel.add(label, "cell 1 1");
 			}
 			{
 				spnMinSamples = new JSpinner();
 				spnMinSamples.setModel(new SpinnerNumberModel(new Integer(1), new Integer(1), null, new Integer(1)));
 				new SpinnerWrapper(spnMinSamples, PrefKey.COMPOSITE_MIN_SAMPLES, 1);
-				panel.add(spnMinSamples, "cell 3 1,growx");
-			}
-			{
-				JLabel lblMinNumberOf_1 = new JLabel("Minimum # of recorder samples:");
-				panel.add(lblMinNumberOf_1, "cell 0 2 3 1,alignx right");
-			}
-			{
-				spnMinRecordingSamples = new JSpinner();
-				spnMinRecordingSamples.setModel(new SpinnerNumberModel(new Integer(0), new Integer(0), null, new Integer(1)));
-				panel.add(spnMinRecordingSamples, "cell 3 2,growx");
+				panel.add(spnMinSamples, "cell 2 1,growx");
 			}
 		}
 		{
@@ -365,17 +365,14 @@ public class CompositeFilterDialog extends JDialog implements ActionListener {
 	 */
 	public Integer getMinNumberOfSamples() {
 	
-		return (Integer) this.spnMinSamples.getValue();
-	}
-	
-	/**
-	 * Get the minimum number of *recording* samples required for a composite value is returned.
-	 * 
-	 * @return
-	 */
-	public Integer getMinNumberOfRecordingSamples() {
-	
-		return (Integer) this.spnMinRecordingSamples.getValue();
+		if (this.cboSampleDepthFilterType.getSelectedIndex() == 1)
+		{
+			return (Integer) this.spnMinSamples.getValue();
+		}
+		else
+		{
+			return null;
+		}
 	}
 	
 	/**
@@ -389,6 +386,17 @@ public class CompositeFilterDialog extends JDialog implements ActionListener {
 	}
 	
 	/**
+	 * Get the value of the minimum number of values spinner
+	 * 
+	 * @return
+	 */
+	public Integer getMinSamplesValues() {
+	
+		return (Integer) this.spnMinSamples.getValue();
+		
+	}
+	
+	/**
 	 * Get the selected fire filter type
 	 * 
 	 * @return
@@ -396,6 +404,16 @@ public class CompositeFilterDialog extends JDialog implements ActionListener {
 	public FireFilterType getFireFilterType() {
 	
 		return (FireFilterType) cboFilterType.getSelectedItem();
+	}
+	
+	/**
+	 * Get the selected minimum sample filter type
+	 * 
+	 * @return
+	 */
+	public SampleDepthFilterType getSampleDepthFilterType() {
+	
+		return (SampleDepthFilterType) this.cboSampleDepthFilterType.getSelectedItem();
 	}
 	
 	/**

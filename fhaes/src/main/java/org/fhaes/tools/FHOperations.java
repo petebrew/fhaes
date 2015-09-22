@@ -33,6 +33,7 @@ import javax.swing.filechooser.FileFilter;
 
 import org.codehaus.plexus.util.FileUtils;
 import org.fhaes.enums.FireFilterType;
+import org.fhaes.enums.SampleDepthFilterType;
 import org.fhaes.fhfilereader.FHX2FileReader;
 import org.fhaes.filefilter.FHXFileFilter;
 import org.fhaes.filefilter.TXTFileFilter;
@@ -54,10 +55,10 @@ public class FHOperations {
 	private String comments;
 	private Double fireFilterValue;
 	private FireFilterType fireFilterType;
+	private SampleDepthFilterType sampleDepthFilterType;
 	private Boolean createJoinFile;
 	private Boolean createCompositeFile;
 	private Boolean createEventFile;
-	private Integer minRecordingSamples;
 	private Integer minSamples;
 	
 	private static final Logger log = LoggerFactory.getLogger(FHOperations.class);
@@ -68,8 +69,8 @@ public class FHOperations {
 	private boolean highway = true;
 	
 	public FHOperations(JFrame parent, File[] inputFiles, File outputFile, Integer startYear, Integer endYear, Double fireFilterValue,
-			FireFilterType fireFilterType, Boolean createJoinFile, Boolean createCompositeFile, Boolean createEventFile,
-			Integer minNumberSamples, Integer minNumberRecordingSamples, String comments) {
+			FireFilterType fireFilterType, SampleDepthFilterType sampleDepthFilterType, Boolean createJoinFile,
+			Boolean createCompositeFile, Boolean createEventFile, Integer minNumberSamples, String comments) {
 	
 		log.debug("InputFileArray:");
 		for (File f : inputFiles)
@@ -79,7 +80,7 @@ public class FHOperations {
 		
 		this.parent = parent;
 		
-		this.minRecordingSamples = minNumberRecordingSamples;
+		this.sampleDepthFilterType = sampleDepthFilterType;
 		this.minSamples = minNumberSamples;
 		this.inputFileArray = inputFiles;
 		this.outputFile = outputFile;
@@ -95,43 +96,22 @@ public class FHOperations {
 	}
 	
 	/**
-	 * Join multiple files together into a new FHX file. Combines all years from input files.
-	 * 
-	 * @param inputFileArray
-	 * @param outputFile
-	 * @param minNumberSamples
-	 */
-	public static File joinFiles(JFrame parent, File[] inputFileArray, Integer minNumberSamples) {
-	
-		File file = getOutputFile(parent, new FHXFileFilter(), false);
-		
-		if (file != null)
-		{
-			new FHOperations(parent, inputFileArray, file, 0, 0, 1.0, FireFilterType.NUMBER_OF_EVENTS, true, false, false,
-					minNumberSamples, null, null);
-			return file;
-		}
-		
-		return null;
-	}
-	
-	/**
-	 * Create an event file from the specified file array
+	 * Create an event file from the specified file array outputting to the specified file and trimmed to the specified years
 	 * 
 	 * @param parent
 	 * @param inputFileArray
-	 * @param minNumberSamples
+	 * @param outputFile
+	 * @param firstYear
+	 * @param lastYear
 	 * @return
 	 */
-	public static File createEventFile(JFrame parent, File[] inputFileArray, Integer minNumberSamples) {
+	public static File createEventFile(JFrame parent, File[] inputFileArray, File outputFile, Integer firstYear, Integer lastYear) {
 	
-		File file = getOutputFile(parent, new TXTFileFilter(), true);
-		
-		if (file != null)
+		if (outputFile != null)
 		{
-			new FHOperations(parent, inputFileArray, file, 0, 0, 1.0, FireFilterType.NUMBER_OF_EVENTS, false, false, true,
-					minNumberSamples, null, null);
-			return file;
+			new FHOperations(parent, inputFileArray, outputFile, firstYear, lastYear, 1.0, FireFilterType.NUMBER_OF_EVENTS,
+					SampleDepthFilterType.MIN_NUM_SAMPLES, false, false, true, 1, null);
+			return outputFile;
 		}
 		
 		return null;
@@ -139,6 +119,13 @@ public class FHOperations {
 	
 	/**
 	 * Create an event file from the specified file array and trimmed to the specified start and end years
+	 * 
+	 * @param parent
+	 * @param inputFileArray
+	 * @param startYear
+	 * @param endYear
+	 * @param minNumberSamples
+	 * @return
 	 */
 	public static File createEventFile(JFrame parent, File[] inputFileArray, Integer startYear, Integer endYear, Integer minNumberSamples) {
 	
@@ -146,8 +133,8 @@ public class FHOperations {
 		
 		if (file != null)
 		{
-			new FHOperations(parent, inputFileArray, file, startYear, endYear, 1.0, FireFilterType.NUMBER_OF_EVENTS, false, false, true,
-					minNumberSamples, null, null);
+			new FHOperations(parent, inputFileArray, file, startYear, endYear, 1.0, FireFilterType.NUMBER_OF_EVENTS,
+					SampleDepthFilterType.MIN_NUM_SAMPLES, false, false, true, minNumberSamples, null);
 			return file;
 		}
 		
@@ -162,19 +149,22 @@ public class FHOperations {
 	 * @param startYear
 	 * @param endYear
 	 * @param fireFilterType
+	 * @param sampleDepthFilterType
 	 * @param fireFilterValue
 	 * @param minNumberSamples
+	 * @param comments
 	 * @return
 	 */
 	public static File createEventFile(JFrame parent, File[] inputFileArray, Integer startYear, Integer endYear,
-			FireFilterType fireFilterType, Double fireFilterValue, Integer minNumberSamples, String comments) {
+			FireFilterType fireFilterType, SampleDepthFilterType sampleDepthFilterType, Double fireFilterValue, Integer minNumberSamples,
+			String comments) {
 	
 		File file = getOutputFile(parent, new TXTFileFilter(), true);
 		
 		if (file != null)
 		{
-			new FHOperations(parent, inputFileArray, file, startYear, endYear, fireFilterValue, fireFilterType, false, false, true,
-					minNumberSamples, null, comments);
+			new FHOperations(parent, inputFileArray, file, startYear, endYear, fireFilterValue, fireFilterType, sampleDepthFilterType,
+					false, false, true, minNumberSamples, comments);
 			return file;
 		}
 		
@@ -184,16 +174,25 @@ public class FHOperations {
 	/**
 	 * Create a composite file from the specified file array and trimmed to the specified start and end years
 	 * 
+	 * @param parent
+	 * @param inputFileArray
+	 * @param startYear
+	 * @param endYear
+	 * @param fireFilterType
+	 * @param sampleDepthFilterType
+	 * @param fireFilterValue
+	 * @param minNumberSamples
+	 * @return
 	 */
 	public static File createCompositeFile(JFrame parent, File[] inputFileArray, Integer startYear, Integer endYear,
-			FireFilterType fireFilterType, Double fireFilterValue, Integer minNumberSamples, Integer minNumberRecordingSamples) {
+			FireFilterType fireFilterType, SampleDepthFilterType sampleDepthFilterType, Double fireFilterValue, Integer minNumberSamples) {
 	
 		File file = getOutputFile(parent, new FHXFileFilter(), true);
 		
 		if (file != null)
 		{
-			new FHOperations(parent, inputFileArray, file, startYear, endYear, fireFilterValue, fireFilterType, false, true, false,
-					minNumberSamples, minNumberRecordingSamples, null);
+			new FHOperations(parent, inputFileArray, file, startYear, endYear, fireFilterValue, fireFilterType, sampleDepthFilterType,
+					false, true, false, minNumberSamples, null);
 			return file;
 		}
 		
@@ -215,9 +214,31 @@ public class FHOperations {
 		
 		if (file != null)
 		{
-			new FHOperations(parent, inputFileArray, file, startYear, endYear, 1.0, FireFilterType.NUMBER_OF_EVENTS, true, false, false,
-					minNumberSamples, null, null);
+			new FHOperations(parent, inputFileArray, file, startYear, endYear, 1.0, FireFilterType.NUMBER_OF_EVENTS,
+					SampleDepthFilterType.MIN_NUM_SAMPLES, true, false, false, minNumberSamples, null);
 			return file;
+		}
+		
+		return null;
+	}
+	
+	/**
+	 * Join multiple files together into a new FHX file trimmed to the specified years
+	 * 
+	 * @param parent
+	 * @param inputFileArray
+	 * @param outputFile
+	 * @param startYear
+	 * @param endYear
+	 * @return
+	 */
+	public static File joinFiles(JFrame parent, File[] inputFileArray, File outputFile, Integer startYear, Integer endYear) {
+	
+		if (outputFile != null)
+		{
+			new FHOperations(parent, inputFileArray, outputFile, startYear, endYear, 1.0, FireFilterType.NUMBER_OF_EVENTS,
+					SampleDepthFilterType.MIN_NUM_SAMPLES, true, false, false, 1, null);
+			return outputFile;
 		}
 		
 		return null;
@@ -235,8 +256,8 @@ public class FHOperations {
 	public static void joinFiles(JFrame parent, File[] inputFileArray, File outputFile, Integer startYear, Integer endYear,
 			Integer minNumberSamples) {
 	
-		new FHOperations(parent, inputFileArray, outputFile, startYear, endYear, 1.0, FireFilterType.NUMBER_OF_EVENTS, true, false, false,
-				minNumberSamples, null, null);
+		new FHOperations(parent, inputFileArray, outputFile, startYear, endYear, 1.0, FireFilterType.NUMBER_OF_EVENTS,
+				SampleDepthFilterType.MIN_NUM_SAMPLES, true, false, false, minNumberSamples, null);
 	}
 	
 	/**
@@ -247,26 +268,29 @@ public class FHOperations {
 	 */
 	public static void createCompositeFile(JFrame parent, File[] inputFileArray, File outputFile) {
 	
-		new FHOperations(parent, inputFileArray, outputFile, 0, 0, 1.0, FireFilterType.NUMBER_OF_EVENTS, false, true, false, 1, null, null);
+		new FHOperations(parent, inputFileArray, outputFile, 0, 0, 1.0, FireFilterType.NUMBER_OF_EVENTS,
+				SampleDepthFilterType.MIN_NUM_SAMPLES, false, true, false, 1, null);
 	}
 	
 	/**
 	 * Create a composite file from the specified input files. Limit to the specified years and filter on the specified fire filter type and
 	 * value
 	 * 
+	 * @param parent
 	 * @param inputFileArray
 	 * @param outputFile
 	 * @param startYear
 	 * @param endYear
-	 * @param filter
+	 * @param fireFilterType
+	 * @param sampleDepthFilterType
 	 * @param fireFilterValue
 	 * @param minNumberSamples
 	 */
 	public static void createCompositeFile(JFrame parent, File[] inputFileArray, File outputFile, Integer startYear, Integer endYear,
-			FireFilterType filter, Double fireFilterValue, Integer minNumberSamples) {
+			FireFilterType fireFilterType, SampleDepthFilterType sampleDepthFilterType, Double fireFilterValue, Integer minNumberSamples) {
 	
-		new FHOperations(parent, inputFileArray, outputFile, startYear, endYear, fireFilterValue, filter, false, true, false,
-				minNumberSamples, null, null);
+		new FHOperations(parent, inputFileArray, outputFile, startYear, endYear, fireFilterValue, fireFilterType, sampleDepthFilterType,
+				false, true, false, minNumberSamples, null);
 	}
 	
 	/**
@@ -275,6 +299,22 @@ public class FHOperations {
 	@SuppressWarnings({ "deprecation", "unused" })
 	private void performOperation() {
 	
+		/**
+		 * FOR ELENA!!!
+		 * 
+		 */
+		if (sampleDepthFilterType.equals(SampleDepthFilterType.MIN_NUM_SAMPLES))
+		{
+			// User wants to filter to minimum samples
+			// filter value is stored in minSamples
+			
+		}
+		else if (sampleDepthFilterType.equals(SampleDepthFilterType.MIN_NUM_RECORDER_SAMPLES))
+		{
+			// User wants to filter to minimum recorder samples
+			// filter value is stored in minSamples
+		}
+		
 		boolean run = false;
 		
 		/**

@@ -1993,7 +1993,8 @@ public class MainWindow implements PrefsListener {
 					return;
 				
 				FHOperations.createEventFile(frame, getSelectedValidFilesWithEvents(), dialog.getStartYear(), dialog.getEndYear(),
-						dialog.getFireFilterType(), dialog.getFireFilterValue(), dialog.getMinNumberOfSamples(), dialog.getComments());
+						dialog.getFireFilterType(), dialog.getSampleDepthFilterType(), dialog.getFireFilterValue(),
+						dialog.getMinNumberOfSamples(), dialog.getComments());
 			}
 		};
 		actionCreateEventFile.setEnabled(false);
@@ -2041,7 +2042,8 @@ public class MainWindow implements PrefsListener {
 				try
 				{
 					FHOperations.createEventFile(frame, files, dialog.getStartYear(), dialog.getEndYear(), dialog.getFireFilterType(),
-							dialog.getFireFilterValue(), dialog.getMinNumberOfSamples(), dialog.getComments());
+							dialog.getSampleDepthFilterType(), dialog.getFireFilterValue(), dialog.getMinNumberOfSamples(),
+							dialog.getComments());
 				}
 				catch (Exception e)
 				{
@@ -2071,8 +2073,8 @@ public class MainWindow implements PrefsListener {
 				try
 				{
 					File file = FHOperations.createCompositeFile(frame, getSelectedValidFiles(), dialog.getStartYear(),
-							dialog.getEndYear(), dialog.getFireFilterType(), dialog.getFireFilterValue(), dialog.getMinNumberOfSamples(),
-							dialog.getMinNumberOfRecordingSamples());
+							dialog.getEndYear(), dialog.getFireFilterType(), dialog.getSampleDepthFilterType(),
+							dialog.getFireFilterValue(), dialog.getMinNumberOfSamples());
 					
 					if (file != null)
 					{
@@ -2141,8 +2143,8 @@ public class MainWindow implements PrefsListener {
 					return;
 				
 				File file = FHOperations.createCompositeFile(frame, files, dialog.getStartYear(), dialog.getEndYear(),
-						dialog.getFireFilterType(), dialog.getFireFilterValue(), dialog.getMinNumberOfSamples(),
-						dialog.getMinNumberOfRecordingSamples());
+						dialog.getFireFilterType(), dialog.getSampleDepthFilterType(), dialog.getFireFilterValue(),
+						dialog.getMinNumberOfSamples());
 				
 				if (file != null)
 				{
