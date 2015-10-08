@@ -25,6 +25,7 @@ import org.fhaes.enums.LabelOrientation;
 import org.fhaes.enums.LineStyle;
 import org.fhaes.enums.NoDataLabel;
 import org.fhaes.enums.ResamplingType;
+import org.fhaes.enums.SampleDepthFilterType;
 import org.fhaes.preferences.App;
 import org.fhaes.preferences.FHAESPreferences;
 import org.fhaes.preferences.FHAESPreferences.PrefKey;
@@ -55,7 +56,7 @@ public abstract class PrefWrapper<OBJTYPE> {
 	 * @param baseClass
 	 */
 	public PrefWrapper(PrefKey prefName, Object defaultValue, Class<?> baseClass) {
-		
+	
 		this.setPrefName(prefName);
 		this.baseClass = baseClass;
 		this.defaultValue = defaultValue;
@@ -71,7 +72,7 @@ public abstract class PrefWrapper<OBJTYPE> {
 	 * @param defaultValue
 	 */
 	public PrefWrapper(PrefKey prefName, Object defaultValue) {
-		
+	
 		this(prefName, defaultValue, String.class);
 	}
 	
@@ -81,7 +82,7 @@ public abstract class PrefWrapper<OBJTYPE> {
 	 * @param prefName
 	 */
 	public PrefWrapper(PrefKey prefName) {
-		
+	
 		this(prefName, null, String.class);
 	}
 	
@@ -91,7 +92,7 @@ public abstract class PrefWrapper<OBJTYPE> {
 	 * @return
 	 */
 	public boolean isModified() {
-		
+	
 		return valueModified;
 	}
 	
@@ -101,15 +102,15 @@ public abstract class PrefWrapper<OBJTYPE> {
 	 * @param value
 	 */
 	public void setValue(OBJTYPE value) {
-		
+	
 		// same value? ignore it
 		if (prefValue == value)
 			return;
-			
+		
 		// they equal the same thing? ignore it
 		if (prefValue != null && prefValue.equals(value))
 			return;
-			
+		
 		valueModified = true;
 		prefValue = value;
 		
@@ -124,7 +125,7 @@ public abstract class PrefWrapper<OBJTYPE> {
 	 */
 	@SuppressWarnings("unchecked")
 	public OBJTYPE getValue() {
-		
+	
 		return (OBJTYPE) prefValue;
 	}
 	
@@ -132,10 +133,10 @@ public abstract class PrefWrapper<OBJTYPE> {
 	 * Commit the value represented in this pref to prefs storage. Not useful to call if autocommit is on (which it is by default).
 	 */
 	public void commit() {
-		
+	
 		if (!valueModified)
 			return;
-			
+		
 		if (prefValue == null)
 		{
 			FHAESPreferences.removePref(getPrefName());
@@ -194,7 +195,7 @@ public abstract class PrefWrapper<OBJTYPE> {
 		}
 		else
 			throw new IllegalArgumentException("I don't know how to save a pref for type " + baseClass);
-			
+		
 		valueModified = false;
 	}
 	
@@ -202,7 +203,7 @@ public abstract class PrefWrapper<OBJTYPE> {
 	 * TODO
 	 */
 	private void load() {
-		
+	
 		if (baseClass == String.class)
 			prefValue = App.prefs.getPref(getPrefName(), (String) defaultValue);
 		/*
@@ -255,6 +256,10 @@ public abstract class PrefWrapper<OBJTYPE> {
 		{
 			prefValue = App.prefs.getLabelOrientationPref(getPrefName(), (LabelOrientation) defaultValue);
 		}
+		else if (baseClass == SampleDepthFilterType.class)
+		{
+			prefValue = App.prefs.getSampleDepthFilterTypePref(getPrefName(), (SampleDepthFilterType) defaultValue);
+		}
 		else
 		{
 			throw new IllegalArgumentException("I don't know how to load a pref for type " + baseClass);
@@ -267,7 +272,7 @@ public abstract class PrefWrapper<OBJTYPE> {
 	 * @param prefName
 	 */
 	public void setPrefName(PrefKey prefName) {
-		
+	
 		this.prefName = prefName;
 	}
 	
@@ -277,7 +282,7 @@ public abstract class PrefWrapper<OBJTYPE> {
 	 * @return
 	 */
 	public PrefKey getPrefName() {
-		
+	
 		return prefName;
 	}
 }

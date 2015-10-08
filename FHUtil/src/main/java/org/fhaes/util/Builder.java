@@ -49,6 +49,9 @@ public class Builder {
 	 * @return
 	 */
 	public static ImageIcon getImageIcon(String name) {
+	
+		if (name == null)
+			return null;
 		
 		java.net.URL url = cl.getResource(getResourceURL(name));
 		
@@ -69,7 +72,7 @@ public class Builder {
 	 * @return
 	 */
 	public static Image getApplicationIcon() {
-		
+	
 		return Builder.getImage("logo22x22.png");
 	}
 	
@@ -80,7 +83,7 @@ public class Builder {
 	 * @return
 	 */
 	public static Image getImage(String name) {
-		
+	
 		java.net.URL url = cl.getResource(getResourceURL(name));
 		if (url != null)
 			return new ImageIcon(url).getImage();
@@ -95,7 +98,7 @@ public class Builder {
 	 * @return
 	 */
 	public static String getResourceURL(String name) {
-		
+	
 		StringBuffer urlBuffer = new StringBuffer();
 		
 		String packagename = "images";
@@ -114,7 +117,7 @@ public class Builder {
 	 * @return
 	 */
 	public static String getRevisionNumber() {
-		
+	
 		log.debug("Getting revision number");
 		String revision = "Unknown";
 		
@@ -141,7 +144,7 @@ public class Builder {
 							log.error("Raw value for 'Implementation-Build' : " + revision);
 							if (revision.equals("${buildNumber}"))
 								return "Unknown";
-								
+							
 							return revision;
 						}
 					}
@@ -165,7 +168,7 @@ public class Builder {
 	 * @return
 	 */
 	public static String getBuildTimestamp() {
-		
+	
 		String revision = "Unknown";
 		
 		@SuppressWarnings("rawtypes")
@@ -210,7 +213,7 @@ public class Builder {
 	 * @return
 	 */
 	public final static String getVersion() {
-		
+	
 		if (Builder.VERSION == null)
 		{
 			return "development";
@@ -230,7 +233,7 @@ public class Builder {
 	 * @return
 	 */
 	public final static String getVersionAndBuild() {
-		
+	
 		return getVersion() + " (r." + getRevisionNumber() + ")";
 	}
 }
