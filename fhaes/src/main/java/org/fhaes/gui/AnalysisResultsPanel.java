@@ -47,7 +47,6 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTree;
-import javax.swing.SortOrder;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
@@ -1145,7 +1144,7 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 				}
 				
 				table.setModel(seasonalitySummaryModel);
-				table.setSortOrder(0, SortOrder.ASCENDING);
+				// table.setSortOrder(0, SortOrder.ASCENDING);
 			}
 			
 			else if (result.equals(FHAESResult.INTERVAL_SUMMARY))
