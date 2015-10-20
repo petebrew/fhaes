@@ -60,6 +60,8 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingWorker;
 import javax.swing.border.TitledBorder;
 
+import net.miginfocom.swing.MigLayout;
+
 import org.codehaus.plexus.util.FileUtils;
 import org.fhaes.components.JToolBarButton;
 import org.fhaes.enums.EventTypeToProcess;
@@ -89,8 +91,6 @@ import org.jfree.chart.editor.ChartEditor;
 import org.jfree.chart.editor.ChartEditorManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import net.miginfocom.swing.MigLayout;
 
 /**
  * FHSampleSize Class.
@@ -161,12 +161,12 @@ public class FHSampleSize extends JFrame implements ActionListener {
 	 * Launch as stand-alone application.
 	 */
 	public static void main(String[] args) {
-		
+	
 		EventQueue.invokeLater(new Runnable() {
 			
 			@Override
 			public void run() {
-				
+			
 				try
 				{
 					FHSampleSize window = new FHSampleSize(null);
@@ -186,7 +186,7 @@ public class FHSampleSize extends JFrame implements ActionListener {
 	 * @param parent
 	 */
 	public FHSampleSize(Window parent) {
-		
+	
 		initActions();
 		initGUI();
 		initMenu();
@@ -197,7 +197,7 @@ public class FHSampleSize extends JFrame implements ActionListener {
 	 * Set up the Menu bar using actions wherever possible.
 	 */
 	private void initMenu() {
-		
+	
 		JMenuBar menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
 		
@@ -221,7 +221,7 @@ public class FHSampleSize extends JFrame implements ActionListener {
 	 * Initialize shared actions.
 	 */
 	private void initActions() {
-		
+	
 		final FHSampleSize glue = this;
 		
 		actionRun = new FHAESAction("Run Analysis", "run.png") {
@@ -230,13 +230,13 @@ public class FHSampleSize extends JFrame implements ActionListener {
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-				
+			
 				try
 				{
 					// Run the analysis task normally if the file dialog was used to load a file
 					if (fileDialogWasUsed && reader != null)
 						runSSIZAnalysisTask();
-						
+					
 					// Otherwise get file manually from the path in the input box and attempt analysis from there
 					else
 					{
@@ -271,7 +271,7 @@ public class FHSampleSize extends JFrame implements ActionListener {
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-				
+			
 				File theFHX2File = loadFromOpenFileDialog();
 				openFile(theFHX2File);
 			}
@@ -284,7 +284,7 @@ public class FHSampleSize extends JFrame implements ActionListener {
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-				
+			
 				saveAll();
 			}
 		};
@@ -296,7 +296,7 @@ public class FHSampleSize extends JFrame implements ActionListener {
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-				
+			
 				try
 				{
 					File fileToSave = getFileFromSaveDialog("PDF");
@@ -317,7 +317,7 @@ public class FHSampleSize extends JFrame implements ActionListener {
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-				
+			
 				try
 				{
 					curveChart.doSaveAs();
@@ -336,7 +336,7 @@ public class FHSampleSize extends JFrame implements ActionListener {
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-				
+			
 				dispose();
 			}
 		};
@@ -348,7 +348,7 @@ public class FHSampleSize extends JFrame implements ActionListener {
 	 * @param theFHX2File
 	 */
 	public void openFile(File theFHX2File) {
-		
+	
 		try
 		{
 			if (theFHX2File != null)
@@ -379,7 +379,7 @@ public class FHSampleSize extends JFrame implements ActionListener {
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private void initGUI() {
-		
+	
 		App.init();
 		
 		// setBounds(100, 100, 972, 439);
@@ -449,8 +449,8 @@ public class FHSampleSize extends JFrame implements ActionListener {
 		btnBrowse.putClientProperty("JButton.segmentPosition", "middle");
 		
 		JPanel panelAnalysisOptions = new JPanel();
-		panelAnalysisOptions
-				.setBorder(new TitledBorder(null, "Analysis and filtering options", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		panelAnalysisOptions.setBorder(new TitledBorder(null, "Analysis and filtering options", TitledBorder.LEADING, TitledBorder.TOP,
+				null, null));
 		panelParameters.add(panelAnalysisOptions, "cell 0 1,grow");
 		panelAnalysisOptions.setLayout(new MigLayout("", "[100px:100px:180px,right][][][]", "[][][][]"));
 		
@@ -467,7 +467,7 @@ public class FHSampleSize extends JFrame implements ActionListener {
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				
+			
 				if (chkCommonYears.isSelected())
 					App.prefs.setPref(PrefKey.SSIZ_CHK_COMMON_YEARS, "TRUE");
 				else
@@ -481,7 +481,7 @@ public class FHSampleSize extends JFrame implements ActionListener {
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				
+			
 				if (chkExcludeSeriesWithNoEvents.isSelected())
 					App.prefs.setPref(PrefKey.SSIZ_CHK_EXCLUDE_SERIES_WITH_NO_EVENTS, "TRUE");
 				else
@@ -598,8 +598,8 @@ public class FHSampleSize extends JFrame implements ActionListener {
 		
 		JComboBox comboBox = new JComboBox();
 		comboBox.setEnabled(false);
-		comboBox.setModel(new DefaultComboBoxModel(
-				new String[] { "none", "Weibull", "Michaelis-Menten", "Modified Michaelis-Menten", "Logistic", "Modified exponential" }));
+		comboBox.setModel(new DefaultComboBoxModel(new String[] { "none", "Weibull", "Michaelis-Menten", "Modified Michaelis-Menten",
+				"Logistic", "Modified exponential" }));
 		comboBox.setBackground(Color.WHITE);
 		panelChartOptions.add(comboBox, "cell 5 0,growx");
 		cboChartMetric.addActionListener(this);
@@ -673,14 +673,14 @@ public class FHSampleSize extends JFrame implements ActionListener {
 	 */
 	@Override
 	public void actionPerformed(ActionEvent evt) {
-		
+	
 		if (evt.getActionCommand().equals("Reset"))
 		{
 			// Reset the GUI for a new run
 			int response = JOptionPane.showConfirmDialog(this, "Are you sure you want to start a new analysis?");
 			if (response != JOptionPane.YES_OPTION)
 				return;
-				
+			
 			this.txtInputFile.setText(null);
 			this.cboEventType.setSelectedIndex(0);
 			this.spnSimulations.setValue(1000);
@@ -739,7 +739,7 @@ public class FHSampleSize extends JFrame implements ActionListener {
 	 * @return the chosen file if okay was pressed, null if cancel was pressed
 	 */
 	private File loadFromOpenFileDialog() {
-		
+	
 		String lastVisitedFolder = App.prefs.getPref(PrefKey.PREF_LAST_READ_FOLDER, null);
 		JFileChooser fc;
 		
@@ -747,7 +747,7 @@ public class FHSampleSize extends JFrame implements ActionListener {
 			fc = new JFileChooser(lastVisitedFolder);
 		else
 			fc = new JFileChooser();
-			
+		
 		fc.setDialogTitle("Select a FHX2 file for sample size analysis");
 		fc.setFileFilter(new FHXFileFilter());
 		fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
@@ -769,7 +769,7 @@ public class FHSampleSize extends JFrame implements ActionListener {
 	 * @return
 	 */
 	private File getFileFromSaveDialog(String fileTypeToSave) {
-		
+	
 		String lastVisitedFolder = App.prefs.getPref(PrefKey.PREF_LAST_EXPORT_FOLDER, null);
 		JFileChooser fc = new JFileChooser(lastVisitedFolder);
 		File outputFile;
@@ -830,10 +830,10 @@ public class FHSampleSize extends JFrame implements ActionListener {
 			Object[] options = { "Overwrite", "No", "Cancel" };
 			
 			// notes about parameters: null (don't use custom icon), options (the titles of buttons), options[0] (default button title)
-			int response = JOptionPane.showOptionDialog(App.mainFrame,
-					"The file '" + outputFile.getName() + "' already exists.  Are you sure you want to overwrite?", "Confirm",
-					JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
-					
+			int response = JOptionPane.showOptionDialog(App.mainFrame, "The file '" + outputFile.getName()
+					+ "' already exists.  Are you sure you want to overwrite?", "Confirm", JOptionPane.YES_NO_CANCEL_OPTION,
+					JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+			
 			if (response != JOptionPane.YES_OPTION)
 				return null;
 		}
@@ -846,22 +846,22 @@ public class FHSampleSize extends JFrame implements ActionListener {
 	 * @return true if the file is valid, false otherwise
 	 */
 	private Boolean filePathHasValidFile(String inFilePath) {
-		
+	
 		if (inFilePath == null)
 			return false;
-			
+		
 		if (!(inFilePath.substring(inFilePath.length() - 4, inFilePath.length()).equals(".fhx")))
 			return false;
-			
+		
 		File theFHX2File = new File(inFilePath);
 		FHX2FileReader tempReader = new FHX2FileReader(theFHX2File);
 		
 		if (tempReader.getNumberOfSeries() < 6)
 			return false;
-			
+		
 		if (!tempReader.passesBasicSyntaxCheck())
 			return false;
-			
+		
 		return true;
 	}
 	
@@ -869,7 +869,7 @@ public class FHSampleSize extends JFrame implements ActionListener {
 	 * Sets up the checkbox values according to the stored preference keys.
 	 */
 	private void setCheckBoxesToPrefKeyValues() {
-		
+	
 		try
 		{
 			if (App.prefs.getPref(PrefKey.SSIZ_CHK_COMMON_YEARS, null).equals("TRUE"))
@@ -899,13 +899,13 @@ public class FHSampleSize extends JFrame implements ActionListener {
 	 * Set up analysis parameters in SSIZController according to the selected settings in the GUI.
 	 */
 	private SSIZAnalysisModel createSSIZAnalysisModel() {
-		
+	
 		if (reader == null)
 			return null;
-			
+		
 		SSIZAnalysisModel model = new SSIZAnalysisModel((Integer) spnSeed.getValue(), reader,
 				(EventTypeToProcess) cboEventType.getSelectedItem());
-				
+		
 		model.setNumSimulationsToRun((Integer) spnSimulations.getValue());
 		model.setResamplingType((ResamplingType) cboResampling.getSelectedItem());
 		model.setThresholdType((FireFilterType) cboThresholdType.getSelectedItem());
@@ -914,11 +914,11 @@ public class FHSampleSize extends JFrame implements ActionListener {
 		// Do this before restricting to common years (otherwise common year restriction may have no effect)
 		if (chkExcludeSeriesWithNoEvents.isSelected())
 			SSIZController.restrictAnalysisToSeriesWithEvents(model);
-			
+		
 		// Defaults to the original first and last years if no common years are found among the samples
 		if (chkCommonYears.isSelected())
 			SSIZController.restrictAnalysisToCommonYears(model);
-			
+		
 		model.setSegmentArray(segmentationPanel.table.tableModel.getSegments());
 		
 		return model;
@@ -928,7 +928,7 @@ public class FHSampleSize extends JFrame implements ActionListener {
 	 * Set up GUI restrictions depending on the current FHFileReader.
 	 */
 	private void setGUIForFHFileReader() {
-		
+	
 		if (reader == null)
 		{
 			log.debug("File is null so not setting GUI items accordingly");
@@ -965,8 +965,8 @@ public class FHSampleSize extends JFrame implements ActionListener {
 		txtInputFile.setText(reader.getFile().getAbsolutePath());
 		
 		// Force segments to be specified if they've chosen segmentation
-		if (segmentationPanel.chkSegmentation.isSelected() && (segmentationPanel.table.tableModel.getSegments() == null
-				|| segmentationPanel.table.tableModel.getSegments().size() == 0))
+		if (segmentationPanel.chkSegmentation.isSelected()
+				&& (segmentationPanel.table.tableModel.getSegments() == null || segmentationPanel.table.tableModel.getSegments().size() == 0))
 		{
 			actionRun.setEnabled(false);
 			actionSaveAll.setEnabled(false);
@@ -981,7 +981,7 @@ public class FHSampleSize extends JFrame implements ActionListener {
 	 * Run the actual analysis task. This function calls a SwingWorker task so the GUI remains responsive during processing.
 	 */
 	private void runSSIZAnalysisTask() {
-		
+	
 		setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 		mouseListenersActive = false;
 		
@@ -1015,7 +1015,7 @@ public class FHSampleSize extends JFrame implements ActionListener {
 		private final SSIZAnalysisModel model;
 		
 		ResultPair(Integer progress, SSIZAnalysisModel model) {
-			
+		
 			this.progress = progress;
 			this.model = model;
 		}
@@ -1029,7 +1029,7 @@ public class FHSampleSize extends JFrame implements ActionListener {
 		private final SSIZAnalysisModel analysisModel;
 		
 		public DrawSSIZAnalysisTask(SSIZAnalysisModel analysisModel) {
-			
+		
 			super();
 			this.analysisModel = analysisModel;
 			taskWasCancelled = false;
@@ -1037,7 +1037,7 @@ public class FHSampleSize extends JFrame implements ActionListener {
 		
 		@Override
 		protected void process(List<ResultPair> progressList) {
-			
+		
 			ResultPair current = progressList.get(progressList.size() - 1);
 			
 			int maxitems = current.model.getSegments().size() * current.model.getSeriesPoolToAnalyze().size();
@@ -1059,7 +1059,7 @@ public class FHSampleSize extends JFrame implements ActionListener {
 		 */
 		@Override
 		protected SSIZAnalysisModel doInBackground() throws Exception {
-			
+		
 			SSIZController.doPreRunSetup(analysisModel);
 			
 			segmentsDone = 0;
@@ -1106,7 +1106,7 @@ public class FHSampleSize extends JFrame implements ActionListener {
 		 */
 		@Override
 		public void done() {
-			
+		
 			panelProgressBar.setVisible(false);
 			getContentPane().remove(panelProgressBar);
 			
@@ -1157,7 +1157,7 @@ public class FHSampleSize extends JFrame implements ActionListener {
 	 * Updates and redraws the results table and curve chart on the GUI.
 	 */
 	private void displayChartAndTableOutput(SSIZAnalysisModel analysisModel) {
-		
+	
 		try
 		{
 			// Generate the SSIZAnalysisModel for this analysis
@@ -1186,15 +1186,22 @@ public class FHSampleSize extends JFrame implements ActionListener {
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void populateFromAnalysisModel(SSIZAnalysisModel model) {
-		
+	
 		DefaultComboBoxModel combomodel = new DefaultComboBoxModel();
 		
 		for (SegmentModel segment : model.getSegments())
 			combomodel.addElement(segment);
-			
+		
 		cboSegment.setModel(combomodel);
 		cboSegment.setEnabled(model.getSegments().size() > 1);
-		cboSegment.setSelectedIndex(segmentsDone);
+		try
+		{
+			cboSegment.setSelectedIndex(segmentsDone);
+		}
+		catch (IllegalArgumentException e)
+		{
+			log.error("Index out of bounds");
+		}
 		cboChartMetric.setEnabled(true);
 	}
 	
@@ -1202,9 +1209,9 @@ public class FHSampleSize extends JFrame implements ActionListener {
 	 * Update the chart on the screen using the parameters specified by the user.
 	 */
 	private void updateChart() {
-		
-		curveChart = new SSIZCurveChart(
-				SSIZController.getAnalysisResults().toArray(new AnalysisResultsModel[SSIZController.getAnalysisResults().size()]),
+	
+		curveChart = new SSIZCurveChart(SSIZController.getAnalysisResults().toArray(
+				new AnalysisResultsModel[SSIZController.getAnalysisResults().size()]),
 				(MiddleMetric) this.cboChartMetric.getSelectedItem(), (SegmentModel) cboSegment.getSelectedItem());
 		curveChart.addMouseListener(new ChartPopClickListener());
 		curveChart.setMaximumDrawHeight(MAX_DRAW_HEIGHT);
@@ -1219,7 +1226,7 @@ public class FHSampleSize extends JFrame implements ActionListener {
 	 * Copy the simulations chart to the system clip-board.
 	 */
 	private void copyChartToClipboard() {
-		
+	
 		curveChart.doCopy();
 	}
 	
@@ -1227,7 +1234,7 @@ public class FHSampleSize extends JFrame implements ActionListener {
 	 * Copy the simulations data currently selected in the table to the system clip-board.
 	 */
 	private void copyTableToClipboard() {
-		
+	
 		adapter.doCopy();
 	}
 	
@@ -1235,7 +1242,7 @@ public class FHSampleSize extends JFrame implements ActionListener {
 	 * Save the results of the analysis to disk.
 	 */
 	public void saveAll() {
-		
+	
 		// TODO
 	}
 	
@@ -1249,31 +1256,31 @@ public class FHSampleSize extends JFrame implements ActionListener {
 		
 		@Override
 		public Dimension getPreferredScrollableViewportSize() {
-			
+		
 			return getPreferredSize();
 		}
 		
 		@Override
 		public int getScrollableBlockIncrement(Rectangle visibleRect, int orientation, int direction) {
-			
+		
 			return 30;
 		}
 		
 		@Override
 		public boolean getScrollableTracksViewportHeight() {
-			
+		
 			return false;
 		}
 		
 		@Override
 		public boolean getScrollableTracksViewportWidth() {
-			
+		
 			return true;
 		}
 		
 		@Override
 		public int getScrollableUnitIncrement(Rectangle visibleRect, int orientation, int direction) {
-			
+		
 			return 1;
 		}
 	}
@@ -1289,17 +1296,17 @@ public class FHSampleSize extends JFrame implements ActionListener {
 		JMenuItem exportToPNG;
 		
 		public ChartPopupMenu() {
-			
+		
 			JMenuItem chartProperties = new JMenuItem("Properties");
 			chartProperties.addActionListener(new ActionListener() {
 				
 				@Override
 				public void actionPerformed(ActionEvent arg0) {
-					
+				
 					ChartEditor editor = ChartEditorManager.getChartEditor(curveChart.getChart());
 					int result = JOptionPane.showConfirmDialog(null, editor, "Properties", JOptionPane.OK_CANCEL_OPTION,
 							JOptionPane.PLAIN_MESSAGE);
-							
+					
 					if (result == JOptionPane.OK_OPTION)
 						editor.updateChart(curveChart.getChart());
 				}
@@ -1324,7 +1331,7 @@ public class FHSampleSize extends JFrame implements ActionListener {
 				
 				@Override
 				public void actionPerformed(ActionEvent arg0) {
-					
+				
 					copyChartToClipboard();
 				}
 			});
@@ -1342,14 +1349,14 @@ public class FHSampleSize extends JFrame implements ActionListener {
 		JMenuItem exportToTAB;
 		
 		public TablePopupMenu() {
-			
+		
 			exportToTAB = new JMenuItem("Export to tab delimited text file");
 			exportToTAB.setIcon(Builder.getImageIcon("formattab.png"));
 			exportToTAB.addActionListener(new ActionListener() {
 				
 				@Override
 				public void actionPerformed(ActionEvent arg0) {
-					
+				
 					File fileToSave = getFileFromSaveDialog("TAB");
 					if (fileToSave != null)
 						SSIZResultsTable.exportResultsTableToTAB(fileToSave, adapter);
@@ -1365,7 +1372,7 @@ public class FHSampleSize extends JFrame implements ActionListener {
 				
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					
+				
 					simulationsTable.selectAll();
 				}
 			});
@@ -1377,7 +1384,7 @@ public class FHSampleSize extends JFrame implements ActionListener {
 				
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					
+				
 					copyTableToClipboard();
 				}
 			});
@@ -1392,20 +1399,20 @@ public class FHSampleSize extends JFrame implements ActionListener {
 		
 		@Override
 		public void mousePressed(MouseEvent arg0) {
-			
+		
 			if (arg0.isPopupTrigger() && mouseListenersActive)
 				doPop(arg0);
 		}
 		
 		@Override
 		public void mouseReleased(MouseEvent arg0) {
-			
+		
 			if (arg0.isPopupTrigger() && mouseListenersActive)
 				doPop(arg0);
 		}
 		
 		private void doPop(MouseEvent arg0) {
-			
+		
 			ChartPopupMenu menu = new ChartPopupMenu();
 			menu.show(arg0.getComponent(), arg0.getX(), arg0.getY());
 		}
@@ -1418,20 +1425,20 @@ public class FHSampleSize extends JFrame implements ActionListener {
 		
 		@Override
 		public void mousePressed(MouseEvent arg0) {
-			
+		
 			if (arg0.isPopupTrigger() && mouseListenersActive)
 				doPop(arg0);
 		}
 		
 		@Override
 		public void mouseReleased(MouseEvent arg0) {
-			
+		
 			if (arg0.isPopupTrigger() && mouseListenersActive)
 				doPop(arg0);
 		}
 		
 		private void doPop(MouseEvent arg0) {
-			
+		
 			TablePopupMenu menu = new TablePopupMenu();
 			menu.show(arg0.getComponent(), arg0.getX(), arg0.getY());
 		}

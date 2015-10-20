@@ -54,7 +54,7 @@ public class SSIZController {
 	 * @return
 	 */
 	public static Integer[] getFiresByYear(SSIZAnalysisModel model, ArrayList<ArrayList<Integer>> pool, SegmentModel segment) {
-		
+	
 		int[] firesByYear = new int[pool.get(0).size()];
 		int[] recordingByYear = new int[pool.get(0).size()];
 		
@@ -86,7 +86,8 @@ public class SSIZController {
 				}
 			}
 		}
-		
+		// Trim results to the year range specified by the user
+		ArrayList<Integer> yearsArray = model.getReader().getYearArray();
 		ArrayList<ArrayList<Double>> filters = model.getReader().getFilterArrays(model.getEventType());
 		
 		// Set fire count in a year to zero when it doesn't reach the threshold value
@@ -106,15 +107,22 @@ public class SSIZController {
 		}
 		else if (model.getThresholdType().equals(FireFilterType.PERCENTAGE_OF_EVENTS))
 		{
+			log.debug("Model threshold value = " + model.getThresholdValue());
 			for (Double yearval : filters.get(2))
 			{
 				rowindex++;
 				double val = (yearval * 100);
+				double thresholdvalue = model.getThresholdValue();
+				// log.debug("Row index = " + rowindex + " - value = " + val);
 				
-				if (val < model.getThresholdValue())
+				if (val < thresholdvalue && yearval != 0)
 				{
 					// log.debug("Filtering out index " + rowindex);
 					firesByYear[rowindex] = 0;
+				}
+				else
+				{
+					// log.debug("Value ok at index: " + rowindex + " = " + yearsArray.get(rowindex));
 				}
 			}
 		}
@@ -123,16 +131,22 @@ public class SSIZController {
 			log.debug("No event threshold type specified so not filtering");
 		}
 		
-		// Trim results to the year range specified by the user
-		ArrayList<Integer> yearsArray = model.getReader().getYearArray();
 		int firstind = yearsArray.indexOf(segment.getFirstYear());
 		int lastind = yearsArray.indexOf(segment.getLastYear());
+		
+		// log.debug("Year in array at index 0 : " + yearsArray.get(0));
+		// log.debug("Year in array at index " + (yearsArray.size() - 1) + " : " + yearsArray.get(yearsArray.size() - 1));
+		// log.debug("Index of year : " + segment.getFirstYear() + " is " + firstind);
+		// log.debug("Index of year : " + segment.getLastYear() + " is " + lastind);
+		
 		ArrayList<Integer> newarr = new ArrayList<Integer>();
 		
 		for (int i = firstind; i <= lastind; i++)
 		{
 			newarr.add(firesByYear[i]);
 		}
+		
+		// log.debug("Size of trimmed array : " + newarr.size());
 		
 		return newarr.toArray(new Integer[newarr.size()]);
 	}
@@ -144,7 +158,7 @@ public class SSIZController {
 	 * @throws Exception
 	 */
 	public static void doPreRunSetup(SSIZAnalysisModel model) throws Exception {
-		
+	
 		// First do sanity checks in file
 		if (model.getReader().getFirstYear() == 0 || model.getReader().getLastYear() == 0)
 		{
@@ -167,7 +181,7 @@ public class SSIZController {
 	 * @throws Exception
 	 */
 	public static Double getCenturyMultiplier(SSIZAnalysisModel model, SegmentModel segment) throws Exception {
-		
+	
 		// Do sanity checks on requested years
 		if (segment.getFirstYear() < model.getReader().getFirstYear())
 		{
@@ -207,7 +221,7 @@ public class SSIZController {
 	 */
 	public static void runSampleSizeAnalysisLoopIteration(SSIZAnalysisModel model, Double centuryMultiplier, int currentIteration,
 			SegmentModel segment) throws Exception {
-			
+	
 		ArrayList<Double> firesPerCenturyPerSim = new ArrayList<Double>();
 		
 		// Loop from 0 to number of simulations requested
@@ -229,11 +243,25 @@ public class SSIZController {
 			}
 			
 			Integer[] firesByYear = getFiresByYear(model, pool, segment);
+			
 			int countOfFiresInSim = 0;
 			for (int i = 0; i < firesByYear.length; i++)
 			{
 				if (firesByYear[i] > 0)
 					countOfFiresInSim++;
+			}
+			
+			if (currentIteration == 26)
+			{
+				for (int x = 0; x < firesByYear.length; x++)
+				{
+					log.debug(" - " + firesByYear[x]);
+				}
+				
+				log.debug("Count of fires per sim    = " + countOfFiresInSim);
+				log.debug("Century multiplier        = " + centuryMultiplier);
+				log.debug("Fires per centruy per sim = " + (countOfFiresInSim * centuryMultiplier));
+				
 			}
 			
 			firesPerCenturyPerSim.add(countOfFiresInSim * centuryMultiplier);
@@ -258,7 +286,7 @@ public class SSIZController {
 	 * @return
 	 */
 	public static ArrayList<AnalysisResultsModel> getAnalysisResults() {
-		
+	
 		return analysisResults;
 	}
 	
@@ -266,7 +294,7 @@ public class SSIZController {
 	 * Restricts the series pool to contain only the years shared between all series.
 	 */
 	public static void restrictAnalysisToCommonYears(SSIZAnalysisModel model) {
-		
+	
 		ArrayList<Integer> arrayOfFirstYears = getIntegerArrayOfFirstYears(model);
 		ArrayList<Integer> arrayOfLastYears = getIntegerArrayOfLastYears(model);
 		
@@ -304,7 +332,7 @@ public class SSIZController {
 	 * Restricts the series pool to contain only series that have recorded at least one event.
 	 */
 	public static void restrictAnalysisToSeriesWithEvents(SSIZAnalysisModel model) {
-		
+	
 		ArrayList<ArrayList<Integer>> currentSeriesPool = model.getSeriesPoolToAnalyze();
 		ArrayList<ArrayList<Integer>> newSeriesPool = new ArrayList<ArrayList<Integer>>();
 		
@@ -354,7 +382,7 @@ public class SSIZController {
 	 * @param indexesOfRemovedSeries
 	 */
 	private static void recalculateFirstAndLastYears(SSIZAnalysisModel model, ArrayList<Integer> indexesOfRemovedSeries) {
-		
+	
 		ArrayList<Integer> arrayOfFirstYears = getIntegerArrayOfFirstYears(model);
 		ArrayList<Integer> arrayOfLastYears = getIntegerArrayOfLastYears(model);
 		
@@ -389,12 +417,12 @@ public class SSIZController {
 	 * @return arrayOfFirstYears
 	 */
 	private static ArrayList<Integer> getIntegerArrayOfFirstYears(SSIZAnalysisModel model) {
-		
+	
 		ArrayList<Integer> arrayOfFirstYears = new ArrayList<Integer>();
 		
 		for (int i = 0; i < model.getReader().getNumberOfSeries(); i++)
 			arrayOfFirstYears.add(model.getReader().getStartYearPerSample()[i]);
-			
+		
 		return arrayOfFirstYears;
 	}
 	
@@ -405,12 +433,12 @@ public class SSIZController {
 	 * @return arrayOfLastYears
 	 */
 	private static ArrayList<Integer> getIntegerArrayOfLastYears(SSIZAnalysisModel model) {
-		
+	
 		ArrayList<Integer> arrayOfLastYears = new ArrayList<Integer>();
 		
 		for (int i = 0; i < model.getReader().getNumberOfSeries(); i++)
 			arrayOfLastYears.add(model.getReader().getLastYearPerSample()[i]);
-			
+		
 		return arrayOfLastYears;
 	}
 	
@@ -423,7 +451,7 @@ public class SSIZController {
 	 * @return
 	 */
 	private static ArrayList<ArrayList<Integer>> performResamplingWithReplacement(int numSamplesToChoose, SSIZAnalysisModel model) {
-		
+	
 		ArrayList<ArrayList<Integer>> newPool = new ArrayList<ArrayList<Integer>>();
 		
 		int sizeOfCompletePool = model.getSeriesPoolToAnalyze().size();
@@ -453,13 +481,13 @@ public class SSIZController {
 	 * @return
 	 */
 	private static ArrayList<ArrayList<Integer>> performResamplingWithoutReplacement(int numSamplesToChoose, SSIZAnalysisModel model) {
-		
+	
 		ArrayList<ArrayList<Integer>> tempPool = new ArrayList<ArrayList<Integer>>();
 		ArrayList<ArrayList<Integer>> completeSeriesPool = model.getSeriesPoolToAnalyze();
 		
 		if (completeSeriesPool.size() < numSamplesToChoose)
 			throw new ArrayIndexOutOfBoundsException("More samples requested than are in the complete pool");
-			
+		
 		@SuppressWarnings("unchecked")
 		ArrayList<ArrayList<Integer>> remainingSeriesToChooseFrom = (ArrayList<ArrayList<Integer>>) completeSeriesPool.clone();
 		
