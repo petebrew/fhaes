@@ -70,34 +70,14 @@ public class FHSeasonality {
 			Boolean jCheckmewood1, Boolean jChecklewood1, Boolean jChecklatewood1, Boolean jCheckdormant2, Boolean jCheckeewood2,
 			Boolean jCheckmewood2, Boolean jChecklewood2, Boolean jChecklatewood2, int jTextBeginningYear1, int jTextEndingYear,
 			EventTypeToProcess eventTypeToProcess) {
-			
+	
 		boolean run = runSanityChecks(inputFile, jCheckdormant1, jCheckeewood1, jCheckmewood1, jChecklewood1, jChecklatewood1,
 				jCheckdormant2, jCheckeewood2, jCheckmewood2, jChecklewood2, jChecklatewood2, jTextBeginningYear1, jTextEndingYear,
 				eventTypeToProcess);
-				
+		
 		/*
 		 * If at least one file has been choosen then the progam will run otherwise get message
 		 */
-		
-		// *********************
-		// FOR ELENA
-		// *********************
-		if (eventTypeToProcess.equals(EventTypeToProcess.FIRE_EVENT))
-		{
-			// Do calculations on fire events (capitals)
-		}
-		else if (eventTypeToProcess.equals(EventTypeToProcess.INJURY_EVENT))
-		{
-			// Do calculations on injury events (lowercase)
-		}
-		else if (eventTypeToProcess.equals(EventTypeToProcess.FIRE_AND_INJURY_EVENT))
-		{
-			// Do calculations on injury AND fire events (capitals and lowercase)
-		}
-		else
-		{
-			log.error("Unsupported event type specified");
-		}
 		
 		// MAIN RUN
 		if (run)
@@ -106,255 +86,128 @@ public class FHSeasonality {
 			ArrayList<FHX2FileReader> myReader = new ArrayList<FHX2FileReader>();
 			ArrayList<Integer> firstYears = new ArrayList<Integer>();
 			ArrayList<Integer> lastYears = new ArrayList<Integer>();
-			ArrayList<String> TCapsHeading = new ArrayList<String>();
 			Integer minFirstYear = new Integer(9999);
-			// Integer minFirstYearComp = new Integer(9999);
 			Integer maxLastYear = new Integer(0);
-			// Integer maxLastYearComp = new Integer(0);
-			// String sampleNameComp = new String("");
-			String combo1 = new String();
-			// String dotsTempComp = new String();
-			String combo2 = new String();
+			String combination1 = new String();
+			String combination2 = new String();
 			String savePath = new String();
-			String capsheading = "  D    E    M    L    A  ";
 			savePath = inputFile[0].getAbsolutePath();
-			// DecimalFormat twoPlace = new DecimalFormat("0.00");
 			DecimalFormat onePlace = new DecimalFormat("0.0");
+			// DecimalFormat twoPlace = new DecimalFormat("0.00");
 			
-			// *** CURSOR VARIABLES *** //
-			// Cursor normalCursor = new Cursor(Cursor.DEFAULT_CURSOR);
-			// setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-			
-			/*
-			 * create the name of the comb1
-			 */
-			combo1 = "";
+			// Create the name of the combination1
+			combination1 = "";
 			if (eventTypeToProcess.equals(EventTypeToProcess.FIRE_EVENT))
 			{
 				if (jCheckdormant1)
-				{
-					combo1 = combo1 + "D";
-				}
-				;
+					combination1 = combination1 + "D";
 				if (jCheckeewood1)
-				{
-					combo1 = combo1 + "E";
-				}
-				;
+					combination1 = combination1 + "E";
 				if (jCheckmewood1)
-				{
-					combo1 = combo1 + "M";
-				}
-				;
+					combination1 = combination1 + "M";
 				if (jChecklewood1)
-				{
-					combo1 = combo1 + "L";
-				}
-				;
+					combination1 = combination1 + "L";
 				if (jChecklatewood1)
-				{
-					combo1 = combo1 + "A";
-				}
-				;
+					combination1 = combination1 + "A";
 			}
 			else if (eventTypeToProcess.equals(EventTypeToProcess.INJURY_EVENT))
 			{
 				if (jCheckdormant1)
-				{
-					combo1 = combo1 + "d";
-				}
-				;
+					combination1 = combination1 + "d";
 				if (jCheckeewood1)
-				{
-					combo1 = combo1 + "e";
-				}
-				;
+					combination1 = combination1 + "e";
 				if (jCheckmewood1)
-				{
-					combo1 = combo1 + "m";
-				}
-				;
+					combination1 = combination1 + "m";
 				if (jChecklewood1)
-				{
-					combo1 = combo1 + "l";
-				}
-				;
+					combination1 = combination1 + "l";
 				if (jChecklatewood1)
-				{
-					combo1 = combo1 + "a";
-				}
-				;
+					combination1 = combination1 + "a";
 			}
 			else if (eventTypeToProcess.equals(EventTypeToProcess.FIRE_AND_INJURY_EVENT))
 			{
 				if (jCheckdormant1)
-				{
-					combo1 = combo1 + "Dd";
-				}
-				;
+					combination1 = combination1 + "Dd";
 				if (jCheckeewood1)
-				{
-					combo1 = combo1 + "Ee";
-				}
-				;
+					combination1 = combination1 + "Ee";
 				if (jCheckmewood1)
-				{
-					combo1 = combo1 + "Mm";
-				}
-				;
+					combination1 = combination1 + "Mm";
 				if (jChecklewood1)
-				{
-					combo1 = combo1 + "Ll";
-				}
-				;
+					combination1 = combination1 + "Ll";
 				if (jChecklatewood1)
-				{
-					combo1 = combo1 + "Aa";
-				}
-				;
+					combination1 = combination1 + "Aa";
 			}
 			else
 			{
 				log.error("Unsupported event type specified");
 			}
+			log.debug("combination1 is " + combination1);
 			
-			/*
-			 * create the name of the comb2
-			 */
-			System.out.println("combo1 is " + combo1);
-			combo2 = "";
+			// Create the name of the combination2
+			combination2 = "";
 			if (eventTypeToProcess.equals(EventTypeToProcess.FIRE_EVENT))
 			{
 				if (jCheckdormant2)
-				{
-					combo2 = combo2 + "D";
-				}
-				;
+					combination2 = combination2 + "D";
 				if (jCheckeewood2)
-				{
-					combo2 = combo2 + "E";
-				}
-				;
+					combination2 = combination2 + "E";
 				if (jCheckmewood2)
-				{
-					combo2 = combo2 + "M";
-				}
-				;
+					combination2 = combination2 + "M";
 				if (jChecklewood2)
-				{
-					combo2 = combo2 + "L";
-				}
-				;
+					combination2 = combination2 + "L";
 				if (jChecklatewood2)
-				{
-					combo2 = combo2 + "A";
-				}
-				;
+					combination2 = combination2 + "A";
 			}
 			else if (eventTypeToProcess.equals(EventTypeToProcess.INJURY_EVENT))
 			{
 				if (jCheckdormant2)
-				{
-					combo2 = combo2 + "d";
-				}
-				;
+					combination2 = combination2 + "d";
 				if (jCheckeewood2)
-				{
-					combo2 = combo2 + "e";
-				}
-				;
+					combination2 = combination2 + "e";
 				if (jCheckmewood2)
-				{
-					combo2 = combo2 + "m";
-				}
-				;
+					combination2 = combination2 + "m";
 				if (jChecklewood2)
-				{
-					combo2 = combo2 + "l";
-				}
-				;
+					combination2 = combination2 + "l";
 				if (jChecklatewood2)
-				{
-					combo2 = combo2 + "a";
-				}
-				;
+					combination2 = combination2 + "a";
 			}
 			else if (eventTypeToProcess.equals(EventTypeToProcess.FIRE_AND_INJURY_EVENT))
 			{
 				if (jCheckdormant2)
-				{
-					combo2 = combo2 + "Dd";
-				}
-				;
+					combination2 = combination2 + "Dd";
 				if (jCheckeewood2)
-				{
-					combo2 = combo2 + "Ee";
-				}
-				;
+					combination2 = combination2 + "Ee";
 				if (jCheckmewood2)
-				{
-					combo2 = combo2 + "Mm";
-				}
-				;
+					combination2 = combination2 + "Mm";
 				if (jChecklewood2)
-				{
-					combo2 = combo2 + "Ll";
-				}
-				;
+					combination2 = combination2 + "Ll";
 				if (jChecklatewood2)
-				{
-					combo2 = combo2 + "Aa";
-				}
-				;
+					combination2 = combination2 + "Aa";
 			}
 			else
 			{
 				log.error("Unsupported event type specified");
 			}
-			System.out.println("combo2 is " + combo2);
+			log.debug("combination2 is " + combination2);
 			
+			// Get first and last years for all files
 			for (int i = 0; i < inputFile.length; i++)
 			{
 				myReader.add(new FHX2FileReader(inputFile[i]));
-				if (eventTypeToProcess.equals(EventTypeToProcess.FIRE_EVENT))
-				{
-					myReader.get(i).makeClimate2d();
-				}
-				else if (eventTypeToProcess.equals(EventTypeToProcess.INJURY_EVENT))
-				{
-					myReader.get(i).makeClimate2dII();
-				}
-				else if (eventTypeToProcess.equals(EventTypeToProcess.FIRE_AND_INJURY_EVENT))
-				{
-					// Do calculations on injury AND fire events (capitals and lowercase)
-				}
-				else
-				{
-					log.error("Unsupported event type specified");
-				}
-				// System.out.println("first fire year : " + myReader.get(i).getFirstFireYear().intValue() + minFirstYearComp.intValue());
-				// myReader.get(i).PrintReport();
 				firstYears.add(myReader.get(i).getFirstYear());
 				lastYears.add(myReader.get(i).getLastYear());
-				/*
-				 * Make heading for the seasonal Analysis table: 1. for each file I need an ArrayList with D E M L A
-				 */
-				TCapsHeading.add(capsheading);
-				
-			} // end loop firts i
+			}
+			
+			// Sort first and last years into sequence
 			Collections.sort(firstYears);
 			Collections.sort(lastYears);
-			System.out.println("the first year of seasonality matrix is: " + firstYears.get(0));
-			/*
-			 * set the beginning year accounting for the filter for the join
-			 */
+			
+			// Set the beginning year accounting for the filter for the join
 			if (jTextBeginningYear1 == 0)
 			{
 				minFirstYear = firstYears.get(0);
 			}
 			else
 			{
-				System.out.println("i should be here because 337");
 				if (jTextBeginningYear1 > firstYears.get(0))
 				{
 					minFirstYear = jTextBeginningYear1;
@@ -364,9 +217,8 @@ public class FHSeasonality {
 					minFirstYear = firstYears.get(0);
 				}
 			}
-			/*
-			 * Set the last year accounting for the filter
-			 */
+			
+			// Set the last year accounting for the filter
 			if (jTextEndingYear == 0)
 			{
 				maxLastYear = lastYears.get((lastYears.size() - 1));
@@ -382,7 +234,6 @@ public class FHSeasonality {
 					maxLastYear = lastYears.get((lastYears.size() - 1));
 				}
 			}
-			// end of setting both begining and end year accounting for filter
 			
 			/*
 			 * Calculate the listYears the common years where the file will be analyzed for the join
@@ -407,8 +258,8 @@ public class FHSeasonality {
 				seaspertableparam[5] = "of 'M' fires";
 				seaspertableparam[6] = "of 'L' fires";
 				seaspertableparam[7] = "of 'A' fires";
-				seaspertableparam[8] = "of '" + combo1 + "' fires";
-				seaspertableparam[9] = "of '" + combo2 + "' fires";
+				seaspertableparam[8] = "of '" + combination1 + "' fires";
+				seaspertableparam[9] = "of '" + combination2 + "' fires";
 			}
 			else if (eventTypeToProcess.equals(EventTypeToProcess.INJURY_EVENT))
 			{
@@ -420,8 +271,8 @@ public class FHSeasonality {
 				seaspertableparam[5] = "of 'm' indicators";
 				seaspertableparam[6] = "of 'l' indicators";
 				seaspertableparam[7] = "of 'a' indicators";
-				seaspertableparam[8] = "of '" + combo1 + "' indicators";
-				seaspertableparam[9] = "of '" + combo2 + "' indicators";
+				seaspertableparam[8] = "of '" + combination1 + "' indicators";
+				seaspertableparam[9] = "of '" + combination2 + "' indicators";
 			}
 			else if (eventTypeToProcess.equals(EventTypeToProcess.FIRE_AND_INJURY_EVENT))
 			{
@@ -433,8 +284,8 @@ public class FHSeasonality {
 				seaspertableparam[5] = "of 'Mm' fires and other indicators";
 				seaspertableparam[6] = "of 'Ll' fires and other indicators";
 				seaspertableparam[7] = "of 'Aa' fires and other indicators";
-				seaspertableparam[8] = "of '" + combo1 + "' fires and other indicators";
-				seaspertableparam[9] = "of '" + combo2 + "' fires and other indicators";
+				seaspertableparam[8] = "of '" + combination1 + "' fires and other indicators";
+				seaspertableparam[9] = "of '" + combination2 + "' fires and other indicators";
 			}
 			else
 			{
@@ -503,36 +354,36 @@ public class FHSeasonality {
 					/*
 					 * Find the Totals and percents of combo1 and combo 2
 					 */
-					// System.out.println("the combo 1 before total is "+totalsDecomp[8][i]);
+					// log.debug("the combo 1 before total is "+totalsDecomp[8][i]);
 					// for(int k=0; k<combo1.length(); k++){
 					if (jCheckdormant1)
 					{
 						totalsDecomp[8][i] = totalsDecomp[8][i] + totalsDecomp[3][i];
-						System.out.println("d " + totalsDecomp[8][i]);
+						log.debug("d " + totalsDecomp[8][i]);
 					}
 					;
 					if (jCheckeewood1)
 					{
 						totalsDecomp[8][i] = totalsDecomp[8][i] + totalsDecomp[4][i];
-						System.out.println("e " + totalsDecomp[8][i]);
+						log.debug("e " + totalsDecomp[8][i]);
 					}
 					;
 					if (jCheckmewood1)
 					{
 						totalsDecomp[8][i] = totalsDecomp[8][i] + totalsDecomp[5][i];
-						System.out.println("m " + totalsDecomp[8][i]);
+						log.debug("m " + totalsDecomp[8][i]);
 					}
 					;
 					if (jChecklewood1)
 					{
 						totalsDecomp[8][i] = totalsDecomp[8][i] + totalsDecomp[6][i];
-						System.out.println("l " + totalsDecomp[8][i]);
+						log.debug("l " + totalsDecomp[8][i]);
 					}
 					;
 					if (jChecklatewood1)
 					{
 						totalsDecomp[8][i] = totalsDecomp[8][i] + totalsDecomp[7][i];
-						System.out.println("a " + totalsDecomp[8][i]);
+						log.debug("a " + totalsDecomp[8][i]);
 					}
 					;
 					// }
@@ -545,8 +396,8 @@ public class FHSeasonality {
 					{
 						percentDecomp[8][i] = 0.0;
 					}
-					// System.out.println("the combo 1 total is "+totalsDecomp[8][i]+" "+percentDecomp[8][i]);
-					// System.out.println("the combo 2 before total is "+totalsDecomp[9][i]);
+					// log.debug("the combo 1 total is "+totalsDecomp[8][i]+" "+percentDecomp[8][i]);
+					// log.debug("the combo 2 before total is "+totalsDecomp[9][i]);
 					// for(int k=0; k<combo2.length(); k++){
 					if (jCheckdormant2)
 					{
@@ -576,7 +427,7 @@ public class FHSeasonality {
 					
 					// }
 					// totalsDecomp[9][i]=totalsDecomp[9][i];
-					System.out.println("the combo 2  total is " + totalsDecomp[9][i]);
+					log.debug("the combo 2  total is " + totalsDecomp[9][i]);
 					if (totalsDecomp[9][i] != 0)
 					{
 						percentDecomp[9][i] = totalsDecomp[9][i] * 100.0 / totalsDecomp[1][i];
@@ -585,7 +436,7 @@ public class FHSeasonality {
 					{
 						percentDecomp[9][i] = 0.0;
 					}
-					System.out.println("the combo 2  total is " + totalsDecomp[9][i] + " " + percentDecomp[9][i]);
+					log.debug("the combo 2  total is " + totalsDecomp[9][i] + " " + percentDecomp[9][i]);
 				}
 				else if (eventTypeToProcess.equals(EventTypeToProcess.INJURY_EVENT))
 				{
@@ -619,36 +470,36 @@ public class FHSeasonality {
 					/*
 					 * Find the Totals and percents of combo1 and combo 2
 					 */
-					// System.out.println("the combo 1 before total is "+totalsDecomp[8][i]);
+					// log.debug("the combo 1 before total is "+totalsDecomp[8][i]);
 					// for(int k=0; k<combo1.length(); k++){
 					if (jCheckdormant1)
 					{
 						totalsDecomp[8][i] = totalsDecomp[8][i] + totalsDecomp[3][i];
-						System.out.println("d " + totalsDecomp[8][i]);
+						log.debug("d " + totalsDecomp[8][i]);
 					}
 					;
 					if (jCheckeewood1)
 					{
 						totalsDecomp[8][i] = totalsDecomp[8][i] + totalsDecomp[4][i];
-						System.out.println("e " + totalsDecomp[8][i]);
+						log.debug("e " + totalsDecomp[8][i]);
 					}
 					;
 					if (jCheckmewood1)
 					{
 						totalsDecomp[8][i] = totalsDecomp[8][i] + totalsDecomp[5][i];
-						System.out.println("m " + totalsDecomp[8][i]);
+						log.debug("m " + totalsDecomp[8][i]);
 					}
 					;
 					if (jChecklewood1)
 					{
 						totalsDecomp[8][i] = totalsDecomp[8][i] + totalsDecomp[6][i];
-						System.out.println("l " + totalsDecomp[8][i]);
+						log.debug("l " + totalsDecomp[8][i]);
 					}
 					;
 					if (jChecklatewood1)
 					{
 						totalsDecomp[8][i] = totalsDecomp[8][i] + totalsDecomp[7][i];
-						System.out.println("a " + totalsDecomp[8][i]);
+						log.debug("a " + totalsDecomp[8][i]);
 					}
 					;
 					// }
@@ -661,8 +512,8 @@ public class FHSeasonality {
 					{
 						percentDecomp[8][i] = 0.0;
 					}
-					// System.out.println("the combo 1 total is "+totalsDecomp[8][i]+" "+percentDecomp[8][i]);
-					// System.out.println("the combo 2 before total is "+totalsDecomp[9][i]);
+					// log.debug("the combo 1 total is "+totalsDecomp[8][i]+" "+percentDecomp[8][i]);
+					// log.debug("the combo 2 before total is "+totalsDecomp[9][i]);
 					// for(int k=0; k<combo2.length(); k++){
 					if (jCheckdormant2)
 					{
@@ -692,7 +543,7 @@ public class FHSeasonality {
 					
 					// }
 					// totalsDecomp[9][i]=totalsDecomp[9][i];
-					System.out.println("the combo 2  total is " + totalsDecomp[9][i]);
+					log.debug("the combo 2  total is " + totalsDecomp[9][i]);
 					if (totalsDecomp[9][i] != 0)
 					{
 						percentDecomp[9][i] = totalsDecomp[9][i] * 100.0 / totalsDecomp[1][i];
@@ -701,7 +552,7 @@ public class FHSeasonality {
 					{
 						percentDecomp[9][i] = 0.0;
 					}
-					System.out.println("the combo 2  total is " + totalsDecomp[9][i] + " " + percentDecomp[9][i]);
+					log.debug("the combo 2  total is " + totalsDecomp[9][i] + " " + percentDecomp[9][i]);
 				}
 				else if (eventTypeToProcess.equals(EventTypeToProcess.FIRE_AND_INJURY_EVENT))
 				{
@@ -737,36 +588,36 @@ public class FHSeasonality {
 					/*
 					 * Find the Totals and percents of combo1 and combo 2
 					 */
-					// System.out.println("the combo 1 before total is "+totalsDecomp[8][i]);
+					// log.debug("the combo 1 before total is "+totalsDecomp[8][i]);
 					// for(int k=0; k<combo1.length(); k++){
 					if (jCheckdormant1)
 					{
 						totalsDecomp[8][i] = totalsDecomp[8][i] + totalsDecomp[3][i];
-						System.out.println("Dd " + totalsDecomp[8][i]);
+						log.debug("Dd " + totalsDecomp[8][i]);
 					}
 					;
 					if (jCheckeewood1)
 					{
 						totalsDecomp[8][i] = totalsDecomp[8][i] + totalsDecomp[4][i];
-						System.out.println("Ee " + totalsDecomp[8][i]);
+						log.debug("Ee " + totalsDecomp[8][i]);
 					}
 					;
 					if (jCheckmewood1)
 					{
 						totalsDecomp[8][i] = totalsDecomp[8][i] + totalsDecomp[5][i];
-						System.out.println("Mm " + totalsDecomp[8][i]);
+						log.debug("Mm " + totalsDecomp[8][i]);
 					}
 					;
 					if (jChecklewood1)
 					{
 						totalsDecomp[8][i] = totalsDecomp[8][i] + totalsDecomp[6][i];
-						System.out.println("Ll " + totalsDecomp[8][i]);
+						log.debug("Ll " + totalsDecomp[8][i]);
 					}
 					;
 					if (jChecklatewood1)
 					{
 						totalsDecomp[8][i] = totalsDecomp[8][i] + totalsDecomp[7][i];
-						System.out.println("Aa " + totalsDecomp[8][i]);
+						log.debug("Aa " + totalsDecomp[8][i]);
 					}
 					;
 					// }
@@ -779,8 +630,8 @@ public class FHSeasonality {
 					{
 						percentDecomp[8][i] = 0.0;
 					}
-					// System.out.println("the combo 1 total is "+totalsDecomp[8][i]+" "+percentDecomp[8][i]);
-					// System.out.println("the combo 2 before total is "+totalsDecomp[9][i]);
+					// log.debug("the combo 1 total is "+totalsDecomp[8][i]+" "+percentDecomp[8][i]);
+					// log.debug("the combo 2 before total is "+totalsDecomp[9][i]);
 					// for(int k=0; k<combo2.length(); k++){
 					if (jCheckdormant2)
 					{
@@ -810,7 +661,7 @@ public class FHSeasonality {
 					
 					// }
 					// totalsDecomp[9][i]=totalsDecomp[9][i];
-					System.out.println("the combo 2  total is " + totalsDecomp[9][i]);
+					log.debug("the combo 2  total is " + totalsDecomp[9][i]);
 					if (totalsDecomp[9][i] != 0)
 					{
 						percentDecomp[9][i] = totalsDecomp[9][i] * 100.0 / totalsDecomp[1][i];
@@ -819,7 +670,7 @@ public class FHSeasonality {
 					{
 						percentDecomp[9][i] = 0.0;
 					}
-					System.out.println("the combo 2  total is " + totalsDecomp[9][i] + " " + percentDecomp[9][i]);
+					log.debug("the combo 2  total is " + totalsDecomp[9][i] + " " + percentDecomp[9][i]);
 					
 				}
 				else
@@ -862,7 +713,7 @@ public class FHSeasonality {
 					 * set the save file
 					 */
 					outputFile = fileBrowse.getSelectedFile();
-					System.out.println("DEBUG: fileBrowse.getSelectedFile = " + fileBrowse.getSelectedFile().toString());
+					log.debug("DEBUG: fileBrowse.getSelectedFile = " + fileBrowse.getSelectedFile().toString());
 					int l = outputFile.getName().length();
 					/*
 					 * set the extension of the file
@@ -927,10 +778,9 @@ public class FHSeasonality {
 				wr.write(buffer.substring(0, buffer.length() - 1) + System.getProperty("line.separator"));
 				buffer = "";
 				
+				// NUMBERS Lines
 				for (int j = 1; j < seaspertableparam.length; j++)
 				{
-					
-					// NUMBERS Lines
 					wr.write("Number " + seaspertableparam[j] + delim);
 					for (int k = 0; k < inputFile.length; k++)
 					{
@@ -961,7 +811,12 @@ public class FHSeasonality {
 					wr.write(buffer.substring(0, buffer.length() - 1) + System.getProperty("line.separator"));
 					buffer = "";
 					
-					// PERCENTAGES Lines
+				}
+				
+				// PERCENTAGES Lines
+				for (int j = 1; j < seaspertableparam.length; j++)
+				{
+					
 					wr.write("Percentage " + seaspertableparam[j] + delim);
 					for (int k = 0; k < inputFile.length; k++)
 					{
@@ -1024,7 +879,7 @@ public class FHSeasonality {
 			}
 			finally
 			{
-			
+				
 			}
 			
 		} // end of if for at least one file selected and one analysis (if run))
@@ -1059,13 +914,13 @@ public class FHSeasonality {
 			Boolean jChecklewood1, Boolean jChecklatewood1, Boolean jCheckdormant2, Boolean jCheckeewood2, Boolean jCheckmewood2,
 			Boolean jChecklewood2, Boolean jChecklatewood2, Integer jTextBeginningYear1, Integer jTextEndingYear,
 			EventTypeToProcess eventType) {
-			
+	
 		Boolean run = false;
 		
 		// FIRST CHECK
 		if (inputFile != null)
 		{
-			// System.out.println("I am here before the checks and inputFile is not null");
+			// log.debug("I am here before the checks and inputFile is not null");
 			run = true;
 			// SECOND CHECK
 			if ((jCheckdormant1 || jCheckeewood1 || jCheckmewood1 || jChecklewood1 || jChecklatewood1)
