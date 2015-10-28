@@ -81,6 +81,7 @@ import org.fhaes.feedback.FeedbackMessagePanel;
 import org.fhaes.feedback.FeedbackPreferenceManager;
 import org.fhaes.feedback.FeedbackPreferenceManager.FeedbackDictionary;
 import org.fhaes.fhfilereader.FHCategoryReader;
+import org.fhaes.fhfilereader.FHFile;
 import org.fhaes.fhrecorder.controller.FileController;
 import org.fhaes.fhrecorder.view.FireHistoryRecorder;
 import org.fhaes.fhsamplesize.view.FHSampleSize;
@@ -94,7 +95,6 @@ import org.fhaes.filefilter.TXTFileFilter;
 import org.fhaes.filefilter.XLSXFileFilter;
 import org.fhaes.help.RemoteHelp;
 import org.fhaes.jsea.JSEAFrame;
-import org.fhaes.model.FHFile;
 import org.fhaes.model.FHFileFirstYearComparator;
 import org.fhaes.model.FHFileLastYearComparator;
 import org.fhaes.model.FHFileListCellRenderer;
@@ -665,7 +665,7 @@ public class MainWindow implements PrefsListener {
 				selectFirst = true;
 			}
 			
-			// Warn if loading a large dataset
+			// Warn if loading a large number of files
 			if (files.length + fileListModel.getSize() > LARGE_DATASET_THRESHOLD)
 			{
 				Boolean shallWeContinue = LargeDatasetWarningDialog.showWarning(files.length + fileListModel.getSize());
@@ -679,15 +679,14 @@ public class MainWindow implements PrefsListener {
 			FileLoadProgressDialog pd = new FileLoadProgressDialog(fileListDisplayPanel, files);
 			fileListModel.addAllElements(pd.getFileList());
 			
-			for (File currentFile : files)
+			for (FHFile currentFile : fileListModel.getValidFileList())
 			{
 				App.prefs.addStringtoPrefArray(PrefKey.RECENT_DOCUMENT_LIST, currentFile.getAbsolutePath(),
 						App.prefs.getIntPref(PrefKey.RECENT_DOCUMENT_COUNT, 10));
 				
 				if (App.prefs.getBooleanPref(PrefKey.AUTO_LOAD_CATEGORIES, true))
 				{
-					FHFile currentFHFile = new FHFile(currentFile);
-					openCategoryFile(new File(currentFHFile.getDefaultCategoryFilePath()));
+					openCategoryFile(new File(currentFile.getDefaultCategoryFilePath()));
 				}
 			}
 			
@@ -944,7 +943,7 @@ public class MainWindow implements PrefsListener {
 	 * 
 	 * @return
 	 */
-	private File[] getSelectedValidFiles() {
+	private FHFile[] getSelectedValidFiles() {
 	
 		ArrayList<FHFile> tempList = new ArrayList<FHFile>();
 		
@@ -957,7 +956,7 @@ public class MainWindow implements PrefsListener {
 			}
 		}
 		
-		return tempList.toArray(new File[tempList.size()]);
+		return tempList.toArray(new FHFile[tempList.size()]);
 	}
 	
 	/**
@@ -965,7 +964,7 @@ public class MainWindow implements PrefsListener {
 	 * 
 	 * @return
 	 */
-	private File[] getSelectedValidFilesWithEvents() {
+	private FHFile[] getSelectedValidFilesWithEvents() {
 	
 		ArrayList<FHFile> tempList = new ArrayList<FHFile>();
 		
@@ -978,7 +977,7 @@ public class MainWindow implements PrefsListener {
 			}
 		}
 		
-		return tempList.toArray(new File[tempList.size()]);
+		return tempList.toArray(new FHFile[tempList.size()]);
 	}
 	
 	/**
@@ -2027,6 +2026,12 @@ public class MainWindow implements PrefsListener {
 					return;
 				
 				File[] files = fc.getSelectedFiles();
+				FHFile[] fhfiles = new FHFile[files.length];
+				
+				for (int i = 0; i < files.length; i++)
+				{
+					fhfiles[i] = new FHFile(files[i]);
+				}
 				
 				// Set lastPathVisited
 				App.prefs.setPref(PrefKey.PREF_LAST_READ_FOLDER, files[0].getParent());
@@ -2041,7 +2046,7 @@ public class MainWindow implements PrefsListener {
 				
 				try
 				{
-					FHOperations.createEventFile(frame, files, dialog.getStartYear(), dialog.getEndYear(), dialog.getFireFilterType(),
+					FHOperations.createEventFile(frame, fhfiles, dialog.getStartYear(), dialog.getEndYear(), dialog.getFireFilterType(),
 							dialog.getSampleDepthFilterType(), dialog.getFireFilterValue(), dialog.getMinNumberOfSamples(),
 							dialog.getComments());
 				}
@@ -2130,6 +2135,7 @@ public class MainWindow implements PrefsListener {
 					return;
 				
 				File[] files = fc.getSelectedFiles();
+				FHFile[] fhfiles = new FHFile[files.length];
 				
 				// Set lastPathVisited
 				App.prefs.setPref(PrefKey.PREF_LAST_READ_FOLDER, files[0].getParent());
@@ -2142,7 +2148,7 @@ public class MainWindow implements PrefsListener {
 				if (!dialog.success())
 					return;
 				
-				File file = FHOperations.createCompositeFile(frame, files, dialog.getStartYear(), dialog.getEndYear(),
+				File file = FHOperations.createCompositeFile(frame, fhfiles, dialog.getStartYear(), dialog.getEndYear(),
 						dialog.getFireFilterType(), dialog.getSampleDepthFilterType(), dialog.getFireFilterValue(),
 						dialog.getMinNumberOfSamples());
 				

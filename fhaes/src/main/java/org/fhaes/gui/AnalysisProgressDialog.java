@@ -52,7 +52,7 @@ import org.fhaes.enums.AnalysisType;
 import org.fhaes.enums.EventTypeToProcess;
 import org.fhaes.enums.FireFilterType;
 import org.fhaes.enums.NoDataLabel;
-import org.fhaes.model.FHFile;
+import org.fhaes.fhfilereader.FHFile;
 import org.fhaes.preferences.App;
 import org.fhaes.preferences.FHAESPreferences.PrefKey;
 import org.fhaes.util.TableUtil;

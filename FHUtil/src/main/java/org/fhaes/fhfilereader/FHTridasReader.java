@@ -42,7 +42,7 @@ public class FHTridasReader extends AbstractFireHistoryReader {
 	private final boolean hasFailed = false;
 	
 	public FHTridasReader(File file) {
-		
+	
 		// container = null;
 		this.file = file;
 		
@@ -63,297 +63,304 @@ public class FHTridasReader extends AbstractFireHistoryReader {
 	
 	@Override
 	public String getFileFormat() {
-		
+	
 		return "TRiDaS";
 	}
 	
 	@Override
 	public boolean passesBasicSyntaxCheck() {
-		
+	
 		return !hasFailed;
 	}
 	
 	@Override
 	public String getName() {
-		
+	
 		return file.getName();
 	}
 	
 	@Override
 	public File getFile() {
-		
+	
 		return file;
 	}
 	
 	@Override
 	public Integer getFirstIndicatorYear() {
-		
+	
 		// TODO Auto-generated method stub
 		return null;
 	}
 	
 	@Override
 	public Integer getFirstInjuryYear() {
-		
+	
 		// TODO Auto-generated method stub
 		return null;
 	}
 	
 	@Override
 	public ArrayList<Integer> getFireEventsArray() {
-		
+	
 		// TODO Auto-generated method stub
 		return null;
 	}
 	
 	@Override
 	public ArrayList<Integer> getOtherInjuriesArray() {
-		
+	
 		// TODO Auto-generated method stub
 		return null;
 	}
 	
 	@Override
 	public ArrayList<Integer> getFiresAndInjuriesArray() {
-		
+	
 		// TODO Auto-generated method stub
 		return null;
 	}
 	
 	@Override
 	public ArrayList<Integer> getYearArray() {
-		
+	
 		// TODO Auto-generated method stub
 		return null;
 	}
 	
 	@Override
 	public ArrayList<String> getData() {
-		
+	
 		// TODO Auto-generated method stub
 		return null;
 	}
 	
 	@Override
 	public ArrayList<String> getRawRowData() {
-		
+	
 		// TODO Auto-generated method stub
 		return null;
 	}
 	
 	@Override
 	public ArrayList<Integer> getBadDataLineNumbers() {
-		
+	
 		// TODO Auto-generated method stub
 		return null;
 	}
 	
 	@Override
 	public int[] getTotals() {
-		
+	
 		// TODO Auto-generated method stub
 		return null;
 	}
 	
 	@Override
 	public ArrayList<ArrayList<Integer>> getEventDataArrays(EventTypeToProcess eventType) {
-		
+	
 		// TODO Auto-generated method stub
 		return null;
 	}
 	
 	@Override
 	public ArrayList<ArrayList<Integer>> getCapsYearperSample2d() {
-		
+	
 		// TODO Auto-generated method stub
 		return null;
 	}
 	
 	@Override
 	public ArrayList<ArrayList<Integer>> getCalosYearperSample2d() {
-		
+	
 		// TODO Auto-generated method stub
 		return null;
 	}
 	
 	@Override
 	public ArrayList<ArrayList<Character>> getCapsperSample2d() {
-		
+	
 		// TODO Auto-generated method stub
 		return null;
 	}
 	
 	@Override
 	public ArrayList<ArrayList<Character>> getCalosperSample2d() {
-		
+	
 		// TODO Auto-generated method stub
 		return null;
 	}
 	
 	@Override
 	public ArrayList<ArrayList<Double>> getFilterArrays(EventTypeToProcess eventType) {
-		
+	
 		// TODO Auto-generated method stub
 		return null;
 	}
 	
 	@Override
 	public int[] getStartYearIndexPerSample() {
-		
+	
 		// TODO Auto-generated method stub
 		return null;
 	}
 	
 	@Override
 	public int[] getStartYearPerSample() {
-		
+	
 		// TODO Auto-generated method stub
 		return null;
 	}
 	
 	@Override
 	public int[] getLastYearIndexPerSample() {
-		
+	
 		// TODO Auto-generated method stub
 		return null;
 	}
 	
 	@Override
 	public int[] getLastYearPerSample() {
-		
+	
 		// TODO Auto-generated method stub
 		return null;
 	}
 	
 	@Override
 	public int[] getPithIndexPerSample() {
-		
+	
 		// TODO Auto-generated method stub
 		return null;
 	}
 	
 	@Override
 	public int[] getTotalRecorderYearsPerSample() {
-		
+	
 		// TODO Auto-generated method stub
 		return null;
 	}
 	
 	@Override
 	public int[] getInnerMostperTree() {
-		
+	
 		// TODO Auto-generated method stub
 		return null;
 	}
 	
 	@Override
 	public int[] getInnerMostYearPerTree() {
-		
+	
 		// TODO Auto-generated method stub
 		return null;
 	}
 	
 	@Override
 	public int[] getOutterMostperTree() {
-		
+	
 		// TODO Auto-generated method stub
 		return null;
 	}
 	
 	@Override
 	public int[] getOuterMostYearPerTree() {
-		
+	
 		// TODO Auto-generated method stub
 		return null;
 	}
 	
 	@Override
 	public int[] getBarkIndexPerTree() {
-		
+	
 		// TODO Auto-generated method stub
 		return null;
 	}
 	
 	@Override
 	public Integer getFirstYear() {
-		
+	
 		// TODO Auto-generated method stub
 		return null;
 	}
 	
 	@Override
 	public ArrayList<String> getSeriesNameArray() {
-		
+	
 		// TODO Auto-generated method stub
 		return null;
 	}
 	
 	@Override
 	public boolean hasFireEventsOrInjuries() {
-		
+	
 		// TODO Auto-generated method stub
 		return false;
 	}
 	
 	@Override
 	public boolean hasFireEvents() {
-		
+	
 		// TODO Auto-generated method stub
 		return false;
 	}
 	
 	@Override
 	public boolean hasInjuryEvents() {
-		
+	
 		// TODO Auto-generated method stub
 		return false;
 	}
 	
 	@Override
 	public Integer getNumberOfSeries() {
-		
+	
 		// TODO Auto-generated method stub
 		return null;
 	}
 	
 	@Override
 	public Integer getLengthOfSeriesName() {
-		
+	
 		// TODO Auto-generated method stub
 		return null;
 	}
 	
 	@Override
 	public Integer getLastYear() {
-		
+	
 		// TODO Auto-generated method stub
 		return null;
 	}
 	
 	@Override
 	public void makeDecompSyb2d() {
-		
+	
 		// TODO Auto-generated method stub
 		
 	}
 	
 	@Override
 	public Integer getFirstFireYear() {
-		
+	
 		// TODO Auto-generated method stub
 		return null;
 	}
 	
 	@Override
 	protected void populateSeriesList() {
-		
+	
 		// TODO Auto-generated method stub
 		
 	}
 	
 	@Override
 	public ArrayList<ArrayList<Integer>> getRecorderYears2DArray() {
-		
+	
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	@Override
+	public FHFile getFHFile() {
+	
 		// TODO Auto-generated method stub
 		return null;
 	}

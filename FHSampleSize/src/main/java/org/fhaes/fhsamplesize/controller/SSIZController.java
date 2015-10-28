@@ -255,7 +255,7 @@ public class SSIZController {
 			{
 				for (int x = 0; x < firesByYear.length; x++)
 				{
-					log.debug(" - " + firesByYear[x]);
+					// log.debug(" - " + firesByYear[x]);
 				}
 				
 				log.debug("Count of fires per sim    = " + countOfFiresInSim);

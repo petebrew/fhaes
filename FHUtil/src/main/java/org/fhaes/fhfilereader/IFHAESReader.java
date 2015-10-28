@@ -58,7 +58,15 @@ public interface IFHAESReader {
 	 * 
 	 * @return
 	 */
+	@Deprecated
 	public abstract File getFile();
+	
+	/**
+	 * Get the FHFile being read.
+	 * 
+	 * @return
+	 */
+	public abstract FHFile getFHFile();
 	
 	/**
 	 * Get the first year in which an indicator is found within this file.

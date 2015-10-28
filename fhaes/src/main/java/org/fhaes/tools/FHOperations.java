@@ -318,6 +318,7 @@ public class FHOperations {
 			log.debug("Some output here: " + minSamples);
 			log.error("Oh bugger it broke!");
 			log.warn("Hmmm this shouldn't happen");
+			
 		}
 		
 		boolean run = false;

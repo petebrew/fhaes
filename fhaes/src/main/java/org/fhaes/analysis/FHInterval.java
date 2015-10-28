@@ -35,10 +35,10 @@ import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
 import org.fhaes.enums.AnalysisType;
 import org.fhaes.enums.EventTypeToProcess;
 import org.fhaes.enums.FireFilterType;
+import org.fhaes.fhfilereader.FHFile;
 import org.fhaes.fhfilereader.FHX2FileReader;
 import org.fhaes.filefilter.CSVFileFilter;
 import org.fhaes.math.Weibull;
-import org.fhaes.model.FHFile;
 import org.fhaes.preferences.App;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -80,7 +80,7 @@ public class FHInterval {
 	 */
 	public FHInterval(FHFile[] inputFileArray, AnalysisType analysisType, Integer startYear, Integer endYear, FireFilterType filterType,
 			Double filterValue, Boolean includeIncomplete, EventTypeToProcess eventTypeToProcess, Double alphaLevel) {
-			
+	
 		this.inputFileArray = inputFileArray;
 		
 		try
@@ -160,7 +160,7 @@ public class FHInterval {
 	@Deprecated
 	public FHInterval(FHFile[] inputFileArray, File outputFileStem, Boolean doComposite, Boolean doSample, Integer startYear,
 			Integer endYear, Boolean doNumberFilter, Boolean doPercentageFilter, Double filterValue, Boolean includeIncomplete) {
-			
+	
 		this.inputFileArray = inputFileArray;
 		
 		try
@@ -195,7 +195,7 @@ public class FHInterval {
 	 * @return
 	 */
 	public File getExceedence() {
-		
+	
 		return exceedenceFile;
 	}
 	
@@ -205,7 +205,7 @@ public class FHInterval {
 	 * @return
 	 */
 	public File getSummary() {
-		
+	
 		return summaryFile;
 	}
 	
@@ -214,7 +214,7 @@ public class FHInterval {
 	 */
 	@SuppressWarnings("deprecation")
 	private void doAnalysis() {
-		
+	
 		log.debug("INPUT PARAMETERS");
 		log.debug("inputFileArray = " + inputFileArray);
 		log.debug("doComposite = " + doComposite);
@@ -408,7 +408,7 @@ public class FHInterval {
 				statsparam[11] = "Weibull shape parameter";
 				statsparam[12] = "Weibull mean";
 				statsparam[13] = "Weibull median";
-				statsparam[14] = "Weibull modal";
+				statsparam[14] = "Weibull mode";
 				statsparam[15] = "Weibull standard deviation";
 				statsparam[16] = "Weibull fire frequency";
 				statsparam[17] = "Weibull skewness";
@@ -433,7 +433,7 @@ public class FHInterval {
 				statsparam[11] = "Weibull shape parameter";
 				statsparam[12] = "Weibull mean";
 				statsparam[13] = "Weibull median";
-				statsparam[14] = "Weibull modal";
+				statsparam[14] = "Weibull mode";
 				statsparam[15] = "Weibull standard deviation";
 				statsparam[16] = "Weibull indicator frequency";
 				statsparam[17] = "Weibull skewness";
@@ -458,7 +458,7 @@ public class FHInterval {
 				statsparam[11] = "Weibull shape parameter";
 				statsparam[12] = "Weibull mean";
 				statsparam[13] = "Weibull median";
-				statsparam[14] = "Weibull modal";
+				statsparam[14] = "Weibull mode";
 				statsparam[15] = "Weibull standard deviation";
 				statsparam[16] = "Weibull indicator frequency";
 				statsparam[17] = "Weibull skewness";
@@ -475,7 +475,7 @@ public class FHInterval {
 			
 			double[] fixvalt = { 0.999, 0.99, 0.975, 0.95, 0.9, 0.875, 0.8, 0.75, 0.7, 0.667, 0.5, 0.333, 0.3, 0.25, 0.2, 0.125, 0.1, 0.05,
 					0.025, 0.01, 0.001 };
-					
+			
 			double[][] ExceeProbcomp = new double[fixvalt.length][myReader.size()];
 			double[][] ExceeProbsample = new double[fixvalt.length][myReader.size()];
 			// log.debug("the size of statsparam is " +
@@ -972,7 +972,7 @@ public class FHInterval {
 						// ADDED BY PETE
 						if (dfireintervalspersample.length == 0)
 							continue;
-							
+						
 						/*
 						 * load the Summary Analysis for the Sample fire intervals
 						 */
@@ -1351,7 +1351,7 @@ public class FHInterval {
 			}
 			finally
 			{
-			
+				
 			}
 			
 		} // end of if for at least one file selected and one analysis (if run))
@@ -1364,7 +1364,7 @@ public class FHInterval {
 	}
 	
 	public static ArrayList<Integer> generateFireIntervals(ArrayList<Integer> YearsWithFires) {
-		
+	
 		ArrayList<Integer> fireIntervals = new ArrayList<Integer>();
 		for (int i = 0; i < YearsWithFires.size() - 1; i++)
 		{

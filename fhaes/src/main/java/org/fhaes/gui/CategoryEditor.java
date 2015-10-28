@@ -36,8 +36,8 @@ import org.fhaes.enums.FeedbackMessageType;
 import org.fhaes.feedback.FeedbackMessagePanel;
 import org.fhaes.feedback.FeedbackPreferenceManager.FeedbackDictionary;
 import org.fhaes.fhfilereader.FHCategoryReader;
+import org.fhaes.fhfilereader.FHFile;
 import org.fhaes.model.FHCategoryEntry;
-import org.fhaes.model.FHFile;
 import org.fhaes.model.FHSeries;
 import org.fhaes.util.Builder;
 

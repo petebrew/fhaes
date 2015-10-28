@@ -36,7 +36,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import org.fhaes.components.JToolBarButton;
-import org.fhaes.model.FHFile;
+import org.fhaes.fhfilereader.FHFile;
 import org.fhaes.model.FHFileGroup;
 import org.fhaes.util.ColorPalette;
 import org.fhaes.util.FHAESMapMarker;

@@ -37,7 +37,7 @@ import javax.swing.JProgressBar;
 import javax.swing.SwingWorker;
 import javax.swing.border.LineBorder;
 
-import org.fhaes.model.FHFile;
+import org.fhaes.fhfilereader.FHFile;
 import org.fhaes.preferences.App;
 import org.fhaes.preferences.FHAESPreferences.PrefKey;
 

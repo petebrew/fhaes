@@ -25,8 +25,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import org.fhaes.enums.EventTypeToProcess;
+import org.fhaes.fhfilereader.FHFile;
 import org.fhaes.fhfilereader.FHX2FileReader;
-import org.fhaes.model.FHFile;
 import org.fhaes.preferences.App;
 import org.fhaes.preferences.FHAESPreferences.PrefKey;
 import org.slf4j.Logger;

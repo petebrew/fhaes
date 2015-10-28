@@ -68,6 +68,7 @@ import org.fhaes.enums.EventTypeToProcess;
 import org.fhaes.enums.FireFilterType;
 import org.fhaes.enums.MiddleMetric;
 import org.fhaes.enums.ResamplingType;
+import org.fhaes.fhfilereader.FHFile;
 import org.fhaes.fhfilereader.FHX2FileReader;
 import org.fhaes.fhsamplesize.controller.SSIZController;
 import org.fhaes.fhsamplesize.model.AnalysisResultsModel;
@@ -242,7 +243,7 @@ public class FHSampleSize extends JFrame implements ActionListener {
 					{
 						String filePath = txtInputFile.getText();
 						File theFHX2File = new File(filePath);
-						reader = new FHX2FileReader(theFHX2File);
+						reader = new FHX2FileReader(new FHFile(theFHX2File));
 						setGUIForFHFileReader();
 						
 						if (reader != null)
@@ -353,7 +354,7 @@ public class FHSampleSize extends JFrame implements ActionListener {
 		{
 			if (theFHX2File != null)
 			{
-				reader = new FHX2FileReader(theFHX2File);
+				reader = new FHX2FileReader(new FHFile(theFHX2File));
 				setGUIForFHFileReader();
 				
 				segmentationPanel.chkSegmentation.setEnabled(true);
@@ -853,7 +854,7 @@ public class FHSampleSize extends JFrame implements ActionListener {
 		if (!(inFilePath.substring(inFilePath.length() - 4, inFilePath.length()).equals(".fhx")))
 			return false;
 		
-		File theFHX2File = new File(inFilePath);
+		FHFile theFHX2File = new FHFile(inFilePath);
 		FHX2FileReader tempReader = new FHX2FileReader(theFHX2File);
 		
 		if (tempReader.getNumberOfSeries() < 6)

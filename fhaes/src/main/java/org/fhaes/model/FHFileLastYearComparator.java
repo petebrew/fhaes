@@ -19,6 +19,8 @@ package org.fhaes.model;
 
 import java.util.Comparator;
 
+import org.fhaes.fhfilereader.FHFile;
+
 /**
  * FHFileLastYearComparator Class.
  */

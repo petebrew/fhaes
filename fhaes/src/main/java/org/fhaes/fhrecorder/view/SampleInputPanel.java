@@ -194,7 +194,6 @@ public class SampleInputPanel extends JPanel implements ChangeListener, Property
 	 * @return
 	 */
 	public RecordingTable getRecordingTable() {
-	
 		return this.recordingTable;
 	}
 	
@@ -204,7 +203,6 @@ public class SampleInputPanel extends JPanel implements ChangeListener, Property
 	 * @return
 	 */
 	public EventTable getEventTable() {
-	
 		return this.eventTable;
 	}
 	

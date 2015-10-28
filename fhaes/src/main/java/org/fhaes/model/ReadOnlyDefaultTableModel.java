@@ -17,6 +17,7 @@
  *************************************************************************************************/
 package org.fhaes.model;
 
+import java.util.ArrayList;
 import java.util.Vector;
 
 import javax.swing.table.DefaultTableModel;
@@ -27,6 +28,7 @@ import javax.swing.table.DefaultTableModel;
 public class ReadOnlyDefaultTableModel extends DefaultTableModel {
 	
 	private static final long serialVersionUID = 1L;
+	ArrayList<Class> classList;
 	
 	/**
 	 * TODO
@@ -35,7 +37,7 @@ public class ReadOnlyDefaultTableModel extends DefaultTableModel {
 	 * @param header
 	 */
 	public ReadOnlyDefaultTableModel(Vector<Vector<Object>> rows, Vector<Object> header) {
-		
+	
 		super(rows, header);
 	}
 	
@@ -44,7 +46,45 @@ public class ReadOnlyDefaultTableModel extends DefaultTableModel {
 	 */
 	@Override
 	public boolean isCellEditable(int row, int col) {
-		
+	
 		return false;
+	}
+	
+	public void setColumnClass(int col, Class clazz) {
+	
+		if (classList == null)
+		{
+			classList = new ArrayList<Class>();
+			for (int i = 0; i < this.getColumnCount(); i++)
+			{
+				classList.add(String.class);
+			}
+		}
+		
+		try
+		{
+			classList.set(col, clazz);
+		}
+		catch (Exception e)
+		{
+			
+		}
+	}
+	
+	@Override
+	public Class getColumnClass(int col) {
+	
+		if (classList == null)
+			return String.class;
+		
+		try
+		{
+			return classList.get(col);
+		}
+		catch (Exception e)
+		{
+			return String.class;
+		}
+		
 	}
 }

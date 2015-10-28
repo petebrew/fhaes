@@ -54,7 +54,9 @@ public enum FHAESResult {
 	
 	GENERAL_SUMMARY("Series-by-series summary", "Series-by-series summary"),
 	
-	SINGLE_FILE_SUMMARY("Annual summary of currently selected file", "Current file annual summary");
+	SINGLE_FILE_SUMMARY("Annual summary of currently selected file", "Current file annual summary"),
+	
+	SINGLE_EVENT_SUMMARY("Summary of events in the currently selected file", "Current file event summary");
 	
 	// Declare local variables
 	private String fullname;

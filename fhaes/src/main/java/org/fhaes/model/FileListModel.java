@@ -25,6 +25,7 @@ import javax.swing.AbstractListModel;
 import javax.swing.JList;
 
 import org.fhaes.enums.EventTypeToProcess;
+import org.fhaes.fhfilereader.FHFile;
 import org.fhaes.preferences.App;
 import org.fhaes.preferences.FHAESPreferences.PrefKey;
 import org.slf4j.Logger;

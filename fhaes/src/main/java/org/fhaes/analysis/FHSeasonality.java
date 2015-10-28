@@ -32,9 +32,9 @@ import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileFilter;
 
 import org.fhaes.enums.EventTypeToProcess;
+import org.fhaes.fhfilereader.FHFile;
 import org.fhaes.fhfilereader.FHX2FileReader;
 import org.fhaes.filefilter.CSVFileFilter;
-import org.fhaes.model.FHFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

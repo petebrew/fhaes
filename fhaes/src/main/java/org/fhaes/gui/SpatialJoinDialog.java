@@ -47,7 +47,7 @@ import javax.swing.event.ListSelectionListener;
 
 import net.miginfocom.swing.MigLayout;
 
-import org.fhaes.model.FHFile;
+import org.fhaes.fhfilereader.FHFile;
 import org.fhaes.model.FHFileGroup;
 import org.fhaes.model.FHFileGroupCellEditor;
 import org.fhaes.model.FHFileGroupTableModel;
@@ -336,25 +336,25 @@ public class SpatialJoinDialog extends JDialog implements PrefsListener, ActionL
 		for (int i = 0; i < groupModel.getRowCount(); i++)
 		{
 			FHFileGroup gr = (FHFileGroup) groupModel.getValueAt(i, 0);
-			File outputfile = null;
+			FHFile outputfile = null;
 			
 			if (cboOutputType.getSelectedIndex() == 0)
 			{
-				outputfile = new File(file.getAbsolutePath() + File.separator + gr.getName() + ".fhx");
+				outputfile = new FHFile(file.getAbsolutePath() + File.separator + gr.getName() + ".fhx");
 				
 				// Composite
-				new FHOperations(App.mainFrame, gr.getFiles().toArray(new File[gr.getFiles().size()]), outputfile,
+				new FHOperations(App.mainFrame, gr.getFiles().toArray(new FHFile[gr.getFiles().size()]), outputfile,
 						compositeDialog.getStartYear(), compositeDialog.getEndYear(), compositeDialog.getFireFilterValue(),
 						compositeDialog.getFireFilterType(), compositeDialog.getSampleDepthFilterType(), false, true, false,
 						compositeDialog.getMinNumberOfSamples(), null);
 			}
 			else if (cboOutputType.getSelectedIndex() == 1)
 			{
-				outputfile = new File(file.getAbsolutePath() + File.separator + gr.getName() + ".fhx");
+				outputfile = new FHFile(file.getAbsolutePath() + File.separator + gr.getName() + ".fhx");
 				
 				// Merge
 				
-				FHOperations.joinFiles(App.mainFrame, gr.getFiles().toArray(new File[gr.getFiles().size()]), outputfile,
+				FHOperations.joinFiles(App.mainFrame, gr.getFiles().toArray(new FHFile[gr.getFiles().size()]), outputfile,
 						temporalDialog.getStartYear(), temporalDialog.getEndYear());
 				
 				// * new FHOperations(App.mainFrame, gr.getFiles().toArray(new File[gr.getFiles().size()]), outputfile,
@@ -364,10 +364,10 @@ public class SpatialJoinDialog extends JDialog implements PrefsListener, ActionL
 			}
 			else if (cboOutputType.getSelectedIndex() == 2)
 			{
-				outputfile = new File(file.getAbsolutePath() + File.separator + gr.getName() + ".txt");
+				outputfile = new FHFile(file.getAbsolutePath() + File.separator + gr.getName() + ".txt");
 				
 				// Event file
-				FHOperations.createEventFile(App.mainFrame, gr.getFiles().toArray(new File[gr.getFiles().size()]), outputfile,
+				FHOperations.createEventFile(App.mainFrame, gr.getFiles().toArray(new FHFile[gr.getFiles().size()]), outputfile,
 						compositeDialog.getStartYear(), compositeDialog.getEndYear());
 				
 			}

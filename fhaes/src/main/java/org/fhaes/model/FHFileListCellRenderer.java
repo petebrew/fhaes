@@ -24,6 +24,7 @@ import javax.swing.DefaultListCellRenderer;
 import javax.swing.JList;
 
 import org.fhaes.enums.EventTypeToProcess;
+import org.fhaes.fhfilereader.FHFile;
 import org.fhaes.preferences.App;
 import org.fhaes.preferences.FHAESPreferences.PrefKey;
 import org.fhaes.util.Builder;

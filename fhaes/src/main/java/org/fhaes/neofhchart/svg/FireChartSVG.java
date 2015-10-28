@@ -1538,7 +1538,6 @@ public class FireChartSVG {
 		{
 			if (i % majorTickInterval == 0)
 			{ // year is a multiple of tickInterval
-			
 				if (vertGuides)
 				{
 					int vertGuidesOffsetAmount = 0;

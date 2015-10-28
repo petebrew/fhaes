@@ -39,7 +39,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import javax.swing.ImageIcon;
-import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -47,6 +46,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTree;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
@@ -130,6 +130,7 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 	private FHAESResultTreeNode itemNTP;
 	private FHAESResultTreeNode itemGeneralSummary;
 	private FHAESResultTreeNode itemSingleFileSummary;
+	private FHAESResultTreeNode itemSingleEventSummary;
 	
 	private DefaultMutableTreeNode previouslySelectedNode;
 	protected GoldFishPanel goldFishPanel;
@@ -161,6 +162,7 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 	private DefaultTableModel treeSummaryModel = null;
 	private DefaultTableModel generalSummaryModel = null;
 	private DefaultTableModel singleFileSummaryModel = null;
+	private DefaultTableModel singleEventSummaryModel = null;
 	private FHMatrix fhm;
 	
 	protected File seasonalitySummaryFile = null;
@@ -180,6 +182,7 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 	protected File treeSummaryFile = null;
 	protected File generalSummaryFile = null;
 	protected File singleFileSummaryFile = null;
+	protected File singleEventSummaryFile = null;
 	
 	final static String RESULTSPANEL = "Results panel";
 	final static String PICKRESULTPANEL = "Pick result panel";
@@ -232,11 +235,35 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 	}
 	
 	/**
+	 * TODO
+	 * 
+	 * @param f
+	 */
+	public void setSingleEventSummaryModel(DefaultTableModel f) {
+	
+		singleEventSummaryModel = f;
+		if (f != null)
+		{
+			setResultsEnabled(true);
+			setupTable(true);
+		}
+		setSingleEventSummaryStatus();
+	}
+	
+	/**
 	 * Enabled/Disable SingleFileSummary item depending on whether there is a model or not
 	 */
 	public void setSingleFileSummaryStatus() {
 	
 		itemSingleFileSummary.setEnabled(singleFileSummaryModel != null);
+	}
+	
+	/**
+	 * Enabled/Disable SingleFileSummary item depending on whether there is a model or not
+	 */
+	public void setSingleEventSummaryStatus() {
+	
+		itemSingleEventSummary.setEnabled(singleEventSummaryModel != null);
 	}
 	
 	/**
@@ -832,9 +859,23 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 			
 		});
 		
+		this.itemSingleEventSummary = new FHAESResultTreeNode(FHAESResult.SINGLE_EVENT_SUMMARY, iconTable);
+		itemSingleEventSummary.addAction(new FHAESAction("Save to CSV", "formatcsv.png") {
+			
+			private static final long serialVersionUID = 1L;
+			
+			@Override
+			public void actionPerformed(ActionEvent event) {
+			
+				saveFileToDisk(singleEventSummaryFile, new CSVFileFilter());
+			}
+			
+		});
+		
 		// Add results to categories
 		categoryGeneral.add(itemGeneralSummary);
 		categoryGeneral.add(itemSingleFileSummary);
+		categoryGeneral.add(itemSingleEventSummary);
 		categorySimMatrices.add(itemJaccard);
 		categorySimMatrices.add(itemCohen);
 		categoryDisSimMatrices.add(itemJaccardD);
@@ -1058,6 +1099,7 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 	
 		panelResult.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		table.setModel(new DefaultTableModel());
+		
 		MainWindow.getInstance().getReportPanel().actionResultsHelp.setEnabled(false);
 		
 		if (this.generalSummaryModel == null)
@@ -1145,6 +1187,7 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 				
 				table.setModel(seasonalitySummaryModel);
 				// table.setSortOrder(0, SortOrder.ASCENDING);
+				setDefaultTableAlignment(SwingConstants.RIGHT);
 			}
 			
 			else if (result.equals(FHAESResult.INTERVAL_SUMMARY))
@@ -1160,6 +1203,7 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 				
 				table.setModel(intervalsSummaryModel);
 				// table.setSortOrder(0, SortOrder.ASCENDING);
+				setDefaultTableAlignment(SwingConstants.RIGHT);
 				
 			}
 			
@@ -1176,6 +1220,7 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 				
 				table.setModel(intervalsExceedenceModel);
 				// table.setSortOrder(0, SortOrder.ASCENDING);
+				setDefaultTableAlignment(SwingConstants.RIGHT);
 			}
 			
 			else if (result.equals(FHAESResult.BINARY_MATRIX_00))
@@ -1189,6 +1234,7 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 				
 				table.setModel(bin00Model);
 				// table.setSortOrder(0, SortOrder.ASCENDING);
+				setDefaultTableAlignment(SwingConstants.RIGHT);
 			}
 			
 			else if (result.equals(FHAESResult.BINARY_MATRIX_01))
@@ -1202,6 +1248,7 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 				
 				table.setModel(bin01Model);
 				// table.setSortOrder(0, SortOrder.ASCENDING);
+				setDefaultTableAlignment(SwingConstants.RIGHT);
 			}
 			
 			else if (result.equals(FHAESResult.BINARY_MATRIX_10))
@@ -1215,6 +1262,7 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 				
 				table.setModel(bin10Model);
 				// table.setSortOrder(0, SortOrder.ASCENDING);
+				setDefaultTableAlignment(SwingConstants.RIGHT);
 			}
 			else if (result.equals(FHAESResult.BINARY_MATRIX_11))
 			{
@@ -1227,6 +1275,7 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 				
 				table.setModel(bin11Model);
 				// table.setSortOrder(0, SortOrder.ASCENDING);
+				setDefaultTableAlignment(SwingConstants.RIGHT);
 			}
 			else if (result.equals(FHAESResult.BINARY_MATRIX_SUM))
 			{
@@ -1237,6 +1286,7 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 					return;
 				}
 				table.setModel(binSumModel);
+				setDefaultTableAlignment(SwingConstants.RIGHT);
 			}
 			else if (result.equals(FHAESResult.JACCARD_SIMILARITY_MATRIX))
 			{
@@ -1247,6 +1297,7 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 					return;
 				}
 				table.setModel(SJACModel);
+				setDefaultTableAlignment(SwingConstants.RIGHT);
 			}
 			else if (result.equals(FHAESResult.COHEN_SIMILARITITY_MATRIX))
 			{
@@ -1257,6 +1308,7 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 					return;
 				}
 				table.setModel(SCOHModel);
+				setDefaultTableAlignment(SwingConstants.RIGHT);
 			}
 			else if (result.equals(FHAESResult.JACCARD_SIMILARITY_MATRIX_D))
 			{
@@ -1267,6 +1319,7 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 					return;
 				}
 				table.setModel(DSJACModel);
+				setDefaultTableAlignment(SwingConstants.RIGHT);
 			}
 			else if (result.equals(FHAESResult.COHEN_SIMILARITITY_MATRIX_D))
 			{
@@ -1277,6 +1330,7 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 					return;
 				}
 				table.setModel(DSCOHModel);
+				setDefaultTableAlignment(SwingConstants.RIGHT);
 			}
 			else if (result.equals(FHAESResult.BINARY_MATRIX_NTP))
 			{
@@ -1290,6 +1344,7 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 					return;
 				}
 				table.setModel(NTPModel);
+				setDefaultTableAlignment(SwingConstants.RIGHT);
 			}
 			else if (result.equals(FHAESResult.BINARY_MATRIX_SITE))
 			{
@@ -1300,6 +1355,7 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 					return;
 				}
 				table.setModel(siteSummaryModel);
+				setDefaultTableAlignment(SwingConstants.RIGHT);
 			}
 			else if (result.equals(FHAESResult.BINARY_MATRIX_TREE))
 			{
@@ -1310,6 +1366,7 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 					return;
 				}
 				table.setModel(treeSummaryModel);
+				setDefaultTableAlignment(SwingConstants.RIGHT);
 			}
 			
 			else if (result.equals(FHAESResult.GENERAL_SUMMARY))
@@ -1321,6 +1378,7 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 					return;
 				}
 				table.setModel(generalSummaryModel);
+				setDefaultTableAlignment(SwingConstants.RIGHT);
 			}
 			
 			else if (result.equals(FHAESResult.SINGLE_FILE_SUMMARY))
@@ -1332,6 +1390,20 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 					return;
 				}
 				table.setModel(singleFileSummaryModel);
+				setDefaultTableAlignment(SwingConstants.RIGHT);
+			}
+			
+			else if (result.equals(FHAESResult.SINGLE_EVENT_SUMMARY))
+			{
+				
+				if (this.singleEventSummaryModel == null)
+				{
+					clearTable();
+					return;
+				}
+				table.setModel(singleEventSummaryModel);
+				setDefaultTableAlignment(SwingConstants.RIGHT);
+				setTableColumnAlignment(SwingConstants.LEFT, 2);
 			}
 			
 			else
@@ -1344,15 +1416,6 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 			
 			table.setColumnControlVisible(true);
 			table.setAutoCreateRowSorter(true);
-			
-			DefaultTableCellRenderer rightRenderer = new DefaultTableCellRenderer();
-			rightRenderer.setHorizontalAlignment(JLabel.RIGHT);
-			
-			// Align right
-			for (int i = 1; i < table.getModel().getColumnCount(); i++)
-			{
-				table.getColumnModel().getColumn(i).setCellRenderer(rightRenderer);
-			}
 			
 		}
 		catch (Exception e)
@@ -1368,6 +1431,24 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 			treeResults.setCursor(Cursor.getDefaultCursor());
 		}
 		
+	}
+	
+	private void setDefaultTableAlignment(int align) {
+	
+		DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
+		renderer.setHorizontalAlignment(align);
+		
+		for (int i = 1; i < table.getModel().getColumnCount(); i++)
+		{
+			table.getColumnModel().getColumn(i).setCellRenderer(renderer);
+		}
+	}
+	
+	private void setTableColumnAlignment(int align, int col) {
+	
+		DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
+		renderer.setHorizontalAlignment(align);
+		table.getColumnModel().getColumn(col).setCellRenderer(renderer);
 	}
 	
 	/**
@@ -1580,6 +1661,7 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 			addToZipFile(this.DSJACFile, "JACCARD dissimilarity.csv", zos);
 			addToZipFile(this.DSCOHFile, "COHEN dissimilarity.csv", zos);
 			addToZipFile(this.singleFileSummaryFile, "Single file summary.csv", zos);
+			addToZipFile(this.singleEventSummaryFile, "Single file event summary.csv", zos);
 			
 			addToZipFile(getReadmeFile(), "readme.txt", zos);
 			
@@ -1660,6 +1742,7 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 		writeModelToXLSXSheet(workbook.createSheet("Matrix D (0-0)"), bin00Model);
 		writeModelToXLSXSheet(workbook.createSheet("Matrix L (Sum)"), binSumModel);
 		writeModelToXLSXSheet(workbook.createSheet("Single File Summary"), singleFileSummaryModel);
+		writeModelToXLSXSheet(workbook.createSheet("Single File Event Summary"), singleEventSummaryModel);
 		
 		OutputStream os = IOUtils.createOutput(outputfile);
 		try

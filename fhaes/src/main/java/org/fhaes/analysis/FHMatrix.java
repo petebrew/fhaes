@@ -30,8 +30,8 @@ import javax.swing.JOptionPane;
 import org.fhaes.enums.EventTypeToProcess;
 import org.fhaes.enums.FireFilterType;
 import org.fhaes.enums.NoDataLabel;
+import org.fhaes.fhfilereader.FHFile;
 import org.fhaes.fhfilereader.FHX2FileReader;
-import org.fhaes.model.FHFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -97,7 +97,7 @@ public class FHMatrix {
 	 */
 	public FHMatrix(FHFile[] inputFileArray, Integer startYear, Integer endYear, FireFilterType filterType,
 			EventTypeToProcess eventTypeToProcess, Double filterValue, Integer yearOverlapThreshold, NoDataLabel noDataLabel) {
-			
+	
 		this.inputFileArray = inputFileArray;
 		this.startYear = startYear;
 		this.endYear = endYear;
@@ -167,7 +167,7 @@ public class FHMatrix {
 			Boolean site01, Boolean site10, Boolean site11, Boolean siteSum, Boolean binaryMatrix, Boolean ntpMatrix,
 			Boolean filterByNumber, Boolean filterByPercentage, Boolean scohSim, Boolean sjacSim, Boolean fireEvent, Boolean fireInjury,
 			Double filterValue) throws Exception {
-			
+	
 		this.inputFileArray = inputFile;
 		this.outputFileTree = outputFile;
 		this.startYear = startYear;
@@ -230,13 +230,13 @@ public class FHMatrix {
 	 */
 	@SuppressWarnings("deprecation")
 	private void runAnalysis() {
-		
+	
 		log.debug("Running FHMatrix analysis");
 		
 		// TODO Elena to implement
 		if (this.overlapRequired > 0)
 		{
-		
+			
 		}
 		
 		/*
@@ -1112,7 +1112,7 @@ public class FHMatrix {
 					}
 					
 					// Save FHFile version of file to array
-					FHFile fhf = new FHFile(inputFileArray[i].getAbsoluteFile());
+					FHFile fhf = inputFileArray[i];
 					fhfileArray[i] = fhf;
 				}
 				wrSite.write(System.getProperty("line.separator"));
@@ -1686,77 +1686,77 @@ public class FHMatrix {
 		}
 		finally
 		{
-		
+			
 		}
 	}
 	
 	public File getFileNTPResult() {
-		
+	
 		return outputFileNTP;
 	}
 	
 	public File getFileSiteResult() {
-		
+	
 		return outputFileSite;
 	}
 	
 	public File getTreeSummaryFile() {
-		
+	
 		return outputFileTree;
 	}
 	
 	public File getFileMatrix00Result() {
-		
+	
 		return outputFileM00;
 	}
 	
 	public File getFileMatrix01Result() {
-		
+	
 		return outputFileM01;
 	}
 	
 	public File getFileMatrix10Result() {
-		
+	
 		return outputFileM10;
 	}
 	
 	public File getFileMatrix11Result() {
-		
+	
 		return outputFileM11;
 	}
 	
 	public File getFileSumResult() {
-		
+	
 		return outputFileSum;
 	}
 	
 	public File getFileSCOHResult() {
-		
+	
 		return outputFileSCOH;
 	}
 	
 	public File getFileDSCOHResult() {
-		
+	
 		return outputFileDSCOH;
 	}
 	
 	public File getFileSJACResult() {
-		
+	
 		return outputFileSJAC;
 	}
 	
 	public File getFileDSJACResult() {
-		
+	
 		return outputFileDSJAC;
 	}
 	
 	public Integer getEarliestYearInOutput() {
-		
+	
 		return this.minFirstYear;
 	}
 	
 	public Integer getLatestEndYearInOutput() {
-		
+	
 		return this.maxLastYear;
 	}
 }

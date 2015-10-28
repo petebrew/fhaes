@@ -19,6 +19,8 @@ package org.fhaes.model;
 
 import java.util.ArrayList;
 
+import org.fhaes.fhfilereader.FHFile;
+
 /**
  * FHFileGroup Class.
  */

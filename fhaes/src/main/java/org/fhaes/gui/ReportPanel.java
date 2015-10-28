@@ -43,8 +43,9 @@ import javax.swing.text.DefaultHighlighter;
 import javax.swing.text.DefaultHighlighter.DefaultHighlightPainter;
 
 import org.fhaes.analysis.FHDescriptiveStats;
+import org.fhaes.enums.EventTypeToProcess;
+import org.fhaes.fhfilereader.FHFile;
 import org.fhaes.help.RemoteHelp;
-import org.fhaes.model.FHFile;
 import org.fhaes.neofhchart.ChartActions;
 import org.fhaes.neofhchart.NeoFHChart;
 import org.fhaes.preferences.App;
@@ -175,6 +176,8 @@ public class ReportPanel extends JPanel implements PrefsListener {
 		// First Handle the FHX Viewer panel
 		// **********
 		
+		log.debug("populateSingleFileReports called");
+		
 		// Scrub viewer
 		txtFHX.setText("");
 		txtSummary.setText("");
@@ -210,9 +213,17 @@ public class ReportPanel extends JPanel implements PrefsListener {
 			
 			if (fhxFile.isValidFHXFile())
 			{
+				log.debug("Populating chart tab");
 				panelChart.loadFile(fhxFile.getFireHistoryReader());
+				
+				log.debug("Populating descriptive stats");
 				panelResults.setSingleFileSummaryModel(FHDescriptiveStats.getDescriptiveStatsTableModel(fhxFile));
 				panelResults.singleFileSummaryFile = FHDescriptiveStats.getDescriptiveStatsAsFile(fhxFile, null);
+				panelResults.setSingleEventSummaryModel(FHDescriptiveStats.getEventSummaryTable(fhxFile,
+						App.prefs.getEventTypePref(PrefKey.EVENT_TYPE_TO_PROCESS, EventTypeToProcess.FIRE_AND_INJURY_EVENT)));
+				panelResults.singleEventSummaryFile = FHDescriptiveStats.getEventSummaryAsFile(fhxFile, null,
+						App.prefs.getEventTypePref(PrefKey.EVENT_TYPE_TO_PROCESS, EventTypeToProcess.FIRE_AND_INJURY_EVENT));
+				
 			}
 			else
 			{
@@ -248,6 +259,8 @@ public class ReportPanel extends JPanel implements PrefsListener {
 	 */
 	private void populateSummaryTab() {
 	
+		log.debug("populateSummaryTab called");
+		
 		if (fhxFile == null || fhxFile.getReport() == null)
 		{
 			txtSummary.setText("");
@@ -263,6 +276,8 @@ public class ReportPanel extends JPanel implements PrefsListener {
 	 */
 	private void populateFileReaderTab() {
 	
+		log.debug("populateFileReaderTab called");
+		
 		if (fhxFile == null)
 		{
 			txtFHX.setText("");

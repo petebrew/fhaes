@@ -19,7 +19,7 @@ package org.fhaes.util;
 
 import java.util.ArrayList;
 
-import org.fhaes.model.FHFile;
+import org.fhaes.fhfilereader.FHFile;
 import org.fhaes.model.FHFileGroup;
 import org.fhaes.preferences.App;
 import org.fhaes.preferences.FHAESPreferences.PrefKey;

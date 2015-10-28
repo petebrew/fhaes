@@ -21,14 +21,15 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
 
+import junit.framework.TestCase;
+
 import org.fhaes.enums.EventTypeToProcess;
 import org.fhaes.enums.FireFilterType;
+import org.fhaes.fhfilereader.FHFile;
 import org.fhaes.fhfilereader.FHX2FileReader;
 import org.fhaes.model.FHSeries;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import junit.framework.TestCase;
 
 /**
  * FileReaderCalculationTests Class. Unit test for simple App.
@@ -45,13 +46,13 @@ public class FileReaderCalculationTests extends TestCase {
 	 * @return
 	 */
 	private File[] getFilesFromFolder(String folder) {
-		
+	
 		File dir = new File(folder);
 		FilenameFilter filter = new FilenameFilter() {
 			
 			@Override
 			public boolean accept(File dir, String name) {
-				
+			
 				return !name.startsWith(".");
 			}
 		};
@@ -71,7 +72,7 @@ public class FileReaderCalculationTests extends TestCase {
 	 * Test the access to the data required to plot the FHChart index plot.
 	 */
 	public void testGetFireIndexPlotData() {
-		
+	
 		// Parameters for testing
 		String folder = "TestData/";
 		File[] files = getFilesFromFolder(folder);
@@ -87,7 +88,8 @@ public class FileReaderCalculationTests extends TestCase {
 			
 			EventTypeToProcess eventTypeToProcess = EventTypeToProcess.FIRE_EVENT;
 			
-			FHX2FileReader fr = new FHX2FileReader(file);
+			FHFile f = new FHFile(file);
+			FHX2FileReader fr = new FHX2FileReader(f);
 			
 			int firstyear = fr.getFirstYear();
 			int[] sampledepths = fr.getSampleDepths();
@@ -108,7 +110,7 @@ public class FileReaderCalculationTests extends TestCase {
 	 * Test access to the data required for the FHChart chronology plot.
 	 */
 	public void testGetChronologyPlotData() {
-		
+	
 		// Parameters for testing
 		String folder = "TestData/";
 		File[] files = getFilesFromFolder(folder);
@@ -120,7 +122,8 @@ public class FileReaderCalculationTests extends TestCase {
 		
 		for (File file : files)
 		{
-			FHX2FileReader fr = new FHX2FileReader(file);
+			FHFile f = new FHFile(file);
+			FHX2FileReader fr = new FHX2FileReader(f);
 			
 			ArrayList<FHSeries> seriesList = fr.getSeriesList();
 			
@@ -144,7 +147,7 @@ public class FileReaderCalculationTests extends TestCase {
 	 * Get a list of years that match the composite filter. This data is typically used in the FHChart composite plot.
 	 */
 	public void testGetCompositeFireYears() {
-		
+	
 		// Parameters for testing
 		String folder = "TestData/";
 		File[] files = getFilesFromFolder(folder);
@@ -162,7 +165,8 @@ public class FileReaderCalculationTests extends TestCase {
 			Double filterValue = 80.0;
 			Integer minNumberOfSamples = 1;
 			
-			FHX2FileReader fr = new FHX2FileReader(file);
+			FHFile f = new FHFile(file);
+			FHX2FileReader fr = new FHX2FileReader(f);
 			ArrayList<Integer> fireYears = fr.getCompositeFireYears(eventType, filterType, filterValue, minNumberOfSamples);
 			
 			if (fireYears.size() > 0)
