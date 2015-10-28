@@ -48,9 +48,9 @@ import org.fhaes.enums.FireFilterType;
 import org.fhaes.enums.LabelOrientation;
 import org.fhaes.feedback.FeedbackPreferenceManager.FeedbackDictionary;
 import org.fhaes.fhfilereader.AbstractFireHistoryReader;
+import org.fhaes.fhfilereader.FHFile;
 import org.fhaes.gui.MainWindow;
 import org.fhaes.model.FHCategoryEntry;
-import org.fhaes.model.FHFile;
 import org.fhaes.model.FHSeries;
 import org.fhaes.neofhchart.ChartActions.SeriesSortType;
 import org.fhaes.neofhchart.FHSeriesSVG;
@@ -725,7 +725,7 @@ public class FireChartSVG {
 		deleteAllChildren(chart_title_g);
 		if (App.prefs.getBooleanPref(PrefKey.CHART_TITLE_USE_DEFAULT_NAME, true))
 		{
-			FHFile currentFile = new FHFile(getReader().getFile());
+			FHFile currentFile = getReader().getFHFile();
 			
 			if (currentFile.getSiteName().length() > 0)
 			{
@@ -1538,6 +1538,7 @@ public class FireChartSVG {
 		{
 			if (i % majorTickInterval == 0)
 			{ // year is a multiple of tickInterval
+			
 				if (vertGuides)
 				{
 					int vertGuidesOffsetAmount = 0;
