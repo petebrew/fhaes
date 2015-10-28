@@ -84,6 +84,7 @@ public class NeoFHChart extends JPanel implements PrefsListener {
 		App.prefs.addPrefsListener(this);
 		this.setLayout(new BorderLayout());
 		
+		svgCanvas.setAutoFitToCanvas(true);
 		JSVGScrollPane scrollPane = new JSVGScrollPane(svgCanvas);
 		svgCanvas.getInteractors().add(new AbstractPanInteractor() {
 			
@@ -165,7 +166,8 @@ public class NeoFHChart extends JPanel implements PrefsListener {
 	}
 	
 	/**
-	 * Create a chart from the specified AbstractFireHistoryReader. Charts are cached so transient settings are maintains e.g. series order.
+	 * Create a chart from the specified AbstractFireHistoryReader. Charts are cached so transient settings are maintained e.g. series
+	 * order.
 	 * 
 	 * @param fr
 	 */
