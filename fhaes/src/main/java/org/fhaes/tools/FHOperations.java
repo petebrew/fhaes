@@ -308,6 +308,7 @@ public class FHOperations {
 		{
 			// User wants to filter to minimum samples
 			// filter value is stored in minSamples
+			log.debug("Minimum number of samples requested by user is : " + minSamples);
 			
 		}
 		else if (sampleDepthFilterType.equals(SampleDepthFilterType.MIN_NUM_RECORDER_SAMPLES))
@@ -315,9 +316,7 @@ public class FHOperations {
 			// User wants to filter to minimum recorder samples
 			// filter value is stored in minSamples
 			
-			log.debug("Some output here: " + minSamples);
-			log.error("Oh bugger it broke!");
-			log.warn("Hmmm this shouldn't happen");
+			log.debug("Minimum number of recorder samples requested by user is : " + minSamples);
 			
 		}
 		

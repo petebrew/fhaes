@@ -193,6 +193,10 @@ public abstract class PrefWrapper<OBJTYPE> {
 		{
 			App.prefs.setLabelOrientationPref(getPrefName(), (LabelOrientation) prefValue);
 		}
+		else if (baseClass == SampleDepthFilterType.class)
+		{
+			App.prefs.setSampleDepthFilterTypePref(getPrefName(), (SampleDepthFilterType) prefValue);
+		}
 		else
 			throw new IllegalArgumentException("I don't know how to save a pref for type " + baseClass);
 		
