@@ -39,10 +39,10 @@ import org.apache.batik.swing.JSVGScrollPane;
 import org.apache.batik.swing.gvt.AbstractPanInteractor;
 import org.codehaus.plexus.util.FileUtils;
 import org.fhaes.fhfilereader.AbstractFireHistoryReader;
+import org.fhaes.fhfilereader.FHFile;
 import org.fhaes.filefilter.PDFFilter;
 import org.fhaes.filefilter.PNGFilter;
 import org.fhaes.filefilter.SVGFilter;
-import org.fhaes.model.FHFile;
 import org.fhaes.neofhchart.svg.FireChartSVG;
 import org.fhaes.preferences.App;
 import org.fhaes.preferences.FHAESPreferences.PrefKey;
@@ -219,7 +219,7 @@ public class NeoFHChart extends JPanel implements PrefsListener {
 			fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 			fc.setDialogTitle("Export current chart as...");
 			
-			FHFile currentFile = new FHFile(currentChart.getReader().getFile());
+			FHFile currentFile = currentChart.getReader().getFHFile();
 			fc.setSelectedFile(new File(currentFile.getFileNameWithoutExtension()));
 			
 			// In response to a button click:
