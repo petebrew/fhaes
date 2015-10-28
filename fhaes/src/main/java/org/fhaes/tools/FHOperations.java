@@ -313,6 +313,11 @@ public class FHOperations {
 		{
 			// User wants to filter to minimum recorder samples
 			// filter value is stored in minSamples
+			
+			log.debug("Some output here: " + minSamples);
+			log.error("Oh bugger it broke!");
+			log.warn("Hmmm this shouldn't happen");
+			
 		}
 		
 		boolean run = false;
@@ -582,6 +587,7 @@ public class FHOperations {
 			ArrayList<ArrayList<Double>> climateVectorFilter2 = new ArrayList<ArrayList<Double>>();
 			ArrayList<Integer> climateVectorActualSite = null;
 			ArrayList<Double> filterVectorActual = null;
+			ArrayList<Integer> minSampleFilter = null;
 			ArrayList<Integer> climateYear = new ArrayList<Integer>();
 			
 			ArrayList<ArrayList<Character>> nameLine = new ArrayList<ArrayList<Character>>();
@@ -625,6 +631,9 @@ public class FHOperations {
 				for (int i = 0; i < myReader.size(); i++)
 				{
 					log.debug("  Starting to Process file in Composite : " + myReader.get(i).getName());
+					log.debug(" the first year of the file above is: " + myReader.get(i).getFirstYear());
+					log.debug("  sampledepths at year 1565 : " + myReader.get(i).getSampleDepths()[189]);
+					log.debug(" the size of sampledepths is:  " + myReader.get(i).getSampleDepths().length);
 					/*
 					 * set the beginning Year accounting for the filter
 					 */
@@ -646,6 +655,54 @@ public class FHOperations {
 					 */
 					// log.debug("got pass the if ");
 					climateYear = myReader.get(i).getYear();
+					/**
+					 * FOR ELENA!!!
+					 * 
+					 */
+					if (sampleDepthFilterType.equals(SampleDepthFilterType.MIN_NUM_SAMPLES))
+					{
+						minSampleFilter = new ArrayList<Integer>();
+						for (int ij = 0; ij < listYearsComp.size(); ij++)
+						{
+							if (climateYear.indexOf(listYearsComp.get(ij)) == -1)
+							{
+								minSampleFilter.add(-1);
+							}
+							else
+							{
+								log.debug("the sample depth is "
+										+ myReader.get(i).getSampleDepths()[climateYear.indexOf(listYearsComp.get(ij))]);
+								minSampleFilter.add(new Integer(
+										myReader.get(i).getSampleDepths()[climateYear.indexOf(listYearsComp.get(ij))]));
+							}
+						}
+						log.debug("Some output here: " + minSamples);
+						log.error("Oh bugger it broke!");
+						log.warn("Hmmm this shouldn't happen");
+					}
+					if (sampleDepthFilterType.equals(SampleDepthFilterType.MIN_NUM_RECORDER_SAMPLES))
+					{
+						minSampleFilter = new ArrayList<Integer>();
+						for (int ij = 0; ij < listYearsComp.size(); ij++)
+						{
+							if (climateYear.indexOf(listYearsComp.get(ij)) == -1)
+							{
+								minSampleFilter.add(-1);
+							}
+							else
+							{
+								log.debug("the sample depth is "
+										+ myReader.get(i).getRecordingDepths()[climateYear.indexOf(listYearsComp.get(ij))]);
+								minSampleFilter.add(new Integer(
+										myReader.get(i).getSampleDepths()[climateYear.indexOf(listYearsComp.get(ij))]));
+							}
+						}
+						
+						log.debug("Some output here: " + minSamples);
+						log.error("Oh bugger it broke!");
+						log.warn("Hmmm this shouldn't happen");
+						
+					}
 					
 					if (fireFilterValue.intValue() != 1)
 					{
@@ -709,58 +766,69 @@ public class FHOperations {
 						}
 						else
 						{
-							// log.debug(" !climateYear.indexOf(listYearsComp.get(j)) == -1 " + climateYear.indexOf(listYearsComp.get(j)));
-							if (fireFilterValue.intValue() != 1)
+							log.debug("j is: " + j + " inside minsampleFilter one before " + minSampleFilter.get(j).intValue()
+									+ " minSamples " + minSamples.intValue());
+							if (minSampleFilter.get(j).intValue() >= minSamples.intValue())
 							{
-								if (fireFilterType.equals(FireFilterType.NUMBER_OF_EVENTS))
+								log.debug("j is: " + j + "inside minsampleFilter  " + minSampleFilter.get(j));
+								if (fireFilterValue.intValue() != 1)
 								{
-									// climateVectorActualSite.add(climateVector.get(climateYear.indexOf(listYears.get(j))));
-									// log.debug("number of fires is selected is: "+
-									// firesFilter1+" "+climateVector.get(climateYear.indexOf(listYears.get(j))));
-									// log.debug("fire filter: "+firesFilter1+" year is: "+listYears.get(j)
-									// +" fires: "+filterMatrix.get(3*i).get(j)+" climatevector:
-									// "+climateVector.get(climateYear.indexOf(listYears.get(j))));
-									log.debug("fire filter: " + firesFilter1 + " year is: " + listYearsComp.get(j) + " fires: "
-											+ filterMatrix.get(3 * i).get(j) + " climatevector: "
-											+ climateVector.get(climateYear.indexOf(listYearsComp.get(j))));
-									if ((filterMatrix.get(3 * i).get(j) < firesFilter1)
-											&& (climateVector.get(climateYear.indexOf(listYearsComp.get(j)))) != -1.0)
+									log.debug("inside fileFilter !=1 ");
+									if (fireFilterType.equals(FireFilterType.NUMBER_OF_EVENTS))
 									{
-										climateVectorActualSite.add(0);
-									}
-									else
-									{
-										climateVectorActualSite.add(climateVector.get(climateYear.indexOf(listYearsComp.get(j))));
-									}
-								}
-								if (fireFilterType.equals(FireFilterType.PERCENTAGE_OF_EVENTS))
-								{
-									// log.debug("percent of fires is selected is: "+
-									// firesFilter2+" "+climateVector.get(climateYear.indexOf(listYearsComp.get(j))));
-									// log.debug("the filter percent of fires is"+filterMatrix.get((3*i+2)).get(j));
-									if ((filterMatrix.get(3 * i + 2).get(j) == -99))
-									{
-										climateVectorActualSite.add(-1);
-									}
-									else
-									{
-										if ((filterMatrix.get(3 * i + 2).get(j) < firesFilter2)
-												&& ((climateVector.get(climateYear.indexOf(listYears.get(j)))) != -1.0))
+										// climateVectorActualSite.add(climateVector.get(climateYear.indexOf(listYears.get(j))));
+										// log.debug("number of fires is selected is: "+
+										// firesFilter1+" "+climateVector.get(climateYear.indexOf(listYears.get(j))));
+										// log.debug("fire filter: "+firesFilter1+" year is: "+listYears.get(j)
+										// +" fires: "+filterMatrix.get(3*i).get(j)+" climatevector:
+										// "+climateVector.get(climateYear.indexOf(listYears.get(j))));
+										log.debug("fire filter: " + firesFilter1 + " year is: " + listYearsComp.get(j) + " fires: "
+												+ filterMatrix.get(3 * i).get(j) + " climatevector: "
+												+ climateVector.get(climateYear.indexOf(listYearsComp.get(j))));
+										if ((filterMatrix.get(3 * i).get(j) < firesFilter1)
+												&& (climateVector.get(climateYear.indexOf(listYearsComp.get(j)))) != -1.0)
 										{
 											climateVectorActualSite.add(0);
 										}
 										else
 										{
-											climateVectorActualSite.add(climateVector.get(climateYear.indexOf(listYears.get(j))));
+											climateVectorActualSite.add(climateVector.get(climateYear.indexOf(listYearsComp.get(j))));
 										}
 									}
-								}
-							} // end of if filter not equal to 1
+									if (fireFilterType.equals(FireFilterType.PERCENTAGE_OF_EVENTS))
+									{
+										// log.debug("percent of fires is selected is: "+
+										// firesFilter2+" "+climateVector.get(climateYear.indexOf(listYearsComp.get(j))));
+										// log.debug("the filter percent of fires is"+filterMatrix.get((3*i+2)).get(j));
+										if ((filterMatrix.get(3 * i + 2).get(j) == -99))
+										{
+											climateVectorActualSite.add(-1);
+										}
+										else
+										{
+											if ((filterMatrix.get(3 * i + 2).get(j) < firesFilter2)
+													&& ((climateVector.get(climateYear.indexOf(listYears.get(j)))) != -1.0))
+											{
+												climateVectorActualSite.add(0);
+											}
+											else
+											{
+												climateVectorActualSite.add(climateVector.get(climateYear.indexOf(listYears.get(j))));
+											}
+										}
+									}
+								} // end of if filter not equal to 1
+								else
+								{
+									log.debug("j is " + j + "minSampleFilter is " + minSampleFilter.get(j));
+									climateVectorActualSite.add(-1);
+								} // end of else of if filter not equal to 1
+							}// end of if for minsamplefilter bigger or equal to minSamples
 							else
 							{
-								climateVectorActualSite.add(climateVector.get(climateYear.indexOf(listYearsComp.get(j))));
-							} // end of else of if filter not equal to 1
-						} // end else for if == -1
+								climateVectorActualSite.add(-1);
+							}
+						} // end else for if climateYear.indexOf(listYearsComp.get(j)) == -1
 					} // end of j loop listyears
 						// log.debug("size by site binary "+climateVectorActualSite.size()+" "+climateVectorActualSite);
 					climateMatrixSite.add(climateVectorActualSite);
