@@ -180,6 +180,11 @@
 			<artifactId>swingx</artifactId>
 			<version>1.6.1</version>
 		</dependency>
+		<dependency>
+			<groupId>org.tridas</groupId>
+			<artifactId>dendrofileio</artifactId>
+			<version>1.1.2-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 	<description>This Jar contains various utilities for working with fire history files and data.  It is used by FHAES and associated projects.</description>
 
