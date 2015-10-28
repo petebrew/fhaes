@@ -365,14 +365,12 @@ public class CompositeFilterDialog extends JDialog implements ActionListener {
 	 */
 	public Integer getMinNumberOfSamples() {
 	
-		if (this.cboSampleDepthFilterType.getSelectedIndex() == 1)
-		{
-			return (Integer) this.spnMinSamples.getValue();
-		}
-		else
-		{
-			return null;
-		}
+		return (Integer) this.spnMinSamples.getValue();
+		
+		/*
+		 * if (this.cboSampleDepthFilterType.getSelectedItem().equals(SampleDepthFilterType.MIN_NUM_SAMPLES)) { return (Integer)
+		 * this.spnMinSamples.getValue(); } else { return null; }
+		 */
 	}
 	
 	/**
