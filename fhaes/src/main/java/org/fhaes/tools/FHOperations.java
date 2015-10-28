@@ -34,6 +34,7 @@ import javax.swing.filechooser.FileFilter;
 import org.codehaus.plexus.util.FileUtils;
 import org.fhaes.enums.FireFilterType;
 import org.fhaes.enums.SampleDepthFilterType;
+import org.fhaes.fhfilereader.FHFile;
 import org.fhaes.fhfilereader.FHX2FileReader;
 import org.fhaes.filefilter.FHXFileFilter;
 import org.fhaes.filefilter.TXTFileFilter;
@@ -48,8 +49,8 @@ import org.slf4j.LoggerFactory;
 public class FHOperations {
 	
 	private JFrame parent;
-	private File[] inputFileArray;
-	private File outputFile;
+	private FHFile[] inputFileArray;
+	private FHFile outputFile;
 	private Integer startYear;
 	private Integer endYear;
 	private String comments;
@@ -68,7 +69,7 @@ public class FHOperations {
 	@SuppressWarnings("unused")
 	private boolean highway = true;
 	
-	public FHOperations(JFrame parent, File[] inputFiles, File outputFile, Integer startYear, Integer endYear, Double fireFilterValue,
+	public FHOperations(JFrame parent, FHFile[] inputFiles, FHFile outputFile, Integer startYear, Integer endYear, Double fireFilterValue,
 			FireFilterType fireFilterType, SampleDepthFilterType sampleDepthFilterType, Boolean createJoinFile,
 			Boolean createCompositeFile, Boolean createEventFile, Integer minNumberSamples, String comments) {
 	
@@ -105,7 +106,7 @@ public class FHOperations {
 	 * @param lastYear
 	 * @return
 	 */
-	public static File createEventFile(JFrame parent, File[] inputFileArray, File outputFile, Integer firstYear, Integer lastYear) {
+	public static File createEventFile(JFrame parent, FHFile[] inputFileArray, FHFile outputFile, Integer firstYear, Integer lastYear) {
 	
 		if (outputFile != null)
 		{
@@ -127,9 +128,9 @@ public class FHOperations {
 	 * @param minNumberSamples
 	 * @return
 	 */
-	public static File createEventFile(JFrame parent, File[] inputFileArray, Integer startYear, Integer endYear, Integer minNumberSamples) {
+	public static File createEventFile(JFrame parent, FHFile[] inputFileArray, Integer startYear, Integer endYear, Integer minNumberSamples) {
 	
-		File file = getOutputFile(parent, new TXTFileFilter(), true);
+		FHFile file = new FHFile(getOutputFile(parent, new TXTFileFilter(), true));
 		
 		if (file != null)
 		{
@@ -155,11 +156,11 @@ public class FHOperations {
 	 * @param comments
 	 * @return
 	 */
-	public static File createEventFile(JFrame parent, File[] inputFileArray, Integer startYear, Integer endYear,
+	public static File createEventFile(JFrame parent, FHFile[] inputFileArray, Integer startYear, Integer endYear,
 			FireFilterType fireFilterType, SampleDepthFilterType sampleDepthFilterType, Double fireFilterValue, Integer minNumberSamples,
 			String comments) {
 	
-		File file = getOutputFile(parent, new TXTFileFilter(), true);
+		FHFile file = getOutputFile(parent, new TXTFileFilter(), true);
 		
 		if (file != null)
 		{
@@ -184,10 +185,10 @@ public class FHOperations {
 	 * @param minNumberSamples
 	 * @return
 	 */
-	public static File createCompositeFile(JFrame parent, File[] inputFileArray, Integer startYear, Integer endYear,
+	public static File createCompositeFile(JFrame parent, FHFile[] inputFileArray, Integer startYear, Integer endYear,
 			FireFilterType fireFilterType, SampleDepthFilterType sampleDepthFilterType, Double fireFilterValue, Integer minNumberSamples) {
 	
-		File file = getOutputFile(parent, new FHXFileFilter(), true);
+		FHFile file = getOutputFile(parent, new FHXFileFilter(), true);
 		
 		if (file != null)
 		{
@@ -208,9 +209,9 @@ public class FHOperations {
 	 * @param endYear
 	 * @param minNumberSamples
 	 */
-	public static File joinFiles(JFrame parent, File[] inputFileArray, Integer startYear, Integer endYear, Integer minNumberSamples) {
+	public static File joinFiles(JFrame parent, FHFile[] inputFileArray, Integer startYear, Integer endYear, Integer minNumberSamples) {
 	
-		File file = getOutputFile(parent, new FHXFileFilter(), false);
+		FHFile file = getOutputFile(parent, new FHXFileFilter(), false);
 		
 		if (file != null)
 		{
@@ -232,7 +233,7 @@ public class FHOperations {
 	 * @param endYear
 	 * @return
 	 */
-	public static File joinFiles(JFrame parent, File[] inputFileArray, File outputFile, Integer startYear, Integer endYear) {
+	public static File joinFiles(JFrame parent, FHFile[] inputFileArray, FHFile outputFile, Integer startYear, Integer endYear) {
 	
 		if (outputFile != null)
 		{
@@ -253,7 +254,7 @@ public class FHOperations {
 	 * @param endYear
 	 * @param minNumberSamples
 	 */
-	public static void joinFiles(JFrame parent, File[] inputFileArray, File outputFile, Integer startYear, Integer endYear,
+	public static void joinFiles(JFrame parent, FHFile[] inputFileArray, FHFile outputFile, Integer startYear, Integer endYear,
 			Integer minNumberSamples) {
 	
 		new FHOperations(parent, inputFileArray, outputFile, startYear, endYear, 1.0, FireFilterType.NUMBER_OF_EVENTS,
@@ -266,7 +267,7 @@ public class FHOperations {
 	 * @param inputFileArray
 	 * @param outputFile
 	 */
-	public static void createCompositeFile(JFrame parent, File[] inputFileArray, File outputFile) {
+	public static void createCompositeFile(JFrame parent, FHFile[] inputFileArray, FHFile outputFile) {
 	
 		new FHOperations(parent, inputFileArray, outputFile, 0, 0, 1.0, FireFilterType.NUMBER_OF_EVENTS,
 				SampleDepthFilterType.MIN_NUM_SAMPLES, false, true, false, 1, null);
@@ -286,7 +287,7 @@ public class FHOperations {
 	 * @param fireFilterValue
 	 * @param minNumberSamples
 	 */
-	public static void createCompositeFile(JFrame parent, File[] inputFileArray, File outputFile, Integer startYear, Integer endYear,
+	public static void createCompositeFile(JFrame parent, FHFile[] inputFileArray, FHFile outputFile, Integer startYear, Integer endYear,
 			FireFilterType fireFilterType, SampleDepthFilterType sampleDepthFilterType, Double fireFilterValue, Integer minNumberSamples) {
 	
 		new FHOperations(parent, inputFileArray, outputFile, startYear, endYear, fireFilterValue, fireFilterType, sampleDepthFilterType,
@@ -313,6 +314,10 @@ public class FHOperations {
 		{
 			// User wants to filter to minimum recorder samples
 			// filter value is stored in minSamples
+			
+			log.debug("Some output here: " + minSamples);
+			log.error("Oh bugger it broke!");
+			log.warn("Hmmm this shouldn't happen");
 		}
 		
 		boolean run = false;
@@ -381,7 +386,8 @@ public class FHOperations {
 			
 			for (int i = 0; i < inputFileArray.length; i++)
 			{
-				myReader.add(new FHX2FileReader(inputFileArray[i]));
+				FHFile f = inputFileArray[i];
+				myReader.add(new FHX2FileReader(f));
 				myReader.get(i).makeClimate2d();
 				log.debug("first fire year : " + myReader.get(i).getFirstFireYear().intValue() + " minfirstyearcomp"
 						+ minFirstYearComp.intValue());
@@ -582,6 +588,7 @@ public class FHOperations {
 			ArrayList<ArrayList<Double>> climateVectorFilter2 = new ArrayList<ArrayList<Double>>();
 			ArrayList<Integer> climateVectorActualSite = null;
 			ArrayList<Double> filterVectorActual = null;
+			ArrayList<Integer> minSampleFilter = null;
 			ArrayList<Integer> climateYear = new ArrayList<Integer>();
 			
 			ArrayList<ArrayList<Character>> nameLine = new ArrayList<ArrayList<Character>>();
@@ -625,6 +632,9 @@ public class FHOperations {
 				for (int i = 0; i < myReader.size(); i++)
 				{
 					log.debug("  Starting to Process file in Composite : " + myReader.get(i).getName());
+					log.debug(" the first year of the file above is: " + myReader.get(i).getFirstYear());
+					log.debug("  sampledepths at year 1565 : " + myReader.get(i).getSampleDepths()[189]);
+					log.debug(" the size of sampledepths is:  " + myReader.get(i).getSampleDepths().length);
 					/*
 					 * set the beginning Year accounting for the filter
 					 */
@@ -646,6 +656,55 @@ public class FHOperations {
 					 */
 					// log.debug("got pass the if ");
 					climateYear = myReader.get(i).getYear();
+					
+					/**
+					 * FOR ELENA!!!
+					 * 
+					 */
+					if (sampleDepthFilterType.equals(SampleDepthFilterType.MIN_NUM_SAMPLES))
+					{
+						minSampleFilter = new ArrayList<Integer>();
+						for (int ij = 0; ij < listYearsComp.size(); ij++)
+						{
+							if (climateYear.indexOf(listYearsComp.get(ij)) == -1)
+							{
+								minSampleFilter.add(-1);
+							}
+							else
+							{
+								log.debug("the sample depth is "
+										+ myReader.get(i).getSampleDepths()[climateYear.indexOf(listYearsComp.get(ij))]);
+								minSampleFilter.add(new Integer(
+										myReader.get(i).getSampleDepths()[climateYear.indexOf(listYearsComp.get(ij))]));
+							}
+						}
+						log.debug("Some output here: " + minSamples);
+						log.error("Oh bugger it broke!");
+						log.warn("Hmmm this shouldn't happen");
+					}
+					if (sampleDepthFilterType.equals(SampleDepthFilterType.MIN_NUM_RECORDER_SAMPLES))
+					{
+						minSampleFilter = new ArrayList<Integer>();
+						for (int ij = 0; ij < listYearsComp.size(); ij++)
+						{
+							if (climateYear.indexOf(listYearsComp.get(ij)) == -1)
+							{
+								minSampleFilter.add(-1);
+							}
+							else
+							{
+								log.debug("the sample depth is "
+										+ myReader.get(i).getRecordingDepths()[climateYear.indexOf(listYearsComp.get(ij))]);
+								minSampleFilter.add(new Integer(
+										myReader.get(i).getSampleDepths()[climateYear.indexOf(listYearsComp.get(ij))]));
+							}
+						}
+						
+						log.debug("Some output here: " + minSamples);
+						log.error("Oh bugger it broke!");
+						log.warn("Hmmm this shouldn't happen");
+						
+					}
 					
 					if (fireFilterValue.intValue() != 1)
 					{
@@ -709,58 +768,70 @@ public class FHOperations {
 						}
 						else
 						{
-							// log.debug(" !climateYear.indexOf(listYearsComp.get(j)) == -1 " + climateYear.indexOf(listYearsComp.get(j)));
-							if (fireFilterValue.intValue() != 1)
+							log.debug("j is: " + j + " inside minsampleFilter one before " + minSampleFilter.get(j).intValue()
+									+ " minSamples " + minSamples.intValue());
+							if (minSampleFilter.get(j).intValue() >= minSamples.intValue())
 							{
-								if (fireFilterType.equals(FireFilterType.NUMBER_OF_EVENTS))
+								log.debug("j is: " + j + "inside minsampleFilter  " + minSampleFilter.get(j));
+								if (fireFilterValue.intValue() != 1)
 								{
-									// climateVectorActualSite.add(climateVector.get(climateYear.indexOf(listYears.get(j))));
-									// log.debug("number of fires is selected is: "+
-									// firesFilter1+" "+climateVector.get(climateYear.indexOf(listYears.get(j))));
-									// log.debug("fire filter: "+firesFilter1+" year is: "+listYears.get(j)
-									// +" fires: "+filterMatrix.get(3*i).get(j)+" climatevector:
-									// "+climateVector.get(climateYear.indexOf(listYears.get(j))));
-									log.debug("fire filter: " + firesFilter1 + " year is: " + listYearsComp.get(j) + " fires: "
-											+ filterMatrix.get(3 * i).get(j) + " climatevector: "
-											+ climateVector.get(climateYear.indexOf(listYearsComp.get(j))));
-									if ((filterMatrix.get(3 * i).get(j) < firesFilter1)
-											&& (climateVector.get(climateYear.indexOf(listYearsComp.get(j)))) != -1.0)
+									log.debug("inside fileFilter !=1 ");
+									if (fireFilterType.equals(FireFilterType.NUMBER_OF_EVENTS))
 									{
-										climateVectorActualSite.add(0);
-									}
-									else
-									{
-										climateVectorActualSite.add(climateVector.get(climateYear.indexOf(listYearsComp.get(j))));
-									}
-								}
-								if (fireFilterType.equals(FireFilterType.PERCENTAGE_OF_EVENTS))
-								{
-									// log.debug("percent of fires is selected is: "+
-									// firesFilter2+" "+climateVector.get(climateYear.indexOf(listYearsComp.get(j))));
-									// log.debug("the filter percent of fires is"+filterMatrix.get((3*i+2)).get(j));
-									if ((filterMatrix.get(3 * i + 2).get(j) == -99))
-									{
-										climateVectorActualSite.add(-1);
-									}
-									else
-									{
-										if ((filterMatrix.get(3 * i + 2).get(j) < firesFilter2)
-												&& ((climateVector.get(climateYear.indexOf(listYears.get(j)))) != -1.0))
+										// climateVectorActualSite.add(climateVector.get(climateYear.indexOf(listYears.get(j))));
+										// log.debug("number of fires is selected is: "+
+										// firesFilter1+" "+climateVector.get(climateYear.indexOf(listYears.get(j))));
+										// log.debug("fire filter: "+firesFilter1+" year is: "+listYears.get(j)
+										// +" fires: "+filterMatrix.get(3*i).get(j)+" climatevector:
+										// "+climateVector.get(climateYear.indexOf(listYears.get(j))));
+										log.debug("fire filter: " + firesFilter1 + " year is: " + listYearsComp.get(j) + " fires: "
+												+ filterMatrix.get(3 * i).get(j) + " climatevector: "
+												+ climateVector.get(climateYear.indexOf(listYearsComp.get(j))));
+										if ((filterMatrix.get(3 * i).get(j) < firesFilter1)
+												&& (climateVector.get(climateYear.indexOf(listYearsComp.get(j)))) != -1.0)
 										{
 											climateVectorActualSite.add(0);
 										}
 										else
 										{
-											climateVectorActualSite.add(climateVector.get(climateYear.indexOf(listYears.get(j))));
+											climateVectorActualSite.add(climateVector.get(climateYear.indexOf(listYearsComp.get(j))));
 										}
 									}
-								}
-							} // end of if filter not equal to 1
+									if (fireFilterType.equals(FireFilterType.PERCENTAGE_OF_EVENTS))
+									{
+										// log.debug("percent of fires is selected is: "+
+										// firesFilter2+" "+climateVector.get(climateYear.indexOf(listYearsComp.get(j))));
+										// log.debug("the filter percent of fires is"+filterMatrix.get((3*i+2)).get(j));
+										if ((filterMatrix.get(3 * i + 2).get(j) == -99))
+										{
+											climateVectorActualSite.add(-1);
+										}
+										else
+										{
+											if ((filterMatrix.get(3 * i + 2).get(j) < firesFilter2)
+													&& ((climateVector.get(climateYear.indexOf(listYears.get(j)))) != -1.0))
+											{
+												climateVectorActualSite.add(0);
+											}
+											else
+											{
+												climateVectorActualSite.add(climateVector.get(climateYear.indexOf(listYears.get(j))));
+											}
+										}
+									}
+								} // end of if filter not equal to 1
+								else
+								{
+									log.debug("j is " + j + "minSampleFilter is " + minSampleFilter.get(j));
+									climateVectorActualSite.add(-1);
+								} // end of else of if filter not equal to 1
+							}// end of if for minsamplefilter bigger or equal to minSamples
 							else
 							{
-								climateVectorActualSite.add(climateVector.get(climateYear.indexOf(listYearsComp.get(j))));
-							} // end of else of if filter not equal to 1
-						} // end else for if == -1
+								climateVectorActualSite.add(-1);
+							}
+						} // end else for if climateYear.indexOf(listYearsComp.get(j)) == -1
+						
 					} // end of j loop listyears
 						// log.debug("size by site binary "+climateVectorActualSite.size()+" "+climateVectorActualSite);
 					climateMatrixSite.add(climateVectorActualSite);
@@ -969,9 +1040,9 @@ public class FHOperations {
 	 * @param acceptAll
 	 * @return
 	 */
-	private static File getOutputFile(JFrame parent, FileFilter filter, Boolean acceptAll) {
+	private static FHFile getOutputFile(JFrame parent, FileFilter filter, Boolean acceptAll) {
 	
-		File file;
+		FHFile file;
 		JFileChooser fc;
 		
 		// Open file chooser in last folder if possible
@@ -996,7 +1067,7 @@ public class FHOperations {
 		int returnVal = fc.showSaveDialog(parent);
 		if (returnVal == JFileChooser.APPROVE_OPTION)
 		{
-			file = fc.getSelectedFile();
+			file = new FHFile(fc.getSelectedFile());
 			App.prefs.setPref(PrefKey.PREF_LAST_EXPORT_FOLDER, file.getAbsolutePath());
 		}
 		else
@@ -1013,12 +1084,12 @@ public class FHOperations {
 			if (fc.getFileFilter().getDescription().equals(new FHXFileFilter().getDescription()))
 			{
 				log.debug("Adding fhx extension to output file name");
-				file = new File(file.getAbsolutePath() + ".fhx");
+				file = new FHFile(file.getAbsolutePath() + ".fhx");
 			}
 			else if (fc.getFileFilter().getDescription().equals(new TXTFileFilter().getDescription()))
 			{
 				log.debug("Adding txt extension to output file name");
-				file = new File(file.getAbsolutePath() + ".txt");
+				file = new FHFile(file.getAbsolutePath() + ".txt");
 			}
 		}
 		else
