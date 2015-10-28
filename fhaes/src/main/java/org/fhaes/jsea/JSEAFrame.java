@@ -61,6 +61,8 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.filechooser.FileFilter;
 
+import net.miginfocom.swing.MigLayout;
+
 import org.apache.commons.io.FilenameUtils;
 import org.fhaes.components.JToolBarButton;
 import org.fhaes.filefilter.CSVFileFilter;
@@ -68,6 +70,7 @@ import org.fhaes.filefilter.PDFFilter;
 import org.fhaes.filefilter.PNGFilter;
 import org.fhaes.filefilter.TXTFileFilter;
 import org.fhaes.gui.MainWindow;
+import org.fhaes.help.RemoteHelp;
 import org.fhaes.preferences.App;
 import org.fhaes.preferences.FHAESPreferences.PrefKey;
 import org.fhaes.preferences.wrappers.CheckBoxWrapper;
@@ -79,6 +82,7 @@ import org.fhaes.segmentation.SegmentationPanel;
 import org.fhaes.util.Builder;
 import org.fhaes.util.FHAESAction;
 import org.fhaes.util.JTableSpreadsheetByRowAdapter;
+import org.fhaes.util.Platform;
 import org.fhaes.util.TableUtil;
 import org.jdesktop.swingx.JXTable;
 import org.jfree.chart.ChartUtilities;
@@ -89,7 +93,6 @@ import org.slf4j.LoggerFactory;
 import org.tridas.io.util.StringUtils;
 
 import au.com.bytecode.opencsv.CSVReader;
-import net.miginfocom.swing.MigLayout;
 
 /**
  * JSEAFrame Class.
@@ -141,6 +144,7 @@ public class JSEAFrame extends JFrame implements ActionListener {
 	private FHAESAction actionSaveChart;
 	private FHAESAction actionCopy;
 	private FHAESAction actionChartProperties;
+	private FHAESAction actionLagMap;
 	
 	protected SegmentationPanel segmentationPanel;
 	
@@ -161,7 +165,7 @@ public class JSEAFrame extends JFrame implements ActionListener {
 	 * Create the dialog.
 	 */
 	public JSEAFrame(Component parent) {
-		
+	
 		setupGui();
 		this.pack();
 		this.setLocationRelativeTo(parent);
@@ -189,7 +193,7 @@ public class JSEAFrame extends JFrame implements ActionListener {
 	 * Copy the currently table cells to the clipboard.
 	 */
 	public void copyCurrentSelectionToClipboard() {
-		
+	
 		Component focusedComponent = this.getFocusOwner();
 		
 		if (focusedComponent != null)
@@ -213,7 +217,7 @@ public class JSEAFrame extends JFrame implements ActionListener {
 	 * Setup toolbar.
 	 */
 	private void setupToolbar() {
-		
+	
 		JToolBar toolBar = new JToolBar();
 		toolBar.setFloatable(false);
 		toolBar.setRollover(true);
@@ -242,6 +246,12 @@ public class JSEAFrame extends JFrame implements ActionListener {
 			JToolBarButton btnRun = new JToolBarButton(actionRun);
 			btnRun.setToolTipText("Run analysis");
 			toolBar.add(btnRun);
+			
+			toolBar.addSeparator();
+			
+			JToolBarButton btnLagMap = new JToolBarButton(actionLagMap);
+			btnLagMap.setToolTipText("Launch LagMap");
+			toolBar.add(btnLagMap);
 		}
 	}
 	
@@ -249,7 +259,7 @@ public class JSEAFrame extends JFrame implements ActionListener {
 	 * Setup menu bar
 	 */
 	private void setupMenu() {
-		
+	
 		JMenuBar menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
 		{
@@ -304,6 +314,15 @@ public class JSEAFrame extends JFrame implements ActionListener {
 			}
 		}
 		{
+			JMenu mnTools = new JMenu("Tools");
+			menuBar.add(mnTools);
+			{
+				JMenuItem mntmLagMap = new JMenuItem(actionLagMap);
+				mnTools.add(mntmLagMap);
+				
+			}
+		}
+		{
 			JMenu mnHelp = new JMenu("Help");
 			menuBar.add(mnHelp);
 			{
@@ -322,29 +341,29 @@ public class JSEAFrame extends JFrame implements ActionListener {
 	 * Initialize the menu/toolbar actions.
 	 */
 	private void initActions() {
-		
+	
 		final JFrame glue = this;
 		
 		actionFileExit = new FHAESAction("Close", "close.png") { //$NON-NLS-1$
-			
+		
 			private static final long serialVersionUID = 1L;
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-				
+			
 				dispose();
 			}
 		};
 		
 		actionChartProperties = new FHAESAction("Chart properties", "properties.png") { //$NON-NLS-1$
-			
+		
 			private static final long serialVersionUID = 1L;
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-				
-				ChartEditor editor = ChartEditorManager
-						.getChartEditor(jsea.getChartList().get(segmentComboBox.getSelectedIndex()).getChart());
+			
+				ChartEditor editor = ChartEditorManager.getChartEditor(jsea.getChartList().get(segmentComboBox.getSelectedIndex())
+						.getChart());
 				int result = JOptionPane.showConfirmDialog(glue, editor, "Properties", JOptionPane.OK_CANCEL_OPTION,
 						JOptionPane.PLAIN_MESSAGE);
 				if (result == JOptionPane.OK_OPTION)
@@ -360,11 +379,11 @@ public class JSEAFrame extends JFrame implements ActionListener {
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-				
+			
 				Object[] options = { "Yes", "No", "Cancel" };
 				int n = JOptionPane.showOptionDialog(glue, "Are you sure you want to start a new analysis?", "Confirm",
 						JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[2]);
-						
+				
 				if (n == JOptionPane.YES_OPTION)
 				{
 					setToDefault();
@@ -378,7 +397,7 @@ public class JSEAFrame extends JFrame implements ActionListener {
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-				
+			
 				runAnalysis();
 			}
 		};
@@ -389,10 +408,10 @@ public class JSEAFrame extends JFrame implements ActionListener {
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-				
+			
 				if (jsea == null)
 					return;
-					
+				
 				File file;
 				JFileChooser fc;
 				
@@ -455,10 +474,10 @@ public class JSEAFrame extends JFrame implements ActionListener {
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-				
+			
 				if (jsea == null)
 					return;
-					
+				
 				File file;
 				JFileChooser fc;
 				
@@ -503,10 +522,10 @@ public class JSEAFrame extends JFrame implements ActionListener {
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-				
+			
 				if (jsea == null)
 					return;
-					
+				
 				File file;
 				JFileChooser fc;
 				
@@ -574,9 +593,8 @@ public class JSEAFrame extends JFrame implements ActionListener {
 						return;
 					}
 					
-					int n = JOptionPane.showConfirmDialog(glue,
-							"File: " + file.getName() + " already exists. " + "Would you like to overwrite it?", "Overwrite file?",
-							JOptionPane.YES_NO_OPTION);
+					int n = JOptionPane.showConfirmDialog(glue, "File: " + file.getName() + " already exists. "
+							+ "Would you like to overwrite it?", "Overwrite file?", JOptionPane.YES_NO_OPTION);
 					if (n != JOptionPane.YES_OPTION)
 					{
 						return;
@@ -615,10 +633,10 @@ public class JSEAFrame extends JFrame implements ActionListener {
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-				
+			
 				if (jsea == null)
 					return;
-					
+				
 				File file;
 				JFileChooser fc;
 				
@@ -686,9 +704,8 @@ public class JSEAFrame extends JFrame implements ActionListener {
 						return;
 					}
 					
-					int n = JOptionPane.showConfirmDialog(glue,
-							"File: " + file.getName() + " already exists. " + "Would you like to overwrite it?", "Overwrite file?",
-							JOptionPane.YES_NO_OPTION);
+					int n = JOptionPane.showConfirmDialog(glue, "File: " + file.getName() + " already exists. "
+							+ "Would you like to overwrite it?", "Overwrite file?", JOptionPane.YES_NO_OPTION);
 					if (n != JOptionPane.YES_OPTION)
 					{
 						return;
@@ -729,10 +746,35 @@ public class JSEAFrame extends JFrame implements ActionListener {
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-				
+			
 				copyCurrentSelectionToClipboard();
 			}
 		};
+		
+		actionLagMap = new FHAESAction("LagMap", "lagmap22.png") {
+			
+			private static final long serialVersionUID = 1L;
+			
+			@Override
+			public void actionPerformed(ActionEvent event) {
+			
+				launchLagMap();
+			}
+		};
+		
+	}
+	
+	private void launchLagMap() {
+	
+		Object[] options = { "Yes", "No", "Cancel" };
+		int n = JOptionPane
+				.showOptionDialog(
+						this,
+						"LagMap is an interactive web application written by Wendy Gross and run within your web browser.\nWould you like to continue?",
+						"Lauch LagMap", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[2]);
+		
+		if (n == JOptionPane.YES_OPTION)
+			Platform.browseWebpage(RemoteHelp.LAUNCH_LAG_MAP, this);
 		
 	}
 	
@@ -753,7 +795,7 @@ public class JSEAFrame extends JFrame implements ActionListener {
 	 * @throws IOException
 	 */
 	private void saveDataCSV(File folder) throws IOException {
-		
+	
 		File f = new File(folder.getAbsolutePath() + File.separator + "actual-table.csv");
 		PrintWriter out = new PrintWriter(f.getAbsoluteFile());
 		out.print(jsea.getActualTableText());
@@ -772,7 +814,7 @@ public class JSEAFrame extends JFrame implements ActionListener {
 	 * @throws IOException
 	 */
 	private void saveReportTXT(File file) throws IOException {
-		
+	
 		FileWriter pw = new FileWriter(file.getAbsoluteFile());
 		txtSummary.write(pw);
 	}
@@ -784,7 +826,7 @@ public class JSEAFrame extends JFrame implements ActionListener {
 	 * @throws IOException
 	 */
 	private void saveReportPDF(File file) throws IOException {
-		
+	
 		jsea.savePDFReport(file.getAbsolutePath());
 	}
 	
@@ -795,7 +837,7 @@ public class JSEAFrame extends JFrame implements ActionListener {
 	 * @throws IOException
 	 */
 	private void saveChartPNG(File file) throws IOException {
-		
+	
 		log.debug("Saving chart as PNG file");
 		ChartUtilities.saveChartAsPNG(file, jsea.getChartList().get(segmentComboBox.getSelectedIndex()).getChart(), 1000, 500);
 	}
@@ -807,7 +849,7 @@ public class JSEAFrame extends JFrame implements ActionListener {
 	 * @throws IOException
 	 */
 	private void saveChartPDF(File file) throws IOException {
-		
+	
 		log.debug("Saving chart as PDF file");
 		/*
 		 * OutputStream out = new BufferedOutputStream(new FileOutputStream(file)); JFreeChartManager.writeChartAsPDF(out,
@@ -820,7 +862,7 @@ public class JSEAFrame extends JFrame implements ActionListener {
 	 * Actually perform the Superposed Epoch Analysis
 	 */
 	private void runAnalysis() {
-		
+	
 		// Create default segment if segmentation was selected but not defined
 		if (segmentationPanel.chkSegmentation.isSelected() && segmentationPanel.table.tableModel.getSegments().isEmpty())
 		{
@@ -839,7 +881,7 @@ public class JSEAFrame extends JFrame implements ActionListener {
 		{
 			if (jsea == null)
 				return;
-				
+			
 			// Populate summary text field
 			this.txtSummary.setText(jsea.getReportText());
 			setScrollBarToTop();
@@ -879,7 +921,7 @@ public class JSEAFrame extends JFrame implements ActionListener {
 	 * @param b
 	 */
 	private void setAnalysisAvailable(Boolean b) {
-		
+	
 		actionCopy.setEnabled(b);
 		tabbedPane.setEnabled(b);
 		mnSave.setEnabled(b);
@@ -894,7 +936,7 @@ public class JSEAFrame extends JFrame implements ActionListener {
 	 * Setup the GUI components
 	 */
 	private void setupGui() {
-		
+	
 		setTitle("jSEA - Superposed Epoch Analysis");
 		
 		getContentPane().setLayout(new MigLayout("", "[1200px,grow,fill]", "[][600px,grow,fill]"));
@@ -964,8 +1006,8 @@ public class JSEAFrame extends JFrame implements ActionListener {
 			}
 			{
 				JPanel panel = new JPanel();
-				panel.setBorder(
-						new TitledBorder(null, "Window, Simulation and Statistics", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+				panel.setBorder(new TitledBorder(null, "Window, Simulation and Statistics", TitledBorder.LEADING, TitledBorder.TOP, null,
+						null));
 				contentPanel.add(panel, "cell 0 1,grow");
 				panel.setLayout(new MigLayout("", "[right][fill][10px:10px:10px][right][90.00,grow,fill]", "[grow][][][]"));
 				{
@@ -1135,8 +1177,7 @@ public class JSEAFrame extends JFrame implements ActionListener {
 						{
 							JPanel panel = new JPanel();
 							splitPaneDataTables.setLeftComponent(panel);
-							panel.setBorder(
-									new TitledBorder(null, "Actual key events", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+							panel.setBorder(new TitledBorder(null, "Actual key events", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 							panel.setLayout(new MigLayout("", "[227.00px,grow,fill]", "[68.00px,grow,fill]"));
 							{
 								JScrollPane scrollPane = new JScrollPane();
@@ -1156,8 +1197,7 @@ public class JSEAFrame extends JFrame implements ActionListener {
 						{
 							JPanel panel = new JPanel();
 							splitPaneDataTables.setRightComponent(panel);
-							panel.setBorder(
-									new TitledBorder(null, "Simulation results", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+							panel.setBorder(new TitledBorder(null, "Simulation results", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 							panel.setLayout(new MigLayout("", "[grow,fill]", "[grow,fill]"));
 							{
 								JScrollPane scrollPane = new JScrollPane();
@@ -1187,7 +1227,7 @@ public class JSEAFrame extends JFrame implements ActionListener {
 							
 							@Override
 							public void itemStateChanged(ItemEvent arg0) {
-								
+							
 								if (segmentComboBox.getItemCount() > 0)
 								{
 									barChart = new JSEABarChart(jsea.getChartList().get(segmentComboBox.getSelectedIndex()));
@@ -1222,7 +1262,7 @@ public class JSEAFrame extends JFrame implements ActionListener {
 	 * Set up the year range GUI depending on whether the 'all years' checkbox is ticked
 	 */
 	private void setYearRangeGUI() {
-		
+	
 		spnFirstYear.setEnabled(!chkAllYears.isSelected());
 		spnLastYear.setEnabled(!chkAllYears.isSelected());
 		
@@ -1242,7 +1282,7 @@ public class JSEAFrame extends JFrame implements ActionListener {
 	 * @param tableModel
 	 */
 	private void populateSegmentComboBoxAndDrawChart(SegmentTableModel tableModel) {
-		
+	
 		segmentComboBox.removeAllItems();
 		
 		if (segmentationPanel.chkSegmentation.isSelected())
@@ -1284,7 +1324,7 @@ public class JSEAFrame extends JFrame implements ActionListener {
 	
 	@Override
 	public void actionPerformed(ActionEvent event) {
-		
+	
 		if (event.getActionCommand().equals("SegmentationMode"))
 		{
 			if (segmentationPanel.chkSegmentation.isSelected() && chronologyYears.size() > 1)
@@ -1383,7 +1423,7 @@ public class JSEAFrame extends JFrame implements ActionListener {
 	 * @return
 	 */
 	private char getDelimiter(String filename, Integer countOfGoodItems) {
-		
+	
 		Integer tabGoodLines = getGoodLineCount(filename, '\t', countOfGoodItems);
 		Integer commaGoodLines = getGoodLineCount(txtTimeSeriesFile.getText(), ',', countOfGoodItems);
 		Integer spaceGoodLines = getGoodLineCount(txtTimeSeriesFile.getText(), ' ', countOfGoodItems);
@@ -1414,7 +1454,7 @@ public class JSEAFrame extends JFrame implements ActionListener {
 	 * @return
 	 */
 	private Integer getGoodLineCount(String filename, char delimiter, Integer countOfGoodItems) {
-		
+	
 		CSVReader reader;
 		Integer goodLines = 0;
 		try
@@ -1456,7 +1496,7 @@ public class JSEAFrame extends JFrame implements ActionListener {
 	 * @return
 	 */
 	public Boolean parseEventListFile() {
-		
+	
 		File f = new File(this.txtEventListFile.getText());
 		if (!f.exists())
 		{
@@ -1484,9 +1524,11 @@ public class JSEAFrame extends JFrame implements ActionListener {
 					}
 					catch (NumberFormatException e)
 					{
-						JOptionPane.showMessageDialog(this,
-								"The event file must contain a list of integer values after any comment lines.\nPlease check the file and try again.",
-								"Warning", JOptionPane.ERROR_MESSAGE);
+						JOptionPane
+								.showMessageDialog(
+										this,
+										"The event file must contain a list of integer values after any comment lines.\nPlease check the file and try again.",
+										"Warning", JOptionPane.ERROR_MESSAGE);
 						txtEventListFile.setText("");
 						fr.close();
 						br.close();
@@ -1525,7 +1567,7 @@ public class JSEAFrame extends JFrame implements ActionListener {
 	 * Parse the specified time series file
 	 */
 	public Boolean parseTimeSeriesFile() {
-		
+	
 		chronologyYears = new ArrayList<Integer>();
 		chronologyActual = new ArrayList<Double>();
 		;
@@ -1558,20 +1600,16 @@ public class JSEAFrame extends JFrame implements ActionListener {
 					continue;
 				if (items.length == 1)
 				{
-					JOptionPane
-							.showMessageDialog(
-									this, "Invalid number of items on line " + lineNumber
-											+ ". There should be only 2 items per line, whereas " + items.length + " was found.",
-									"Invalid file", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(this, "Invalid number of items on line " + lineNumber
+							+ ". There should be only 2 items per line, whereas " + items.length + " was found.", "Invalid file",
+							JOptionPane.ERROR_MESSAGE);
 					return false;
 				}
 				if (items.length != 2)
 				{
-					JOptionPane
-							.showMessageDialog(
-									this, "Invalid number of items on line " + lineNumber
-											+ ". There should be only 2 items per line, whereas " + items.length + " were found.",
-									"Invalid file", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(this, "Invalid number of items on line " + lineNumber
+							+ ". There should be only 2 items per line, whereas " + items.length + " were found.", "Invalid file",
+							JOptionPane.ERROR_MESSAGE);
 					return false;
 				}
 				
@@ -1583,9 +1621,8 @@ public class JSEAFrame extends JFrame implements ActionListener {
 					{
 						if (!chronologyYears.get(chronologyYears.size() - 1).equals(year - 1))
 						{
-							JOptionPane.showMessageDialog(this,
-									"Invalid year value on line number " + lineNumber + ". Years must be sequential.", "Invalid file",
-									JOptionPane.ERROR_MESSAGE);
+							JOptionPane.showMessageDialog(this, "Invalid year value on line number " + lineNumber
+									+ ". Years must be sequential.", "Invalid file", JOptionPane.ERROR_MESSAGE);
 							return false;
 						}
 					}
@@ -1593,9 +1630,8 @@ public class JSEAFrame extends JFrame implements ActionListener {
 				}
 				catch (NumberFormatException e)
 				{
-					JOptionPane.showMessageDialog(this,
-							"Invalid year value :" + StringUtils.rightPadWithTrim(items[0], 5) + "' on line number " + lineNumber,
-							"Invalid file", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(this, "Invalid year value :" + StringUtils.rightPadWithTrim(items[0], 5)
+							+ "' on line number " + lineNumber, "Invalid file", JOptionPane.ERROR_MESSAGE);
 					return false;
 				}
 				
@@ -1629,12 +1665,12 @@ public class JSEAFrame extends JFrame implements ActionListener {
 	 * Sets the value of the scroll bar to zero.
 	 */
 	private void setScrollBarToTop() {
-		
+	
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
 			
 			@Override
 			public void run() {
-				
+			
 				scrollPane.getHorizontalScrollBar().setValue(0);
 				scrollPane.getVerticalScrollBar().setValue(0);
 			}
@@ -1645,7 +1681,7 @@ public class JSEAFrame extends JFrame implements ActionListener {
 	 * Reset parameters to the default values
 	 */
 	public void setToDefault() {
-		
+	
 		txtSummary.setText("");
 		tblActual = new JXTable();
 		tblSimulation = new JXTable();
@@ -1679,7 +1715,7 @@ public class JSEAFrame extends JFrame implements ActionListener {
 	 * Check whether we have all the info we need to process
 	 */
 	private void validateForm() {
-		
+	
 		log.debug("Validating form");
 		if (chronologyActual.size() > 0 && chronologyYears.size() > 0 && events.size() > 0 && txtTimeSeriesFile.getText() != null
 				&& txtEventListFile.getText() != null)
@@ -1699,12 +1735,12 @@ public class JSEAFrame extends JFrame implements ActionListener {
 	 * @param popup
 	 */
 	private static void addPopup(Component component, final JPopupMenu popup) {
-		
+	
 		component.addMouseListener(new MouseAdapter() {
 			
 			@Override
 			public void mousePressed(MouseEvent e) {
-				
+			
 				if (e.isPopupTrigger())
 				{
 					showMenu(e);
@@ -1713,7 +1749,7 @@ public class JSEAFrame extends JFrame implements ActionListener {
 			
 			@Override
 			public void mouseReleased(MouseEvent e) {
-				
+			
 				if (e.isPopupTrigger())
 				{
 					showMenu(e);
@@ -1721,7 +1757,7 @@ public class JSEAFrame extends JFrame implements ActionListener {
 			}
 			
 			private void showMenu(MouseEvent e) {
-				
+			
 				popup.show(e.getComponent(), e.getX(), e.getY());
 			}
 		});
