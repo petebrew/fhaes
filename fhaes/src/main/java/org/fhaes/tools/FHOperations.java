@@ -300,26 +300,6 @@ public class FHOperations {
 	@SuppressWarnings({ "deprecation", "unused" })
 	private void performOperation() {
 	
-		/**
-		 * FOR ELENA!!!
-		 * 
-		 */
-		if (sampleDepthFilterType.equals(SampleDepthFilterType.MIN_NUM_SAMPLES))
-		{
-			// User wants to filter to minimum samples
-			// filter value is stored in minSamples
-			log.debug("Minimum number of samples requested by user is : " + minSamples);
-			
-		}
-		else if (sampleDepthFilterType.equals(SampleDepthFilterType.MIN_NUM_RECORDER_SAMPLES))
-		{
-			// User wants to filter to minimum recorder samples
-			// filter value is stored in minSamples
-			
-			log.debug("Minimum number of recorder samples requested by user is : " + minSamples);
-			
-		}
-		
 		boolean run = false;
 		
 		/**
@@ -672,15 +652,15 @@ public class FHOperations {
 							}
 							else
 							{
-								log.debug("the sample depth is "
-										+ myReader.get(i).getSampleDepths()[climateYear.indexOf(listYearsComp.get(ij))]);
+								// log.debug("the sample depth is "
+								// + myReader.get(i).getSampleDepths()[climateYear.indexOf(listYearsComp.get(ij))]);
 								minSampleFilter.add(new Integer(
 										myReader.get(i).getSampleDepths()[climateYear.indexOf(listYearsComp.get(ij))]));
 							}
 						}
-						log.debug("Some output here: " + minSamples);
-						log.error("Oh bugger it broke!");
-						log.warn("Hmmm this shouldn't happen");
+						// log.debug("Some output here: " + minSamples);
+						// log.error("Oh bugger it broke!");
+						// log.warn("Hmmm this shouldn't happen");
 					}
 					if (sampleDepthFilterType.equals(SampleDepthFilterType.MIN_NUM_RECORDER_SAMPLES))
 					{
@@ -693,17 +673,16 @@ public class FHOperations {
 							}
 							else
 							{
-								log.debug("the sample depth is "
-										+ myReader.get(i).getRecordingDepths()[climateYear.indexOf(listYearsComp.get(ij))]);
+								// log.debug("the samplerecording depth is "
+								// + myReader.get(i).getRecordingDepths()[climateYear.indexOf(listYearsComp.get(ij))]);
 								minSampleFilter.add(new Integer(
 										myReader.get(i).getSampleDepths()[climateYear.indexOf(listYearsComp.get(ij))]));
 							}
 						}
 						
-						log.debug("Some output here: " + minSamples);
-						log.error("Oh bugger it broke!");
-						log.warn("Hmmm this shouldn't happen");
-						
+						// log.debug("Some output here: " + minSamples);
+						// log.error("Oh bugger it broke!");
+						// log.warn("Hmmm this shouldn't happen");
 					}
 					
 					if (fireFilterValue.intValue() != 1)
@@ -768,11 +747,9 @@ public class FHOperations {
 						}
 						else
 						{
-							log.debug("j is: " + j + " inside minsampleFilter one before " + minSampleFilter.get(j).intValue()
-									+ " minSamples " + minSamples.intValue());
 							if (minSampleFilter.get(j).intValue() >= minSamples.intValue())
 							{
-								log.debug("j is: " + j + "inside minsampleFilter  " + minSampleFilter.get(j));
+								// log.debug("j is: " + j + "inside minsampleFilter  " + minSampleFilter.get(j));
 								if (fireFilterValue.intValue() != 1)
 								{
 									log.debug("inside fileFilter !=1 ");
@@ -822,13 +799,17 @@ public class FHOperations {
 								} // end of if filter not equal to 1
 								else
 								{
-									log.debug("j is " + j + "minSampleFilter is " + minSampleFilter.get(j));
-									climateVectorActualSite.add(-1);
+									climateVectorActualSite.add(climateVector.get(climateYear.indexOf(listYearsComp.get(j))));
+									// climateVectorActualSite.add(0);
+									// log.debug("j is " + j + "minSampleFilter is " + minSampleFilter.get(j));
+									// climateVectorActualSite.add(-1);
 								} // end of else of if filter not equal to 1
 							}// end of if for minsamplefilter bigger or equal to minSamples
 							else
 							{
+								// log.debug("j is " + j + "minSampleFilter is " + minSampleFilter.get(j));
 								climateVectorActualSite.add(-1);
+								// climateVectorActualSite.add(-1);
 							}
 						} // end else for if climateYear.indexOf(listYearsComp.get(j)) == -1
 						
