@@ -29,19 +29,19 @@ import org.fhaes.preferences.FHAESPreferences.PrefKey;
  * FireFilterTypeWrapper Class.
  */
 @SuppressWarnings("rawtypes")
-public class FireFilterTypeWrapper extends ItemWrapper {
+public class FireFilterTypeWrapperWithoutAllTrees extends ItemWrapper {
 	
 	FireFilterType[] formats;
 	
 	@SuppressWarnings("unchecked")
-	public FireFilterTypeWrapper(JComboBox cbo, PrefKey key, Object defaultValue, FireFilterType[] values) {
+	public FireFilterTypeWrapperWithoutAllTrees(JComboBox cbo, PrefKey key, Object defaultValue, FireFilterType[] values) {
 	
 		super(key, defaultValue, FireFilterType.class);
 		initGeneric(cbo, values);
 	}
 	
 	@SuppressWarnings("unchecked")
-	public FireFilterTypeWrapper(JComboBox cbo, PrefKey key, Object defaultValue) {
+	public FireFilterTypeWrapperWithoutAllTrees(JComboBox cbo, PrefKey key, Object defaultValue) {
 	
 		super(key, defaultValue, FireFilterType.class);
 		initFormats(cbo);
@@ -99,6 +99,6 @@ public class FireFilterTypeWrapper extends ItemWrapper {
 			setValue(null);
 	}
 	
-	private final static FireFilterType[] OPTIONS = FireFilterType.values();
+	private final static FireFilterType[] OPTIONS = FireFilterType.valuesWithoutAllTrees();
 	
 }

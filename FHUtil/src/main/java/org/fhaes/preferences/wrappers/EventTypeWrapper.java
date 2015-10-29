@@ -22,34 +22,34 @@ import java.awt.event.ItemEvent;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 
-import org.fhaes.enums.FireFilterType;
+import org.fhaes.enums.EventTypeToProcess;
 import org.fhaes.preferences.FHAESPreferences.PrefKey;
 
 /**
- * FireFilterTypeWrapper Class.
+ * MatrixEventTypeWrapper Class.
  */
 @SuppressWarnings("rawtypes")
-public class FireFilterTypeWrapper extends ItemWrapper {
+public class EventTypeWrapper extends ItemWrapper {
 	
-	FireFilterType[] formats;
+	EventTypeToProcess[] formats;
 	
 	@SuppressWarnings("unchecked")
-	public FireFilterTypeWrapper(JComboBox cbo, PrefKey key, Object defaultValue, FireFilterType[] values) {
-	
-		super(key, defaultValue, FireFilterType.class);
+	public EventTypeWrapper(JComboBox cbo, PrefKey key, Object defaultValue, EventTypeToProcess[] values) {
+		
+		super(key, defaultValue, EventTypeToProcess.class);
 		initGeneric(cbo, values);
 	}
 	
 	@SuppressWarnings("unchecked")
-	public FireFilterTypeWrapper(JComboBox cbo, PrefKey key, Object defaultValue) {
-	
-		super(key, defaultValue, FireFilterType.class);
+	public EventTypeWrapper(JComboBox cbo, PrefKey key, Object defaultValue) {
+		
+		super(key, defaultValue, EventTypeToProcess.class);
 		initFormats(cbo);
 	}
 	
 	@SuppressWarnings("unchecked")
 	private void initFormats(JComboBox cbo) {
-	
+		
 		// show a sample for each format thingy...
 		formats = OPTIONS;
 		int selectedIdx = -1;
@@ -63,13 +63,13 @@ public class FireFilterTypeWrapper extends ItemWrapper {
 		cbo.setModel(new DefaultComboBoxModel(formats));
 		if (selectedIdx >= 0)
 			cbo.setSelectedIndex(selectedIdx);
-		
+			
 		cbo.addItemListener(this);
 	}
 	
 	@SuppressWarnings("unchecked")
-	private void initGeneric(JComboBox cbo, FireFilterType[] values) {
-	
+	private void initGeneric(JComboBox cbo, EventTypeToProcess[] values) {
+		
 		// show a sample for each format thingy...
 		formats = values;
 		int selectedIdx = -1;
@@ -83,14 +83,14 @@ public class FireFilterTypeWrapper extends ItemWrapper {
 		cbo.setModel(new DefaultComboBoxModel(values));
 		if (selectedIdx >= 0)
 			cbo.setSelectedIndex(selectedIdx);
-		
+			
 		cbo.addItemListener(this);
 	}
 	
 	@SuppressWarnings("unchecked")
 	@Override
 	public void itemStateChanged(ItemEvent e) {
-	
+		
 		int selectedIdx = ((JComboBox) e.getSource()).getSelectedIndex();
 		
 		if (selectedIdx >= 0)
@@ -99,6 +99,6 @@ public class FireFilterTypeWrapper extends ItemWrapper {
 			setValue(null);
 	}
 	
-	private final static FireFilterType[] OPTIONS = FireFilterType.values();
+	private final static EventTypeToProcess[] OPTIONS = EventTypeToProcess.values();
 	
 }

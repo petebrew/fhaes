@@ -18,28 +18,27 @@
 package org.fhaes.enums;
 
 /**
- * FireFilterType Enum.
+ * Operator Enum.
  */
-public enum FireFilterType {
+public enum OperatorEnum {
 	
-	NUMBER_OF_EVENTS("Number of fires"), PERCENTAGE_OF_RECORDING("Percent of recording trees scarred"), PERCENTAGE_OF_ALL_TREES(
-			"Percent of all trees scarred");
+	EQUAL_OR_GREATER(">="), EQUAL_OR_LESS("<=");
 	
 	// Declare local variables
 	private String humanReadable;
 	
 	/**
-	 * Initialize the human-readable string for the FireFilterType.
+	 * Initialize the human-readable string for the OperatorEnum.
 	 * 
 	 * @param str
 	 */
-	FireFilterType(String str) {
+	OperatorEnum(String str) {
 	
 		humanReadable = str;
 	}
 	
 	/**
-	 * Get the human-readable string name for this FireFilterType.
+	 * Get the human-readable string name for this OperatorEnum.
 	 */
 	@Override
 	public String toString() {
@@ -48,14 +47,14 @@ public enum FireFilterType {
 	}
 	
 	/**
-	 * Create a FireFilterType from a string name. If there is no FireFilterType that matches the string then null is returned.
+	 * Create a OperatorEnum from a string name. If there is no OperatorEnum that matches the string then null is returned.
 	 * 
 	 * @param name
 	 * @return
 	 */
-	public static FireFilterType fromName(String name) {
+	public static OperatorEnum fromName(String name) {
 	
-		for (FireFilterType type : FireFilterType.values())
+		for (OperatorEnum type : OperatorEnum.values())
 		{
 			if (type.humanReadable.equals(name))
 				return type;
@@ -64,12 +63,4 @@ public enum FireFilterType {
 		return null;
 	}
 	
-	public static FireFilterType[] valuesWithoutAllTrees() {
-	
-		FireFilterType[] arr = new FireFilterType[2];
-		arr[0] = FireFilterType.NUMBER_OF_EVENTS;
-		arr[1] = FireFilterType.PERCENTAGE_OF_RECORDING;
-		
-		return arr;
-	}
 }

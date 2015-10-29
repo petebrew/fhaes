@@ -68,7 +68,6 @@ import org.fhaes.enums.EventTypeToProcess;
 import org.fhaes.enums.FireFilterType;
 import org.fhaes.enums.MiddleMetric;
 import org.fhaes.enums.ResamplingType;
-import org.fhaes.fhfilereader.FHFile;
 import org.fhaes.fhfilereader.FHX2FileReader;
 import org.fhaes.fhsamplesize.controller.SSIZController;
 import org.fhaes.fhsamplesize.model.AnalysisResultsModel;
@@ -80,7 +79,7 @@ import org.fhaes.filefilter.TABFilter;
 import org.fhaes.preferences.App;
 import org.fhaes.preferences.FHAESPreferences.PrefKey;
 import org.fhaes.preferences.wrappers.FireFilterTypeWrapper;
-import org.fhaes.preferences.wrappers.MatrixEventTypeWrapper;
+import org.fhaes.preferences.wrappers.EventTypeWrapper;
 import org.fhaes.preferences.wrappers.ResamplingTypeWrapper;
 import org.fhaes.preferences.wrappers.SpinnerWrapper;
 import org.fhaes.segmentation.SegmentModel;
@@ -118,7 +117,7 @@ public class FHSampleSize extends JFrame implements ActionListener {
 	private JCheckBox chkExcludeSeriesWithNoEvents;
 	private JSpinner spnSeed;
 	private JSpinner spnSimulations;
-	private JSpinner spnThresholdValue;
+	private JSpinner spnThresholdValueGT;
 	private JSplitPane splitPaneResults;
 	private JPanel panelChart;
 	private JTextField txtInputFile;
@@ -157,6 +156,10 @@ public class FHSampleSize extends JFrame implements ActionListener {
 	
 	private FHX2FileReader reader;
 	private Boolean fileDialogWasUsed;
+	private JSpinner spnThresholdValueLT;
+	private JCheckBox chkEnableLessThan;
+	private JLabel lblLessThan;
+	private JLabel lblAnd;
 	
 	/**
 	 * Launch as stand-alone application.
@@ -243,7 +246,7 @@ public class FHSampleSize extends JFrame implements ActionListener {
 					{
 						String filePath = txtInputFile.getText();
 						File theFHX2File = new File(filePath);
-						reader = new FHX2FileReader(new FHFile(theFHX2File));
+						reader = new FHX2FileReader(theFHX2File);
 						setGUIForFHFileReader();
 						
 						if (reader != null)
@@ -354,7 +357,7 @@ public class FHSampleSize extends JFrame implements ActionListener {
 		{
 			if (theFHX2File != null)
 			{
-				reader = new FHX2FileReader(new FHFile(theFHX2File));
+				reader = new FHX2FileReader(theFHX2File);
 				setGUIForFHFileReader();
 				
 				segmentationPanel.chkSegmentation.setEnabled(true);
@@ -453,7 +456,7 @@ public class FHSampleSize extends JFrame implements ActionListener {
 		panelAnalysisOptions.setBorder(new TitledBorder(null, "Analysis and filtering options", TitledBorder.LEADING, TitledBorder.TOP,
 				null, null));
 		panelParameters.add(panelAnalysisOptions, "cell 0 1,grow");
-		panelAnalysisOptions.setLayout(new MigLayout("", "[100px:100px:180px,right][][][]", "[][][][]"));
+		panelAnalysisOptions.setLayout(new MigLayout("", "[100px:100px:180px,right][grow][][]", "[][][][][]"));
 		
 		JLabel lblEventTypes = new JLabel("Event type:");
 		panelAnalysisOptions.add(lblEventTypes, "cell 0 0");
@@ -461,7 +464,7 @@ public class FHSampleSize extends JFrame implements ActionListener {
 		cboEventType = new JComboBox();
 		panelAnalysisOptions.add(cboEventType, "cell 1 0 3 1");
 		cboEventType.setModel(new DefaultComboBoxModel(EventTypeToProcess.values()));
-		new MatrixEventTypeWrapper(cboEventType, PrefKey.EVENT_TYPE_TO_PROCESS, EventTypeToProcess.FIRE_EVENT);
+		new EventTypeWrapper(cboEventType, PrefKey.EVENT_TYPE_TO_PROCESS, EventTypeToProcess.FIRE_EVENT);
 		
 		chkCommonYears = new JCheckBox("<html>Only analyze years all series have in common");
 		chkCommonYears.addActionListener(new ActionListener() {
@@ -496,16 +499,33 @@ public class FHSampleSize extends JFrame implements ActionListener {
 		
 		cboThresholdType = new JComboBox();
 		panelAnalysisOptions.add(cboThresholdType, "cell 1 3");
-		cboThresholdType.setModel(new DefaultComboBoxModel(new String[] { "Number of fires", "Percentage of fires" }));
-		new FireFilterTypeWrapper(cboThresholdType, PrefKey.COMPOSITE_FILTER_TYPE, FireFilterType.NUMBER_OF_EVENTS);
+		cboThresholdType.setModel(new DefaultComboBoxModel(FireFilterType.values()));
+		new FireFilterTypeWrapper(cboThresholdType, PrefKey.COMPOSITE_FILTER_TYPE_WITH_ALL_TREES, FireFilterType.NUMBER_OF_EVENTS);
 		
 		JLabel label = new JLabel(">=");
-		panelAnalysisOptions.add(label, "cell 2 3");
+		panelAnalysisOptions.add(label, "flowx,cell 2 3");
 		
-		spnThresholdValue = new JSpinner();
-		panelAnalysisOptions.add(spnThresholdValue, "cell 3 3");
-		spnThresholdValue.setModel(new SpinnerNumberModel(1, 1, 999, 1));
-		new SpinnerWrapper(spnThresholdValue, PrefKey.COMPOSITE_FILTER_VALUE, 1);
+		spnThresholdValueGT = new JSpinner();
+		panelAnalysisOptions.add(spnThresholdValueGT, "cell 3 3");
+		spnThresholdValueGT.setModel(new SpinnerNumberModel(1, 1, 999, 1));
+		new SpinnerWrapper(spnThresholdValueGT, PrefKey.COMPOSITE_FILTER_VALUE, 1);
+		
+		chkEnableLessThan = new JCheckBox("");
+		chkEnableLessThan.setActionCommand("LessThanThresholdStatus");
+		chkEnableLessThan.addActionListener(this);
+		panelAnalysisOptions.add(chkEnableLessThan, "flowx,cell 1 4,alignx right");
+		
+		lblLessThan = new JLabel("<=");
+		lblLessThan.setEnabled(false);
+		panelAnalysisOptions.add(lblLessThan, "cell 2 4");
+		
+		spnThresholdValueLT = new JSpinner();
+		spnThresholdValueLT.setEnabled(false);
+		spnThresholdValueLT.setModel(new SpinnerNumberModel(1, 1, 999, 1));
+		panelAnalysisOptions.add(spnThresholdValueLT, "cell 3 4");
+		
+		lblAnd = new JLabel("and");
+		panelAnalysisOptions.add(lblAnd, "cell 1 4");
 		
 		JPanel panelSimulations = new JPanel();
 		panelSimulations.setBorder(new TitledBorder(null, "Simulations", TitledBorder.LEADING, TitledBorder.TOP, null, null));
@@ -663,6 +683,7 @@ public class FHSampleSize extends JFrame implements ActionListener {
 		
 		this.setCheckBoxesToPrefKeyValues();
 		this.setGUIForFHFileReader();
+		this.setGUIForThresholdStatus();
 		
 		pack();
 		this.setExtendedState(this.getExtendedState() | JFrame.MAXIMIZED_BOTH);
@@ -688,7 +709,7 @@ public class FHSampleSize extends JFrame implements ActionListener {
 			this.spnSeed.setValue(30188);
 			this.cboResampling.setSelectedIndex(0);
 			this.cboThresholdType.setSelectedIndex(0);
-			this.spnThresholdValue.setValue(1);
+			this.spnThresholdValueGT.setValue(1);
 			segmentationPanel.chkSegmentation.setSelected(false);
 			segmentationPanel.table.tableModel.clearSegments();
 			this.panelChart.removeAll();
@@ -732,6 +753,18 @@ public class FHSampleSize extends JFrame implements ActionListener {
 			taskWasCancelled = true;
 			task.cancel(true);
 		}
+		else if (evt.getActionCommand().equals("LessThanThresholdStatus"))
+		{
+			setGUIForThresholdStatus();
+		}
+	}
+	
+	private void setGUIForThresholdStatus() {
+	
+		this.spnThresholdValueLT.setEnabled(this.chkEnableLessThan.isSelected());
+		this.lblAnd.setEnabled(this.chkEnableLessThan.isSelected());
+		this.lblLessThan.setEnabled(this.chkEnableLessThan.isSelected());
+		
 	}
 	
 	/**
@@ -854,7 +887,7 @@ public class FHSampleSize extends JFrame implements ActionListener {
 		if (!(inFilePath.substring(inFilePath.length() - 4, inFilePath.length()).equals(".fhx")))
 			return false;
 		
-		FHFile theFHX2File = new FHFile(inFilePath);
+		File theFHX2File = new File(inFilePath);
 		FHX2FileReader tempReader = new FHX2FileReader(theFHX2File);
 		
 		if (tempReader.getNumberOfSeries() < 6)
@@ -910,7 +943,9 @@ public class FHSampleSize extends JFrame implements ActionListener {
 		model.setNumSimulationsToRun((Integer) spnSimulations.getValue());
 		model.setResamplingType((ResamplingType) cboResampling.getSelectedItem());
 		model.setThresholdType((FireFilterType) cboThresholdType.getSelectedItem());
-		model.setThresholdValue((Integer) spnThresholdValue.getValue());
+		model.setThresholdValueGT((Integer) spnThresholdValueGT.getValue());
+		model.setThresholdValueLT((Integer) spnThresholdValueLT.getValue());
+		model.enabledLowerThreshold(this.chkEnableLessThan.isSelected());
 		
 		// Do this before restricting to common years (otherwise common year restriction may have no effect)
 		if (chkExcludeSeriesWithNoEvents.isSelected())
@@ -1195,14 +1230,7 @@ public class FHSampleSize extends JFrame implements ActionListener {
 		
 		cboSegment.setModel(combomodel);
 		cboSegment.setEnabled(model.getSegments().size() > 1);
-		try
-		{
-			cboSegment.setSelectedIndex(segmentsDone);
-		}
-		catch (IllegalArgumentException e)
-		{
-			log.error("Index out of bounds");
-		}
+		cboSegment.setSelectedIndex(segmentsDone);
 		cboChartMetric.setEnabled(true);
 	}
 	
@@ -1444,4 +1472,5 @@ public class FHSampleSize extends JFrame implements ActionListener {
 			menu.show(arg0.getComponent(), arg0.getX(), arg0.getY());
 		}
 	}
+	
 }

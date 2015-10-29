@@ -31,6 +31,7 @@ import org.fhaes.enums.JustificationType;
 import org.fhaes.enums.LabelOrientation;
 import org.fhaes.enums.LineStyle;
 import org.fhaes.enums.NoDataLabel;
+import org.fhaes.enums.OperatorEnum;
 import org.fhaes.enums.ResamplingType;
 import org.fhaes.enums.SampleDepthFilterType;
 import org.slf4j.Logger;
@@ -214,6 +215,10 @@ public class FHAESPreferences {
 		 */
 		
 		COMPOSITE_FILTER_TYPE("compositeFilterType"),
+		
+		COMPOSITE_FILTER_TYPE_WITH_ALL_TREES("compositeFilterTypeWithAllTrees"),
+		
+		COMPOSITE_FILTER_OPERATOR("compositeFilterOperator"),
 		
 		COMPOSITE_SAMPLE_DEPTH_TYPE("compositeSampleDepthType"),
 		
@@ -424,6 +429,8 @@ public class FHAESPreferences {
 		CHART_COMPOSITE_LABEL_ALIGNMENT("chartCompositeLabelAlignment"),
 		
 		CHART_COMPOSITE_YEAR_LABELS_TWO_DIGIT("chartCompositeYearLabelsTwoDigit"),
+		
+		CHART_COMPOSITE_EVENT_TYPE("chartCompositeEventType"),
 		
 		CHART_HIGHLIGHT_YEAR_STYLE("chartHighlightYearStyle"),
 		
@@ -1143,6 +1150,42 @@ public class FHAESPreferences {
 	 * @param value
 	 */
 	public void setFireFilterTypePref(PrefKey key, FireFilterType value) {
+	
+		setPref(key, value.toString());
+	}
+	
+	/**
+	 * Get the value of an OperatorEnum preference.
+	 * 
+	 * @param key
+	 * @param defaultValue
+	 * @return
+	 */
+	public OperatorEnum getOperatorPref(PrefKey key, OperatorEnum defaultValue) {
+	
+		String value = "";
+		if (defaultValue == null)
+		{
+			value = prefs.get(key.getValue(), null);
+		}
+		else
+		{
+			value = prefs.get(key.getValue(), defaultValue.name());
+		}
+		if (value == null)
+			return defaultValue;
+		if (FireFilterType.fromName(value) == null)
+			return defaultValue;
+		return OperatorEnum.fromName(value);
+	}
+	
+	/**
+	 * Set the value of a preference to the specified OperatorEnum.
+	 * 
+	 * @param key
+	 * @param value
+	 */
+	public void setOperatorPref(PrefKey key, OperatorEnum value) {
 	
 		setPref(key, value.toString());
 	}

@@ -2490,33 +2490,40 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 	}
 	
 	/**
+	 * Use getFilterArrays(EventTypeToProcess.FIRE_EVENT) instead
+	 * 
 	 * @deprecated
 	 * @return
 	 */
 	@Deprecated
 	public ArrayList<ArrayList<Double>> getfilters2d() {
 	
-		return filters2dI;
+		return getFilterArrays(EventTypeToProcess.FIRE_EVENT);
+		
 	}
 	
 	/**
+	 * Use getFilterArrays(EventTypeToProcess.INJURY_EVENT) instead
+	 * 
 	 * @deprecated
 	 * @return
 	 */
 	@Deprecated
 	public ArrayList<ArrayList<Double>> getfilters2dII() {
 	
-		return filters2dII;
+		return getFilterArrays(EventTypeToProcess.INJURY_EVENT);
 	}
 	
 	/**
+	 * Use getFilterArrays(EventTypeToProcess.FIRE_AND_INJURY_EVENT) instead
+	 * 
 	 * @deprecated
 	 * @return
 	 */
 	@Deprecated
 	public ArrayList<ArrayList<Double>> getfilters2dIII() {
 	
-		return filters2dIII;
+		return getFilterArrays(EventTypeToProcess.FIRE_AND_INJURY_EVENT);
 	}
 	
 	/**

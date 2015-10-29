@@ -21,6 +21,7 @@ import java.util.ArrayList;
 
 import org.fhaes.enums.EventTypeToProcess;
 import org.fhaes.enums.FireFilterType;
+import org.fhaes.enums.SampleDepthFilterType;
 import org.fhaes.model.FHSeries;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,7 +51,7 @@ public abstract class AbstractFireHistoryReader implements IFHAESReader {
 	 * @param seriesList
 	 */
 	public void replaceSeriesList(ArrayList<FHSeries> inSeriesList) {
-		
+	
 		seriesList.clear();
 		seriesList.addAll(inSeriesList);
 	}
@@ -61,7 +62,7 @@ public abstract class AbstractFireHistoryReader implements IFHAESReader {
 	 * @return
 	 */
 	public ArrayList<FHSeries> getSeriesList() {
-		
+	
 		if (needToPopulateSeriesList)
 		{
 			populateSeriesList();
@@ -79,7 +80,7 @@ public abstract class AbstractFireHistoryReader implements IFHAESReader {
 	 */
 	@SuppressWarnings("unused")
 	public int[] getSampleDepths() {
-		
+	
 		// Instantiate the array ready to populate
 		int[] arr = new int[this.getYearArray().size()];
 		int totaltreeperyear = 0;
@@ -120,7 +121,7 @@ public abstract class AbstractFireHistoryReader implements IFHAESReader {
 	 */
 	@SuppressWarnings("unused")
 	public int[] getRecordingDepths() {
-		
+	
 		// Instantiate the array ready to populate
 		int[] arr = new int[this.getYearArray().size()];
 		int totalrecorderperyear;
@@ -150,8 +151,8 @@ public abstract class AbstractFireHistoryReader implements IFHAESReader {
 	 * @param eventTypeToProcess - whether to calculate the percentage based on fire events, injury events, or both.
 	 * @return
 	 */
-	public double[] getPercentScarred(EventTypeToProcess eventTypeToProcess) {
-		
+	public double[] getPercentOfRecordingScarred(EventTypeToProcess eventTypeToProcess) {
+	
 		// Instantiate the array ready to populate
 		double[] arrpc = new double[this.getYearArray().size()];
 		int[] arr1 = new int[this.getYearArray().size()];
@@ -182,6 +183,34 @@ public abstract class AbstractFireHistoryReader implements IFHAESReader {
 	}
 	
 	/**
+	 * Returns an array of doubles with size equal to the number of years in the file. The values in the array are the percentage of samples
+	 * that are present in that specific year. The type of event (fire, injury or both) is specified as a parameter.
+	 * 
+	 * @param eventTypeToProcess - whether to calculate the percentage based on fire events, injury events, or both.
+	 * @return
+	 */
+	public double[] getPercentOfAllScarred(EventTypeToProcess eventTypeToProcess) {
+	
+		// Instantiate the array ready to populate
+		double[] arrpc = new double[this.getYearArray().size()];
+		int[] arr1 = getSampleDepths();
+		
+		for (int j = 0; j < this.getYearArray().size(); j++)
+		{
+			if (arr1[j] != 0)
+			{
+				arrpc[j] = (this.getFilterArrays(eventTypeToProcess).get(0).get(j) / arr1[j]) * 100;
+			}
+			else
+			{
+				arrpc[j] = 0.0;
+			}
+		}
+		
+		return arrpc;
+	}
+	
+	/**
 	 * Returns an ArrayList of years which fulfill the composite filter options specified.
 	 * 
 	 * @param eventsToProcess - whether to calculate the composite based on fire events, injury events, or both
@@ -190,13 +219,30 @@ public abstract class AbstractFireHistoryReader implements IFHAESReader {
 	 *            composite
 	 * @param minNumberOfSamples - The minimum number of samples that must be in recording status for the year to be considered for
 	 *            inclusion in the composite, regardless of filterValue.
+	 * @param sampleDepthFilterType
 	 * @return
 	 */
 	public ArrayList<Integer> getCompositeFireYears(EventTypeToProcess eventsToProcess, FireFilterType filterType, double filterValue,
-			int minNumberOfSamples) {
-			
+			int minNumberOfSamples, SampleDepthFilterType sampleDepthFilterType) {
+	
 		// Instantiate the array ready to populate
 		ArrayList<Integer> compositeYears = new ArrayList<Integer>();
+		
+		// Create filter based on min number of samples/recorder samples
+		int[] depths = null;
+		if (sampleDepthFilterType.equals(SampleDepthFilterType.MIN_NUM_SAMPLES))
+		{
+			depths = getSampleDepths();
+		}
+		else if (sampleDepthFilterType.equals(SampleDepthFilterType.MIN_NUM_RECORDER_SAMPLES))
+		{
+			depths = getRecordingDepths();
+		}
+		else
+		{
+			log.error("Unknown sample depth filter type.");
+			return null;
+		}
 		
 		// Calculate composite based on filter type
 		if (filterType.equals(FireFilterType.NUMBER_OF_EVENTS))
@@ -207,29 +253,85 @@ public abstract class AbstractFireHistoryReader implements IFHAESReader {
 			Integer currentYear = this.getFirstYear();
 			for (int i = 0; i < dataArray.size(); i++)
 			{
-				if (dataArray.get(i) >= filterValue && dataArray.get(i) >= minNumberOfSamples)
+				if (dataArray.get(i) >= filterValue)
 				{
-					compositeYears.add(currentYear);
+					
+					if (depths[i] >= minNumberOfSamples)
+					{
+						compositeYears.add(currentYear);
+						log.trace("Keeping " + currentYear + ": ");
+					}
+					
 				}
 				
 				currentYear++;
 			}
 			
 		}
-		else if (filterType.equals(FireFilterType.PERCENTAGE_OF_EVENTS))
+		else if (filterType.equals(FireFilterType.PERCENTAGE_OF_ALL_TREES))
 		{
+			log.debug("Doing all trees");
 			
-			double[] percentScarred = getPercentScarred(eventsToProcess);
-			ArrayList<Double> dataArray = this.getFilterArrays(eventsToProcess).get(0);
+			double[] percentScarred = getPercentOfAllScarred(eventsToProcess);
+			ArrayList<Double> numberOfEvents = this.getFilterArrays(eventsToProcess).get(0);
+			ArrayList<Double> numberOfTrees = this.getFilterArrays(eventsToProcess).get(1);
 			
 			Integer currentYear = this.getFirstYear();
 			for (int i = 0; i < percentScarred.length; i++)
 			{
-				if (percentScarred[i] >= filterValue && dataArray.get(i) >= minNumberOfSamples)
+				if (percentScarred[i] >= filterValue)
 				{
-					compositeYears.add(currentYear);
+					if (depths[i] >= minNumberOfSamples)
+					{
+						compositeYears.add(currentYear);
+						log.debug("Keeping   " + currentYear + ": percentscarred = " + percentScarred[i] + "; number of trees = "
+								+ numberOfTrees.get(i) + "; number of events = " + numberOfEvents.get(i));
+					}
+					else
+					{
+						log.debug("Rejected because sample count is below threshold");
+					}
+				}
+				else
+				{
+					log.debug("Rejecting " + currentYear + ": percentscarred = " + percentScarred[i] + "; number of trees = "
+							+ numberOfTrees.get(i) + "; number of events = " + numberOfEvents.get(i));
 				}
 				
+				currentYear++;
+			}
+			
+		}
+		else if (filterType.equals(FireFilterType.PERCENTAGE_OF_RECORDING))
+		{
+			log.debug("Doing recording trees");
+			
+			ArrayList<Double> numberOfEvents = this.getFilterArrays(eventsToProcess).get(0);
+			ArrayList<Double> numberOfTrees = this.getFilterArrays(eventsToProcess).get(1);
+			ArrayList<Double> percentScarred = this.getFilterArrays(eventsToProcess).get(2);
+			
+			Integer currentYear = this.getFirstYear();
+			for (int i = 0; i < percentScarred.size(); i++)
+			{
+				double datavalue = percentScarred.get(i) * 100;
+				if (datavalue >= filterValue)
+				{
+					if (depths[i] >= minNumberOfSamples)
+					{
+						compositeYears.add(currentYear);
+						log.debug("Keeping   " + currentYear + ": percentscarred = " + datavalue + "; number of events = "
+								+ numberOfEvents.get(i) + "; number of trees = " + numberOfTrees.get(i));
+					}
+					else
+					{
+						log.debug("Rejected because sample count is below threshold");
+					}
+				}
+				else
+				{
+					log.debug("Rejecting " + currentYear + ": percentscarred = " + datavalue + "; number of events = "
+							+ numberOfEvents.get(i) + "; number of trees = " + numberOfTrees.get(i));
+				}
 				currentYear++;
 			}
 			

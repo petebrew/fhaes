@@ -37,6 +37,8 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import net.miginfocom.swing.MigLayout;
+
 import org.fhaes.components.HelpTipButton;
 import org.fhaes.enums.AnalysisLabelType;
 import org.fhaes.enums.AnalysisType;
@@ -50,13 +52,11 @@ import org.fhaes.preferences.wrappers.AnalysisLabelTypeWrapper;
 import org.fhaes.preferences.wrappers.AnalysisTypeWrapper;
 import org.fhaes.preferences.wrappers.CheckBoxWrapper;
 import org.fhaes.preferences.wrappers.DoubleSpinnerWrapper;
-import org.fhaes.preferences.wrappers.FireFilterTypeWrapper;
-import org.fhaes.preferences.wrappers.MatrixEventTypeWrapper;
+import org.fhaes.preferences.wrappers.FireFilterTypeWrapperWithoutAllTrees;
+import org.fhaes.preferences.wrappers.EventTypeWrapper;
 import org.fhaes.preferences.wrappers.NoDataLabelWrapper;
 import org.fhaes.preferences.wrappers.SpinnerWrapper;
 import org.fhaes.util.Builder;
-
-import net.miginfocom.swing.MigLayout;
 
 /**
  * ParamConfigDialog Class. This is the preferences dialog for the analysis modules.
@@ -133,7 +133,7 @@ public class ParamConfigDialog extends JDialog implements ActionListener, Change
 	 * Create the dialog.
 	 */
 	public ParamConfigDialog(Component parent) {
-		
+	
 		setTitle("Analysis Options");
 		
 		getContentPane().setLayout(new BorderLayout());
@@ -165,7 +165,7 @@ public class ParamConfigDialog extends JDialog implements ActionListener, Change
 							cboEventType = new JComboBox();
 							panelCommon.add(cboEventType, "cell 1 0");
 							cboEventType.setModel(new DefaultComboBoxModel(EventTypeToProcess.values()));
-							new MatrixEventTypeWrapper(cboEventType, PrefKey.EVENT_TYPE_TO_PROCESS, EventTypeToProcess.FIRE_EVENT);
+							new EventTypeWrapper(cboEventType, PrefKey.EVENT_TYPE_TO_PROCESS, EventTypeToProcess.FIRE_EVENT);
 						}
 						btnHelpEventType = new HelpTipButton(LocalHelp.EVENT_TYPE);
 						panelCommon.add(btnHelpEventType, "cell 2 0");
@@ -186,8 +186,8 @@ public class ParamConfigDialog extends JDialog implements ActionListener, Change
 					}
 					{
 						panelInterval = new JPanel();
-						panelInterval
-								.setBorder(new TitledBorder(null, "Interval options", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+						panelInterval.setBorder(new TitledBorder(null, "Interval options", TitledBorder.LEADING, TitledBorder.TOP, null,
+								null));
 						panelAnalysisOptions.add(panelInterval, "cell 0 1,grow");
 						panelInterval.setLayout(new MigLayout("", "[178px:178px,right][grow,fill][]", "[][][][][37.00]"));
 						{
@@ -227,8 +227,8 @@ public class ParamConfigDialog extends JDialog implements ActionListener, Change
 							}
 							{
 								panelMatrix = new JPanel();
-								panelMatrix.setBorder(
-										new TitledBorder(null, "Matrix options", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+								panelMatrix.setBorder(new TitledBorder(null, "Matrix options", TitledBorder.LEADING, TitledBorder.TOP,
+										null, null));
 								panelAnalysisOptions.add(panelMatrix, "cell 0 2,grow");
 								panelMatrix.setLayout(new MigLayout("", "[178px:178px,right][grow,fill][]", "[][]"));
 								
@@ -308,8 +308,8 @@ public class ParamConfigDialog extends JDialog implements ActionListener, Change
 			panel.add(spnLastYear, "flowx,cell 2 0,alignx left,aligny top");
 			panelCompositeFilter = new JPanel();
 			tabFiltersAndYears.add(panelCompositeFilter, "cell 0 1");
-			panelCompositeFilter
-					.setBorder(new TitledBorder(null, "Composite fire threshold", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+			panelCompositeFilter.setBorder(new TitledBorder(null, "Composite fire threshold", TitledBorder.LEADING, TitledBorder.TOP, null,
+					null));
 			panelCompositeFilter.setLayout(new MigLayout("", "[178px:178px][grow,fill]", "[]"));
 			{
 				lblCompositeThreshold = new JLabel("Threshold:");
@@ -322,7 +322,7 @@ public class ParamConfigDialog extends JDialog implements ActionListener, Change
 				cboFilterType = new JComboBox();
 				panel_2.add(cboFilterType, "cell 0 0");
 				cboFilterType.setModel(new DefaultComboBoxModel(FireFilterType.values()));
-				new FireFilterTypeWrapper(cboFilterType, PrefKey.COMPOSITE_FILTER_TYPE, FireFilterType.NUMBER_OF_EVENTS);
+				new FireFilterTypeWrapperWithoutAllTrees(cboFilterType, PrefKey.COMPOSITE_FILTER_TYPE, FireFilterType.NUMBER_OF_EVENTS);
 			}
 			{
 				label_2 = new JLabel(">=");
@@ -345,8 +345,8 @@ public class ParamConfigDialog extends JDialog implements ActionListener, Change
 				{
 					JPanel panelFirstSeason = new JPanel();
 					tabSeasons.add(panelFirstSeason, "cell 0 0");
-					panelFirstSeason.setBorder(
-							new TitledBorder(null, "First season combination", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+					panelFirstSeason.setBorder(new TitledBorder(null, "First season combination", TitledBorder.LEADING, TitledBorder.TOP,
+							null, null));
 					panelFirstSeason.setLayout(new MigLayout("", "[][grow]", "[][][][][]"));
 					{
 						cbxDormantFirst = new JCheckBox("Dormant");
@@ -389,8 +389,8 @@ public class ParamConfigDialog extends JDialog implements ActionListener, Change
 				{
 					JPanel panelSecondSeason = new JPanel();
 					tabSeasons.add(panelSecondSeason, "cell 1 0");
-					panelSecondSeason.setBorder(
-							new TitledBorder(null, "Second season combination", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+					panelSecondSeason.setBorder(new TitledBorder(null, "Second season combination", TitledBorder.LEADING, TitledBorder.TOP,
+							null, null));
 					panelSecondSeason.setLayout(new MigLayout("", "[][grow]", "[][][][][]"));
 					{
 						cbxDormantSecond = new JCheckBox("Dormant ");
@@ -481,7 +481,7 @@ public class ParamConfigDialog extends JDialog implements ActionListener, Change
 	 * 
 	 */
 	private void showHideFilterGUI() {
-		
+	
 		Boolean enableFilters = false;
 		if (cboAnalysisType.getSelectedItem().equals(AnalysisType.COMPOSITE))
 		{
@@ -493,7 +493,7 @@ public class ParamConfigDialog extends JDialog implements ActionListener, Change
 	}
 	
 	public Boolean havePreferencesChanged() {
-		
+	
 		return preferencesChanged;
 	}
 	
@@ -503,7 +503,7 @@ public class ParamConfigDialog extends JDialog implements ActionListener, Change
 	 * @return
 	 */
 	private boolean validateChoices() {
-		
+	
 		showHideFilterGUI();
 		boolean ret = true;
 		if (cbxDormantFirst.isSelected() && cbxEarlyEarlyFirst.isSelected() && cbxMiddleEarlyFirst.isSelected()
@@ -540,7 +540,7 @@ public class ParamConfigDialog extends JDialog implements ActionListener, Change
 	 * Set GUI components to their default values
 	 */
 	public void setToDefault() {
-		
+	
 		cbxDormantFirst.setSelected(true);
 		cbxEarlyEarlyFirst.setSelected(true);
 		cbxMiddleEarlyFirst.setSelected(true);
@@ -569,7 +569,7 @@ public class ParamConfigDialog extends JDialog implements ActionListener, Change
 	 * Save the settings to the application preferences
 	 */
 	private void saveToPreferences() {
-		
+	
 		App.prefs.setIntPref(PrefKey.RANGE_FIRST_YEAR, (Integer) spnFirstYear.getValue());
 		App.prefs.setIntPref(PrefKey.RANGE_LAST_YEAR, (Integer) spnLastYear.getValue());
 		
@@ -593,7 +593,7 @@ public class ParamConfigDialog extends JDialog implements ActionListener, Change
 	}
 	
 	private void setFromPreferences() {
-		
+	
 		cbxDormantFirst.setSelected(App.prefs.getBooleanPref(PrefKey.SEASONALITY_FIRST_GROUP_DORMANT, true));
 		cbxEarlyEarlyFirst.setSelected(App.prefs.getBooleanPref(PrefKey.SEASONALITY_FIRST_GROUP_EARLY_EARLY, true));
 		cbxMiddleEarlyFirst.setSelected(App.prefs.getBooleanPref(PrefKey.SEASONALITY_FIRST_GROUP_MIDDLE_EARLY, true));
@@ -614,7 +614,7 @@ public class ParamConfigDialog extends JDialog implements ActionListener, Change
 	
 	@Override
 	public void actionPerformed(ActionEvent evt) {
-		
+	
 		if (evt.getActionCommand().equals("Cancel"))
 		{
 			setVisible(false);
@@ -696,7 +696,7 @@ public class ParamConfigDialog extends JDialog implements ActionListener, Change
 	
 	@Override
 	public void stateChanged(ChangeEvent e) {
-		
+	
 		validateChoices();
 		
 	}

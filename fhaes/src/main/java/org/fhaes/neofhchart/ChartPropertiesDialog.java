@@ -44,24 +44,27 @@ import javax.swing.JTextField;
 import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
 import javax.swing.SpinnerNumberModel;
-import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import net.miginfocom.swing.MigLayout;
+
 import org.fhaes.components.BCADYearSpinner;
+import org.fhaes.enums.EventTypeToProcess;
 import org.fhaes.enums.FireFilterType;
 import org.fhaes.enums.JustificationType;
 import org.fhaes.enums.LabelOrientation;
 import org.fhaes.enums.LineStyle;
+import org.fhaes.enums.SampleDepthFilterType;
 import org.fhaes.preferences.App;
 import org.fhaes.preferences.FHAESPreferences.PrefKey;
+import org.fhaes.preferences.wrappers.EventTypeWrapper;
+import org.fhaes.preferences.wrappers.SampleDepthFilterTypeWrapper;
 import org.fhaes.util.Builder;
 import org.fhaes.util.FontChooserComboBox;
 import org.fhaes.util.SharedConstants;
-
-import net.miginfocom.swing.MigLayout;
 
 /**
  * ChartPropertiesDialog Class.
@@ -180,12 +183,16 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 	private JLabel lblCategoryLabelJustification;
 	private JComboBox<JustificationType> cboCategoryLabelJustification;
 	private JLabel lblPt_3;
+	private JLabel label_1;
+	private JComboBox cboSampleDepthFilterType;
+	private JLabel lblCompositeBasedOn;
+	private JComboBox cboEventToProcess;
 	
 	/**
 	 * Create the dialog.
 	 */
 	public ChartPropertiesDialog(NeoFHChart neoFHChart) {
-		
+	
 		this.neoFHChart = neoFHChart;
 		initGUI();
 	}
@@ -197,7 +204,7 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 	 * @param neoFHChart
 	 */
 	public static void showDialog(Component parent, NeoFHChart neoFHChart) {
-		
+	
 		App.prefs.setSilentMode(true);
 		ChartPropertiesDialog dialog = new ChartPropertiesDialog(neoFHChart);
 		dialog.setLocationRelativeTo(parent);
@@ -217,7 +224,7 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 	 * TODO
 	 */
 	private void setXAxisGui() {
-		
+	
 		if (this.chkAutoAdjustRange.isSelected())
 		{
 			this.firstYearSpinner.setEnabled(false);
@@ -235,7 +242,7 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 	 */
 	@Override
 	public void actionPerformed(ActionEvent evt) {
-		
+	
 		if (evt.getActionCommand().equals("OK"))
 		{
 			saveToPreferences();
@@ -300,7 +307,7 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 	 * @return
 	 */
 	public boolean havePreferencesChanged() {
-		
+	
 		return preferencesChanged;
 	}
 	
@@ -308,7 +315,7 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 	 * Try and set the YAxis label to match the depth type, but only do so if the user hasn't already overridden with their own text.
 	 */
 	private void tryAutoSetYAxisLabel() {
-		
+	
 		String text = this.txtAxisY1Label.getText();
 		if (text.toLowerCase().equals("recorder depth") || text.toLowerCase().equals("sample depth"))
 		{
@@ -328,7 +335,7 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 	 * Enable/disable GUI based components based on selections.
 	 */
 	private void setVerticalGuideGUI() {
-		
+	
 		cboVerticalGuideStyle.setEnabled(chkVerticalGuides.isSelected());
 		spnVerticalGuideWeight.setEnabled(chkVerticalGuides.isSelected());
 		btnVerticalGuideColor.setEnabled(chkVerticalGuides.isSelected());
@@ -338,7 +345,7 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 	 * Enable/disable GUI based components based on selections.
 	 */
 	private void setHighlightYearsGUI() {
-		
+	
 		cboHighlightStyle.setEnabled(chkHighlightYears.isSelected());
 		spnHighlightWeight.setEnabled(chkHighlightYears.isSelected());
 		btnHighlightColor.setEnabled(chkHighlightYears.isSelected());
@@ -351,7 +358,7 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 	 * Enable/disable GUI based components based on selections.
 	 */
 	private void setIndexPlotGUI() {
-		
+	
 		setEnablePanelComponents(panelIndexPlotGeneral, chkIndexPlot.isSelected());
 		setEnablePanelComponents(panelIndexPlotComponents, chkIndexPlot.isSelected());
 		setEnablePanelComponents(panelIndexPlotAxisY1, chkIndexPlot.isSelected());
@@ -364,7 +371,7 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 	 * Enable/disable GUI based components based on selections.
 	 */
 	private void setChronologyPlotGUI() {
-		
+	
 		setEnablePanelComponents(panelChronoPlotSeries, chkChronologyPlot.isSelected());
 		setEnablePanelComponents(panelChronoPlotSymbols, chkChronologyPlot.isSelected());
 		
@@ -374,7 +381,7 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 	 * Enable/disable GUI based components based on selections.
 	 */
 	private void setCompositePlotGUI() {
-		
+	
 		setEnablePanelComponents(panelCompositePlotFilters, chkCompositePlot.isSelected());
 		setEnablePanelComponents(panelCompositePlotGeneral, chkCompositePlot.isSelected());
 		setEnablePanelComponents(panelCompositePlotYearLabels, chkCompositePlot.isSelected());
@@ -384,10 +391,10 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 	 * Enable/disable GUI based components based on selections.
 	 */
 	private void setCompositeYearLabelsGUI() {
-		
+	
 		if (!this.chkCompositeYearLabels.isEnabled())
 			return;
-			
+		
 		radShortYearStyle.setEnabled(chkCompositeYearLabels.isSelected());
 		radLongYearStyle.setEnabled(chkCompositeYearLabels.isSelected());
 		spnCompositeYearLabelFontSize.setEnabled(chkCompositeYearLabels.isSelected());
@@ -403,12 +410,12 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 	 * @param enable
 	 */
 	private void setEnablePanelComponents(JPanel panel, boolean enable) {
-		
+	
 		if (panel == null)
 			return;
 		if (panel.getComponents().length == 0)
 			return;
-			
+		
 		panel.setEnabled(enable);
 		
 		for (Component component : panel.getComponents())
@@ -423,7 +430,7 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 	 * @return
 	 */
 	public JCheckBox getChkCompositeYearLabels() {
-		
+	
 		return chkCompositeYearLabels;
 	}
 	
@@ -434,7 +441,7 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 	 * @param background
 	 */
 	public static void setComponentColours(Component component, Color background) {
-		
+	
 		component.setBackground(background);
 		component.setForeground(getContrastingLabelColour(background));
 	}
@@ -446,7 +453,7 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 	 * @return
 	 */
 	public static Color getContrastingLabelColour(Color newcolor) {
-		
+	
 		double brightness = 0.299 * newcolor.getRed() + 0.587 * newcolor.getGreen() + 0.114 * newcolor.getBlue();
 		
 		if (brightness > 125.0)
@@ -462,7 +469,7 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 	 * Return all the chart properties to their default values.
 	 */
 	private void setToDefaults() {
-		
+	
 		// Clear preferences first then set all to default
 		
 		// General tab
@@ -546,7 +553,7 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 	 * Save the chart properties to the preferences.
 	 */
 	private void saveToPreferences() {
-		
+	
 		// General tab
 		App.prefs.setBooleanPref(PrefKey.CHART_SHOW_CHART_TITLE, chkShowChartTitle.isSelected());
 		App.prefs.setIntPref(PrefKey.CHART_TITLE_FONT_SIZE, (Integer) spnChartTitleFontSize.getValue());
@@ -618,9 +625,9 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 		App.prefs.setIntPref(PrefKey.CHART_COMPOSITE_PLOT_LABEL_FONT_SIZE, (Integer) spnCompositePlotLabelFontSize.getValue());
 		App.prefs.setBooleanPref(PrefKey.CHART_COMPOSITE_YEAR_LABELS_TWO_DIGIT, radShortYearStyle.isSelected());
 		App.prefs.setIntPref(PrefKey.CHART_COMPOSITE_YEAR_LABEL_BUFFER, (Integer) spnYearLabelPadding.getValue());
-		App.prefs.setLabelOrientationPref(PrefKey.CHART_COMPOSITE_LABEL_ALIGNMENT,
-				(LabelOrientation) cboLabelOrientation.getSelectedItem());
-				
+		App.prefs
+				.setLabelOrientationPref(PrefKey.CHART_COMPOSITE_LABEL_ALIGNMENT, (LabelOrientation) cboLabelOrientation.getSelectedItem());
+		
 		this.preferencesChanged = true;
 	}
 	
@@ -629,7 +636,7 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 	 * value.
 	 */
 	private void setFromPreferences() {
-		
+	
 		// General tab
 		chkShowChartTitle.setSelected(App.prefs.getBooleanPref(PrefKey.CHART_SHOW_CHART_TITLE, true));
 		spnChartTitleFontSize.setValue(App.prefs.getIntPref(PrefKey.CHART_TITLE_FONT_SIZE, 20));
@@ -693,8 +700,8 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 		chkShowCategoryGroups.setSelected(App.prefs.getBooleanPref(PrefKey.CHART_SHOW_CATEGORY_GROUPS, true));
 		chkShowCategoryLabels.setSelected(App.prefs.getBooleanPref(PrefKey.CHART_SHOW_CATEGORY_LABELS, true));
 		spnCategoryLabelFontSize.setValue(App.prefs.getIntPref(PrefKey.CHART_CATEGORY_LABEL_FONT_SIZE, 18));
-		cboCategoryLabelJustification
-				.setSelectedItem(App.prefs.getJustificationTypePref(PrefKey.CHART_CATEGORY_LABEL_JUSTIFICATION, JustificationType.CENTER));
+		cboCategoryLabelJustification.setSelectedItem(App.prefs.getJustificationTypePref(PrefKey.CHART_CATEGORY_LABEL_JUSTIFICATION,
+				JustificationType.CENTER));
 		chkAutomaticallyColorizeSeries.setSelected(App.prefs.getBooleanPref(PrefKey.CHART_AUTOMATICALLY_COLORIZE_SERIES, false));
 		chkAutomaticallyColorizeLabels.setSelected(App.prefs.getBooleanPref(PrefKey.CHART_AUTOMATICALLY_COLORIZE_LABELS, false));
 		
@@ -712,9 +719,9 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 		radShortYearStyle.setSelected(App.prefs.getBooleanPref(PrefKey.CHART_COMPOSITE_YEAR_LABELS_TWO_DIGIT, false));
 		radLongYearStyle.setSelected(!App.prefs.getBooleanPref(PrefKey.CHART_COMPOSITE_YEAR_LABELS_TWO_DIGIT, false));
 		spnYearLabelPadding.setValue(App.prefs.getIntPref(PrefKey.CHART_COMPOSITE_YEAR_LABEL_BUFFER, 5));
-		cboLabelOrientation
-				.setSelectedItem(App.prefs.getLabelOrientationPref(PrefKey.CHART_COMPOSITE_LABEL_ALIGNMENT, LabelOrientation.HORIZONTAL));
-				
+		cboLabelOrientation.setSelectedItem(App.prefs.getLabelOrientationPref(PrefKey.CHART_COMPOSITE_LABEL_ALIGNMENT,
+				LabelOrientation.HORIZONTAL));
+		
 		tryAutoSetYAxisLabel();
 		setVerticalGuideGUI();
 		setHighlightYearsGUI();
@@ -729,7 +736,7 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 	 * Initializes the GUI.
 	 */
 	private void initGUI() {
-		
+	
 		this.setIconImage(Builder.getApplicationIcon());
 		this.setTitle("Chart Properties");
 		this.setModal(true);
@@ -767,7 +774,7 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 			
 			@Override
 			public void itemStateChanged(ItemEvent arg0) {
-				
+			
 				String font = cboFontFamily.getSelectedFontName();
 				
 				if (font != null)
@@ -796,7 +803,7 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				
+			
 				if (chkShowChartTitle.isSelected())
 				{
 					chartTitleOverrideText.setEnabled(false);
@@ -823,7 +830,7 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				
+			
 				if (chkUseDefaultName.isSelected())
 				{
 					chartTitleOverrideText.setEnabled(false);
@@ -846,9 +853,9 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 		JPanel panelGenericOptionsXAxis = new JPanel();
 		panelGenericOptionsXAxis.setBorder(new TitledBorder(null, "Timeline (X Axis)", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		genericOptionsPanel.add(panelGenericOptionsXAxis, "cell 0 1,grow");
-		panelGenericOptionsXAxis
-				.setLayout(new MigLayout("", "[180px][80,fill][150px,right][67.00,grow,fill][][62.00,grow,fill]", "[][15px]"));
-				
+		panelGenericOptionsXAxis.setLayout(new MigLayout("", "[180px][80,fill][150px,right][67.00,grow,fill][][62.00,grow,fill]",
+				"[][15px]"));
+		
 		lblAutoAdjustRange = new JLabel("Auto adjust range:");
 		panelGenericOptionsXAxis.add(lblAutoAdjustRange, "cell 0 0,alignx right,aligny center");
 		
@@ -857,7 +864,7 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				
+			
 				setXAxisGui();
 			}
 			
@@ -869,12 +876,12 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 		
 		firstYearSpinner = new BCADYearSpinner(neoFHChart.currentChart.getReader().getFirstYear(), SharedConstants.EARLIEST_ALLOWED_YEAR,
 				SharedConstants.CURRENT_YEAR - 1);
-				
+		
 		firstYearSpinner.addChangeListener(new ChangeListener() {
 			
 			@Override
 			public void stateChanged(ChangeEvent e) {
-				
+			
 				// If spinner year is moved above or equal to the last year spinner's value
 				if (firstYearSpinner.getValueAsInteger() >= lastYearSpinner.getValueAsInteger())
 				{
@@ -888,12 +895,12 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 		
 		lastYearSpinner = new BCADYearSpinner(neoFHChart.currentChart.getReader().getLastYear(), SharedConstants.EARLIEST_ALLOWED_YEAR,
 				SharedConstants.CURRENT_YEAR);
-				
+		
 		lastYearSpinner.addChangeListener(new ChangeListener() {
 			
 			@Override
 			public void stateChanged(ChangeEvent e) {
-				
+			
 				// If spinner year is moved below or equal to the first year spinner's value
 				if (lastYearSpinner.getValueAsInteger() <= firstYearSpinner.getValueAsInteger())
 				{
@@ -915,8 +922,8 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 		panelGenericOptionsXAxis.add(spnTimelineFontSize, "cell 1 1,growx,aligny center");
 		
 		JPanel panelGenericOptionsTicksAndGuides = new JPanel();
-		panelGenericOptionsTicksAndGuides
-				.setBorder(new TitledBorder(null, "Ticks and Vertical Guides", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		panelGenericOptionsTicksAndGuides.setBorder(new TitledBorder(null, "Ticks and Vertical Guides", TitledBorder.LEADING,
+				TitledBorder.TOP, null, null));
 		genericOptionsPanel.add(panelGenericOptionsTicksAndGuides, "cell 0 2,grow");
 		panelGenericOptionsTicksAndGuides.setLayout(new MigLayout("", "[180px,right][58:58][right][67][grow][][67][]", "[][][]"));
 		
@@ -946,10 +953,10 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
+			
 				Color newcolor = JColorChooser.showDialog(App.mainFrame, "Vertical Guide Color",
 						App.prefs.getColorPref(PrefKey.CHART_VERTICAL_GUIDE_COLOR, Color.BLACK));
-						
+				
 				if (newcolor != null)
 				{
 					App.prefs.setColorPref(PrefKey.CHART_VERTICAL_GUIDE_COLOR, newcolor);
@@ -996,12 +1003,12 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 		panelGenericOptionsTicksAndGuides.add(spnMinorSpacing, "cell 3 2,growx,aligny center");
 		
 		JPanel panelGenericOptionsHighlightedYears = new JPanel();
-		panelGenericOptionsHighlightedYears
-				.setBorder(new TitledBorder(null, "Highlighted Years", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		panelGenericOptionsHighlightedYears.setBorder(new TitledBorder(null, "Highlighted Years", TitledBorder.LEADING, TitledBorder.TOP,
+				null, null));
 		genericOptionsPanel.add(panelGenericOptionsHighlightedYears, "cell 0 3,grow");
-		panelGenericOptionsHighlightedYears
-				.setLayout(new MigLayout("", "[180,right][58:58.00][][grow][][67][fill]", "[fill][top][top][][grow]"));
-				
+		panelGenericOptionsHighlightedYears.setLayout(new MigLayout("", "[180,right][58:58.00][][grow][][67][fill]",
+				"[fill][top][top][][grow]"));
+		
 		JLabel lblShowHighlights = new JLabel("Show highlighted years:");
 		panelGenericOptionsHighlightedYears.add(lblShowHighlights, "cell 0 0,alignx right,aligny center");
 		
@@ -1035,10 +1042,10 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
+			
 				Color newcolor = JColorChooser.showDialog(App.mainFrame, "Year Highlighter Color",
 						App.prefs.getColorPref(PrefKey.CHART_HIGHLIGHT_YEARS_COLOR, Color.YELLOW));
-						
+				
 				if (newcolor != null)
 				{
 					App.prefs.setColorPref(PrefKey.CHART_HIGHLIGHT_YEARS_COLOR, newcolor);
@@ -1115,7 +1122,7 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				
+			
 				tryAutoSetYAxisLabel();
 			}
 		});
@@ -1128,10 +1135,10 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
+			
 				Color newcolor = JColorChooser.showDialog(App.mainFrame, "Sample Depth Color",
 						App.prefs.getColorPref(PrefKey.CHART_SAMPLE_OR_RECORDER_DEPTH_COLOR, Color.BLUE));
-						
+				
 				if (newcolor != null)
 				{
 					App.prefs.setColorPref(PrefKey.CHART_SAMPLE_OR_RECORDER_DEPTH_COLOR, newcolor);
@@ -1149,7 +1156,7 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				
+			
 				tryAutoSetYAxisLabel();
 			}
 		});
@@ -1169,10 +1176,10 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
+			
 				Color newcolor = JColorChooser.showDialog(App.mainFrame, "Percent Scarred Color",
 						App.prefs.getColorPref(PrefKey.CHART_PERCENT_SCARRED_COLOR, Color.BLACK));
-						
+				
 				if (newcolor != null)
 				{
 					App.prefs.setColorPref(PrefKey.CHART_PERCENT_SCARRED_COLOR, newcolor);
@@ -1195,10 +1202,10 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
+			
 				Color newcolor = JColorChooser.showDialog(App.mainFrame, "Depth Threshold Color",
 						App.prefs.getColorPref(PrefKey.CHART_DEPTH_THRESHOLD_COLOR, Color.RED));
-						
+				
 				if (newcolor != null)
 				{
 					App.prefs.setColorPref(PrefKey.CHART_DEPTH_THRESHOLD_COLOR, newcolor);
@@ -1279,7 +1286,7 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				
+			
 				SeriesListDialog.showDialog(neoFHChart.currentChart, neoFHChart.svgCanvas);
 			}
 		});
@@ -1450,34 +1457,43 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 		panelCompositePlotGeneral.add(spnCompositePlotLabelFontSize, "cell 1 2,growx,aligny center");
 		
 		panelCompositePlotFilters = new JPanel();
-		panelCompositePlotFilters.setBorder(new TitledBorder(UIManager.getBorder("EditorPane.border"), "Composite Filters",
-				TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		panelCompositePlotFilters
+				.setBorder(new TitledBorder(null, "Composite Filters", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		compositePlotPanel.add(panelCompositePlotFilters, "cell 0 2,grow");
-		panelCompositePlotFilters.setLayout(new MigLayout("", "[180px][67][grow]", "[][][]"));
-		
-		JLabel lblFilterType = new JLabel("Filter type:");
-		panelCompositePlotFilters.add(lblFilterType, "cell 0 0,alignx right,aligny center");
+		panelCompositePlotFilters.setLayout(new MigLayout("", "[180px][][][]", "[][][]"));
 		
 		cboFilterType = new JComboBox<FireFilterType>();
 		for (int i = 0; i < FireFilterType.values().length; i++)
 		{
 			cboFilterType.addItem(FireFilterType.values()[i]);
 		}
-		panelCompositePlotFilters.add(cboFilterType, "cell 1 0 2 1,growx,aligny center");
 		
-		JLabel lblValue_1 = new JLabel("Value:");
-		panelCompositePlotFilters.add(lblValue_1, "cell 0 1,alignx right,aligny center");
+		lblCompositeBasedOn = new JLabel("Composite based on:");
+		panelCompositePlotFilters.add(lblCompositeBasedOn, "cell 0 0,alignx trailing");
+		
+		cboEventToProcess = new JComboBox();
+		new EventTypeWrapper(cboEventToProcess, PrefKey.CHART_COMPOSITE_EVENT_TYPE, EventTypeToProcess.FIRE_EVENT);
+		panelCompositePlotFilters.add(cboEventToProcess, "cell 1 0 3 1,growx");
+		panelCompositePlotFilters.add(cboFilterType, "cell 1 1,growx,aligny center");
+		
+		JLabel lblValue_1 = new JLabel(">=");
+		panelCompositePlotFilters.add(lblValue_1, "cell 2 1,alignx right,aligny center");
 		
 		spnFilterValue = new JSpinner();
 		spnFilterValue.setModel(new SpinnerNumberModel(1, 1, 9999, 1));
-		panelCompositePlotFilters.add(spnFilterValue, "cell 1 1,growx,aligny center");
+		panelCompositePlotFilters.add(spnFilterValue, "cell 3 1,growx,aligny center");
 		
-		JLabel lblMinNoOf = new JLabel("Min. number of samples:");
-		panelCompositePlotFilters.add(lblMinNoOf, "cell 0 2,alignx right,aligny center");
+		cboSampleDepthFilterType = new JComboBox();
+		new SampleDepthFilterTypeWrapper(cboSampleDepthFilterType, PrefKey.COMPOSITE_SAMPLE_DEPTH_TYPE,
+				SampleDepthFilterType.MIN_NUM_SAMPLES);
+		panelCompositePlotFilters.add(cboSampleDepthFilterType, "cell 1 2,growx");
+		
+		label_1 = new JLabel(">=");
+		panelCompositePlotFilters.add(label_1, "cell 2 2");
 		
 		spnMinNumberOfSamples = new JSpinner();
 		spnMinNumberOfSamples.setModel(new SpinnerNumberModel(1, 1, 9999, 1));
-		panelCompositePlotFilters.add(spnMinNumberOfSamples, "cell 1 2,growx,aligny center");
+		panelCompositePlotFilters.add(spnMinNumberOfSamples, "cell 3 2,growx,aligny center");
 		
 		panelCompositePlotYearLabels = new JPanel();
 		panelCompositePlotYearLabels.setBorder(new TitledBorder(null, "Year Labels", TitledBorder.LEADING, TitledBorder.TOP, null, null));
@@ -1566,7 +1582,7 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 		private static final long serialVersionUID = 1L;
 		
 		public LineStyleRenderer() {
-			
+		
 			setOpaque(true);
 			setVerticalAlignment(CENTER);
 		}
@@ -1574,13 +1590,13 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 		@Override
 		public Component getListCellRendererComponent(JList<? extends LineStyle> list, LineStyle item, int index, boolean isSelected,
 				boolean cellHasFocus) {
-				
+		
 			// extract the component from the item's value
 			this.setBackground(Color.WHITE);
 			
 			if (item == null)
 				return this;
-				
+			
 			if (item.equals(LineStyle.SOLID))
 			{
 				this.setIcon(Builder.getImageIcon("linestyle-solid.png"));

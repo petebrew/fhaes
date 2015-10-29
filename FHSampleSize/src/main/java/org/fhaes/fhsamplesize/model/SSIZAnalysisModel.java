@@ -42,12 +42,14 @@ public class SSIZAnalysisModel {
 	
 	private final int seedValue;
 	private int numSimulationsToRun;
-	private int thresholdValue;
+	private int thresholdValueGT;
+	private int thresholdValueLT;
 	private int firstYear;
 	private int lastYear;
 	
 	private ResamplingType resamplingType;
 	private FireFilterType thresholdType;
+	private boolean isLowerThresholdSet = false;
 	
 	private Random[] randomArray;
 	
@@ -62,7 +64,7 @@ public class SSIZAnalysisModel {
 	 * @param eventType
 	 */
 	public SSIZAnalysisModel(int seedValue, FHX2FileReader reader, EventTypeToProcess eventType) {
-		
+	
 		this.seedValue = seedValue;
 		this.eventType = eventType;
 		this.seriesPoolToAnalyze = reader.getEventDataArrays(eventType);
@@ -73,7 +75,7 @@ public class SSIZAnalysisModel {
 	}
 	
 	public FHX2FileReader getReader() {
-		
+	
 		return reader;
 	}
 	
@@ -83,7 +85,7 @@ public class SSIZAnalysisModel {
 	 * @return eventType
 	 */
 	public EventTypeToProcess getEventType() {
-		
+	
 		return eventType;
 	}
 	
@@ -93,13 +95,13 @@ public class SSIZAnalysisModel {
 	 * @param segmentsFromTable
 	 */
 	public void setSegmentArray(ArrayList<SegmentModel> segmentsFromTable) {
-		
+	
 		// Make new segmentModel array so that the segmentTable segments are not affected during exclusion
 		ArrayList<SegmentModel> segments = new ArrayList<SegmentModel>();
 		
 		for (int i = 0; i < segmentsFromTable.size(); i++)
 			segments.add(segmentsFromTable.get(i));
-			
+		
 		if (segments == null || segments.size() == 0)
 		{
 			// Set to the full span of the file
@@ -114,7 +116,7 @@ public class SSIZAnalysisModel {
 	}
 	
 	public ArrayList<SegmentModel> getSegments() {
-		
+	
 		return this.segments;
 	}
 	
@@ -125,7 +127,7 @@ public class SSIZAnalysisModel {
 	 * @return a list of segments with the empty ones removed
 	 */
 	private ArrayList<SegmentModel> excludeEmptySegments(ArrayList<SegmentModel> segments) {
-		
+	
 		for (int i = segments.size() - 1; i >= 0; i--)
 		{
 			SegmentModel thisSegment = segments.get(i);
@@ -133,7 +135,7 @@ public class SSIZAnalysisModel {
 			// This segment is completely before the year range of this model
 			if (thisSegment.getFirstYear() <= firstYear && thisSegment.getLastYear() <= firstYear)
 				segments.remove(i);
-				
+			
 			// This segment is completely after the year range of this model
 			else if (thisSegment.getFirstYear() >= lastYear && thisSegment.getLastYear() >= lastYear)
 				segments.remove(i);
@@ -149,7 +151,7 @@ public class SSIZAnalysisModel {
 	 * @return a list of segments that have corrected year boundaries
 	 */
 	private ArrayList<SegmentModel> adjustSegmentYearBoundaries(ArrayList<SegmentModel> segments) {
-		
+	
 		for (int i = 0; i < segments.size(); i++)
 		{
 			SegmentModel thisSegment = segments.get(i);
@@ -157,7 +159,7 @@ public class SSIZAnalysisModel {
 			// Adjust the segment's first year if it is below the model's range
 			if (thisSegment.getFirstYear() < firstYear)
 				thisSegment.setFirstYear(firstYear);
-				
+			
 			// Adjust the segment's last year if it is above the model's range
 			if (thisSegment.getLastYear() > lastYear)
 				thisSegment.setLastYear(lastYear);
@@ -170,7 +172,7 @@ public class SSIZAnalysisModel {
 	 * TODO
 	 */
 	private void populateRandomArray() {
-		
+	
 		// Populate Random array
 		randomArray = new Random[reader.getNumberOfSeries()];
 		
@@ -189,7 +191,7 @@ public class SSIZAnalysisModel {
 	 * @return
 	 */
 	public Random getRandomGenerator(int i) {
-		
+	
 		try
 		{
 			return randomArray[i];
@@ -206,12 +208,12 @@ public class SSIZAnalysisModel {
 	 * @param inValue
 	 */
 	public void setNumSimulationsToRun(int inValue) {
-		
+	
 		numSimulationsToRun = inValue;
 	}
 	
 	public int getNumSimulationsToRun() {
-		
+	
 		return this.numSimulationsToRun;
 	}
 	
@@ -220,14 +222,24 @@ public class SSIZAnalysisModel {
 	 * 
 	 * @param inValue
 	 */
-	public void setThresholdValue(int inValue) {
-		
-		thresholdValue = inValue;
+	public void setThresholdValueGT(int inValue) {
+	
+		thresholdValueGT = inValue;
 	}
 	
-	public int getThresholdValue() {
-		
-		return this.thresholdValue;
+	public int getThresholdValueGT() {
+	
+		return this.thresholdValueGT;
+	}
+	
+	public void setThresholdValueLT(int inValue) {
+	
+		thresholdValueLT = inValue;
+	}
+	
+	public int getThresholdValueLT() {
+	
+		return this.thresholdValueLT;
 	}
 	
 	/**
@@ -236,13 +248,23 @@ public class SSIZAnalysisModel {
 	 * @param b
 	 */
 	public void setThresholdType(FireFilterType b) {
-		
+	
 		log.debug("Setting threshold type to " + b);
 		thresholdType = b;
 	}
 	
+	public void enabledLowerThreshold(boolean b) {
+	
+		this.isLowerThresholdSet = b;
+	}
+	
+	public boolean isLowerThresholdSet() {
+	
+		return this.isLowerThresholdSet;
+	}
+	
 	public FireFilterType getThresholdType() {
-		
+	
 		return this.thresholdType;
 	}
 	
@@ -252,12 +274,12 @@ public class SSIZAnalysisModel {
 	 * @param b
 	 */
 	public void setResamplingType(ResamplingType b) {
-		
+	
 		resamplingType = b;
 	}
 	
 	public ResamplingType getResamplingType() {
-		
+	
 		return this.resamplingType;
 	}
 	
@@ -267,12 +289,12 @@ public class SSIZAnalysisModel {
 	 * @param newFirstYear
 	 */
 	public void setFirstYear(Integer newFirstYear) {
-		
+	
 		firstYear = newFirstYear;
 	}
 	
 	public Integer getFirstYear() {
-		
+	
 		return this.firstYear;
 	}
 	
@@ -282,12 +304,12 @@ public class SSIZAnalysisModel {
 	 * @param newLastYear
 	 */
 	public void setLastYear(Integer newLastYear) {
-		
+	
 		lastYear = newLastYear;
 	}
 	
 	public Integer getLastYear() {
-		
+	
 		return this.lastYear;
 	}
 	
@@ -295,7 +317,7 @@ public class SSIZAnalysisModel {
 	 * Updates the contents of seriesPoolToAnalyze to those of the input array.
 	 */
 	public void setSeriesPoolToAnalyize(ArrayList<ArrayList<Integer>> updatedSeriesPool) {
-		
+	
 		this.seriesPoolToAnalyze = updatedSeriesPool;
 	}
 	
@@ -305,7 +327,8 @@ public class SSIZAnalysisModel {
 	 * @return seriesPoolToAnalyze
 	 */
 	public ArrayList<ArrayList<Integer>> getSeriesPoolToAnalyze() {
-		
+	
 		return this.seriesPoolToAnalyze;
 	}
+	
 }

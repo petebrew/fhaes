@@ -24,6 +24,7 @@ import org.fhaes.enums.FireFilterType;
 import org.fhaes.enums.LabelOrientation;
 import org.fhaes.enums.LineStyle;
 import org.fhaes.enums.NoDataLabel;
+import org.fhaes.enums.OperatorEnum;
 import org.fhaes.enums.ResamplingType;
 import org.fhaes.enums.SampleDepthFilterType;
 import org.fhaes.preferences.App;
@@ -197,6 +198,10 @@ public abstract class PrefWrapper<OBJTYPE> {
 		{
 			App.prefs.setSampleDepthFilterTypePref(getPrefName(), (SampleDepthFilterType) prefValue);
 		}
+		else if (baseClass == OperatorEnum.class)
+		{
+			App.prefs.setOperatorPref(getPrefName(), (OperatorEnum) prefValue);
+		}
 		else
 			throw new IllegalArgumentException("I don't know how to save a pref for type " + baseClass);
 		
@@ -263,6 +268,10 @@ public abstract class PrefWrapper<OBJTYPE> {
 		else if (baseClass == SampleDepthFilterType.class)
 		{
 			prefValue = App.prefs.getSampleDepthFilterTypePref(getPrefName(), (SampleDepthFilterType) defaultValue);
+		}
+		else if (baseClass == OperatorEnum.class)
+		{
+			prefValue = App.prefs.getOperatorPref(getPrefName(), (OperatorEnum) defaultValue);
 		}
 		else
 		{

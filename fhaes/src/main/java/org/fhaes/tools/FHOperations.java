@@ -594,11 +594,21 @@ public class FHOperations {
 					firesFilter1 = fireFilterValue.intValue();
 					// log.debug("number of fires is selected is: "+ firesFilter1);
 				}
-				if (fireFilterType.equals(FireFilterType.PERCENTAGE_OF_EVENTS) && fireFilterValue.intValue() != 1)
+				else if (fireFilterType.equals(FireFilterType.PERCENTAGE_OF_RECORDING) && fireFilterValue.intValue() != 1)
 				{
 					firesFilter2 = fireFilterValue / 100.0;
 					// log.debug("percentage of fires is selected is: "+ firesFilter2);
 				}
+				else if (fireFilterType.equals(FireFilterType.PERCENTAGE_OF_ALL_TREES) && fireFilterValue.intValue() != 1)
+				{
+					firesFilter2 = fireFilterValue / 100.0;
+					// log.debug("percentage of fires is selected is: "+ firesFilter2);
+				}
+				else
+				{
+					log.error("Unsupported fire filter tpye");
+				}
+				
 				/*
 				 * Calculate the listYears the common years where the file will be analyzed
 				 */
@@ -754,7 +764,7 @@ public class FHOperations {
 											climateVectorActualSite.add(climateVector.get(climateYear.indexOf(listYearsComp.get(j))));
 										}
 									}
-									if (fireFilterType.equals(FireFilterType.PERCENTAGE_OF_EVENTS))
+									else if (fireFilterType.equals(FireFilterType.PERCENTAGE_OF_RECORDING))
 									{
 										// log.debug("percent of fires is selected is: "+
 										// firesFilter2+" "+climateVector.get(climateYear.indexOf(listYearsComp.get(j))));
@@ -775,6 +785,16 @@ public class FHOperations {
 												climateVectorActualSite.add(climateVector.get(climateYear.indexOf(listYears.get(j))));
 											}
 										}
+									}
+									else if (fireFilterType.equals(FireFilterType.PERCENTAGE_OF_ALL_TREES))
+									{
+										// TODO !!!!!
+										// NEED ELENA'S INPUT ON THIS!
+										
+									}
+									else
+									{
+										log.error("Unsupported fire filter type");
 									}
 								} // end of if filter not equal to 1
 								else

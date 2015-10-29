@@ -46,6 +46,7 @@ import org.fhaes.enums.FeedbackDisplayProtocol;
 import org.fhaes.enums.FeedbackMessageType;
 import org.fhaes.enums.FireFilterType;
 import org.fhaes.enums.LabelOrientation;
+import org.fhaes.enums.SampleDepthFilterType;
 import org.fhaes.feedback.FeedbackPreferenceManager.FeedbackDictionary;
 import org.fhaes.fhfilereader.AbstractFireHistoryReader;
 import org.fhaes.fhfilereader.FHFile;
@@ -105,7 +106,6 @@ public class FireChartSVG {
 	public boolean traditionalData = false;
 	private AnnoteMode annotemode = AnnoteMode.NONE;
 	private SeriesSortType lastTypeSortedBy = SeriesSortType.NAME;
-	private EventTypeToProcess fireEventType = EventTypeToProcess.FIRE_AND_INJURY_EVENT;
 	private ArrayList<FHSeriesSVG> seriesSVGList = new ArrayList<FHSeriesSVG>();
 	
 	// Java <-> ECMAScript interop used for message passing with ECMAScript. Note not thread-safe
@@ -1157,10 +1157,12 @@ public class FireChartSVG {
 						+ getFirstChartYear() + ",0) ");
 		
 		// draw the vertical lines for fire years
-		ArrayList<Integer> composite_years = reader.getCompositeFireYears(fireEventType,
+		ArrayList<Integer> composite_years = reader.getCompositeFireYears(
+				App.prefs.getEventTypePref(PrefKey.CHART_COMPOSITE_EVENT_TYPE, EventTypeToProcess.FIRE_EVENT),
 				App.prefs.getFireFilterTypePref(PrefKey.CHART_COMPOSITE_FILTER_TYPE, FireFilterType.NUMBER_OF_EVENTS),
 				App.prefs.getIntPref(PrefKey.CHART_COMPOSITE_FILTER_VALUE, 1),
-				App.prefs.getIntPref(PrefKey.CHART_COMPOSITE_MIN_NUM_SAMPLES, 1));
+				App.prefs.getIntPref(PrefKey.CHART_COMPOSITE_MIN_NUM_SAMPLES, 1),
+				App.prefs.getSampleDepthFilterTypePref(PrefKey.COMPOSITE_SAMPLE_DEPTH_TYPE, SampleDepthFilterType.MIN_NUM_SAMPLES));
 		
 		// Remove out-of-range years if necessary
 		if (!App.prefs.getBooleanPref(PrefKey.CHART_AXIS_X_AUTO_RANGE, true))
@@ -1605,7 +1607,8 @@ public class FireChartSVG {
 		scarred_g.appendChild(scarred_scale_g);
 		
 		// draw in vertical bars
-		double[] percent_arr = reader.getPercentScarred(fireEventType);
+		double[] percent_arr = reader.getPercentOfRecordingScarred(App.prefs.getEventTypePref(PrefKey.CHART_COMPOSITE_EVENT_TYPE,
+				EventTypeToProcess.FIRE_EVENT));
 		
 		// Limit to specified years if necessary
 		if (!App.prefs.getBooleanPref(PrefKey.CHART_AXIS_X_AUTO_RANGE, true))

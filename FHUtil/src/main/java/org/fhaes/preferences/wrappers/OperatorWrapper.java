@@ -22,34 +22,34 @@ import java.awt.event.ItemEvent;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 
-import org.fhaes.enums.EventTypeToProcess;
+import org.fhaes.enums.OperatorEnum;
 import org.fhaes.preferences.FHAESPreferences.PrefKey;
 
 /**
- * MatrixEventTypeWrapper Class.
+ * OperatorEnumWrapper Class.
  */
 @SuppressWarnings("rawtypes")
-public class MatrixEventTypeWrapper extends ItemWrapper {
+public class OperatorWrapper extends ItemWrapper {
 	
-	EventTypeToProcess[] formats;
+	OperatorEnum[] formats;
 	
 	@SuppressWarnings("unchecked")
-	public MatrixEventTypeWrapper(JComboBox cbo, PrefKey key, Object defaultValue, EventTypeToProcess[] values) {
-		
-		super(key, defaultValue, EventTypeToProcess.class);
+	public OperatorWrapper(JComboBox cbo, PrefKey key, Object defaultValue, OperatorEnum[] values) {
+	
+		super(key, defaultValue, OperatorEnum.class);
 		initGeneric(cbo, values);
 	}
 	
 	@SuppressWarnings("unchecked")
-	public MatrixEventTypeWrapper(JComboBox cbo, PrefKey key, Object defaultValue) {
-		
-		super(key, defaultValue, EventTypeToProcess.class);
+	public OperatorWrapper(JComboBox cbo, PrefKey key, Object defaultValue) {
+	
+		super(key, defaultValue, OperatorEnum.class);
 		initFormats(cbo);
 	}
 	
 	@SuppressWarnings("unchecked")
 	private void initFormats(JComboBox cbo) {
-		
+	
 		// show a sample for each format thingy...
 		formats = OPTIONS;
 		int selectedIdx = -1;
@@ -63,13 +63,13 @@ public class MatrixEventTypeWrapper extends ItemWrapper {
 		cbo.setModel(new DefaultComboBoxModel(formats));
 		if (selectedIdx >= 0)
 			cbo.setSelectedIndex(selectedIdx);
-			
+		
 		cbo.addItemListener(this);
 	}
 	
 	@SuppressWarnings("unchecked")
-	private void initGeneric(JComboBox cbo, EventTypeToProcess[] values) {
-		
+	private void initGeneric(JComboBox cbo, OperatorEnum[] values) {
+	
 		// show a sample for each format thingy...
 		formats = values;
 		int selectedIdx = -1;
@@ -83,14 +83,14 @@ public class MatrixEventTypeWrapper extends ItemWrapper {
 		cbo.setModel(new DefaultComboBoxModel(values));
 		if (selectedIdx >= 0)
 			cbo.setSelectedIndex(selectedIdx);
-			
+		
 		cbo.addItemListener(this);
 	}
 	
 	@SuppressWarnings("unchecked")
 	@Override
 	public void itemStateChanged(ItemEvent e) {
-		
+	
 		int selectedIdx = ((JComboBox) e.getSource()).getSelectedIndex();
 		
 		if (selectedIdx >= 0)
@@ -99,6 +99,6 @@ public class MatrixEventTypeWrapper extends ItemWrapper {
 			setValue(null);
 	}
 	
-	private final static EventTypeToProcess[] OPTIONS = EventTypeToProcess.values();
+	private final static OperatorEnum[] OPTIONS = OperatorEnum.values();
 	
 }

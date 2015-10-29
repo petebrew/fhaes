@@ -86,8 +86,7 @@ public class SSIZController {
 				}
 			}
 		}
-		// Trim results to the year range specified by the user
-		ArrayList<Integer> yearsArray = model.getReader().getYearArray();
+		
 		ArrayList<ArrayList<Double>> filters = model.getReader().getFilterArrays(model.getEventType());
 		
 		// Set fire count in a year to zero when it doesn't reach the threshold value
@@ -98,31 +97,73 @@ public class SSIZController {
 			{
 				rowindex++;
 				
-				if (yearval < model.getThresholdValue() && yearval != 0)
+				if (model.isLowerThresholdSet())
 				{
-					// log.debug("Filtering out index " + rowindex);
-					firesByYear[rowindex] = 0;
-				}
-			}
-		}
-		else if (model.getThresholdType().equals(FireFilterType.PERCENTAGE_OF_EVENTS))
-		{
-			log.debug("Model threshold value = " + model.getThresholdValue());
-			for (Double yearval : filters.get(2))
-			{
-				rowindex++;
-				double val = (yearval * 100);
-				double thresholdvalue = model.getThresholdValue();
-				// log.debug("Row index = " + rowindex + " - value = " + val);
-				
-				if (val < thresholdvalue && yearval != 0)
-				{
-					// log.debug("Filtering out index " + rowindex);
-					firesByYear[rowindex] = 0;
+					// Doing upper as well as lower threshold
+					if ((yearval < model.getThresholdValueGT() || yearval > model.getThresholdValueLT()) && yearval != 0)
+					{
+						firesByYear[rowindex] = 0;
+					}
 				}
 				else
 				{
-					// log.debug("Value ok at index: " + rowindex + " = " + yearsArray.get(rowindex));
+					// Just doing lower threshold
+					if (yearval < model.getThresholdValueGT() && yearval != 0)
+					{
+						firesByYear[rowindex] = 0;
+					}
+				}
+			}
+		}
+		else if (model.getThresholdType().equals(FireFilterType.PERCENTAGE_OF_ALL_TREES))
+		{
+			for (Double yearval : model.getReader().getPercentOfAllScarred(model.getEventType()))
+			{
+				rowindex++;
+				double val = (yearval * 100);
+				
+				if (model.isLowerThresholdSet())
+				{
+					// Doing upper as well as lower threshold
+					if ((val < model.getThresholdValueGT() || val > model.getThresholdValueLT()) && yearval != 0)
+					{
+						firesByYear[rowindex] = 0;
+					}
+				}
+				else
+				{
+					// Just doing lower threshold
+					if (val < model.getThresholdValueGT() && yearval != 0)
+					{
+						// log.debug("Filtering out index " + rowindex);
+						firesByYear[rowindex] = 0;
+					}
+				}
+			}
+		}
+		else if (model.getThresholdType().equals(FireFilterType.PERCENTAGE_OF_RECORDING))
+		{
+			for (Double yearval : model.getReader().getPercentOfRecordingScarred(model.getEventType()))
+			{
+				rowindex++;
+				double val = (yearval * 100);
+				
+				if (model.isLowerThresholdSet())
+				{
+					// Doing upper as well as lower threshold
+					if ((val < model.getThresholdValueGT() || val > model.getThresholdValueLT()) && yearval != 0)
+					{
+						firesByYear[rowindex] = 0;
+					}
+				}
+				else
+				{
+					// Just doing lower threshold
+					if (val < model.getThresholdValueGT() && yearval != 0)
+					{
+						// log.debug("Filtering out index " + rowindex);
+						firesByYear[rowindex] = 0;
+					}
 				}
 			}
 		}
@@ -131,22 +172,16 @@ public class SSIZController {
 			log.debug("No event threshold type specified so not filtering");
 		}
 		
+		// Trim results to the year range specified by the user
+		ArrayList<Integer> yearsArray = model.getReader().getYearArray();
 		int firstind = yearsArray.indexOf(segment.getFirstYear());
 		int lastind = yearsArray.indexOf(segment.getLastYear());
-		
-		// log.debug("Year in array at index 0 : " + yearsArray.get(0));
-		// log.debug("Year in array at index " + (yearsArray.size() - 1) + " : " + yearsArray.get(yearsArray.size() - 1));
-		// log.debug("Index of year : " + segment.getFirstYear() + " is " + firstind);
-		// log.debug("Index of year : " + segment.getLastYear() + " is " + lastind);
-		
 		ArrayList<Integer> newarr = new ArrayList<Integer>();
 		
 		for (int i = firstind; i <= lastind; i++)
 		{
 			newarr.add(firesByYear[i]);
 		}
-		
-		// log.debug("Size of trimmed array : " + newarr.size());
 		
 		return newarr.toArray(new Integer[newarr.size()]);
 	}
@@ -243,25 +278,11 @@ public class SSIZController {
 			}
 			
 			Integer[] firesByYear = getFiresByYear(model, pool, segment);
-			
 			int countOfFiresInSim = 0;
 			for (int i = 0; i < firesByYear.length; i++)
 			{
 				if (firesByYear[i] > 0)
 					countOfFiresInSim++;
-			}
-			
-			if (currentIteration == 26)
-			{
-				for (int x = 0; x < firesByYear.length; x++)
-				{
-					// log.debug(" - " + firesByYear[x]);
-				}
-				
-				log.debug("Count of fires per sim    = " + countOfFiresInSim);
-				log.debug("Century multiplier        = " + centuryMultiplier);
-				log.debug("Fires per centruy per sim = " + (countOfFiresInSim * centuryMultiplier));
-				
 			}
 			
 			firesPerCenturyPerSim.add(countOfFiresInSim * centuryMultiplier);

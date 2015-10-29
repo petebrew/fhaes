@@ -25,6 +25,7 @@ import junit.framework.TestCase;
 
 import org.fhaes.enums.EventTypeToProcess;
 import org.fhaes.enums.FireFilterType;
+import org.fhaes.enums.SampleDepthFilterType;
 import org.fhaes.fhfilereader.FHFile;
 import org.fhaes.fhfilereader.FHX2FileReader;
 import org.fhaes.model.FHSeries;
@@ -94,10 +95,10 @@ public class FileReaderCalculationTests extends TestCase {
 			int firstyear = fr.getFirstYear();
 			int[] sampledepths = fr.getSampleDepths();
 			int[] recordingDepths = fr.getRecordingDepths();
-			double[] percentScarred = fr.getPercentScarred(eventTypeToProcess);
+			double[] percentScarred = fr.getPercentOfAllScarred(eventTypeToProcess);
 			
 			int currentyear = firstyear;
-			log.debug("YEAR, SAMPLE DEPTH, RECORDING DEPTH,  PERCENT SCARRED ");
+			log.debug("YEAR, SAMPLE DEPTH, RECORDING DEPTH,  PERCENT ALL SCARRED ");
 			for (int i = 0; i < sampledepths.length; i++)
 			{
 				log.debug(currentyear + ", " + sampledepths[i] + ", " + recordingDepths[i] + ", " + +percentScarred[i]);
@@ -160,14 +161,15 @@ public class FileReaderCalculationTests extends TestCase {
 		for (File file : files)
 		{
 			// Parameters for testing
-			FireFilterType filterType = FireFilterType.PERCENTAGE_OF_EVENTS;
+			FireFilterType filterType = FireFilterType.PERCENTAGE_OF_RECORDING;
 			EventTypeToProcess eventType = EventTypeToProcess.FIRE_AND_INJURY_EVENT;
 			Double filterValue = 80.0;
 			Integer minNumberOfSamples = 1;
 			
 			FHFile f = new FHFile(file);
 			FHX2FileReader fr = new FHX2FileReader(f);
-			ArrayList<Integer> fireYears = fr.getCompositeFireYears(eventType, filterType, filterValue, minNumberOfSamples);
+			ArrayList<Integer> fireYears = fr.getCompositeFireYears(eventType, filterType, filterValue, minNumberOfSamples,
+					SampleDepthFilterType.MIN_NUM_RECORDER_SAMPLES);
 			
 			if (fireYears.size() > 0)
 			{

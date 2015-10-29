@@ -39,17 +39,17 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import net.miginfocom.swing.MigLayout;
+
 import org.fhaes.enums.AnalysisType;
 import org.fhaes.enums.FireFilterType;
 import org.fhaes.preferences.FHAESPreferences.PrefKey;
 import org.fhaes.preferences.wrappers.AnalysisTypeWrapper;
 import org.fhaes.preferences.wrappers.CheckBoxWrapper;
-import org.fhaes.preferences.wrappers.FireFilterTypeWrapper;
+import org.fhaes.preferences.wrappers.FireFilterTypeWrapperWithoutAllTrees;
 import org.fhaes.preferences.wrappers.SpinnerWrapper;
 import org.fhaes.util.Builder;
 import org.fhaes.util.SharedConstants;
-
-import net.miginfocom.swing.MigLayout;
 
 /**
  * IntervalConfigDialog Class. This is the preferences dialog for the interval module.
@@ -73,7 +73,7 @@ public class IntervalConfigDialog extends JDialog implements ActionListener, Cha
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public IntervalConfigDialog(Component parent) {
-		
+	
 		setTitle("Interval Parameters");
 		
 		getContentPane().setLayout(new BorderLayout());
@@ -98,7 +98,7 @@ public class IntervalConfigDialog extends JDialog implements ActionListener, Cha
 					
 					@Override
 					public void actionPerformed(ActionEvent arg0) {
-						
+					
 						pingAllYears();
 						
 					}
@@ -174,7 +174,8 @@ public class IntervalConfigDialog extends JDialog implements ActionListener, Cha
 					{
 						JComboBox cboFilterType = new JComboBox();
 						cboFilterType.setModel(new DefaultComboBoxModel(FireFilterType.values()));
-						new FireFilterTypeWrapper(cboFilterType, PrefKey.COMPOSITE_FILTER_TYPE, FireFilterType.NUMBER_OF_EVENTS);
+						new FireFilterTypeWrapperWithoutAllTrees(cboFilterType, PrefKey.COMPOSITE_FILTER_TYPE,
+								FireFilterType.NUMBER_OF_EVENTS);
 						panel.add(cboFilterType, "cell 1 0,growx");
 					}
 					{
@@ -237,7 +238,7 @@ public class IntervalConfigDialog extends JDialog implements ActionListener, Cha
 	}
 	
 	private void pingAllYears() {
-		
+	
 		if (chkAllYears.isSelected())
 		{
 			spnFirstYear.setValue(0);
@@ -255,7 +256,7 @@ public class IntervalConfigDialog extends JDialog implements ActionListener, Cha
 	}
 	
 	private boolean validateChoices() {
-		
+	
 		boolean ret = true;
 		
 		if (((Integer) spnFirstYear.getValue()) > ((Integer) spnLastYear.getValue()))
@@ -268,7 +269,7 @@ public class IntervalConfigDialog extends JDialog implements ActionListener, Cha
 	}
 	
 	public void setToDefault() {
-		
+	
 		spnFirstYear.setValue(0);
 		spnLastYear.setValue(0);
 		this.chkAllYears.setSelected(true);
@@ -287,7 +288,7 @@ public class IntervalConfigDialog extends JDialog implements ActionListener, Cha
 	
 	@Override
 	public void actionPerformed(ActionEvent evt) {
-		
+	
 		if (evt.getActionCommand().equals("Cancel"))
 		{
 			dispose();
@@ -306,7 +307,7 @@ public class IntervalConfigDialog extends JDialog implements ActionListener, Cha
 	
 	@Override
 	public void stateChanged(ChangeEvent e) {
-		
+	
 		validateChoices();
 		
 	}

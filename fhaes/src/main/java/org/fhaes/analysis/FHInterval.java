@@ -125,7 +125,7 @@ public class FHInterval {
 			this.doNumberFilter = true;
 			this.doPercentageFilter = false;
 		}
-		else if (filterType.equals(FireFilterType.PERCENTAGE_OF_EVENTS))
+		else if (filterType.equals(FireFilterType.PERCENTAGE_OF_RECORDING))
 		{
 			this.doNumberFilter = false;
 			this.doPercentageFilter = true;

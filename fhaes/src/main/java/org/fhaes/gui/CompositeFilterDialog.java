@@ -261,7 +261,7 @@ public class CompositeFilterDialog extends JDialog implements ActionListener {
 			Number currval = (Number) spnFilterValue.getValue();
 			spnFilterValue.setModel(new SpinnerNumberModel(currval.intValue(), new Integer(1), null, new Integer(1)));
 		}
-		else if (cboFilterType.getSelectedItem().equals(FireFilterType.PERCENTAGE_OF_EVENTS))
+		else if (cboFilterType.getSelectedItem().equals(FireFilterType.PERCENTAGE_OF_RECORDING))
 		{
 			
 			Number currval = (Number) spnFilterValue.getValue();
