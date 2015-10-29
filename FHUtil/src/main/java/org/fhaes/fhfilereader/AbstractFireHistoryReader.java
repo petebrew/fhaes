@@ -232,10 +232,12 @@ public abstract class AbstractFireHistoryReader implements IFHAESReader {
 		int[] depths = null;
 		if (sampleDepthFilterType.equals(SampleDepthFilterType.MIN_NUM_SAMPLES))
 		{
+			log.debug("Minimum sample count filter is of type SampleDepthFilterType.MIN_NUM_SAMPLES");
 			depths = getSampleDepths();
 		}
 		else if (sampleDepthFilterType.equals(SampleDepthFilterType.MIN_NUM_RECORDER_SAMPLES))
 		{
+			log.debug("Minimum sample count filter is of type SampleDepthFilterType.MIN_NUM_RECORDER_SAMPLES");
 			depths = getRecordingDepths();
 		}
 		else
@@ -261,6 +263,11 @@ public abstract class AbstractFireHistoryReader implements IFHAESReader {
 						compositeYears.add(currentYear);
 						log.trace("Keeping " + currentYear + ": ");
 					}
+					else
+					{
+						log.debug("Rejected because sample count of " + depths[i] + " is below threshold of " + minNumberOfSamples);
+						
+					}
 					
 				}
 				
@@ -284,17 +291,17 @@ public abstract class AbstractFireHistoryReader implements IFHAESReader {
 					if (depths[i] >= minNumberOfSamples)
 					{
 						compositeYears.add(currentYear);
-						log.debug("Keeping   " + currentYear + ": percentscarred = " + percentScarred[i] + "; number of trees = "
+						log.debug("Keeping   " + currentYear + ": percentofallscarred = " + percentScarred[i] + "; number of trees = "
 								+ numberOfTrees.get(i) + "; number of events = " + numberOfEvents.get(i));
 					}
 					else
 					{
-						log.debug("Rejected because sample count is below threshold");
+						log.debug("Rejected because sample count of " + depths[i] + " is below threshold of " + minNumberOfSamples);
 					}
 				}
 				else
 				{
-					log.debug("Rejecting " + currentYear + ": percentscarred = " + percentScarred[i] + "; number of trees = "
+					log.debug("Rejecting " + currentYear + ": percentofallscarred = " + percentScarred[i] + "; number of trees = "
 							+ numberOfTrees.get(i) + "; number of events = " + numberOfEvents.get(i));
 				}
 				
@@ -319,17 +326,17 @@ public abstract class AbstractFireHistoryReader implements IFHAESReader {
 					if (depths[i] >= minNumberOfSamples)
 					{
 						compositeYears.add(currentYear);
-						log.debug("Keeping   " + currentYear + ": percentscarred = " + datavalue + "; number of events = "
+						log.debug("Keeping   " + currentYear + ": percentofrecscarred = " + datavalue + "; number of events = "
 								+ numberOfEvents.get(i) + "; number of trees = " + numberOfTrees.get(i));
 					}
 					else
 					{
-						log.debug("Rejected because sample count is below threshold");
+						log.debug("Rejected because sample count of " + depths[i] + " is below threshold of " + minNumberOfSamples);
 					}
 				}
 				else
 				{
-					log.debug("Rejecting " + currentYear + ": percentscarred = " + datavalue + "; number of events = "
+					log.debug("Rejecting " + currentYear + ": percentofrecscarred = " + datavalue + "; number of events = "
 							+ numberOfEvents.get(i) + "; number of trees = " + numberOfTrees.get(i));
 				}
 				currentYear++;

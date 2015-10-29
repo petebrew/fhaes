@@ -410,6 +410,8 @@ public class FHAESPreferences {
 		
 		CHART_COMPOSITE_FILTER_TYPE("chartCompositeFilterType"),
 		
+		CHART_COMPOSITE_SAMPLE_DEPTH_TYPE("compositeSampleDepthType"),
+		
 		CHART_COMPOSITE_FILTER_VALUE("chartCompositeFilterValue"),
 		
 		CHART_COMPOSITE_MIN_NUM_SAMPLES("chartCompositeFilterMinSamples"),
@@ -1210,7 +1212,7 @@ public class FHAESPreferences {
 		}
 		if (value == null)
 			return defaultValue;
-		if (FireFilterType.fromName(value) == null)
+		if (SampleDepthFilterType.fromName(value) == null)
 			return defaultValue;
 		return SampleDepthFilterType.fromName(value);
 	}

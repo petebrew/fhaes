@@ -1484,7 +1484,7 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 		panelCompositePlotFilters.add(spnFilterValue, "cell 3 1,growx,aligny center");
 		
 		cboSampleDepthFilterType = new JComboBox();
-		new SampleDepthFilterTypeWrapper(cboSampleDepthFilterType, PrefKey.COMPOSITE_SAMPLE_DEPTH_TYPE,
+		new SampleDepthFilterTypeWrapper(cboSampleDepthFilterType, PrefKey.CHART_COMPOSITE_SAMPLE_DEPTH_TYPE,
 				SampleDepthFilterType.MIN_NUM_SAMPLES);
 		panelCompositePlotFilters.add(cboSampleDepthFilterType, "cell 1 2,growx");
 		
