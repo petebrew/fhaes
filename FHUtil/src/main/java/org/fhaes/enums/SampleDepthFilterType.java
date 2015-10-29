@@ -22,9 +22,9 @@ package org.fhaes.enums;
  */
 public enum SampleDepthFilterType {
 	
-	MIN_NUM_SAMPLES("Minimum # of samples"),
+	MIN_NUM_SAMPLES("Minimum number of samples"),
 	
-	MIN_NUM_RECORDER_SAMPLES("Minimum # of recorder samples");
+	MIN_NUM_RECORDER_SAMPLES("Minimum number of recorder samples");
 	
 	// Declare local variables
 	private String humanReadable;

@@ -175,7 +175,6 @@ public class CompositeFilterDialog extends JDialog implements ActionListener {
 			{
 				cboFilterType = new JComboBox();
 				panel.add(cboFilterType, "cell 0 0,growx");
-				cboFilterType.setModel(new DefaultComboBoxModel(FireFilterType.values()));
 				new FireFilterTypeWrapper(cboFilterType, PrefKey.COMPOSITE_FILTER_TYPE, FireFilterType.NUMBER_OF_EVENTS);
 				
 			}
@@ -190,7 +189,6 @@ public class CompositeFilterDialog extends JDialog implements ActionListener {
 			}
 			{
 				cboSampleDepthFilterType = new JComboBox();
-				cboSampleDepthFilterType.setModel(new DefaultComboBoxModel(SampleDepthFilterType.values()));
 				new SampleDepthFilterTypeWrapper(cboSampleDepthFilterType, PrefKey.COMPOSITE_SAMPLE_DEPTH_TYPE,
 						SampleDepthFilterType.MIN_NUM_SAMPLES);
 				panel.add(cboSampleDepthFilterType, "cell 0 1,alignx left");

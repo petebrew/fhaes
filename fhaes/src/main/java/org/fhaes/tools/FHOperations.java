@@ -190,6 +190,8 @@ public class FHOperations {
 	
 		FHFile file = getOutputFile(parent, new FHXFileFilter(), true);
 		
+		log.debug("SampleDepthFilterType = " + sampleDepthFilterType);
+		
 		if (file != null)
 		{
 			new FHOperations(parent, inputFileArray, file, startYear, endYear, fireFilterValue, fireFilterType, sampleDepthFilterType,
@@ -368,7 +370,6 @@ public class FHOperations {
 			{
 				FHFile f = inputFileArray[i];
 				myReader.add(new FHX2FileReader(f));
-				myReader.get(i).makeClimate2d();
 				log.debug("first fire year : " + myReader.get(i).getFirstFireYear().intValue() + " minfirstyearcomp"
 						+ minFirstYearComp.intValue());
 				Arrays.sort(myReader.get(i).getStartYearIndexPerSample());
@@ -424,12 +425,11 @@ public class FHOperations {
 				} // end of if jcheckcomp
 				
 			} // end loop first i
-			log.debug(" (436) size of Series seiesNameLengthComp " + SeriesNameLengthComp.size() + " size of name comp is "
+			log.debug(" size of Series seriesNameLengthComp " + SeriesNameLengthComp.size() + " size of name comp is "
 					+ sampleNameComp.size() + " minFirstYearComp final is " + minFirstYearComp);
 			Collections.sort(firstYears);
 			Collections.sort(lastYears);
 			Collections.sort(SeriesNameLengthJoin);
-			log.debug("324 ");
 			// Collections.sort(SeriesNameLengthComp);
 			maxSeriesNameLengthJoin = SeriesNameLengthJoin.get((SeriesNameLengthJoin.size() - 1));
 			// maxSeriesNameLengthComp = SeriesNameLengthComp.get((SeriesNameLengthComp.size()-1));
@@ -532,6 +532,7 @@ public class FHOperations {
 						log.debug("Length of Series Name " + myReader.get(k).getLengthOfSeriesName());
 						if (myReader.get(k).getLengthOfSeriesName() > j)
 						{
+							
 							log.debug("bigger than " + " and j is" + j);
 							if (myReader.get(k).getSeriesNameLine().get(j).length() >= myReader.get(k).getNumberOfSeries())
 							{
@@ -622,10 +623,7 @@ public class FHOperations {
 					 * create the arraylist with the names of each file so that we can create the sample name for the fhx file
 					 */
 					// sampleNameComp.add(myReader.get(i).getName().substring(0,myReader.get(i).getName().length()-4));
-					myReader.get(i).makeClimate2d();
-					// myReader.get(i).generate2DEventsI();
-					myReader.get(i).makeFilters2d();
-					myReader.get(i).makeClimate();
+					
 					// if(myReader.get(i).getClimate2d().get(myReader.get(i).getstartYearperSample()[0]).contains(1)){
 					/*
 					 * log.debug("size of climate2d is: " + myReader.get(i).getClimate2d().size() + " X " +
@@ -635,54 +633,36 @@ public class FHOperations {
 					 * get the vector Year containing the vector of year of a given fhx file load it into the array list climateYear.
 					 */
 					// log.debug("got pass the if ");
-					climateYear = myReader.get(i).getYear();
+					climateYear = myReader.get(i).getYearArray();
 					
-					/**
-					 * FOR ELENA!!!
-					 * 
-					 */
+					// Create filter based on min number of samples/recorder samples
+					int[] depths = null;
 					if (sampleDepthFilterType.equals(SampleDepthFilterType.MIN_NUM_SAMPLES))
 					{
-						minSampleFilter = new ArrayList<Integer>();
-						for (int ij = 0; ij < listYearsComp.size(); ij++)
-						{
-							if (climateYear.indexOf(listYearsComp.get(ij)) == -1)
-							{
-								minSampleFilter.add(-1);
-							}
-							else
-							{
-								// log.debug("the sample depth is "
-								// + myReader.get(i).getSampleDepths()[climateYear.indexOf(listYearsComp.get(ij))]);
-								minSampleFilter.add(new Integer(
-										myReader.get(i).getSampleDepths()[climateYear.indexOf(listYearsComp.get(ij))]));
-							}
-						}
-						// log.debug("Some output here: " + minSamples);
-						// log.error("Oh bugger it broke!");
-						// log.warn("Hmmm this shouldn't happen");
+						depths = myReader.get(i).getSampleDepths();
 					}
-					if (sampleDepthFilterType.equals(SampleDepthFilterType.MIN_NUM_RECORDER_SAMPLES))
+					else if (sampleDepthFilterType.equals(SampleDepthFilterType.MIN_NUM_RECORDER_SAMPLES))
 					{
-						minSampleFilter = new ArrayList<Integer>();
-						for (int ij = 0; ij < listYearsComp.size(); ij++)
+						depths = myReader.get(i).getRecordingDepths();
+					}
+					else
+					{
+						log.error("Unknown sample depth filter type.");
+						return;
+					}
+					minSampleFilter = new ArrayList<Integer>();
+					for (int ij = 0; ij < listYearsComp.size(); ij++)
+					{
+						if (climateYear.indexOf(listYearsComp.get(ij)) == -1)
 						{
-							if (climateYear.indexOf(listYearsComp.get(ij)) == -1)
-							{
-								minSampleFilter.add(-1);
-							}
-							else
-							{
-								// log.debug("the samplerecording depth is "
-								// + myReader.get(i).getRecordingDepths()[climateYear.indexOf(listYearsComp.get(ij))]);
-								minSampleFilter.add(new Integer(
-										myReader.get(i).getSampleDepths()[climateYear.indexOf(listYearsComp.get(ij))]));
-							}
+							minSampleFilter.add(-1);
 						}
-						
-						// log.debug("Some output here: " + minSamples);
-						// log.error("Oh bugger it broke!");
-						// log.warn("Hmmm this shouldn't happen");
+						else
+						{
+							// log.debug("the sample depth is "
+							// + myReader.get(i).getSampleDepths()[climateYear.indexOf(listYearsComp.get(ij))]);
+							minSampleFilter.add(new Integer(depths[climateYear.indexOf(listYearsComp.get(ij))]));
+						}
 					}
 					
 					if (fireFilterValue.intValue() != 1)

@@ -1087,34 +1087,12 @@ public class MainWindow implements PrefsListener {
 			// Also mark the setFile operation to false since it does not need to be performed
 			doSetFileOperation = false;
 		}
-		else if (e.getPref().equals(PrefKey.PREF_LAST_READ_FOLDER))
+		else if (e.getPref().equals(PrefKey.PREF_LAST_READ_FOLDER) || e.getPref().equals(PrefKey.SCREEN_BOUNDS_X)
+				|| e.getPref().equals(PrefKey.SCREEN_BOUNDS_Y) || e.getPref().equals(PrefKey.SCREEN_WIDTH)
+				|| e.getPref().equals(PrefKey.SCREEN_HEIGHT) || e.getPref().equals(PrefKey.SCREEN_MAXIMIZED)
+				|| e.getPref().equals(PrefKey.COMPOSITE_SAMPLE_DEPTH_TYPE))
 		{
-			// Handle this prefKey change by marking the setFile operation to false
-			doSetFileOperation = false;
-		}
-		else if (e.getPref().equals(PrefKey.SCREEN_BOUNDS_X))
-		{
-			// Handle this prefKey change by marking the setFile operation to false
-			doSetFileOperation = false;
-		}
-		else if (e.getPref().equals(PrefKey.SCREEN_BOUNDS_Y))
-		{
-			// Handle this prefKey change by marking the setFile operation to false
-			doSetFileOperation = false;
-		}
-		else if (e.getPref().equals(PrefKey.SCREEN_WIDTH))
-		{
-			// Handle this prefKey change by marking the setFile operation to false
-			doSetFileOperation = false;
-		}
-		else if (e.getPref().equals(PrefKey.SCREEN_HEIGHT))
-		{
-			// Handle this prefKey change by marking the setFile operation to false
-			doSetFileOperation = false;
-		}
-		else if (e.getPref().equals(PrefKey.SCREEN_MAXIMIZED))
-		{
-			// Handle this prefKey change by marking the setFile operation to false
+			// Handle these prefKey change by marking the setFile operation to false
 			doSetFileOperation = false;
 		}
 		
@@ -1940,6 +1918,7 @@ public class MainWindow implements PrefsListener {
 				TemporalFilterDialog dialog = new TemporalFilterDialog();
 				dialog.setIconImage(Builder.getApplicationIcon());
 				dialog.setModal(true);
+				dialog.setLocationRelativeTo(App.mainFrame);
 				dialog.setVisible(true);
 				
 				if (!dialog.success())
@@ -1985,6 +1964,7 @@ public class MainWindow implements PrefsListener {
 				dialog.setIconImage(Builder.getApplicationIcon());
 				dialog.setModal(true);
 				dialog.setTitle("Event File Options");
+				dialog.setLocationRelativeTo(App.mainFrame);
 				dialog.setVisible(true);
 				dialog.setLocationRelativeTo(splitPane);
 				
@@ -2039,6 +2019,7 @@ public class MainWindow implements PrefsListener {
 				CompositeFilterDialog dialog = new CompositeFilterDialog(true);
 				dialog.setIconImage(Builder.getApplicationIcon());
 				dialog.setModal(true);
+				dialog.setLocationRelativeTo(App.mainFrame);
 				dialog.setVisible(true);
 				
 				if (!dialog.success())
@@ -2070,6 +2051,7 @@ public class MainWindow implements PrefsListener {
 				CompositeFilterDialog dialog = new CompositeFilterDialog();
 				dialog.setIconImage(Builder.getApplicationIcon());
 				dialog.setModal(true);
+				dialog.setLocationRelativeTo(App.mainFrame);
 				dialog.setVisible(true);
 				
 				if (!dialog.success())

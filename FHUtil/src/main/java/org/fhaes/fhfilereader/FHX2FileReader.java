@@ -1604,12 +1604,10 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 		}
 		catch (NumberFormatException e)
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		catch (IOException e)
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		finally
@@ -2310,6 +2308,8 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 	 ***********************/
 	
 	/**
+	 * Use getFireEventsArray() instead
+	 * 
 	 * @deprecated
 	 * @return
 	 */
@@ -2320,16 +2320,20 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 	}
 	
 	/**
+	 * Use getOtherInjuriesArray() instead
+	 * 
 	 * @deprecated
 	 * @return
 	 */
 	@Deprecated
 	public ArrayList<Integer> getClimateI() {
 	
-		return climate1dII;
+		return this.getOtherInjuriesArray();
 	}
 	
 	/**
+	 * Use getFiresAndInjuriesArray() instead
+	 * 
 	 * @deprecated
 	 * @return
 	 */
@@ -2375,6 +2379,9 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 	}
 	
 	/**
+	 * 
+	 * This function name is confusing. Use getYearArray() instead.
+	 * 
 	 * @deprecated
 	 * @return
 	 */
