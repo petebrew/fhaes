@@ -72,21 +72,16 @@
 			</roles>
 		</contributor>
 		<contributor>
-			<name>Peter Brown</name>
-		</contributor>
-		<contributor>
 			<name>Donald Falk</name>
 		</contributor>
 		<contributor>
 			<name>Henri Grissino Mayer</name>
 		</contributor>
-		<contributor>
-			<name>Connie Woodhouse</name>
-		</contributor>
 	</contributors>
 
 	<developers>
 		<developer>
+			<id>lunavelasquez</id>
 			<name>Elena Velasquez</name>
 			<organization>Boise State University</organization>
 		</developer>
@@ -95,10 +90,16 @@
 			<organization>NOAA/NCDC</organization>
 		</developer>
 		<developer>
+			<id>petebrew</id>
 			<name>Peter Brewer</name>
 			<email>p.brewer@ltrr.arizona.edu</email>
 			<organization>Laboratory of Tree-Ring Research, University of Arizona</organization>
 			<organizationUrl>http://ltrr.arizona.edu</organizationUrl>
+		</developer>
+		<developer>
+			<id>valorcrow</id>
+			<name>Joshua Brogan</name>
+			<organization>University of Wisconsin-Platteville</organization>
 		</developer>
 	</developers>
 
@@ -361,13 +362,14 @@
 									<arg value="${cert.file}" />
 									<arg value="-tsa" />
 									<arg value="http://timestamp.comodoca.com/rfc3161" />
-									<arg value="-storepass"/>
-									<arg value="${cert.password}"/>
-									<arg value="-keypass"/>
-									<arg value="${cert.password}"/>
+									<arg value="-storepass" />
+									<arg value="${cert.password}" />
+									<arg value="-keypass" />
+									<arg value="${cert.password}" />
 									<arg value="-digestalg" />
 									<arg value="SHA-256" />
-									<arg value="${project.build.directory}/${project.build.finalName}.jar" />
+									<arg
+										value="${project.build.directory}/${project.build.finalName}.jar" />
 									<arg value="the university of arizona's internet2 id" />
 								</exec>
 								<copy
@@ -381,7 +383,7 @@
 						</goals>
 					</execution>
 
-					 <execution>
+					<execution>
 						<id>Install4J</id>
 						<phase>package</phase>
 						<configuration>
@@ -399,7 +401,7 @@
 							<goal>run</goal>
 						</goals>
 					</execution>
-					
+
 
 				</executions>
 			</plugin>
@@ -478,9 +480,9 @@
 				<arg value="-storetype" /> <arg value="pkcs12" /> <arg value="-keystore" 
 				/> <arg value="/home/Peter Brewer/.ssh/pwb_code_signing.p12" /> <arg value="-tsa" 
 				/> <arg value="http://timestamp.comodoca.com/rfc3161" /> <arg value="-storepass:file" 
-				/> <arg value="/home/Peter Brewer/.ssh/key" /> <arg value="-keypass:file" /> <arg 
-				value="/home/Peter Brewer/.ssh/key" /> <arg value="-digestalg" /> <arg value="SHA-256" 
-				/> <arg value="${project.build.directory}/${project.build.finalName}.jarxx" 
+				/> <arg value="/home/Peter Brewer/.ssh/key" /> <arg value="-keypass:file" 
+				/> <arg value="/home/Peter Brewer/.ssh/key" /> <arg value="-digestalg" /> 
+				<arg value="SHA-256" /> <arg value="${project.build.directory}/${project.build.finalName}.jarxx" 
 				/> <arg value="the university of arizona's internet2 id" /> </exec> </try> 
 				<catch> <echo>**********************************************</echo> <echo> 
 				UNABLE TO SIGN executable jar </echo> <echo>**********************************************</echo> 
@@ -497,11 +499,11 @@
 				classpathref="maven.plugin.classpath" /> <trycatch> <try> // Try to sign 
 				the Setup.exe with the University of Arizona certificate <exec dir="${project.build.directory}" 
 				executable="osslsigncode"> <arg value="sign" /> <arg value="-certs" /> <arg 
-				value="/home/Peter Brewer/.ssh/pwb_code_signing.pem" /> <arg value="-key" /> <arg 
-				value="/home/Peter Brewer/.ssh/key.pem" /> <arg value="-n" /> <arg value="FHAES" 
-				/> <arg value="-i" /> <arg value="http://www.fhaes.org" /> <arg value="-t" 
-				/> <arg value="http://tsa.starfieldtech.com/" /> <arg value="-in" /> <arg 
-				value="${project.build.directory}/${project.build.finalName}-unsigned.exe" 
+				value="/home/Peter Brewer/.ssh/pwb_code_signing.pem" /> <arg value="-key" 
+				/> <arg value="/home/Peter Brewer/.ssh/key.pem" /> <arg value="-n" /> <arg 
+				value="FHAES" /> <arg value="-i" /> <arg value="http://www.fhaes.org" /> 
+				<arg value="-t" /> <arg value="http://tsa.starfieldtech.com/" /> <arg value="-in" 
+				/> <arg value="${project.build.directory}/${project.build.finalName}-unsigned.exe" 
 				/> <arg value="-out" /> <arg value="${project.build.directory}/${project.build.finalName}.exe" 
 				/> </exec> </try> <catch> <echo>**********************************************</echo> 
 				<echo> UNABLE TO SIGN Windows executable </echo> <echo>**********************************************</echo> 
@@ -517,11 +519,11 @@
 				/> </catch> </trycatch> <trycatch> <try> //Try to sign the Setup.exe with 
 				the University of Arizona certificate <exec dir="${project.build.directory}" 
 				executable="osslsigncode"> <arg value="sign" /> <arg value="-certs" /> <arg 
-				value="/home/Peter Brewer/.ssh/pwb_code_signing.pem" /> <arg value="-key" /> <arg 
-				value="/home/Peter Brewer/.ssh/key.pem" /> <arg value="-n" /> <arg value="FHAES" 
-				/> <arg value="-i" /> <arg value="http://www.fhaes.org" /> <arg value="-t" 
-				/> <arg value="http://tsa.starfieldtech.com/" /> <arg value="-in" /> <arg 
-				value="${project.build.directory}/${project.build.finalName}-setup-unsigned.exe" 
+				value="/home/Peter Brewer/.ssh/pwb_code_signing.pem" /> <arg value="-key" 
+				/> <arg value="/home/Peter Brewer/.ssh/key.pem" /> <arg value="-n" /> <arg 
+				value="FHAES" /> <arg value="-i" /> <arg value="http://www.fhaes.org" /> 
+				<arg value="-t" /> <arg value="http://tsa.starfieldtech.com/" /> <arg value="-in" 
+				/> <arg value="${project.build.directory}/${project.build.finalName}-setup-unsigned.exe" 
 				/> <arg value="-out" /> <arg value="${project.build.directory}/binaries/${project.version}/Windows/${project.build.finalName}-setup.exe" 
 				/> </exec> </try> <catch> <echo>**********************************************</echo> 
 				<echo> UNABLE TO SIGN Windows setup executable </echo> <echo>**********************************************</echo> 
@@ -535,8 +537,8 @@
 				/> <trycatch> <try> //Try to sign the Setup.exe with the University of Arizona 
 				certificate <exec dir="${project.build.directory}" executable="osslsigncode"> 
 				<arg value="sign" /> <arg value="-certs" /> <arg value="/home/Peter Brewer/.ssh/pwb_code_signing.pem" 
-				/> <arg value="-key" /> <arg value="/home/Peter Brewer/.ssh/key.pem" /> <arg value="-n" 
-				/> <arg value="FHAES" /> <arg value="-i" /> <arg value="http://www.fhaes.org" 
+				/> <arg value="-key" /> <arg value="/home/Peter Brewer/.ssh/key.pem" /> <arg 
+				value="-n" /> <arg value="FHAES" /> <arg value="-i" /> <arg value="http://www.fhaes.org" 
 				/> <arg value="-t" /> <arg value="http://tsa.starfieldtech.com/" /> <arg 
 				value="-in" /> <arg value="${project.build.directory}/${project.build.finalName}-unsigned.exe" 
 				/> <arg value="-out" /> <arg value="${project.build.directory}/binaries/${project.version}/Windows/${project.build.finalName}-setup.exe" 
@@ -662,4 +664,22 @@
 		<url>https://github.com/petebrew/fhaes/issues</url>
 		<system>Github</system>
 	</issueManagement>
+
+	<!-- Generate site report for project -->
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-changes-plugin</artifactId>
+				<version>2.11</version>
+				<reportSets>
+					<reportSet>
+						<reports>
+							<report>github-report</report>
+						</reports>
+					</reportSet>
+				</reportSets>
+			</plugin>
+		</plugins>
+	</reporting>
 </project>
