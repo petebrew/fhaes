@@ -953,7 +953,7 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 				strfilters[j][i] = tsfilters.charAt(j);
 			}
 			
-			// Load each crossection (or tree) into the ArrayList variable
+			// Load each cross-section (or tree) into the ArrayList variable
 			// eachTree
 			
 			filters[0] = 0;
