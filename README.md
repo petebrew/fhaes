@@ -1,6 +1,8 @@
 # FHAES
 ![FHAES Logo](https://raw.githubusercontent.com/petebrew/fhaes/master/fhaes/src/main/resources/images/fhaes-application.png "Fire History Analysis and Exploration System")
 
+[![DOI](https://zenodo.org/badge/19014/petebrew/fhaes.svg)](https://zenodo.org/badge/latestdoi/19014/petebrew/fhaes)
+
 This repository contains the source code for the Fire History Analysis and Exploration System.  If you are simply wanting to download and use FHAES then please go to the main download pages: http://download.fhaes.org
 
 The repository contains several modules:
