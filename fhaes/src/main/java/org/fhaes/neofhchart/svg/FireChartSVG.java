@@ -40,6 +40,7 @@ import javax.xml.transform.stream.StreamResult;
 import org.apache.batik.bridge.BridgeException;
 import org.apache.batik.dom.svg.SVGDOMImplementation;
 import org.apache.batik.dom.svg.SVGLocatableSupport;
+import org.apache.commons.lang.StringUtils;
 import org.fhaes.enums.AnnoteMode;
 import org.fhaes.enums.EventTypeToProcess;
 import org.fhaes.enums.FeedbackDisplayProtocol;
@@ -1367,7 +1368,7 @@ public class FireChartSVG {
 	 */
 	private Element getLegend() {
 	
-		int labelWidth = FireChartUtil.getStringWidth(Font.PLAIN, 8, "Outer year without bark");
+		int labelWidth = FireChartUtil.getStringWidth(Font.PLAIN, 8, "Outer year without bark") + 40;
 		int labelHeight = FireChartUtil.getStringHeight(Font.PLAIN, 8, "Outer year without bark");
 		int currentY = 0; // to help position symbols
 		int moveValue = 20;
@@ -1485,6 +1486,80 @@ public class FireChartSVG {
 				leftJustified - 5, (labelHeight / 2));
 		withoutBark_g.appendChild(withoutBarkRecorder_desc);
 		legend.appendChild(withoutBark_g);
+		
+		// ADD FILTER DETAILS
+		if (App.prefs.getBooleanPref(PrefKey.CHART_SHOW_FILTER_IN_LEGEND, false))
+		{
+			String s = "";
+			String longestLabel = s;
+			if (App.prefs.getEventTypePref(PrefKey.CHART_COMPOSITE_EVENT_TYPE, EventTypeToProcess.FIRE_EVENT).equals(
+					EventTypeToProcess.FIRE_EVENT))
+			{
+				currentY += moveValue + (labelHeight * 1.3);
+				s = StringUtils.capitalize("Composite based on "
+						+ App.prefs.getEventTypePref(PrefKey.CHART_COMPOSITE_EVENT_TYPE, EventTypeToProcess.FIRE_EVENT).toString()
+								.toLowerCase() + " and filtered by:");
+				Element filterType = LegendElementBuilder.getDescriptionTextElement(doc, s, leftJustified, (labelHeight / 2));
+				filterType.setAttributeNS(null, "transform", "translate(-25, " + Integer.toString(currentY) + ")");
+				legend.appendChild(filterType);
+				longestLabel = s;
+			}
+			else if (App.prefs.getEventTypePref(PrefKey.CHART_COMPOSITE_EVENT_TYPE, EventTypeToProcess.FIRE_AND_INJURY_EVENT).equals(
+					EventTypeToProcess.FIRE_AND_INJURY_EVENT))
+			{
+				currentY += moveValue + (labelHeight * 1.3);
+				s = StringUtils.capitalize("Composite based on "
+						+ App.prefs.getEventTypePref(PrefKey.CHART_COMPOSITE_EVENT_TYPE, EventTypeToProcess.FIRE_EVENT).toString()
+								.toLowerCase());
+				Element filterType = LegendElementBuilder.getDescriptionTextElement(doc, s, leftJustified, (labelHeight / 2));
+				filterType.setAttributeNS(null, "transform", "translate(-25, " + Integer.toString(currentY) + ")");
+				legend.appendChild(filterType);
+				
+				currentY += labelHeight * 1.3;
+				filterType = LegendElementBuilder.getDescriptionTextElement(doc, "and filtered by:", leftJustified, (labelHeight / 2));
+				filterType.setAttributeNS(null, "transform", "translate(-25, " + Integer.toString(currentY) + ")");
+				legend.appendChild(filterType);
+				
+				longestLabel = s;
+			}
+			else if (App.prefs.getEventTypePref(PrefKey.CHART_COMPOSITE_EVENT_TYPE, EventTypeToProcess.INJURY_EVENT).equals(
+					EventTypeToProcess.INJURY_EVENT))
+			{
+				currentY += moveValue + (labelHeight * 1.3);
+				s = StringUtils.capitalize("Composite based on "
+						+ App.prefs.getEventTypePref(PrefKey.CHART_COMPOSITE_EVENT_TYPE, EventTypeToProcess.FIRE_EVENT).toString()
+								.toLowerCase() + " and filtered by:");
+				Element filterType = LegendElementBuilder.getDescriptionTextElement(doc, s, leftJustified, (labelHeight / 2));
+				filterType.setAttributeNS(null, "transform", "translate(-25, " + Integer.toString(currentY) + ")");
+				legend.appendChild(filterType);
+				longestLabel = s;
+			}
+			
+			currentY += labelHeight * 1.3;
+			s = " - "
+					+ StringUtils.capitalize(App.prefs
+							.getFireFilterTypePref(PrefKey.CHART_COMPOSITE_FILTER_TYPE, FireFilterType.NUMBER_OF_EVENTS).toString()
+							.toLowerCase()
+							+ " >= " + App.prefs.getIntPref(PrefKey.CHART_COMPOSITE_FILTER_VALUE, 1));
+			Element filterType = LegendElementBuilder.getDescriptionTextElement(doc, s, leftJustified, (labelHeight / 2));
+			filterType.setAttributeNS(null, "transform", "translate(-25, " + Integer.toString(currentY) + ")");
+			legend.appendChild(filterType);
+			if (s.length() > longestLabel.length())
+				longestLabel = s;
+			
+			currentY += labelHeight * 1.3;
+			s = " - "
+					+ StringUtils.capitalize(App.prefs
+							.getSampleDepthFilterTypePref(PrefKey.CHART_COMPOSITE_SAMPLE_DEPTH_TYPE, SampleDepthFilterType.MIN_NUM_SAMPLES)
+							.toString().toLowerCase()
+							+ " >= " + App.prefs.getIntPref(PrefKey.CHART_COMPOSITE_MIN_NUM_SAMPLES, 1));
+			filterType = LegendElementBuilder.getDescriptionTextElement(doc, s, leftJustified, (labelHeight / 2));
+			filterType.setAttributeNS(null, "transform", "translate(-25, " + Integer.toString(currentY) + ")");
+			legend.appendChild(filterType);
+			
+			labelWidth = FireChartUtil.getStringWidth(Font.PLAIN, 8, longestLabel) + 10;
+			
+		}
 		
 		// Add rectangle around legend and append
 		legend.setAttributeNS(null, "transform", "scale(1.0)");

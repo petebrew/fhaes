@@ -38,9 +38,11 @@ import javax.swing.event.ChangeListener;
 
 import net.miginfocom.swing.MigLayout;
 
+import org.fhaes.enums.EventTypeToProcess;
 import org.fhaes.enums.FireFilterType;
 import org.fhaes.enums.SampleDepthFilterType;
 import org.fhaes.preferences.FHAESPreferences.PrefKey;
+import org.fhaes.preferences.wrappers.EventTypeWrapper;
 import org.fhaes.preferences.wrappers.FireFilterTypeWrapper;
 import org.fhaes.preferences.wrappers.SampleDepthFilterTypeWrapper;
 import org.fhaes.preferences.wrappers.SpinnerWrapper;
@@ -73,6 +75,8 @@ public class CompositeFilterDialog extends JDialog implements ActionListener {
 	private JPanel panelComments;
 	@SuppressWarnings("rawtypes")
 	private JComboBox cboSampleDepthFilterType;
+	private JLabel lblCompositeBasedOn;
+	private JComboBox cboEventToProcess;
 	
 	/**
 	 * TODO
@@ -171,37 +175,52 @@ public class CompositeFilterDialog extends JDialog implements ActionListener {
 			JPanel panel = new JPanel();
 			panel.setBorder(new TitledBorder(null, "Composite filter", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 			contentPanel.add(panel, "cell 0 1,grow");
-			panel.setLayout(new MigLayout("", "[][21.00][70.00,grow,fill]", "[][]"));
+			panel.setLayout(new MigLayout("", "[][][21.00][70.00]", "[][][]"));
+			{
+				lblCompositeBasedOn = new JLabel("Composite based on:");
+				lblCompositeBasedOn.setEnabled(false);
+				panel.add(lblCompositeBasedOn, "cell 0 0,alignx trailing");
+			}
+			{
+				cboEventToProcess = new JComboBox();
+				new EventTypeWrapper(cboEventToProcess, PrefKey.COMPOSITE_EVENT_TYPE, EventTypeToProcess.FIRE_EVENT);
+				
+				// Disable and force to fire events until implemented
+				cboEventToProcess.setSelectedItem(EventTypeToProcess.FIRE_EVENT);
+				cboEventToProcess.setEnabled(false);
+				
+				panel.add(cboEventToProcess, "cell 1 0 3 1,growx");
+			}
 			{
 				cboFilterType = new JComboBox();
-				panel.add(cboFilterType, "cell 0 0,growx");
+				panel.add(cboFilterType, "cell 1 1,growx");
 				new FireFilterTypeWrapper(cboFilterType, PrefKey.COMPOSITE_FILTER_TYPE, FireFilterType.NUMBER_OF_EVENTS);
 				
 			}
 			{
 				JLabel label = new JLabel(">=");
-				panel.add(label, "cell 1 0");
+				panel.add(label, "cell 2 1");
 			}
 			{
 				spnFilterValue = new JSpinner();
 				spnFilterValue.setModel(new SpinnerNumberModel(new Integer(1), new Integer(1), null, new Integer(1)));
-				panel.add(spnFilterValue, "cell 2 0,growx");
+				panel.add(spnFilterValue, "cell 3 1,growx");
 			}
 			{
 				cboSampleDepthFilterType = new JComboBox();
 				new SampleDepthFilterTypeWrapper(cboSampleDepthFilterType, PrefKey.COMPOSITE_SAMPLE_DEPTH_TYPE,
 						SampleDepthFilterType.MIN_NUM_SAMPLES);
-				panel.add(cboSampleDepthFilterType, "cell 0 1,alignx left");
+				panel.add(cboSampleDepthFilterType, "cell 1 2,alignx left");
 			}
 			{
 				JLabel label = new JLabel(">=");
-				panel.add(label, "cell 1 1");
+				panel.add(label, "cell 2 2");
 			}
 			{
 				spnMinSamples = new JSpinner();
 				spnMinSamples.setModel(new SpinnerNumberModel(new Integer(1), new Integer(1), null, new Integer(1)));
 				new SpinnerWrapper(spnMinSamples, PrefKey.COMPOSITE_MIN_SAMPLES, 1);
-				panel.add(spnMinSamples, "cell 2 1,growx");
+				panel.add(spnMinSamples, "cell 3 2,growx");
 			}
 		}
 		{

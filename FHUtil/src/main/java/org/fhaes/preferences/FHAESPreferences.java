@@ -216,6 +216,8 @@ public class FHAESPreferences {
 		
 		COMPOSITE_FILTER_TYPE("compositeFilterType"),
 		
+		COMPOSITE_EVENT_TYPE("compositeEventType"),
+		
 		COMPOSITE_FILTER_TYPE_WITH_ALL_TREES("compositeFilterTypeWithAllTrees"),
 		
 		COMPOSITE_FILTER_OPERATOR("compositeFilterOperator"),
@@ -447,6 +449,8 @@ public class FHAESPreferences {
 		CHART_FONT_BOLD("chartFontBold"),
 		
 		CHART_FONT_ITALIC("chartFontItalic"),
+		
+		CHART_SHOW_FILTER_IN_LEGEND("chartShowFilterInLegend"),
 		
 		/**
 		 * 

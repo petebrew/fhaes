@@ -60,6 +60,7 @@ import org.fhaes.enums.LineStyle;
 import org.fhaes.enums.SampleDepthFilterType;
 import org.fhaes.preferences.App;
 import org.fhaes.preferences.FHAESPreferences.PrefKey;
+import org.fhaes.preferences.wrappers.CheckBoxWrapper;
 import org.fhaes.preferences.wrappers.EventTypeWrapper;
 import org.fhaes.preferences.wrappers.SampleDepthFilterTypeWrapper;
 import org.fhaes.util.Builder;
@@ -187,6 +188,7 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 	private JComboBox cboSampleDepthFilterType;
 	private JLabel lblCompositeBasedOn;
 	private JComboBox cboEventToProcess;
+	private JCheckBox chkShowFilterInLegend;
 	
 	/**
 	 * Create the dialog.
@@ -1460,7 +1462,7 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 		panelCompositePlotFilters
 				.setBorder(new TitledBorder(null, "Composite Filters", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		compositePlotPanel.add(panelCompositePlotFilters, "cell 0 2,grow");
-		panelCompositePlotFilters.setLayout(new MigLayout("", "[180px][][][]", "[][][]"));
+		panelCompositePlotFilters.setLayout(new MigLayout("", "[180px][][][]", "[][][][]"));
 		
 		cboFilterType = new JComboBox<FireFilterType>();
 		for (int i = 0; i < FireFilterType.values().length; i++)
@@ -1494,6 +1496,11 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 		spnMinNumberOfSamples = new JSpinner();
 		spnMinNumberOfSamples.setModel(new SpinnerNumberModel(1, 1, 9999, 1));
 		panelCompositePlotFilters.add(spnMinNumberOfSamples, "cell 3 2,growx,aligny center");
+		
+		chkShowFilterInLegend = new JCheckBox("Show filter details in legend");
+		new CheckBoxWrapper(chkShowFilterInLegend, PrefKey.CHART_SHOW_FILTER_IN_LEGEND, false);
+		
+		panelCompositePlotFilters.add(chkShowFilterInLegend, "cell 1 3 3 1");
 		
 		panelCompositePlotYearLabels = new JPanel();
 		panelCompositePlotYearLabels.setBorder(new TitledBorder(null, "Year Labels", TitledBorder.LEADING, TitledBorder.TOP, null, null));

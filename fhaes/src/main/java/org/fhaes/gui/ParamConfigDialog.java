@@ -52,8 +52,8 @@ import org.fhaes.preferences.wrappers.AnalysisLabelTypeWrapper;
 import org.fhaes.preferences.wrappers.AnalysisTypeWrapper;
 import org.fhaes.preferences.wrappers.CheckBoxWrapper;
 import org.fhaes.preferences.wrappers.DoubleSpinnerWrapper;
-import org.fhaes.preferences.wrappers.FireFilterTypeWrapperWithoutAllTrees;
 import org.fhaes.preferences.wrappers.EventTypeWrapper;
+import org.fhaes.preferences.wrappers.FireFilterTypeWrapperWithoutAllTrees;
 import org.fhaes.preferences.wrappers.NoDataLabelWrapper;
 import org.fhaes.preferences.wrappers.SpinnerWrapper;
 import org.fhaes.util.Builder;
@@ -234,22 +234,27 @@ public class ParamConfigDialog extends JDialog implements ActionListener, Change
 								
 								{
 									lblMinYearOverlap = new JLabel("Common years required:");
+									lblMinYearOverlap.setEnabled(false);
 									panelMatrix.add(lblMinYearOverlap, "cell 0 0");
 								}
 								{
 									spnOverlap = new JSpinner();
+									spnOverlap.setEnabled(false);
 									panelMatrix.add(spnOverlap, "cell 1 0");
 									spnOverlap.setModel(new SpinnerNumberModel(new Integer(25), new Integer(5), null, new Integer(1)));
 									new SpinnerWrapper(spnOverlap, PrefKey.RANGE_OVERLAP_REQUIRED, 25);
 								}
 								btnHelpOverlap = new HelpTipButton(LocalHelp.COMMON_YEARS);
+								btnHelpOverlap.setEnabled(false);
 								panelMatrix.add(btnHelpOverlap, "cell 2 0");
 								{
 									lblLabelNoData = new JLabel("Label no data with:");
+									lblLabelNoData.setEnabled(false);
 									panelMatrix.add(lblLabelNoData, "cell 0 1,alignx trailing");
 								}
 								{
 									cboNoDataValue = new JComboBox();
+									cboNoDataValue.setEnabled(false);
 									cboNoDataValue.setModel(new DefaultComboBoxModel(NoDataLabel.values()));
 									new NoDataLabelWrapper(cboNoDataValue, PrefKey.MATRIX_NO_DATA_LABEL, NoDataLabel.NAN);
 									panelMatrix.add(cboNoDataValue, "cell 1 1,growx");
@@ -257,6 +262,7 @@ public class ParamConfigDialog extends JDialog implements ActionListener, Change
 								{
 									helpTipButton_1 = new HelpTipButton(
 											"Choose how 'no data' values should be reported in matrix output.  This value is returned for instance when two files do not have enough common years between them for the matrix analysis to be performed.");
+									helpTipButton_1.setEnabled(false);
 									panelMatrix.add(helpTipButton_1, "cell 2 1");
 								}
 							}

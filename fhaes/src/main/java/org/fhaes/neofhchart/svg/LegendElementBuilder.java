@@ -45,7 +45,7 @@ public class LegendElementBuilder {
 	 * @return descriptionTextElement
 	 */
 	protected static Element getDescriptionTextElement(Document doc, String text, int xLoc, int yLoc) {
-		
+	
 		Element descriptionTextElement = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "text");
 		
 		descriptionTextElement.setAttributeNS(null, "x", Integer.toString(xLoc));
@@ -68,12 +68,12 @@ public class LegendElementBuilder {
 	 * @return chartRectangle
 	 */
 	protected static Element getChartRectangle(Document doc, int labelWidth, int currentY) {
-		
+	
 		Element chartRectangle = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "rect");
 		
 		chartRectangle.setAttributeNS(null, "x", "-10");
 		chartRectangle.setAttributeNS(null, "y", "-10");
-		chartRectangle.setAttributeNS(null, "width", labelWidth + 40 + "");
+		chartRectangle.setAttributeNS(null, "width", labelWidth + "");
 		chartRectangle.setAttributeNS(null, "height", Integer.toString(currentY + 20));
 		chartRectangle.setAttributeNS(null, "stroke", "black");
 		chartRectangle.setAttributeNS(null, "stroke-width", "0.5");
@@ -89,7 +89,7 @@ public class LegendElementBuilder {
 	 * @return recorderYearExample
 	 */
 	protected static Element getRecorderYearExample(Document doc) {
-		
+	
 		Element recorderYearExample = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
 		
 		recorderYearExample.setAttributeNS(null, "x1", "0");
@@ -110,7 +110,7 @@ public class LegendElementBuilder {
 	 * @return nonRecorderYearExample
 	 */
 	protected static Element getNonRecorderYearExample(Document doc, int currentY) {
-		
+	
 		Element nonRecorderYearExample = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
 		
 		nonRecorderYearExample.setAttributeNS(null, "x1", "0");
@@ -131,7 +131,7 @@ public class LegendElementBuilder {
 	 * @return pithWithNonRecorderLineExample
 	 */
 	protected static Element getPithWithNonRecorderLineExample(Document doc) {
-		
+	
 		Element pithWithNonRecorderLineExample = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
 		
 		pithWithNonRecorderLineExample.setAttributeNS(null, "x1", "0");
@@ -152,7 +152,7 @@ public class LegendElementBuilder {
 	 * @return noPithWithNonRecorderLineExample
 	 */
 	protected static Element getNoPithWithNonRecorderLineExample(Document doc) {
-		
+	
 		Element noPithWithNonRecorderLineExample = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
 		
 		noPithWithNonRecorderLineExample.setAttributeNS(null, "x1", "0");
@@ -173,7 +173,7 @@ public class LegendElementBuilder {
 	 * @return barkWithRecorderLineExample
 	 */
 	protected static Element getBarkWithRecorderLineExample(Document doc) {
-		
+	
 		Element barkWithRecorderLineExample = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
 		
 		barkWithRecorderLineExample.setAttributeNS(null, "x1", "0");
@@ -193,7 +193,7 @@ public class LegendElementBuilder {
 	 * @return noBarkWithRecorderLineExample
 	 */
 	protected static Element getNoBarkWithRecorderLineExample(Document doc) {
-		
+	
 		Element noBarkWithRecorderLineExample = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
 		
 		noBarkWithRecorderLineExample.setAttributeNS(null, "x1", "0");

@@ -102,7 +102,7 @@ public class AboutDialog extends JDialog implements ActionListener {
 		txtcontributors.setEditable(false);
 		txtcontributors.setFont(new Font("Dialog", Font.BOLD, 11));
 		txtcontributors
-				.setText("Elaine Kennedy Sutherland; Peter Brown; Donald Falk; Henri Grissino-Mayer; Elena Velasquez; Connie Woodhouse; Peter Brewer.");
+				.setText("Elaine Kennedy Sutherland; Elena Velasquez; Peter Brewer; Donald Falk; Henri Grissino-Mayer; Peter Brown.");
 		contentPanel.add(txtcontributors, "cell 1 6 3 1,grow");
 		
 		JTextPane txtpnProgrammingContributions = new JTextPane();
