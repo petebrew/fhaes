@@ -44,13 +44,14 @@ public class PercentScarredPlotElementBuilder {
 	 */
 	protected static Element getBorderLine1(Document doc, int chartWidth, int firstChartYear, int lastChartYear) {
 		
-		Element borderLine1 = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
+		String strokeWidth = Double.toString(FireChartUtil.pixelsToYears(1, chartWidth, firstChartYear, lastChartYear));
 		
+		Element borderLine1 = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
 		borderLine1.setAttributeNS(null, "x1", "0");
 		borderLine1.setAttributeNS(null, "y1", "0");
 		borderLine1.setAttributeNS(null, "x2", "0");
 		borderLine1.setAttributeNS(null, "y2", "100");
-		borderLine1.setAttributeNS(null, "stroke-width", FireChartUtil.pixelsToYears(1, chartWidth, firstChartYear, lastChartYear) + "");
+		borderLine1.setAttributeNS(null, "stroke-width", strokeWidth);
 		borderLine1.setAttributeNS(null, "stroke", "black");
 		borderLine1.setAttributeNS(null, "stroke-linecap", "butt");
 		
@@ -69,7 +70,6 @@ public class PercentScarredPlotElementBuilder {
 	protected static Element getBorderLine2(Document doc, double unscaleY, int firstChartYear, int lastChartYear) {
 		
 		Element borderLine2 = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
-		
 		borderLine2.setAttributeNS(null, "x1", "0");
 		borderLine2.setAttributeNS(null, "y1", "100");
 		borderLine2.setAttributeNS(null, "x2", Integer.toString(lastChartYear - firstChartYear));
@@ -92,13 +92,14 @@ public class PercentScarredPlotElementBuilder {
 	 */
 	protected static Element getBorderLine3(Document doc, int chartWidth, int firstChartYear, int lastChartYear) {
 		
-		Element borderLine3 = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
+		String strokeWidth = Double.toString(FireChartUtil.pixelsToYears(1, chartWidth, firstChartYear, lastChartYear));
 		
+		Element borderLine3 = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
 		borderLine3.setAttributeNS(null, "x1", Integer.toString(lastChartYear - firstChartYear));
 		borderLine3.setAttributeNS(null, "y1", "100");
 		borderLine3.setAttributeNS(null, "x2", Integer.toString(lastChartYear - firstChartYear));
 		borderLine3.setAttributeNS(null, "y2", "0");
-		borderLine3.setAttributeNS(null, "stroke-width", FireChartUtil.pixelsToYears(1, chartWidth, firstChartYear, lastChartYear) + "");
+		borderLine3.setAttributeNS(null, "stroke-width", strokeWidth);
 		borderLine3.setAttributeNS(null, "stroke", "black");
 		borderLine3.setAttributeNS(null, "stroke-linecap", "butt");
 		
@@ -117,7 +118,6 @@ public class PercentScarredPlotElementBuilder {
 	protected static Element getBorderLine4(Document doc, double unscaleY, int firstChartYear, int lastChartYear) {
 		
 		Element borderLine4 = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
-		
 		borderLine4.setAttributeNS(null, "x1", Integer.toString(lastChartYear - firstChartYear));
 		borderLine4.setAttributeNS(null, "y1", "0");
 		borderLine4.setAttributeNS(null, "x2", "0");
@@ -140,14 +140,13 @@ public class PercentScarredPlotElementBuilder {
 	 */
 	protected static Element getPercentScarredTextElement(Document doc, int labelY, int percentTextAsNum, int yAxisFontSize) {
 		
-		Element percentScarredTextElement = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "text");
+		Text percentScarredText = doc.createTextNode(Integer.toString(percentTextAsNum));
 		
+		Element percentScarredTextElement = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "text");
 		percentScarredTextElement.setAttributeNS(null, "x", "7");
 		percentScarredTextElement.setAttributeNS(null, "y", labelY + "");
 		percentScarredTextElement.setAttributeNS(null, "font-family", App.prefs.getPref(PrefKey.CHART_FONT_FAMILY, "Verdana"));
 		percentScarredTextElement.setAttributeNS(null, "font-size", yAxisFontSize + "");
-		
-		Text percentScarredText = doc.createTextNode(Integer.toString(percentTextAsNum));
 		percentScarredTextElement.appendChild(percentScarredText);
 		
 		return percentScarredTextElement;
@@ -162,14 +161,14 @@ public class PercentScarredPlotElementBuilder {
 	 */
 	protected static Element getHorizontalTick(Document doc, double unscaleY) {
 		
-		Element horizontalTick = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
+		String stroke = FireChartUtil.colorToHexString(App.prefs.getColorPref(PrefKey.CHART_PERCENT_SCARRED_COLOR, Color.BLACK));
 		
+		Element horizontalTick = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
 		horizontalTick.setAttributeNS(null, "x1", "0");
 		horizontalTick.setAttributeNS(null, "y1", "0");
 		horizontalTick.setAttributeNS(null, "x2", "5");
 		horizontalTick.setAttributeNS(null, "y2", "0");
-		horizontalTick.setAttributeNS(null, "stroke",
-				FireChartUtil.colorToHexString(App.prefs.getColorPref(PrefKey.CHART_PERCENT_SCARRED_COLOR, Color.BLACK)));
+		horizontalTick.setAttributeNS(null, "stroke", stroke);
 		horizontalTick.setAttributeNS(null, "stroke-width", Double.toString(0 - unscaleY));
 		
 		return horizontalTick;
@@ -189,16 +188,16 @@ public class PercentScarredPlotElementBuilder {
 	protected static Element getVerticalLine(Document doc, double percent, int percentArrayIndex, int chartWidth, int firstChartYear,
 			int lastChartYear) {
 			
-		Element verticalLine = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
+		String strokeWidth = Double.toString(FireChartUtil.pixelsToYears(1, chartWidth, firstChartYear, lastChartYear));
 		
+		Element verticalLine = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
 		verticalLine.setAttributeNS(null, "x1", Integer.toString(percentArrayIndex));
 		verticalLine.setAttributeNS(null, "y1", "0");
 		verticalLine.setAttributeNS(null, "x2", Integer.toString(percentArrayIndex));
 		verticalLine.setAttributeNS(null, "y2", Double.toString(percent));
 		verticalLine.setAttributeNS(null, "stroke", "black");
-		verticalLine.setAttributeNS(null, "stroke-width",
-				Double.toString(FireChartUtil.pixelsToYears(1, chartWidth, firstChartYear, lastChartYear)));
-				
+		verticalLine.setAttributeNS(null, "stroke-width", strokeWidth);
+		
 		return verticalLine;
 	}
 }

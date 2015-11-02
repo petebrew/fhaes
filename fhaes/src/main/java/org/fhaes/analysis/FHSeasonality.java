@@ -65,16 +65,15 @@ public class FHSeasonality {
 	 * @param jTextEndingYear - end year in range to calculate
 	 * @param eventTypeToProcess - whether to do calculations on injuries or fires
 	 */
-	@SuppressWarnings("deprecation")
 	public static void runAnalysis(Component parent, File outputFile, FHFile[] inputFile, Boolean jCheckdormant1, Boolean jCheckeewood1,
 			Boolean jCheckmewood1, Boolean jChecklewood1, Boolean jChecklatewood1, Boolean jCheckdormant2, Boolean jCheckeewood2,
 			Boolean jCheckmewood2, Boolean jChecklewood2, Boolean jChecklatewood2, int jTextBeginningYear1, int jTextEndingYear,
 			EventTypeToProcess eventTypeToProcess) {
-	
+			
 		boolean run = runSanityChecks(inputFile, jCheckdormant1, jCheckeewood1, jCheckmewood1, jChecklewood1, jChecklatewood1,
 				jCheckdormant2, jCheckeewood2, jCheckmewood2, jChecklewood2, jChecklatewood2, jTextBeginningYear1, jTextEndingYear,
 				eventTypeToProcess);
-		
+				
 		/*
 		 * If at least one file has been choosen then the progam will run otherwise get message
 		 */
@@ -879,7 +878,7 @@ public class FHSeasonality {
 			}
 			finally
 			{
-				
+			
 			}
 			
 		} // end of if for at least one file selected and one analysis (if run))
@@ -914,7 +913,7 @@ public class FHSeasonality {
 			Boolean jChecklewood1, Boolean jChecklatewood1, Boolean jCheckdormant2, Boolean jCheckeewood2, Boolean jCheckmewood2,
 			Boolean jChecklewood2, Boolean jChecklatewood2, Integer jTextBeginningYear1, Integer jTextEndingYear,
 			EventTypeToProcess eventType) {
-	
+			
 		Boolean run = false;
 		
 		// FIRST CHECK

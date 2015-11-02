@@ -28,6 +28,7 @@ import javax.swing.table.DefaultTableModel;
 public class ReadOnlyDefaultTableModel extends DefaultTableModel {
 	
 	private static final long serialVersionUID = 1L;
+	@SuppressWarnings("rawtypes")
 	ArrayList<Class> classList;
 	
 	/**
@@ -37,7 +38,7 @@ public class ReadOnlyDefaultTableModel extends DefaultTableModel {
 	 * @param header
 	 */
 	public ReadOnlyDefaultTableModel(Vector<Vector<Object>> rows, Vector<Object> header) {
-	
+		
 		super(rows, header);
 	}
 	
@@ -46,12 +47,19 @@ public class ReadOnlyDefaultTableModel extends DefaultTableModel {
 	 */
 	@Override
 	public boolean isCellEditable(int row, int col) {
-	
+		
 		return false;
 	}
 	
+	/**
+	 * TODO
+	 * 
+	 * @param col
+	 * @param clazz
+	 */
+	@SuppressWarnings("rawtypes")
 	public void setColumnClass(int col, Class clazz) {
-	
+		
 		if (classList == null)
 		{
 			classList = new ArrayList<Class>();
@@ -67,16 +75,20 @@ public class ReadOnlyDefaultTableModel extends DefaultTableModel {
 		}
 		catch (Exception e)
 		{
-			
+		
 		}
 	}
 	
+	/**
+	 * TODO
+	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public Class getColumnClass(int col) {
-	
+		
 		if (classList == null)
 			return String.class;
-		
+			
 		try
 		{
 			return classList.get(col);
@@ -85,6 +97,5 @@ public class ReadOnlyDefaultTableModel extends DefaultTableModel {
 		{
 			return String.class;
 		}
-		
 	}
 }

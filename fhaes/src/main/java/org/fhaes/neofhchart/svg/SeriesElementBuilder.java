@@ -48,16 +48,15 @@ public class SeriesElementBuilder {
 	 */
 	protected static Element getSeriesNameElement(Document doc, FHSeriesSVG seriesSVG, int fontSize, int chartWidth) {
 		
-		Element seriesNameTextElement = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "text");
+		Text seriesNameText = doc.createTextNode(seriesSVG.getTitle());
 		
+		Element seriesNameTextElement = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "text");
 		seriesNameTextElement.setAttribute("id", "series_label_" + seriesSVG.getTitle());
 		seriesNameTextElement.setAttribute("x", Double.toString(chartWidth + 10));
 		seriesNameTextElement.setAttribute("y", Integer.toString((FireChartSVG.SERIES_HEIGHT / 2)));
 		seriesNameTextElement.setAttribute("font-family", App.prefs.getPref(PrefKey.CHART_FONT_FAMILY, "Verdana"));
 		seriesNameTextElement.setAttribute("font-size", +fontSize + "");
 		seriesNameTextElement.setAttribute("fill", FireChartUtil.colorToHexString(seriesSVG.getLabelColor()));
-		
-		Text seriesNameText = doc.createTextNode(seriesSVG.getTitle());
 		seriesNameTextElement.appendChild(seriesNameText);
 		
 		return seriesNameTextElement;
@@ -73,33 +72,34 @@ public class SeriesElementBuilder {
 	 */
 	protected static Element getCategoryLabelTextElement(Document doc, String categoryLabel, Color labelColor, int chartWidth) {
 		
-		Element categoryLabelTextElement = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "text");
-		
+		String xLocation;
 		JustificationType justification = App.prefs.getJustificationTypePref(PrefKey.CHART_CATEGORY_LABEL_JUSTIFICATION,
 				JustificationType.CENTER);
 				
-		if (justification == JustificationType.LEFT)
-		{
-			categoryLabelTextElement.setAttributeNS(null, "x", "0");
-		}
-		else if (justification == JustificationType.CENTER)
+		if (justification == JustificationType.CENTER)
 		{
 			int paddingAmountToCenterText = FireChartUtil.getStringWidth(Font.PLAIN, 16, categoryLabel.toUpperCase());
-			categoryLabelTextElement.setAttributeNS(null, "x", Integer.toString((chartWidth / 2) - (paddingAmountToCenterText / 2)));
+			xLocation = Integer.toString((chartWidth / 2) - (paddingAmountToCenterText / 2));
 		}
 		else if (justification == JustificationType.RIGHT)
 		{
 			int widthOfLabelString = FireChartUtil.getStringWidth(Font.PLAIN, 16, categoryLabel.toUpperCase());
-			categoryLabelTextElement.setAttributeNS(null, "x", Integer.toString(chartWidth - widthOfLabelString));
+			xLocation = Integer.toString(chartWidth - widthOfLabelString);
+		}
+		else
+		{
+			xLocation = "0"; // used when the justification is set to LEFT
 		}
 		
+		String fontSize = Integer.toString(App.prefs.getIntPref(PrefKey.CHART_CATEGORY_LABEL_FONT_SIZE, 18));
+		Text categoryLabelText = doc.createTextNode(categoryLabel.toUpperCase());
+		
+		Element categoryLabelTextElement = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "text");
+		categoryLabelTextElement.setAttributeNS(null, "x", xLocation);
 		categoryLabelTextElement.setAttributeNS(null, "y", "0");
 		categoryLabelTextElement.setAttributeNS(null, "font-family", App.prefs.getPref(PrefKey.CHART_FONT_FAMILY, "Verdana"));
-		categoryLabelTextElement.setAttributeNS(null, "font-size",
-				Integer.toString(App.prefs.getIntPref(PrefKey.CHART_CATEGORY_LABEL_FONT_SIZE, 18)));
+		categoryLabelTextElement.setAttributeNS(null, "font-size", fontSize);
 		categoryLabelTextElement.setAttribute("fill", FireChartUtil.colorToHexString(labelColor));
-		
-		Text categoryLabelText = doc.createTextNode(categoryLabel.toUpperCase());
 		categoryLabelTextElement.appendChild(categoryLabelText);
 		
 		return categoryLabelTextElement;
@@ -114,7 +114,6 @@ public class SeriesElementBuilder {
 	protected static Element getRecorderLine(Document doc) {
 		
 		Element recorderLine = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
-		
 		recorderLine.setAttributeNS(null, "x1", "0");
 		recorderLine.setAttributeNS(null, "y1", "0");
 		recorderLine.setAttributeNS(null, "x2", "10");
@@ -136,7 +135,6 @@ public class SeriesElementBuilder {
 	protected static Element getNonRecorderLine(Document doc, int firstChartYear, int lastChartYear) {
 		
 		Element nonRecorderLine = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
-		
 		nonRecorderLine.setAttributeNS(null, "x1", "0");
 		nonRecorderLine.setAttributeNS(null, "y1", "0");
 		nonRecorderLine.setAttributeNS(null, "x2", "0");
@@ -158,7 +156,6 @@ public class SeriesElementBuilder {
 	protected static Element getFireYearMarker(Document doc, Color color) {
 		
 		Element fireYearMarker = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "rect");
-		
 		fireYearMarker.setAttributeNS(null, "x", "0");
 		fireYearMarker.setAttributeNS(null, "y", "0");
 		fireYearMarker.setAttributeNS(null, "width", "1");
@@ -180,7 +177,6 @@ public class SeriesElementBuilder {
 	protected static Element getInjuryYearMarker(Document doc, int width, Color color) {
 		
 		Element injuryYearMarker = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "rect");
-		
 		injuryYearMarker.setAttributeNS(null, "x", "0");
 		injuryYearMarker.setAttributeNS(null, "y", "0");
 		injuryYearMarker.setAttributeNS(null, "width", Integer.toString(width));
@@ -205,7 +201,6 @@ public class SeriesElementBuilder {
 		if (hasPith)
 		{
 			Element pithMarker = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "rect");
-			
 			pithMarker.setAttributeNS(null, "x", "0");
 			pithMarker.setAttributeNS(null, "y", Integer.toString(-height / 2));
 			pithMarker.setAttributeNS(null, "width", "1");
@@ -218,7 +213,6 @@ public class SeriesElementBuilder {
 		else
 		{
 			Element noPithMarker = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "polygon");
-			
 			noPithMarker.setAttributeNS(null, "points", "-2,0.5 5,-5 2,0.5");
 			noPithMarker.setAttributeNS(null, "fill", FireChartUtil.colorToHexString(color));
 			noPithMarker.setAttributeNS(null, "stroke", FireChartUtil.colorToHexString(color));
@@ -241,7 +235,6 @@ public class SeriesElementBuilder {
 		if (hasBark)
 		{
 			Element barkMarker = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "rect");
-			
 			barkMarker.setAttributeNS(null, "x", "0");
 			barkMarker.setAttributeNS(null, "y", Integer.toString(-height / 2));
 			barkMarker.setAttributeNS(null, "width", "1");
@@ -254,7 +247,6 @@ public class SeriesElementBuilder {
 		else
 		{
 			Element noBarkMarker = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "polygon");
-			
 			noBarkMarker.setAttributeNS(null, "points", "2,0.5 -5,-5 -2,0.5");
 			noBarkMarker.setAttributeNS(null, "fill", FireChartUtil.colorToHexString(color));
 			noBarkMarker.setAttributeNS(null, "stroke", FireChartUtil.colorToHexString(color));
@@ -272,7 +264,6 @@ public class SeriesElementBuilder {
 	protected static Element getUpButton(Document doc) {
 		
 		Element upButton = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "polygon");
-		
 		upButton.setAttributeNS(null, "points", "2,8 2,4 0,4 4,0 8,4 8,4 6,4 6,8");
 		upButton.setAttributeNS(null, "fill", "black");
 		upButton.setAttributeNS(null, "opacity", "0.2");
@@ -289,7 +280,6 @@ public class SeriesElementBuilder {
 	protected static Element getDownButton(Document doc) {
 		
 		Element downButton = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "polygon");
-		
 		downButton.setAttributeNS(null, "points", "2,0 2,4 0,4 4,8 8,4 8,4 6,4 6,0");
 		downButton.setAttributeNS(null, "fill", "black");
 		downButton.setAttributeNS(null, "opacity", "0.2");

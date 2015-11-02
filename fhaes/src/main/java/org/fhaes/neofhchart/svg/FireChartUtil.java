@@ -38,7 +38,7 @@ import org.fhaes.preferences.FHAESPreferences.PrefKey;
  */
 public class FireChartUtil {
 	
-	// Define local constants
+	// Define color constants
 	private static final Color MS_OFFICE_BLUE = new Color(75, 172, 198);
 	private static final Color MS_OFFICE_GREEN = new Color(155, 187, 89);
 	private static final Color MS_OFFICE_ORANGE = new Color(247, 150, 70);
@@ -55,18 +55,18 @@ public class FireChartUtil {
 		
 		ArrayList<FHSeriesSVG> seriesSVGList = new ArrayList<FHSeriesSVG>();
 		
-		int seq = 0;
+		int sequenceInFile = 0;
 		for (FHSeries series : seriesList)
 		{
 			try
 			{
-				seriesSVGList.add(new FHSeriesSVG(series, seq));
+				seriesSVGList.add(new FHSeriesSVG(series, sequenceInFile));
 			}
 			catch (Exception e)
 			{
 				e.printStackTrace();
 			}
-			seq++;
+			sequenceInFile++;
 		}
 		
 		return seriesSVGList;
@@ -159,9 +159,9 @@ public class FireChartUtil {
 	protected static Integer getStringHeight(int fontStyle, int fontSize, String text) {
 		
 		Font font = new Font(App.prefs.getPref(PrefKey.CHART_FONT_FAMILY, "Verdana"), fontStyle, fontSize);
-		
 		JComponent graphics = new JPanel();
 		FontMetrics metrics = graphics.getFontMetrics(font);
+		
 		return metrics.getMaxAscent();
 	}
 	
@@ -177,9 +177,9 @@ public class FireChartUtil {
 	protected static Integer getStringWidth(int fontStyle, int fontSize, String text) {
 		
 		Font font = new Font(App.prefs.getPref(PrefKey.CHART_FONT_FAMILY, "Verdana"), fontStyle, fontSize);
-		
 		JComponent graphics = new JLabel(text);
 		FontMetrics metrics = graphics.getFontMetrics(font);
+		
 		return metrics.stringWidth(text);
 	}
 	

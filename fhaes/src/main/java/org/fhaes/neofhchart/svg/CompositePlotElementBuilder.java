@@ -42,7 +42,6 @@ public class CompositePlotElementBuilder {
 	protected static Element getBorderLine1(Document doc, int firstChartYear, int lastChartYear) {
 		
 		Element borderLine1 = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
-		
 		borderLine1.setAttributeNS(null, "x1", Double.toString(firstChartYear));
 		borderLine1.setAttributeNS(null, "x2", Double.toString(lastChartYear));
 		borderLine1.setAttributeNS(null, "y1", "0");
@@ -66,7 +65,6 @@ public class CompositePlotElementBuilder {
 	protected static Element getBorderLine2(Document doc, double chartHeight, int firstChartYear, int lastChartYear) {
 		
 		Element borderLine2 = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
-		
 		borderLine2.setAttributeNS(null, "x1", Integer.toString(firstChartYear));
 		borderLine2.setAttributeNS(null, "x2", Integer.toString(lastChartYear));
 		borderLine2.setAttributeNS(null, "y1", Double.toString(chartHeight));
@@ -90,13 +88,14 @@ public class CompositePlotElementBuilder {
 	 */
 	protected static Element getBorderLine3(Document doc, double chartHeight, int chartWidth, int firstChartYear, int lastChartYear) {
 		
-		Element borderLine3 = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
+		String strokeWidth = Double.toString(FireChartUtil.pixelsToYears(1, chartWidth, firstChartYear, lastChartYear));
 		
+		Element borderLine3 = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
 		borderLine3.setAttributeNS(null, "x1", Integer.toString(firstChartYear));
 		borderLine3.setAttributeNS(null, "x2", Integer.toString(firstChartYear));
 		borderLine3.setAttributeNS(null, "y1", "0");
 		borderLine3.setAttributeNS(null, "y2", Double.toString(chartHeight));
-		borderLine3.setAttributeNS(null, "stroke-width", FireChartUtil.pixelsToYears(1, chartWidth, firstChartYear, lastChartYear) + "");
+		borderLine3.setAttributeNS(null, "stroke-width", strokeWidth);
 		borderLine3.setAttributeNS(null, "stroke", "black");
 		borderLine3.setAttributeNS(null, "stroke-linecap", "butt");
 		
@@ -115,13 +114,14 @@ public class CompositePlotElementBuilder {
 	 */
 	protected static Element getBorderLine4(Document doc, double chartHeight, int chartWidth, int firstChartYear, int lastChartYear) {
 		
-		Element borderLine4 = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
+		String strokeWidth = Double.toString(FireChartUtil.pixelsToYears(1, chartWidth, firstChartYear, lastChartYear));
 		
+		Element borderLine4 = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
 		borderLine4.setAttributeNS(null, "x1", Integer.toString(lastChartYear));
 		borderLine4.setAttributeNS(null, "x2", Integer.toString(lastChartYear));
 		borderLine4.setAttributeNS(null, "y1", "0");
 		borderLine4.setAttributeNS(null, "y2", Double.toString(chartHeight));
-		borderLine4.setAttributeNS(null, "stroke-width", FireChartUtil.pixelsToYears(1, chartWidth, firstChartYear, lastChartYear) + "");
+		borderLine4.setAttributeNS(null, "stroke-width", strokeWidth);
 		borderLine4.setAttributeNS(null, "stroke", "black");
 		borderLine4.setAttributeNS(null, "stroke-linecap", "butt");
 		
@@ -136,15 +136,14 @@ public class CompositePlotElementBuilder {
 	 */
 	protected static Element getCompositeLabelTextElement(Document doc) {
 		
-		Element compositeLabelTextElement = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "text");
+		String fontSize = Integer.toString(App.prefs.getIntPref(PrefKey.CHART_COMPOSITE_PLOT_LABEL_FONT_SIZE, 10));
+		Text compositeLabelText = doc.createTextNode(App.prefs.getPref(PrefKey.CHART_COMPOSITE_LABEL_TEXT, "Composite"));
 		
+		Element compositeLabelTextElement = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "text");
 		compositeLabelTextElement.setAttributeNS(null, "x", "0");
 		compositeLabelTextElement.setAttributeNS(null, "y", "0");
 		compositeLabelTextElement.setAttributeNS(null, "font-family", App.prefs.getPref(PrefKey.CHART_FONT_FAMILY, "Verdana"));
-		compositeLabelTextElement.setAttributeNS(null, "font-size",
-				Integer.toString(App.prefs.getIntPref(PrefKey.CHART_COMPOSITE_PLOT_LABEL_FONT_SIZE, 10)));
-				
-		Text compositeLabelText = doc.createTextNode(App.prefs.getPref(PrefKey.CHART_COMPOSITE_LABEL_TEXT, "Composite"));
+		compositeLabelTextElement.setAttributeNS(null, "font-size", fontSize);
 		compositeLabelTextElement.appendChild(compositeLabelText);
 		
 		return compositeLabelTextElement;
@@ -164,14 +163,14 @@ public class CompositePlotElementBuilder {
 	protected static Element getEventLine(Document doc, int yearPosition, double chartHeight, int chartWidth, int firstChartYear,
 			int lastChartYear) {
 			
-		Element eventLine = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
+		String strokeWidth = Double.toString(FireChartUtil.pixelsToYears(1, chartWidth, firstChartYear, lastChartYear));
 		
+		Element eventLine = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
 		eventLine.setAttributeNS(null, "x1", Integer.toString(yearPosition));
 		eventLine.setAttributeNS(null, "x2", Integer.toString(yearPosition));
 		eventLine.setAttributeNS(null, "y1", "0");
 		eventLine.setAttributeNS(null, "y2", Double.toString(chartHeight));
-		eventLine.setAttributeNS(null, "stroke-width",
-				Double.toString(FireChartUtil.pixelsToYears(1, chartWidth, firstChartYear, lastChartYear)));
+		eventLine.setAttributeNS(null, "stroke-width", strokeWidth);
 		eventLine.setAttributeNS(null, "stroke", "black");
 		
 		return eventLine;

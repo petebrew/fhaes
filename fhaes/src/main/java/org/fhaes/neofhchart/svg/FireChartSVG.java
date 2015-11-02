@@ -488,6 +488,7 @@ public class FireChartSVG {
 			{
 				FHSeriesSVG series = seriesSVGList.get(i);
 				seriesSVGList.set(i, seriesSVGList.get(i - 1));
+				
 				try
 				{
 					seriesSVGList.set(i - 1, new FHSeriesSVG(series, series.getSequenceInFile()));
@@ -496,6 +497,7 @@ public class FireChartSVG {
 				{
 					e.printStackTrace();
 				}
+				
 				i--;
 				positionSeriesLines();
 			}
@@ -523,6 +525,7 @@ public class FireChartSVG {
 			{
 				FHSeriesSVG series = seriesSVGList.get(i);
 				seriesSVGList.set(i, seriesSVGList.get(i + 1));
+				
 				try
 				{
 					seriesSVGList.set(i + 1, new FHSeriesSVG(series, series.getSequenceInFile()));
@@ -531,6 +534,7 @@ public class FireChartSVG {
 				{
 					e.printStackTrace();
 				}
+				
 				i++;
 				positionSeriesLines();
 			}
@@ -679,10 +683,11 @@ public class FireChartSVG {
 		// add in the new time axis
 		time_axis_g.appendChild(getTimeAxis(total_height));
 		
-		// set the translations for the chart groupers
+		// set the translations for the chronology plot grouper
 		Element chrono_plot_g = doc.getElementById("chrono_plot_g");
 		chrono_plot_g.setAttributeNS(null, "transform", "translate(0," + chronology_plot_y + ")");
 		
+		// set the translations for the composite plot grouper
 		Element comp_plot_g = doc.getElementById("comp_plot_g");
 		comp_plot_g.setAttributeNS(null, "transform", "translate(0," + composite_plot_y + ")");
 		
@@ -712,6 +717,7 @@ public class FireChartSVG {
 		// Rebuild the annotation canvas
 		Element annote_g = doc.getElementById("annote_g");
 		deleteAllChildren(annote_g);
+		
 		Element canvas = getAnnoteCanvas();
 		if (canvas != null)
 		{
@@ -798,7 +804,6 @@ public class FireChartSVG {
 			{
 				if (isRecording != recording_years[j] || j == last_index)
 				{
-					
 					// Need to draw a line
 					Element series_line;
 					if (isRecording)
@@ -829,6 +834,7 @@ public class FireChartSVG {
 		{
 			Element series_fire_events = doc.createElementNS(svgNS, "g");
 			boolean[] fire_years = seriesSVG.getEventYears();
+			
 			for (int j = 0; j < fire_years.length; j++)
 			{
 				if (fire_years[j] && j <= last_index)

@@ -36,8 +36,6 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import net.miginfocom.swing.MigLayout;
-
 import org.fhaes.enums.EventTypeToProcess;
 import org.fhaes.enums.FireFilterType;
 import org.fhaes.enums.SampleDepthFilterType;
@@ -49,6 +47,8 @@ import org.fhaes.preferences.wrappers.SpinnerWrapper;
 import org.fhaes.util.SharedConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import net.miginfocom.swing.MigLayout;
 
 /**
  * CompositeFilterDialog Class.
@@ -76,13 +76,14 @@ public class CompositeFilterDialog extends JDialog implements ActionListener {
 	@SuppressWarnings("rawtypes")
 	private JComboBox cboSampleDepthFilterType;
 	private JLabel lblCompositeBasedOn;
+	@SuppressWarnings("rawtypes")
 	private JComboBox cboEventToProcess;
 	
 	/**
 	 * TODO
 	 */
 	public CompositeFilterDialog() {
-	
+		
 		setupGUI();
 		this.setCommentsVisible(false);
 		pack();
@@ -95,7 +96,7 @@ public class CompositeFilterDialog extends JDialog implements ActionListener {
 	 * @param includeComments
 	 */
 	public CompositeFilterDialog(boolean includeComments) {
-	
+		
 		setupGUI();
 		this.setCommentsVisible(includeComments);
 		pack();
@@ -107,7 +108,7 @@ public class CompositeFilterDialog extends JDialog implements ActionListener {
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private void setupGUI() {
-	
+		
 		// this.setLocationRelativeTo(null);
 		this.setTitle("Composite file options");
 		this.setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
@@ -154,7 +155,7 @@ public class CompositeFilterDialog extends JDialog implements ActionListener {
 						
 						@Override
 						public void stateChanged(ChangeEvent arg0) {
-						
+							
 							updateGUI();
 						}
 						
@@ -164,7 +165,7 @@ public class CompositeFilterDialog extends JDialog implements ActionListener {
 					
 					@Override
 					public void stateChanged(ChangeEvent arg0) {
-					
+						
 						updateGUI();
 					}
 					
@@ -264,7 +265,7 @@ public class CompositeFilterDialog extends JDialog implements ActionListener {
 	 * @param b
 	 */
 	private void setCommentsVisible(boolean b) {
-	
+		
 		panelComments.setVisible(b);
 		txtComments.setVisible(b);
 	}
@@ -273,7 +274,7 @@ public class CompositeFilterDialog extends JDialog implements ActionListener {
 	 * Update the GUI depending on current selections.
 	 */
 	private void updateGUI() {
-	
+		
 		if (cboFilterType.getSelectedItem().equals(FireFilterType.NUMBER_OF_EVENTS))
 		{
 			
@@ -296,7 +297,7 @@ public class CompositeFilterDialog extends JDialog implements ActionListener {
 		
 		if (cboStyle.getSelectedIndex() == 0)
 			return;
-		
+			
 		Integer start = (Integer) spnStart.getValue();
 		Integer end = (Integer) spnEnd.getValue();
 		
@@ -313,7 +314,7 @@ public class CompositeFilterDialog extends JDialog implements ActionListener {
 	
 	@Override
 	public void actionPerformed(ActionEvent evt) {
-	
+		
 		if (evt.getActionCommand().equals("OK"))
 		{
 			allDone = true;
@@ -336,7 +337,7 @@ public class CompositeFilterDialog extends JDialog implements ActionListener {
 	 * @return
 	 */
 	public Integer getStartYear() {
-	
+		
 		if (cboStyle.getSelectedIndex() == 0)
 		{
 			// All years selected so we use 0
@@ -358,7 +359,7 @@ public class CompositeFilterDialog extends JDialog implements ActionListener {
 	 * @return
 	 */
 	public Integer getEndYear() {
-	
+		
 		if (cboStyle.getSelectedIndex() == 0)
 		{
 			// All years selected so we use 0
@@ -381,7 +382,7 @@ public class CompositeFilterDialog extends JDialog implements ActionListener {
 	 * @return
 	 */
 	public Integer getMinNumberOfSamples() {
-	
+		
 		return (Integer) this.spnMinSamples.getValue();
 		
 		/*
@@ -396,7 +397,7 @@ public class CompositeFilterDialog extends JDialog implements ActionListener {
 	 * @return
 	 */
 	public Double getFireFilterValue() {
-	
+		
 		return ((Number) spnFilterValue.getValue()).doubleValue();
 	}
 	
@@ -406,7 +407,7 @@ public class CompositeFilterDialog extends JDialog implements ActionListener {
 	 * @return
 	 */
 	public Integer getMinSamplesValues() {
-	
+		
 		return (Integer) this.spnMinSamples.getValue();
 		
 	}
@@ -417,7 +418,7 @@ public class CompositeFilterDialog extends JDialog implements ActionListener {
 	 * @return
 	 */
 	public FireFilterType getFireFilterType() {
-	
+		
 		return (FireFilterType) cboFilterType.getSelectedItem();
 	}
 	
@@ -427,7 +428,7 @@ public class CompositeFilterDialog extends JDialog implements ActionListener {
 	 * @return
 	 */
 	public SampleDepthFilterType getSampleDepthFilterType() {
-	
+		
 		return (SampleDepthFilterType) this.cboSampleDepthFilterType.getSelectedItem();
 	}
 	
@@ -437,7 +438,7 @@ public class CompositeFilterDialog extends JDialog implements ActionListener {
 	 * @return
 	 */
 	public String getComments() {
-	
+		
 		if (txtComments.isVisible())
 		{
 			return txtComments.getText();
@@ -454,7 +455,7 @@ public class CompositeFilterDialog extends JDialog implements ActionListener {
 	 * @return
 	 */
 	public Boolean success() {
-	
+		
 		return allDone;
 	}
 	
