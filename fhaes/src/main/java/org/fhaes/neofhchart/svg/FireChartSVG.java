@@ -1874,24 +1874,20 @@ public class FireChartSVG {
 				getFirstChartYear(), getLastChartYear()));
 				
 		// add in the tick lines
-		int num_ticks = 4;
+		int num_ticks = FireChartUtil.calculateNumSampleDepthTicks(largest_sample_depth);
 		int tick_spacing = (int) Math.ceil((double) largest_sample_depth / (double) num_ticks);
 		int yAxisFontSize = App.prefs.getIntPref(PrefKey.CHART_AXIS_Y1_FONT_SIZE, 10);
-		int labelHeight = FireChartUtil.getStringHeight(Font.PLAIN, yAxisFontSize, "100");
+		int labelHeight = FireChartUtil.getStringHeight(Font.PLAIN, yAxisFontSize, "9");
 		int labelY = labelHeight / 2;
 		
 		for (int i = 0; i < num_ticks; i++)
 		{
-			int labelWidth = FireChartUtil.getStringWidth(Font.PLAIN, yAxisFontSize, i * tick_spacing + "");
-			
 			sample_g.appendChild(SampleRecorderPlotElementBuilder.getHorizontalTick(doc, unscale_y, i, tick_spacing));
 			
 			Element unscale_g = doc.createElementNS(svgNS, "g");
 			unscale_g.setAttributeNS(null, "transform", "translate(-5," + (i * tick_spacing) + ") scale(1," + (1.0 / scale_y) + ")");
+			unscale_g.appendChild(SampleRecorderPlotElementBuilder.getDepthTextElement(doc, labelY, yAxisFontSize, i, tick_spacing));
 			
-			unscale_g.appendChild(SampleRecorderPlotElementBuilder.getDepthTextElement(doc, labelY, yAxisFontSize, scale_y, i, tick_spacing,
-					labelWidth, labelHeight));
-					
 			sample_g.appendChild(unscale_g);
 		}
 		

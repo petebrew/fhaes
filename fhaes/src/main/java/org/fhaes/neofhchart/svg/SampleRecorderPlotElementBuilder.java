@@ -40,16 +40,12 @@ public class SampleRecorderPlotElementBuilder {
 	 * @param doc
 	 * @param labelY
 	 * @param fontSize
-	 * @param scaleY
 	 * @param tickNum
 	 * @param tickSpacing
-	 * @param labelWidth
-	 * @param labelHeight
 	 * @return depthTextElement
 	 */
-	protected static Element getDepthTextElement(Document doc, int labelY, int fontSize, double scaleY, int tickNum, int tickSpacing,
-			int labelWidth, int labelHeight) {
-			
+	protected static Element getDepthTextElement(Document doc, int labelY, int fontSize, int tickNum, int tickSpacing) {
+		
 		Element depthTextElement = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "text");
 		
 		depthTextElement.setAttributeNS(null, "x", "-3");
