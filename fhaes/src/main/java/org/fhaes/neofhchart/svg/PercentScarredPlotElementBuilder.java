@@ -130,28 +130,27 @@ public class PercentScarredPlotElementBuilder {
 	}
 	
 	/**
-	 * Returns a percent tick text element based on the input parameters.
+	 * Returns a percent scarred text element based on the input parameters.
 	 * 
 	 * @param doc
-	 * @param labelX
 	 * @param labelY
 	 * @param percentTextAsNum
 	 * @param yAxisFontSize
-	 * @return percentTickTextElement
+	 * @return percentScarredTextElement
 	 */
-	protected static Element getPercentTickTextElement(Document doc, int labelX, int labelY, int percentTextAsNum, int yAxisFontSize) {
+	protected static Element getPercentScarredTextElement(Document doc, int labelY, int percentTextAsNum, int yAxisFontSize) {
 		
-		Element percentTickTextElement = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "text");
+		Element percentScarredTextElement = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "text");
 		
-		percentTickTextElement.setAttributeNS(null, "x", labelX + "");
-		percentTickTextElement.setAttributeNS(null, "y", labelY + "");
-		percentTickTextElement.setAttributeNS(null, "font-family", App.prefs.getPref(PrefKey.CHART_FONT_FAMILY, "Verdana"));
-		percentTickTextElement.setAttributeNS(null, "font-size", yAxisFontSize + "");
+		percentScarredTextElement.setAttributeNS(null, "x", "7");
+		percentScarredTextElement.setAttributeNS(null, "y", labelY + "");
+		percentScarredTextElement.setAttributeNS(null, "font-family", App.prefs.getPref(PrefKey.CHART_FONT_FAMILY, "Verdana"));
+		percentScarredTextElement.setAttributeNS(null, "font-size", yAxisFontSize + "");
 		
-		Text percentTickText = doc.createTextNode(Integer.toString(percentTextAsNum));
-		percentTickTextElement.appendChild(percentTickText);
+		Text percentScarredText = doc.createTextNode(Integer.toString(percentTextAsNum));
+		percentScarredTextElement.appendChild(percentScarredText);
 		
-		return percentTickTextElement;
+		return percentScarredTextElement;
 	}
 	
 	/**

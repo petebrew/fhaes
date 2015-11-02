@@ -38,6 +38,7 @@ public class SampleRecorderPlotElementBuilder {
 	 * Returns a depth text element based on the input parameters.
 	 * 
 	 * @param doc
+	 * @param labelY
 	 * @param fontSize
 	 * @param scaleY
 	 * @param tickNum
@@ -46,13 +47,13 @@ public class SampleRecorderPlotElementBuilder {
 	 * @param labelHeight
 	 * @return depthTextElement
 	 */
-	protected static Element getDepthTextElement(Document doc, int fontSize, double scaleY, int tickNum, int tickSpacing, int labelWidth,
-			int labelHeight) {
-	
+	protected static Element getDepthTextElement(Document doc, int labelY, int fontSize, double scaleY, int tickNum, int tickSpacing,
+			int labelWidth, int labelHeight) {
+			
 		Element depthTextElement = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "text");
 		
-		depthTextElement.setAttributeNS(null, "x", "-1");
-		depthTextElement.setAttributeNS(null, "y", Double.toString(0 - (labelHeight / 2.0) * (1.0 / scaleY) + 2));
+		depthTextElement.setAttributeNS(null, "x", "-3");
+		depthTextElement.setAttributeNS(null, "y", labelY + "");
 		depthTextElement.setAttributeNS(null, "font-family", App.prefs.getPref(PrefKey.CHART_FONT_FAMILY, "Verdana"));
 		depthTextElement.setAttributeNS(null, "font-size", fontSize + "");
 		depthTextElement.setAttributeNS(null, "text-anchor", "end");
@@ -70,7 +71,7 @@ public class SampleRecorderPlotElementBuilder {
 	 * @return sampleDepthTextElement
 	 */
 	protected static Element getSampleDepthTextElement(Document doc) {
-	
+		
 		Element sampleDepthTextElement = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "text");
 		
 		sampleDepthTextElement.setAttributeNS(null, "x", "0");
@@ -94,7 +95,7 @@ public class SampleRecorderPlotElementBuilder {
 	 * @return horizontalTick
 	 */
 	protected static Element getHorizontalTick(Document doc, double unscaleY, int tickNum, int tickSpacing) {
-	
+		
 		Element horizontalTick = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
 		
 		horizontalTick.setAttributeNS(null, "x1", "-5");
@@ -120,7 +121,7 @@ public class SampleRecorderPlotElementBuilder {
 	 */
 	protected static Element getHorizontalTrendLinePart(Document doc, String lineColor, double scaleY, int startingX, int beginIndex,
 			int sampleDepthsBegin) {
-	
+			
 		Element horizontalTrendLinePart = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
 		
 		horizontalTrendLinePart.setAttributeNS(null, "x1", Double.toString(beginIndex));
@@ -148,7 +149,7 @@ public class SampleRecorderPlotElementBuilder {
 	 */
 	protected static Element getVerticalTrendLinePart(Document doc, String lineColor, int startingX, int sampleDepthsBegin,
 			int sampleDepthsCurrent, int chartWidth, int firstChartYear, int lastChartYear) {
-	
+			
 		Element verticalTrendLinePart = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
 		
 		verticalTrendLinePart.setAttributeNS(null, "x1", Double.toString(startingX));
@@ -158,7 +159,7 @@ public class SampleRecorderPlotElementBuilder {
 		verticalTrendLinePart.setAttributeNS(null, "stroke", lineColor);
 		verticalTrendLinePart.setAttributeNS(null, "stroke-width",
 				Double.toString(FireChartUtil.pixelsToYears(1, chartWidth, firstChartYear, lastChartYear)));
-		
+				
 		return verticalTrendLinePart;
 	}
 	
@@ -173,7 +174,7 @@ public class SampleRecorderPlotElementBuilder {
 	 * @return thresholdLine
 	 */
 	protected static Element getThresholdLine(Document doc, double scaleY, int largestSampleDepth, int firstChartYear, int lastChartYear) {
-	
+		
 		Element thresholdLine = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
 		
 		int thresholdSampleDepthValue = App.prefs.getIntPref(PrefKey.CHART_DEPTH_THRESHOLD_VALUE, 10);
