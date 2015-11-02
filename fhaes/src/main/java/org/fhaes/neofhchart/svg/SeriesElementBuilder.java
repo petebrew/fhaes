@@ -46,7 +46,7 @@ public class SeriesElementBuilder {
 	 * @param chartWidth
 	 * @return seriesNameTextElement
 	 */
-	protected static Element getSeriesNameElement(Document doc, FHSeriesSVG seriesSVG, int fontSize, int chartWidth) {
+	protected static Element getSeriesNameTextElement(Document doc, FHSeriesSVG seriesSVG, int fontSize, int chartWidth) {
 		
 		Text seriesNameText = doc.createTextNode(seriesSVG.getTitle());
 		
@@ -72,30 +72,30 @@ public class SeriesElementBuilder {
 	 */
 	protected static Element getCategoryLabelTextElement(Document doc, String categoryLabel, Color labelColor, int chartWidth) {
 		
-		String xLocation;
+		String xPosition;
 		JustificationType justification = App.prefs.getJustificationTypePref(PrefKey.CHART_CATEGORY_LABEL_JUSTIFICATION,
 				JustificationType.CENTER);
 				
 		if (justification == JustificationType.CENTER)
 		{
 			int paddingAmountToCenterText = FireChartUtil.getStringWidth(Font.PLAIN, 16, categoryLabel.toUpperCase());
-			xLocation = Integer.toString((chartWidth / 2) - (paddingAmountToCenterText / 2));
+			xPosition = Integer.toString((chartWidth / 2) - (paddingAmountToCenterText / 2));
 		}
 		else if (justification == JustificationType.RIGHT)
 		{
 			int widthOfLabelString = FireChartUtil.getStringWidth(Font.PLAIN, 16, categoryLabel.toUpperCase());
-			xLocation = Integer.toString(chartWidth - widthOfLabelString);
+			xPosition = Integer.toString(chartWidth - widthOfLabelString);
 		}
 		else
 		{
-			xLocation = "0"; // used when the justification is set to LEFT
+			xPosition = "0"; // used when the justification is set to LEFT
 		}
 		
 		String fontSize = Integer.toString(App.prefs.getIntPref(PrefKey.CHART_CATEGORY_LABEL_FONT_SIZE, 18));
 		Text categoryLabelText = doc.createTextNode(categoryLabel.toUpperCase());
 		
 		Element categoryLabelTextElement = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "text");
-		categoryLabelTextElement.setAttributeNS(null, "x", xLocation);
+		categoryLabelTextElement.setAttributeNS(null, "x", xPosition);
 		categoryLabelTextElement.setAttributeNS(null, "y", "0");
 		categoryLabelTextElement.setAttributeNS(null, "font-family", App.prefs.getPref(PrefKey.CHART_FONT_FAMILY, "Verdana"));
 		categoryLabelTextElement.setAttributeNS(null, "font-size", fontSize);
@@ -106,12 +106,47 @@ public class SeriesElementBuilder {
 	}
 	
 	/**
+	 * Returns a series line element based on the input parameters.
+	 * 
+	 * @param doc
+	 * @param isRecording
+	 * @param firstChartYear
+	 * @param lastChartYear
+	 * @param x1Position
+	 * @param x2Position
+	 * @param lineColor
+	 * @return seriesLine
+	 */
+	protected static Element getSeriesLine(Document doc, boolean isRecording, int firstChartYear, int lastChartYear, int x1Position,
+			int x2Position, Color lineColor) {
+			
+		Element seriesLine;
+		
+		if (isRecording)
+		{
+			seriesLine = SeriesElementBuilder.getRecorderLine(doc);
+		}
+		else
+		{
+			seriesLine = SeriesElementBuilder.getNonRecorderLine(doc, firstChartYear, lastChartYear);
+		}
+		
+		seriesLine.setAttributeNS(null, "x1", Integer.toString(x1Position));
+		seriesLine.setAttributeNS(null, "y1", "0");
+		seriesLine.setAttributeNS(null, "x2", Integer.toString(x2Position));
+		seriesLine.setAttributeNS(null, "y2", "0");
+		seriesLine.setAttributeNS(null, "stroke", FireChartUtil.colorToHexString(lineColor));
+		
+		return seriesLine;
+	}
+	
+	/**
 	 * Returns a recorder line that is pre-configured. You will probably need to change the x1 y1 x2 y2 attributes to your liking.
 	 * 
 	 * @param doc
 	 * @return recorderLine
 	 */
-	protected static Element getRecorderLine(Document doc) {
+	private static Element getRecorderLine(Document doc) {
 		
 		Element recorderLine = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
 		recorderLine.setAttributeNS(null, "x1", "0");
@@ -132,7 +167,7 @@ public class SeriesElementBuilder {
 	 * @param lastChartYear
 	 * @return nonRecorderLine
 	 */
-	protected static Element getNonRecorderLine(Document doc, int firstChartYear, int lastChartYear) {
+	private static Element getNonRecorderLine(Document doc, int firstChartYear, int lastChartYear) {
 		
 		Element nonRecorderLine = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
 		nonRecorderLine.setAttributeNS(null, "x1", "0");
@@ -256,7 +291,7 @@ public class SeriesElementBuilder {
 	}
 	
 	/**
-	 * Returns an up button.
+	 * Returns an up button for use on the Fire Chart.
 	 * 
 	 * @param doc
 	 * @return upButton
@@ -272,7 +307,7 @@ public class SeriesElementBuilder {
 	}
 	
 	/**
-	 * Returns a down button.
+	 * Returns a down button for use on the Fire Chart.
 	 * 
 	 * @param doc
 	 * @return downButton

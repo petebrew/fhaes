@@ -35,28 +35,28 @@ import org.w3c.dom.Text;
 public class SampleRecorderPlotElementBuilder {
 	
 	/**
-	 * Returns a depth text element based on the input parameters.
+	 * Returns a depth count text element based on the input parameters.
 	 * 
 	 * @param doc
 	 * @param labelY
 	 * @param fontSize
 	 * @param tickNum
 	 * @param tickSpacing
-	 * @return depthTextElement
+	 * @return depthCountTextElement
 	 */
-	protected static Element getDepthTextElement(Document doc, int labelY, int fontSize, int tickNum, int tickSpacing) {
+	protected static Element getDepthCountTextElement(Document doc, int labelY, int fontSize, int tickNum, int tickSpacing) {
 		
-		Text depthText = doc.createTextNode(Integer.toString(tickNum * tickSpacing));
+		Text depthCountText = doc.createTextNode(Integer.toString(tickNum * tickSpacing));
 		
-		Element depthTextElement = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "text");
-		depthTextElement.setAttributeNS(null, "x", "-3");
-		depthTextElement.setAttributeNS(null, "y", labelY + "");
-		depthTextElement.setAttributeNS(null, "font-family", App.prefs.getPref(PrefKey.CHART_FONT_FAMILY, "Verdana"));
-		depthTextElement.setAttributeNS(null, "font-size", fontSize + "");
-		depthTextElement.setAttributeNS(null, "text-anchor", "end");
-		depthTextElement.appendChild(depthText);
+		Element depthCountTextElement = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "text");
+		depthCountTextElement.setAttributeNS(null, "x", "-3");
+		depthCountTextElement.setAttributeNS(null, "y", labelY + "");
+		depthCountTextElement.setAttributeNS(null, "font-family", App.prefs.getPref(PrefKey.CHART_FONT_FAMILY, "Verdana"));
+		depthCountTextElement.setAttributeNS(null, "font-size", fontSize + "");
+		depthCountTextElement.setAttributeNS(null, "text-anchor", "end");
+		depthCountTextElement.appendChild(depthCountText);
 		
-		return depthTextElement;
+		return depthCountTextElement;
 	}
 	
 	/**
@@ -107,19 +107,19 @@ public class SampleRecorderPlotElementBuilder {
 	 * @param doc
 	 * @param lineColor
 	 * @param scaleY
-	 * @param startingX
-	 * @param beginIndex
-	 * @param sampleDepthsBegin
+	 * @param x1Position
+	 * @param x2Position
+	 * @param yPosition
 	 * @return horizontalTrendLinePart
 	 */
-	protected static Element getHorizontalTrendLinePart(Document doc, String lineColor, double scaleY, int startingX, int beginIndex,
-			int sampleDepthsBegin) {
+	protected static Element getHorizontalTrendLinePart(Document doc, String lineColor, double scaleY, int x1Position, int x2Position,
+			int yPosition) {
 			
 		Element horizontalTrendLinePart = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
-		horizontalTrendLinePart.setAttributeNS(null, "x1", Double.toString(beginIndex));
-		horizontalTrendLinePart.setAttributeNS(null, "y1", Double.toString(sampleDepthsBegin));
-		horizontalTrendLinePart.setAttributeNS(null, "x2", Double.toString(startingX));
-		horizontalTrendLinePart.setAttributeNS(null, "y2", Double.toString(sampleDepthsBegin));
+		horizontalTrendLinePart.setAttributeNS(null, "x1", Double.toString(x1Position));
+		horizontalTrendLinePart.setAttributeNS(null, "y1", Double.toString(yPosition));
+		horizontalTrendLinePart.setAttributeNS(null, "x2", Double.toString(x2Position));
+		horizontalTrendLinePart.setAttributeNS(null, "y2", Double.toString(yPosition));
 		horizontalTrendLinePart.setAttributeNS(null, "stroke", lineColor);
 		horizontalTrendLinePart.setAttributeNS(null, "stroke-width", Double.toString(-1.0 / scaleY));
 		
@@ -131,24 +131,24 @@ public class SampleRecorderPlotElementBuilder {
 	 * 
 	 * @param doc
 	 * @param lineColor
-	 * @param startingX
-	 * @param sampleDepthsBegin
-	 * @param sampleDepthsCurrent
+	 * @param xPosition
+	 * @param y1Position
+	 * @param y2Position
 	 * @param chartWidth
 	 * @param firstChartYear
 	 * @param lastChartYear
 	 * @return verticalTrendLinePart
 	 */
-	protected static Element getVerticalTrendLinePart(Document doc, String lineColor, int startingX, int sampleDepthsBegin,
-			int sampleDepthsCurrent, int chartWidth, int firstChartYear, int lastChartYear) {
+	protected static Element getVerticalTrendLinePart(Document doc, String lineColor, int xPosition, int y1Position, int y2Position,
+			int chartWidth, int firstChartYear, int lastChartYear) {
 			
 		String strokeWidth = Double.toString(FireChartUtil.pixelsToYears(1, chartWidth, firstChartYear, lastChartYear));
 		
 		Element verticalTrendLinePart = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
-		verticalTrendLinePart.setAttributeNS(null, "x1", Double.toString(startingX));
-		verticalTrendLinePart.setAttributeNS(null, "y1", Double.toString(sampleDepthsBegin));
-		verticalTrendLinePart.setAttributeNS(null, "x2", Double.toString(startingX));
-		verticalTrendLinePart.setAttributeNS(null, "y2", Double.toString(sampleDepthsCurrent));
+		verticalTrendLinePart.setAttributeNS(null, "x1", Double.toString(xPosition));
+		verticalTrendLinePart.setAttributeNS(null, "y1", Double.toString(y1Position));
+		verticalTrendLinePart.setAttributeNS(null, "x2", Double.toString(xPosition));
+		verticalTrendLinePart.setAttributeNS(null, "y2", Double.toString(y2Position));
 		verticalTrendLinePart.setAttributeNS(null, "stroke", lineColor);
 		verticalTrendLinePart.setAttributeNS(null, "stroke-width", strokeWidth);
 		

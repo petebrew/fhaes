@@ -40,17 +40,17 @@ public class LegendElementBuilder {
 	 * 
 	 * @param doc
 	 * @param text, the description to be entered
-	 * @param xLoc, the x-location of the text
-	 * @param yLoc, the y-location of the text
+	 * @param xPosition, the x-location of the text
+	 * @param yPosition, the y-location of the text
 	 * @return descriptionTextElement
 	 */
-	protected static Element getDescriptionTextElement(Document doc, String text, int xLoc, int yLoc) {
+	protected static Element getDescriptionTextElement(Document doc, String text, int xPosition, int yPosition) {
 		
 		Text descriptionText = doc.createTextNode(text);
 		
 		Element descriptionTextElement = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "text");
-		descriptionTextElement.setAttributeNS(null, "x", Integer.toString(xLoc));
-		descriptionTextElement.setAttributeNS(null, "y", Integer.toString(yLoc));
+		descriptionTextElement.setAttributeNS(null, "x", Integer.toString(xPosition));
+		descriptionTextElement.setAttributeNS(null, "y", Integer.toString(yPosition));
 		descriptionTextElement.setAttributeNS(null, "font-family", App.prefs.getPref(PrefKey.CHART_FONT_FAMILY, "Verdana"));
 		descriptionTextElement.setAttributeNS(null, "font-size", Integer.toString(DESCRIPTION_FONT_SIZE));
 		descriptionTextElement.appendChild(descriptionText);

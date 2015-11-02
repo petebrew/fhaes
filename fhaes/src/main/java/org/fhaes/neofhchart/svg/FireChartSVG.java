@@ -805,23 +805,9 @@ public class FireChartSVG {
 				if (isRecording != recording_years[j] || j == last_index)
 				{
 					// Need to draw a line
-					Element series_line;
-					if (isRecording)
-					{
-						series_line = SeriesElementBuilder.getRecorderLine(doc);
-					}
-					else
-					{
-						series_line = SeriesElementBuilder.getNonRecorderLine(doc, getFirstChartYear(), getLastChartYear());
-					}
-					
-					series_line.setAttributeNS(null, "x1", Integer.toString(begin_index));
-					series_line.setAttributeNS(null, "y1", "0");
-					series_line.setAttributeNS(null, "x2", Integer.toString(j));
-					series_line.setAttributeNS(null, "y2", "0");
-					series_line.setAttributeNS(null, "stroke", FireChartUtil.colorToHexString(seriesSVG.getLineColor()));
-					line_group.appendChild(series_line);
-					
+					line_group.appendChild(SeriesElementBuilder.getSeriesLine(doc, isRecording, getFirstChartYear(), getLastChartYear(),
+							begin_index, j, seriesSVG.getLineColor()));
+							
 					begin_index = j;
 					isRecording = recording_years[j];
 				}
@@ -839,14 +825,16 @@ public class FireChartSVG {
 			{
 				if (fire_years[j] && j <= last_index)
 				{
-					Element fire_event_g = doc.createElementNS(svgNS, "g");
-					fire_event_g.setAttributeNS(null, "class", "fire_marker");
-					fire_event_g.setAttributeNS(null, "stroke", FireChartUtil.colorToHexString(seriesSVG.getLineColor()));
 					String translate = "translate("
 							+ Double.toString(j - FireChartUtil.pixelsToYears(0.5, chartWidth, getFirstChartYear(), getLastChartYear()))
 							+ "," + Integer.toString(-SERIES_HEIGHT / 2) + ")";
-					fire_event_g.setAttributeNS(null, "transform", translate + "scale("
-							+ FireChartUtil.pixelsToYears(chartWidth, getFirstChartYear(), getLastChartYear()) + ",1)");
+							
+					String scale = "scale(" + FireChartUtil.pixelsToYears(chartWidth, getFirstChartYear(), getLastChartYear()) + ",1)";
+					
+					Element fire_event_g = doc.createElementNS(svgNS, "g");
+					fire_event_g.setAttributeNS(null, "class", "fire_marker");
+					fire_event_g.setAttributeNS(null, "stroke", FireChartUtil.colorToHexString(seriesSVG.getLineColor()));
+					fire_event_g.setAttributeNS(null, "transform", translate + scale);
 					fire_event_g.appendChild(SeriesElementBuilder.getFireYearMarker(doc, seriesSVG.getLineColor()));
 					series_fire_events.appendChild(fire_event_g);
 				}
@@ -863,14 +851,16 @@ public class FireChartSVG {
 			{
 				if (injury_years[j] && j <= last_index)
 				{
+					String translate = "translate("
+							+ Double.toString(j - FireChartUtil.pixelsToYears(1.5, chartWidth, getFirstChartYear(), getLastChartYear()))
+							+ "," + Integer.toString(-SERIES_HEIGHT / 2) + ")";
+							
+					String scale = "scale(" + FireChartUtil.pixelsToYears(chartWidth, getFirstChartYear(), getLastChartYear()) + ",1)";
+					
 					Element injury_event_g = doc.createElementNS(svgNS, "g");
 					injury_event_g.setAttributeNS(null, "class", "injury_marker");
 					injury_event_g.setAttributeNS(null, "stroke", FireChartUtil.colorToHexString(seriesSVG.getLineColor()));
-					String transform = "translate("
-							+ Double.toString(j - FireChartUtil.pixelsToYears(1.5, chartWidth, getFirstChartYear(), getLastChartYear()))
-							+ "," + Integer.toString(-SERIES_HEIGHT / 2) + ")";
-					String scale = "scale(" + FireChartUtil.pixelsToYears(chartWidth, getFirstChartYear(), getLastChartYear()) + ",1)";
-					injury_event_g.setAttributeNS(null, "transform", transform + " " + scale);
+					injury_event_g.setAttributeNS(null, "transform", translate + scale);
 					injury_event_g.appendChild(SeriesElementBuilder.getInjuryYearMarker(doc, 3, seriesSVG.getLineColor()));
 					
 					series_injury_events.appendChild(injury_event_g);
@@ -884,12 +874,14 @@ public class FireChartSVG {
 		{
 			if (applyBCYearOffset(seriesSVG.getFirstYear()) >= getFirstChartYear())
 			{
-				Element pith_marker_g = doc.createElementNS(svgNS, "g");
 				// no translation because the inner year is at year=0
 				String translate = "translate("
 						+ (0 - FireChartUtil.pixelsToYears(0.5, chartWidth, getFirstChartYear(), getLastChartYear())) + ",0)";
-				pith_marker_g.setAttributeNS(null, "transform",
-						translate + "scale(" + FireChartUtil.pixelsToYears(chartWidth, getFirstChartYear(), getLastChartYear()) + ",1)");
+						
+				String scale = "scale(" + FireChartUtil.pixelsToYears(chartWidth, getFirstChartYear(), getLastChartYear()) + ",1)";
+				
+				Element pith_marker_g = doc.createElementNS(svgNS, "g");
+				pith_marker_g.setAttributeNS(null, "transform", translate + scale);
 				pith_marker_g
 						.appendChild(SeriesElementBuilder.getInnerYearPithMarker(doc, seriesSVG.hasPith(), 5, seriesSVG.getLineColor()));
 				series_group.appendChild(pith_marker_g);
@@ -901,14 +893,13 @@ public class FireChartSVG {
 		{
 			if (applyBCYearOffset(seriesSVG.getLastYear()) <= this.getLastChartYear())
 			{
-				Element bark_marker_g = doc.createElementNS(svgNS, "g");
 				String translate = "translate(" + (applyBCYearOffset(seriesSVG.getLastYear()) - applyBCYearOffset(seriesSVG.getFirstYear()))
-						+ ",0)"; // minus
-				// one
-				// because
-				// the
-				bark_marker_g.setAttribute("transform",
-						translate + " scale(" + FireChartUtil.pixelsToYears(chartWidth, getFirstChartYear(), getLastChartYear()) + ",1)");
+						+ ",0)";
+						
+				String scale = "scale(" + FireChartUtil.pixelsToYears(chartWidth, getFirstChartYear(), getLastChartYear()) + ",1)";
+				
+				Element bark_marker_g = doc.createElementNS(svgNS, "g");
+				bark_marker_g.setAttribute("transform", translate + scale);
 				bark_marker_g
 						.appendChild(SeriesElementBuilder.getOuterYearBarkMarker(doc, seriesSVG.hasBark(), 5, seriesSVG.getLineColor()));
 				series_group.appendChild(bark_marker_g);
@@ -926,13 +917,13 @@ public class FireChartSVG {
 	 */
 	private Element getChartTitle(String chartTitle) {
 		
-		Element chartTitleElement = doc.createElementNS(svgNS, "text");
-		
 		Text chartTitleText = doc.createTextNode(chartTitle);
+		Integer chartTitleFontSize = App.prefs.getIntPref(PrefKey.CHART_TITLE_FONT_SIZE, 20);
+		
+		Element chartTitleElement = doc.createElementNS(svgNS, "text");
 		chartTitleElement.setAttributeNS(null, "x", "0");
 		chartTitleElement.setAttributeNS(null, "y", "0");
 		chartTitleElement.setAttributeNS(null, "font-family", App.prefs.getPref(PrefKey.CHART_FONT_FAMILY, "Verdana"));
-		Integer chartTitleFontSize = App.prefs.getIntPref(PrefKey.CHART_TITLE_FONT_SIZE, 20);
 		chartTitleElement.setAttributeNS(null, "font-size", chartTitleFontSize.toString());
 		chartTitleElement.appendChild(chartTitleText);
 		
@@ -946,7 +937,6 @@ public class FireChartSVG {
 	 */
 	private Element getIndexPlot() {
 		
-		Element indexPlot = doc.createElementNS(svgNS, "g");
 		int indexPlotOffsetAmount = 0;
 		
 		if (App.prefs.getBooleanPref(PrefKey.CHART_SHOW_CHART_TITLE, true))
@@ -954,6 +944,7 @@ public class FireChartSVG {
 			indexPlotOffsetAmount = App.prefs.getIntPref(PrefKey.CHART_TITLE_FONT_SIZE, 20) + 10;
 		}
 		
+		Element indexPlot = doc.createElementNS(svgNS, "g");
 		indexPlot.setAttribute("id", "indexplot");
 		indexPlot.setAttributeNS(null, "transform", "translate(0," + indexPlotOffsetAmount + ")");
 		indexPlot.appendChild(getSampleOrRecorderDepthsPlot(App.prefs.getBooleanPref(PrefKey.CHART_SHOW_SAMPLE_DEPTH, false)));
@@ -1038,7 +1029,7 @@ public class FireChartSVG {
 			series_line.setAttributeNS(null, "transform", scale_string + " " + translate_string);
 			
 			// Add in the label for the series
-			Element series_name = SeriesElementBuilder.getSeriesNameElement(doc, seriesSVG, fontSize, chartWidth);
+			Element series_name = SeriesElementBuilder.getSeriesNameTextElement(doc, seriesSVG, fontSize, chartWidth);
 			
 			// Add in the up button
 			Element up_button_g = doc.createElementNS(svgNS, "g");
@@ -1194,6 +1185,7 @@ public class FireChartSVG {
 			{
 				double pixelsBetweenLabels = FireChartUtil.yearsToPixels(i, chartWidth, getFirstChartYear(), getLastChartYear())
 						- FireChartUtil.yearsToPixels(prev_i, chartWidth, getFirstChartYear(), getLastChartYear());
+						
 				if (pixelsBetweenLabels < overlap_margin)
 				{
 					cur_offset_level = cur_offset_level + 1;
@@ -1322,14 +1314,6 @@ public class FireChartSVG {
 		compositePlot.appendChild(
 				CompositePlotElementBuilder.getBorderLine4(doc, chart_height, chartWidth, getFirstChartYear(), getLastChartYear()));
 				
-		/*
-		 * comp_line.setAttributeNS(null, "x", Integer.toString(getFirstChartYear())); comp_line.setAttributeNS(null, "y", "0");
-		 * comp_line.setAttributeNS(null, "width", Integer.toString(getLastChartYear() - getFirstChartYear()));
-		 * comp_line.setAttributeNS(null, "height", Double.toString(chart_height)); comp_line.setAttributeNS(null, "fill", "none");
-		 * comp_line.setAttributeNS(null, "stroke", "black"); comp_line.setAttributeNS(null, "stroke-width",
-		 * Double.toString(pixelsToYears(1))); composite_plot.appendChild(comp_line);
-		 */
-		
 		// add the label
 		String translate_string = "translate("
 				+ Double.toString(getLastChartYear() + FireChartUtil.pixelsToYears(10, chartWidth, getFirstChartYear(), getLastChartYear()))
@@ -1861,8 +1845,8 @@ public class FireChartSVG {
 				sample_g_chart.appendChild(SampleRecorderPlotElementBuilder.getVerticalTrendLinePart(doc, lineColor, i,
 						sample_depths[begin_index], sample_depths[i], chartWidth, getFirstChartYear(), getLastChartYear()));
 						
-				sample_g_chart.appendChild(SampleRecorderPlotElementBuilder.getHorizontalTrendLinePart(doc, lineColor, scale_y, i,
-						begin_index, sample_depths[begin_index]));
+				sample_g_chart.appendChild(SampleRecorderPlotElementBuilder.getHorizontalTrendLinePart(doc, lineColor, scale_y, begin_index,
+						i, sample_depths[begin_index]));
 						
 				begin_index = i;
 			}
@@ -1870,8 +1854,8 @@ public class FireChartSVG {
 			// draw in the final line
 			if (i + 1 == sample_depths.length)
 			{
-				sample_g_chart.appendChild(SampleRecorderPlotElementBuilder.getHorizontalTrendLinePart(doc, lineColor, scale_y, i,
-						begin_index, sample_depths[begin_index]));
+				sample_g_chart.appendChild(SampleRecorderPlotElementBuilder.getHorizontalTrendLinePart(doc, lineColor, scale_y, begin_index,
+						i, sample_depths[begin_index]));
 			}
 		}
 		
@@ -1892,7 +1876,7 @@ public class FireChartSVG {
 			
 			Element unscale_g = doc.createElementNS(svgNS, "g");
 			unscale_g.setAttributeNS(null, "transform", "translate(-5," + (i * tick_spacing) + ") scale(1," + (1.0 / scale_y) + ")");
-			unscale_g.appendChild(SampleRecorderPlotElementBuilder.getDepthTextElement(doc, labelY, yAxisFontSize, i, tick_spacing));
+			unscale_g.appendChild(SampleRecorderPlotElementBuilder.getDepthCountTextElement(doc, labelY, yAxisFontSize, i, tick_spacing));
 			
 			sample_g.appendChild(unscale_g);
 		}

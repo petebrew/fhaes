@@ -49,8 +49,8 @@ public class TimeAxisElementBuilder {
 	protected static Element getTimeAxis(Document doc, int height, int firstChartYear, int lastChartYear) {
 		
 		Element timeAxis = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
-		timeAxis.setAttributeNS(null, "x1", firstChartYear + "");
-		timeAxis.setAttributeNS(null, "x2", lastChartYear + "");
+		timeAxis.setAttributeNS(null, "x1", Integer.toString(firstChartYear));
+		timeAxis.setAttributeNS(null, "x2", Integer.toString(lastChartYear));
 		timeAxis.setAttributeNS(null, "y1", Integer.toString(height - (2 * FireChartSVG.SERIES_HEIGHT)));
 		timeAxis.setAttributeNS(null, "y2", Integer.toString(height - (2 * FireChartSVG.SERIES_HEIGHT)));
 		timeAxis.setAttributeNS(null, "stroke-dasharray", LineStyle.SOLID.getCode());
