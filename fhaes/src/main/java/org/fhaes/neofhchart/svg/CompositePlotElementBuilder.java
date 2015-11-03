@@ -20,7 +20,6 @@ package org.fhaes.neofhchart.svg;
 import org.apache.batik.dom.svg.SVGDOMImplementation;
 import org.fhaes.preferences.App;
 import org.fhaes.preferences.FHAESPreferences.PrefKey;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Text;
 
@@ -31,19 +30,29 @@ import org.w3c.dom.Text;
  */
 public class CompositePlotElementBuilder {
 	
+	// Declare FireChartSVG parent
+	private final FireChartSVG parent;
+	
+	/**
+	 * Initializes the parent object for CompositePlotElementBuilder.
+	 * 
+	 * @param inParent
+	 */
+	public CompositePlotElementBuilder(FireChartSVG inParent) {
+		
+		parent = inParent;
+	}
+	
 	/**
 	 * Returns one part of the rectangular box which surrounds the composite plot.
 	 * 
-	 * @param doc
-	 * @param firstChartYear
-	 * @param lastChartYear
 	 * @return borderLine1
 	 */
-	protected static Element getBorderLine1(Document doc, int firstChartYear, int lastChartYear) {
+	public Element getBorderLine1() {
 		
-		Element borderLine1 = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
-		borderLine1.setAttributeNS(null, "x1", Double.toString(firstChartYear));
-		borderLine1.setAttributeNS(null, "x2", Double.toString(lastChartYear));
+		Element borderLine1 = parent.getSVGDocument().createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
+		borderLine1.setAttributeNS(null, "x1", Integer.toString(parent.getFirstChartYear()));
+		borderLine1.setAttributeNS(null, "x2", Integer.toString(parent.getLastChartYear()));
 		borderLine1.setAttributeNS(null, "y1", "0");
 		borderLine1.setAttributeNS(null, "y2", "0");
 		borderLine1.setAttributeNS(null, "stroke-width", "1");
@@ -56,17 +65,14 @@ public class CompositePlotElementBuilder {
 	/**
 	 * Returns one part of the rectangular box which surrounds the composite plot.
 	 * 
-	 * @param doc
 	 * @param chartHeight
-	 * @param firstChartYear
-	 * @param lastChartYear
 	 * @return borderLine2
 	 */
-	protected static Element getBorderLine2(Document doc, double chartHeight, int firstChartYear, int lastChartYear) {
+	public Element getBorderLine2(double chartHeight) {
 		
-		Element borderLine2 = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
-		borderLine2.setAttributeNS(null, "x1", Integer.toString(firstChartYear));
-		borderLine2.setAttributeNS(null, "x2", Integer.toString(lastChartYear));
+		Element borderLine2 = parent.getSVGDocument().createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
+		borderLine2.setAttributeNS(null, "x1", Integer.toString(parent.getFirstChartYear()));
+		borderLine2.setAttributeNS(null, "x2", Integer.toString(parent.getLastChartYear()));
 		borderLine2.setAttributeNS(null, "y1", Double.toString(chartHeight));
 		borderLine2.setAttributeNS(null, "y2", Double.toString(chartHeight));
 		borderLine2.setAttributeNS(null, "stroke-width", "1");
@@ -79,20 +85,17 @@ public class CompositePlotElementBuilder {
 	/**
 	 * Returns one part of the rectangular box which surrounds the composite plot.
 	 * 
-	 * @param doc
 	 * @param chartHeight
-	 * @param chartWidth
-	 * @param firstChartYear
-	 * @param lastChartYear
 	 * @return borderLine3
 	 */
-	protected static Element getBorderLine3(Document doc, double chartHeight, int chartWidth, int firstChartYear, int lastChartYear) {
+	public Element getBorderLine3(double chartHeight) {
 		
-		String strokeWidth = Double.toString(FireChartUtil.pixelsToYears(1, chartWidth, firstChartYear, lastChartYear));
-		
-		Element borderLine3 = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
-		borderLine3.setAttributeNS(null, "x1", Integer.toString(firstChartYear));
-		borderLine3.setAttributeNS(null, "x2", Integer.toString(firstChartYear));
+		String strokeWidth = Double
+				.toString(FireChartUtil.pixelsToYears(1, parent.getChartWidth(), parent.getFirstChartYear(), parent.getLastChartYear()));
+				
+		Element borderLine3 = parent.getSVGDocument().createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
+		borderLine3.setAttributeNS(null, "x1", Integer.toString(parent.getFirstChartYear()));
+		borderLine3.setAttributeNS(null, "x2", Integer.toString(parent.getFirstChartYear()));
 		borderLine3.setAttributeNS(null, "y1", "0");
 		borderLine3.setAttributeNS(null, "y2", Double.toString(chartHeight));
 		borderLine3.setAttributeNS(null, "stroke-width", strokeWidth);
@@ -105,20 +108,17 @@ public class CompositePlotElementBuilder {
 	/**
 	 * Returns one part of the rectangular box which surrounds the composite plot.
 	 * 
-	 * @param doc
 	 * @param chartHeight
-	 * @param chartWidth
-	 * @param firstChartYear
-	 * @param lastChartYear
 	 * @return borderLine4
 	 */
-	protected static Element getBorderLine4(Document doc, double chartHeight, int chartWidth, int firstChartYear, int lastChartYear) {
+	public Element getBorderLine4(double chartHeight) {
 		
-		String strokeWidth = Double.toString(FireChartUtil.pixelsToYears(1, chartWidth, firstChartYear, lastChartYear));
-		
-		Element borderLine4 = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
-		borderLine4.setAttributeNS(null, "x1", Integer.toString(lastChartYear));
-		borderLine4.setAttributeNS(null, "x2", Integer.toString(lastChartYear));
+		String strokeWidth = Double
+				.toString(FireChartUtil.pixelsToYears(1, parent.getChartWidth(), parent.getFirstChartYear(), parent.getLastChartYear()));
+				
+		Element borderLine4 = parent.getSVGDocument().createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
+		borderLine4.setAttributeNS(null, "x1", Integer.toString(parent.getLastChartYear()));
+		borderLine4.setAttributeNS(null, "x2", Integer.toString(parent.getLastChartYear()));
 		borderLine4.setAttributeNS(null, "y1", "0");
 		borderLine4.setAttributeNS(null, "y2", Double.toString(chartHeight));
 		borderLine4.setAttributeNS(null, "stroke-width", strokeWidth);
@@ -131,15 +131,15 @@ public class CompositePlotElementBuilder {
 	/**
 	 * Returns a composite label text element based on the input parameters.
 	 * 
-	 * @param doc
 	 * @return compositeLabelTextElement
 	 */
-	protected static Element getCompositeLabelTextElement(Document doc) {
+	public Element getCompositeLabelTextElement() {
 		
 		String fontSize = Integer.toString(App.prefs.getIntPref(PrefKey.CHART_COMPOSITE_PLOT_LABEL_FONT_SIZE, 10));
-		Text compositeLabelText = doc.createTextNode(App.prefs.getPref(PrefKey.CHART_COMPOSITE_LABEL_TEXT, "Composite"));
-		
-		Element compositeLabelTextElement = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "text");
+		Text compositeLabelText = parent.getSVGDocument()
+				.createTextNode(App.prefs.getPref(PrefKey.CHART_COMPOSITE_LABEL_TEXT, "Composite"));
+				
+		Element compositeLabelTextElement = parent.getSVGDocument().createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "text");
 		compositeLabelTextElement.setAttributeNS(null, "x", "0");
 		compositeLabelTextElement.setAttributeNS(null, "y", "0");
 		compositeLabelTextElement.setAttributeNS(null, "font-family", App.prefs.getPref(PrefKey.CHART_FONT_FAMILY, "Verdana"));
@@ -152,20 +152,16 @@ public class CompositePlotElementBuilder {
 	/**
 	 * Returns an event line element based on the input parameters.
 	 * 
-	 * @param doc
 	 * @param yearPosition
-	 * @param chartWidth
 	 * @param chartHeight
-	 * @param firstChartYear
-	 * @param lastChartYear
 	 * @return eventLine
 	 */
-	protected static Element getEventLine(Document doc, int yearPosition, double chartHeight, int chartWidth, int firstChartYear,
-			int lastChartYear) {
-			
-		String strokeWidth = Double.toString(FireChartUtil.pixelsToYears(1, chartWidth, firstChartYear, lastChartYear));
+	public Element getEventLine(int yearPosition, double chartHeight) {
 		
-		Element eventLine = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
+		String strokeWidth = Double
+				.toString(FireChartUtil.pixelsToYears(1, parent.getChartWidth(), parent.getFirstChartYear(), parent.getLastChartYear()));
+				
+		Element eventLine = parent.getSVGDocument().createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
 		eventLine.setAttributeNS(null, "x1", Integer.toString(yearPosition));
 		eventLine.setAttributeNS(null, "x2", Integer.toString(yearPosition));
 		eventLine.setAttributeNS(null, "y1", "0");

@@ -109,6 +109,9 @@ public class FireChartSVG {
 	private SeriesSortType lastTypeSortedBy = SeriesSortType.NAME;
 	private ArrayList<FHSeriesSVG> seriesSVGList = new ArrayList<FHSeriesSVG>();
 	
+	// Declare builder objects
+	private final CompositePlotElementBuilder compositePlotEB;
+	
 	// Java <-> ECMAScript interop used for message passing with ECMAScript. Note not thread-safe
 	private static int chartCounter = 0;
 	private static int lineGensym = 0; // only used in drawRect -- I just need a unique id
@@ -122,6 +125,9 @@ public class FireChartSVG {
 	 * @param f
 	 */
 	public FireChartSVG(AbstractFireHistoryReader f) {
+		
+		// Initialize the builder objects
+		compositePlotEB = new CompositePlotElementBuilder(this);
 		
 		// Assign number for message passing from ECMAscript
 		chartNum = chartCounter;
@@ -230,6 +236,7 @@ public class FireChartSVG {
 		legend_g.setAttributeNS(null, "id", "legend_g");
 		padding_grouper.appendChild(legend_g);
 		
+		// Finish up the initialization
 		buildElements();
 		positionSeriesLines();
 		positionChartGroupersAndDrawTimeAxis();
@@ -449,9 +456,19 @@ public class FireChartSVG {
 	}
 	
 	/**
+	 * Gets the base width of this chart.
+	 * 
+	 * @return chartWidth
+	 */
+	public int getChartWidth() {
+		
+		return chartWidth;
+	}
+	
+	/**
 	 * Gets the total width of this chart.
 	 * 
-	 * @return
+	 * @return the chartWidth plus the padding due to chronology label size
 	 */
 	public int getTotalWidth() {
 		
@@ -461,7 +478,7 @@ public class FireChartSVG {
 	/**
 	 * Gets the total height of this chart.
 	 * 
-	 * @return
+	 * @return totalHeight
 	 */
 	public int getTotalHeight() {
 		
@@ -1233,9 +1250,8 @@ public class FireChartSVG {
 		prev_i = 0;
 		for (int i : composite_years)
 		{
-			compositePlot.appendChild(
-					CompositePlotElementBuilder.getEventLine(doc, i, chart_height, chartWidth, getFirstChartYear(), getLastChartYear()));
-					
+			compositePlot.appendChild(compositePlotEB.getEventLine(i, chart_height));
+			
 			// calculate the offsets for the labels
 			if (FireChartUtil.yearsToPixels(i - prev_i, chartWidth, getFirstChartYear(), getLastChartYear()) < overlap_margin)
 			{
@@ -1307,13 +1323,11 @@ public class FireChartSVG {
 		
 		// Draw a rectangle around it
 		// Needs to be 4 lines to cope with stroke width in different coord sys in x and y
-		compositePlot.appendChild(CompositePlotElementBuilder.getBorderLine1(doc, getFirstChartYear(), getLastChartYear()));
-		compositePlot.appendChild(CompositePlotElementBuilder.getBorderLine2(doc, chart_height, getFirstChartYear(), getLastChartYear()));
-		compositePlot.appendChild(
-				CompositePlotElementBuilder.getBorderLine3(doc, chart_height, chartWidth, getFirstChartYear(), getLastChartYear()));
-		compositePlot.appendChild(
-				CompositePlotElementBuilder.getBorderLine4(doc, chart_height, chartWidth, getFirstChartYear(), getLastChartYear()));
-				
+		compositePlot.appendChild(compositePlotEB.getBorderLine1());
+		compositePlot.appendChild(compositePlotEB.getBorderLine2(chart_height));
+		compositePlot.appendChild(compositePlotEB.getBorderLine3(chart_height));
+		compositePlot.appendChild(compositePlotEB.getBorderLine4(chart_height));
+		
 		// add the label
 		String translate_string = "translate("
 				+ Double.toString(getLastChartYear() + FireChartUtil.pixelsToYears(10, chartWidth, getFirstChartYear(), getLastChartYear()))
@@ -1326,7 +1340,7 @@ public class FireChartSVG {
 		
 		Element comp_name_text_g = doc.createElementNS(svgNS, "g");
 		comp_name_text_g.setAttributeNS(null, "transform", translate_string + scale_string);
-		comp_name_text_g.appendChild(CompositePlotElementBuilder.getCompositeLabelTextElement(doc));
+		comp_name_text_g.appendChild(compositePlotEB.getCompositeLabelTextElement());
 		compositePlot.appendChild(comp_name_text_g);
 		
 		if (App.prefs.getBooleanPref(PrefKey.CHART_SHOW_COMPOSITE_PLOT, true))
