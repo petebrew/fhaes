@@ -112,6 +112,7 @@ public class FireChartSVG {
 	// Declare builder objects
 	private final CompositePlotElementBuilder compositePlotEB;
 	private final LegendElementBuilder legendEB;
+	private final PercentScarredPlotElementBuilder percentScarredPlotEB;
 	
 	// Java <-> ECMAScript interop used for message passing with ECMAScript. Note not thread-safe
 	private static int chartCounter = 0;
@@ -130,6 +131,7 @@ public class FireChartSVG {
 		// Initialize the builder objects
 		compositePlotEB = new CompositePlotElementBuilder(this);
 		legendEB = new LegendElementBuilder(this);
+		percentScarredPlotEB = new PercentScarredPlotElementBuilder(this);
 		
 		// Assign number for message passing from ECMAscript
 		chartNum = chartCounter;
@@ -1702,22 +1704,17 @@ public class FireChartSVG {
 			{
 				double percent = percent_arr[i];
 				percent = (percent > 100) ? 100 : percent; // don't allow values over 100%
-				scarred_scale_g.appendChild(PercentScarredPlotElementBuilder.getVerticalLine(doc, percent, i, chartWidth,
-						getFirstChartYear(), getLastChartYear()));
+				scarred_scale_g.appendChild(percentScarredPlotEB.getVerticalLine(i, percent));
 			}
 		}
 		
 		// draw a rectangle around it
 		// Needs to be 4 lines to cope with stroke width in different coord sys in x and y
-		scarred_scale_g
-				.appendChild(PercentScarredPlotElementBuilder.getBorderLine1(doc, chartWidth, getFirstChartYear(), getLastChartYear()));
-		scarred_scale_g
-				.appendChild(PercentScarredPlotElementBuilder.getBorderLine2(doc, unscale_y, getFirstChartYear(), getLastChartYear()));
-		scarred_scale_g
-				.appendChild(PercentScarredPlotElementBuilder.getBorderLine3(doc, chartWidth, getFirstChartYear(), getLastChartYear()));
-		scarred_scale_g
-				.appendChild(PercentScarredPlotElementBuilder.getBorderLine4(doc, unscale_y, getFirstChartYear(), getLastChartYear()));
-				
+		scarred_scale_g.appendChild(percentScarredPlotEB.getBorderLine1());
+		scarred_scale_g.appendChild(percentScarredPlotEB.getBorderLine2(unscale_y));
+		scarred_scale_g.appendChild(percentScarredPlotEB.getBorderLine3());
+		scarred_scale_g.appendChild(percentScarredPlotEB.getBorderLine4(unscale_y));
+		
 		// draw in the labels
 		int yAxisFontSize = App.prefs.getIntPref(PrefKey.CHART_AXIS_Y2_FONT_SIZE, 10);
 		int labelHeight = FireChartUtil.getStringHeight(Font.PLAIN, yAxisFontSize, "100");
@@ -1729,8 +1726,8 @@ public class FireChartSVG {
 			String x = Double.toString(chartWidth);
 			String y = Integer.toString(i);
 			unscale_g.setAttributeNS(null, "transform", "translate(" + x + "," + y + ") scale(1," + unscale_y + ")");
-			unscale_g.appendChild(PercentScarredPlotElementBuilder.getPercentScarredTextElement(doc, labelY, i, yAxisFontSize));
-			unscale_g.appendChild(PercentScarredPlotElementBuilder.getHorizontalTick(doc, unscale_y));
+			unscale_g.appendChild(percentScarredPlotEB.getPercentScarredTextElement(labelY, i, yAxisFontSize));
+			unscale_g.appendChild(percentScarredPlotEB.getHorizontalTick(unscale_y));
 			scarred_g.appendChild(unscale_g);
 		}
 		
