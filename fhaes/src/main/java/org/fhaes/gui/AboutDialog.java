@@ -114,7 +114,7 @@ public class AboutDialog extends JDialog implements ActionListener {
 		contentPanel.add(txtpnScientificSteeringCommittee, "cell 0 8,alignx right,growy");
 		
 		JTextPane txtpnElaineKennedySutherland = new JTextPane();
-		txtpnElaineKennedySutherland.setText("Elaine Kennedy Sutherland; Tom Swetnam; Donald Falk; Peter Brown; Henri Grissino-Mayer.");
+		txtpnElaineKennedySutherland.setText("Elaine Kennedy Sutherland; Tom Swetnam; Donald Falk; Peter Brown; and Henri Grissino-Mayer.");
 		txtpnElaineKennedySutherland.setFont(new Font("Dialog", Font.PLAIN, 9));
 		contentPanel.add(txtpnElaineKennedySutherland, "cell 1 8 2 1,grow");
 		

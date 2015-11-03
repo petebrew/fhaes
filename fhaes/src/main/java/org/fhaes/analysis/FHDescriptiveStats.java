@@ -98,6 +98,7 @@ public class FHDescriptiveStats {
 			try
 			{
 				outfile = File.createTempFile("FHDescriptiveStats", "FileSummary.tmp");
+				outfile.deleteOnExit();
 			}
 			catch (IOException e)
 			{
@@ -226,6 +227,7 @@ public class FHDescriptiveStats {
 			try
 			{
 				outfile = File.createTempFile("FHDescriptiveStats", "EventSummary.tmp");
+				outfile.deleteOnExit();
 			}
 			catch (IOException e)
 			{
