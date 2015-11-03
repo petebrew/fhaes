@@ -64,7 +64,7 @@ public class FHCategoryReader {
 	 * @param categoryFile
 	 */
 	public FHCategoryReader(File categoryFile) {
-		
+	
 		try
 		{
 			// Setup the scanner for reading and storing the category entries from the CSV file
@@ -123,7 +123,7 @@ public class FHCategoryReader {
 		}
 		catch (FileNotFoundException ex)
 		{
-			log.error("The category file " + FilenameUtils.getBaseName(categoryFile.getAbsolutePath()) + " does not exist.");
+			log.info("The category file " + FilenameUtils.getBaseName(categoryFile.getAbsolutePath()) + " does not exist.");
 		}
 		catch (InvalidCategoryFileException ex)
 		{
@@ -137,7 +137,7 @@ public class FHCategoryReader {
 	 * @return categoryEntries
 	 */
 	public ArrayList<FHCategoryEntry> getCategoryEntryList() {
-		
+	
 		return categoryEntries;
 	}
 	
@@ -147,7 +147,7 @@ public class FHCategoryReader {
 	 * @return nameOfCorrespondingFHXFile
 	 */
 	public String getNameOfCorrespondingFHXFile() {
-		
+	
 		return nameOfCorrespondingFHXFile;
 	}
 }

@@ -2613,6 +2613,12 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 				int outer = this.lastYearIndexPerSample[i];
 				int arraylength = (outer - inner) + 1;
 				
+				if (arraylength == 1)
+				{
+					log.info("No data for series " + (i + 1) + " so skipping");
+					continue;
+				}
+				
 				// Create boolean data arrays
 				boolean[] recordingYears = new boolean[arraylength];
 				boolean[] eventYears = new boolean[arraylength];
@@ -2625,10 +2631,12 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 				int j = 0;
 				for (int ind = inner; ind <= outer; ind++)
 				{
-					
-					recordingYears[j] = rya.get(i).get(ind) == 1;
-					eventYears[j] = eda1.get(i).get(ind) == 1;
-					injuryYears[j] = eda2.get(i).get(ind) == 1;
+					if (rya != null && rya.size() > 0)
+						recordingYears[j] = rya.get(i).get(ind) == 1;
+					if (eda1 != null && eda1.size() > 0)
+						eventYears[j] = eda1.get(i).get(ind) == 1;
+					if (eda2 != null && eda2.size() > 0)
+						injuryYears[j] = eda2.get(i).get(ind) == 1;
 					j++;
 				}
 				
