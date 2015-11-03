@@ -63,70 +63,83 @@ public class AboutDialog extends JDialog implements ActionListener {
 	public void init() {
 	
 		getContentPane().setBackground(Color.WHITE);
-		setBounds(100, 100, 608, 499);
+		setBounds(100, 100, 614, 517);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBackground(Color.WHITE);
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
-		contentPanel.setLayout(new MigLayout("", "[200px:200px:200px,grow,right][71.00,grow][][167.00,grow]",
-				"[43.00][][][38.00][][][grow][41.00,grow][10px:n][grow][]"));
+		contentPanel.setLayout(new MigLayout("", "[161.00px:n,grow,right][256.00,grow][]",
+				"[43.00][][][38.00][][25.00][][grow][grow][41.00,grow][10px:n][grow][]"));
 		
 		JLabel lblNewLabel = new JLabel("");
 		lblNewLabel.setIcon(Builder.getImageIcon("about.png"));
-		contentPanel.add(lblNewLabel, "cell 0 0 2 5");
+		contentPanel.add(lblNewLabel, "cell 0 0 2 6,alignx left");
 		{
 			JLabel lblFhaesfireHistory = new JLabel("FHAES");
 			lblFhaesfireHistory.setFont(new Font("Dialog", Font.BOLD, 23));
-			contentPanel.add(lblFhaesfireHistory, "cell 2 1 2 1,alignx right");
+			contentPanel.add(lblFhaesfireHistory, "cell 2 1,alignx right");
 		}
 		
 		JLabel lblF = new JLabel("Fire History Analysis and Exploration System");
 		lblF.setFont(new Font("Dialog", Font.BOLD, 10));
-		contentPanel.add(lblF, "cell 2 2 2 1,alignx right,aligny top");
+		contentPanel.add(lblF, "cell 2 2,alignx right,aligny top");
 		
 		JLabel lblVersionsnapshot = new JLabel("version: \n" + Builder.getVersion());
 		lblVersionsnapshot.setFont(new Font("Dialog", Font.PLAIN, 10));
-		contentPanel.add(lblVersionsnapshot, "cell 2 3 2 1,alignx right,aligny bottom");
+		contentPanel.add(lblVersionsnapshot, "cell 2 3,alignx right,aligny bottom");
 		
 		JLabel lblReleasedXxJune = new JLabel("built: " + Builder.getBuildTimestamp());
 		lblReleasedXxJune.setFont(new Font("Dialog", Font.PLAIN, 10));
-		contentPanel.add(lblReleasedXxJune, "cell 2 4 2 1,alignx right,aligny top");
+		contentPanel.add(lblReleasedXxJune, "cell 2 4,alignx right,aligny top");
+		
+		JLabel lblDOI = new JLabel(Builder.getDoiWithLabel());
+		lblDOI.setFont(new Font("Dialog", Font.PLAIN, 10));
+		contentPanel.add(lblDOI, "cell 2 5,alignx right,aligny top");
 		
 		JTextPane txtpnWorkingGroup = new JTextPane();
 		txtpnWorkingGroup.setEditable(false);
-		txtpnWorkingGroup.setFont(new Font("Dialog", Font.BOLD, 11));
-		txtpnWorkingGroup.setText("Working group:");
-		contentPanel.add(txtpnWorkingGroup, "cell 0 6,alignx right,growy");
+		txtpnWorkingGroup.setFont(new Font("Dialog", Font.BOLD, 12));
+		txtpnWorkingGroup.setText("Authors:");
+		contentPanel.add(txtpnWorkingGroup, "cell 0 7,alignx right,growy");
 		
 		JTextPane txtcontributors = new JTextPane();
 		txtcontributors.setEditable(false);
-		txtcontributors.setFont(new Font("Dialog", Font.BOLD, 11));
-		txtcontributors
-				.setText("Elaine Kennedy Sutherland; Elena Velasquez; Peter Brewer; Donald Falk; Henri Grissino-Mayer; Peter Brown.");
-		contentPanel.add(txtcontributors, "cell 1 6 3 1,grow");
+		txtcontributors.setFont(new Font("Dialog", Font.BOLD, 12));
+		txtcontributors.setText("Elaine Kennedy Sutherland; Peter Brewer; Donald Falk; and M. Elena Velasquez.");
+		contentPanel.add(txtcontributors, "cell 1 7 2 1,alignx left,growy");
+		
+		JTextPane txtpnScientificSteeringCommittee = new JTextPane();
+		txtpnScientificSteeringCommittee.setText("Scientific steering committee:");
+		txtpnScientificSteeringCommittee.setFont(new Font("Dialog", Font.PLAIN, 9));
+		contentPanel.add(txtpnScientificSteeringCommittee, "cell 0 8,alignx right,growy");
+		
+		JTextPane txtpnElaineKennedySutherland = new JTextPane();
+		txtpnElaineKennedySutherland.setText("Elaine Kennedy Sutherland; Tom Swetnam; Donald Falk; Peter Brown; Henri Grissino-Mayer.");
+		txtpnElaineKennedySutherland.setFont(new Font("Dialog", Font.PLAIN, 9));
+		contentPanel.add(txtpnElaineKennedySutherland, "cell 1 8 2 1,grow");
 		
 		JTextPane txtpnProgrammingContributions = new JTextPane();
 		txtpnProgrammingContributions.setFont(new Font("Dialog", Font.PLAIN, 9));
-		txtpnProgrammingContributions.setText("Programming contributions:");
-		contentPanel.add(txtpnProgrammingContributions, "cell 0 7,alignx right,growy");
+		txtpnProgrammingContributions.setText("Contributing programmers:");
+		contentPanel.add(txtpnProgrammingContributions, "cell 0 9,alignx right,growy");
 		
 		JTextPane txtProgrammers = new JTextPane();
 		txtProgrammers.setFont(new Font("Dialog", Font.PLAIN, 9));
 		txtProgrammers
 				.setText("Peter Brewer; Elena Velasquez; Michael Ababio; Hidayatullah Ahsan; Alex Beatty; Clayton Bodendein; Joshua Brogan; Code Calhoun; Brendan Compton; Aaron Decker; Zachariah Ferree; Scott Goble; Wendy Gross; Kyle Hartmann; Dylan Jones; Anthony Messerschmidt; Alex Richter; Chinmay Shah; Chris Wald; Seth Westphal; Matthew Willie.");
-		contentPanel.add(txtProgrammers, "cell 1 7 3 1,grow");
+		contentPanel.add(txtProgrammers, "cell 1 9 2 1,alignx left,growy");
 		
 		JTextPane txtpnThisProgramIs = new JTextPane();
 		txtpnThisProgramIs.setEditable(false);
 		txtpnThisProgramIs.setFont(new Font("Dialog", Font.PLAIN, 8));
 		txtpnThisProgramIs
 				.setText("This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.\n\nThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details. ");
-		contentPanel.add(txtpnThisProgramIs, "cell 0 9 4 1,grow");
+		contentPanel.add(txtpnThisProgramIs, "cell 0 11 3 1,grow");
 		
 		JPanel panel = new JPanel();
 		panel.setBackground(Color.WHITE);
 		panel.setBorder(null);
-		contentPanel.add(panel, "cell 0 10 4 1,growx");
+		contentPanel.add(panel, "cell 0 12 3 1,growx");
 		
 		JButton btnViewLicense = new JButton("GPL License");
 		panel.add(btnViewLicense);

@@ -41,9 +41,10 @@ public class Builder {
 	private final static ClassLoader cl = org.fhaes.util.Builder.class.getClassLoader();
 	private static final Logger log = LoggerFactory.getLogger(Builder.class);
 	private static final String VERSION = Builder.class.getPackage().getImplementationVersion();
+	private static final String DOI = "10.5281/zenodo.32983";
 	
 	/**
-	 * TODO
+	 * Get an ImageIcon of the specified name from the src/main/resources/images folder
 	 * 
 	 * @param name
 	 * @return
@@ -67,7 +68,7 @@ public class Builder {
 	}
 	
 	/**
-	 * TODO
+	 * Get the icon for this application as a 22x22 PNG image
 	 * 
 	 * @return
 	 */
@@ -77,7 +78,7 @@ public class Builder {
 	}
 	
 	/**
-	 * TODO
+	 * Get the image with the specified filename from the src/main/resources/images folder
 	 * 
 	 * @param name
 	 * @return
@@ -112,7 +113,7 @@ public class Builder {
 	}
 	
 	/**
-	 * TODO
+	 * Get the revision number for this build
 	 * 
 	 * @return
 	 */
@@ -163,7 +164,7 @@ public class Builder {
 	}
 	
 	/**
-	 * TODO
+	 * Get the timestamp for this build
 	 * 
 	 * @return
 	 */
@@ -208,7 +209,38 @@ public class Builder {
 	}
 	
 	/**
-	 * TODO
+	 * Get the DOI for this build
+	 * 
+	 * @return
+	 */
+	public static String getDOI() {
+	
+		if (Builder.DOI == null)
+		{
+			return "";
+		}
+		
+		return Builder.DOI;
+		
+	}
+	
+	/**
+	 * Get the DOI of this build as a human readable label
+	 * 
+	 * @return
+	 */
+	public static String getDoiWithLabel() {
+	
+		if (Builder.DOI == null)
+		{
+			return "";
+		}
+		
+		return "DOI:" + Builder.DOI;
+	}
+	
+	/**
+	 * Get the current version number as a human readable string
 	 * 
 	 * @return
 	 */
@@ -228,7 +260,7 @@ public class Builder {
 	}
 	
 	/**
-	 * TODO
+	 * Get a human readable string combining the current version and build number
 	 * 
 	 * @return
 	 */
@@ -236,4 +268,5 @@ public class Builder {
 	
 		return getVersion() + " (r." + getRevisionNumber() + ")";
 	}
+	
 }
