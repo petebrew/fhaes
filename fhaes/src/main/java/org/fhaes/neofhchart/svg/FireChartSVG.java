@@ -111,6 +111,7 @@ public class FireChartSVG {
 	
 	// Declare builder objects
 	private final CompositePlotElementBuilder compositePlotEB;
+	private final LegendElementBuilder legendEB;
 	
 	// Java <-> ECMAScript interop used for message passing with ECMAScript. Note not thread-safe
 	private static int chartCounter = 0;
@@ -128,6 +129,7 @@ public class FireChartSVG {
 		
 		// Initialize the builder objects
 		compositePlotEB = new CompositePlotElementBuilder(this);
+		legendEB = new LegendElementBuilder(this);
 		
 		// Assign number for message passing from ECMAscript
 		chartNum = chartCounter;
@@ -1381,18 +1383,16 @@ public class FireChartSVG {
 		// RECORDER YEAR
 		Element recorder_g = doc.createElementNS(svgNS, "g");
 		recorder_g.setAttributeNS(null, "id", "recorder");
-		recorder_g.appendChild(LegendElementBuilder.getRecorderYearExample(doc));
-		Element recorder_desc = LegendElementBuilder.getDescriptionTextElement(doc, "Recorder year", leftJustified,
-				currentY + (labelHeight / 2));
+		recorder_g.appendChild(legendEB.getRecorderYearExample());
+		Element recorder_desc = legendEB.getDescriptionTextElement("Recorder year", leftJustified, currentY + (labelHeight / 2));
 		recorder_g.appendChild(recorder_desc);
 		legend.appendChild(recorder_g);
 		
 		// NON-RECORDER YEAR
 		currentY += moveValue;
 		Element nonrecorder_g = doc.createElementNS(svgNS, "g");
-		nonrecorder_g.appendChild(LegendElementBuilder.getNonRecorderYearExample(doc, currentY));
-		Element nonrecorder_desc = LegendElementBuilder.getDescriptionTextElement(doc, "Non-recorder year", leftJustified,
-				currentY + (labelHeight / 2));
+		nonrecorder_g.appendChild(legendEB.getNonRecorderYearExample(currentY));
+		Element nonrecorder_desc = legendEB.getDescriptionTextElement("Non-recorder year", leftJustified, currentY + (labelHeight / 2));
 		nonrecorder_g.appendChild(nonrecorder_desc);
 		legend.appendChild(nonrecorder_g);
 		
@@ -1407,7 +1407,7 @@ public class FireChartSVG {
 			fireMarker.setAttributeNS(null, "width", "2");
 			fireMarker_g.appendChild(fireMarker);
 			fireMarker_g.setAttributeNS(null, "transform", "translate(0, " + currentY + ")");
-			Element fireMarker_desc = LegendElementBuilder.getDescriptionTextElement(doc, "Fire event", leftJustified, (labelHeight / 2));
+			Element fireMarker_desc = legendEB.getDescriptionTextElement("Fire event", leftJustified, (labelHeight / 2));
 			fireMarker_g.appendChild(fireMarker_desc);
 			legend.appendChild(fireMarker_g);
 		}
@@ -1419,8 +1419,7 @@ public class FireChartSVG {
 			Element injuryMarker_g = doc.createElementNS(svgNS, "g");
 			injuryMarker_g.appendChild(SeriesElementBuilder.getInjuryYearMarker(doc, 3, Color.BLACK));
 			injuryMarker_g.setAttributeNS(null, "transform", "translate(0, " + Integer.toString(currentY) + ")");
-			Element injuryMarker_desc = LegendElementBuilder.getDescriptionTextElement(doc, "Injury event", leftJustified,
-					(labelHeight / 2));
+			Element injuryMarker_desc = legendEB.getDescriptionTextElement("Injury event", leftJustified, (labelHeight / 2));
 			injuryMarker_g.appendChild(injuryMarker_desc);
 			legend.appendChild(injuryMarker_g);
 		}
@@ -1432,10 +1431,9 @@ public class FireChartSVG {
 		innerPith_g.appendChild(innerPith);
 		innerPith_g.setAttributeNS(null, "transform", "translate(0, " + Integer.toString(currentY) + ")");
 		Element pithNonrecorder_g = doc.createElementNS(svgNS, "g");
-		pithNonrecorder_g.appendChild(LegendElementBuilder.getPithWithNonRecorderLineExample(doc));
+		pithNonrecorder_g.appendChild(legendEB.getPithWithNonRecorderLineExample());
 		innerPith_g.appendChild(pithNonrecorder_g);
-		Element pithNonrecorder_desc = LegendElementBuilder.getDescriptionTextElement(doc, "Inner year with pith", leftJustified,
-				(labelHeight / 2));
+		Element pithNonrecorder_desc = legendEB.getDescriptionTextElement("Inner year with pith", leftJustified, (labelHeight / 2));
 		innerPith_g.appendChild(pithNonrecorder_desc);
 		legend.appendChild(innerPith_g);
 		
@@ -1446,9 +1444,9 @@ public class FireChartSVG {
 		withoutPith_g.appendChild(withoutPith);
 		withoutPith_g.setAttributeNS(null, "transform", "translate(0, " + Integer.toString(currentY) + ")");
 		Element withoutPithNonrecorder_g = doc.createElementNS(svgNS, "g");
-		withoutPithNonrecorder_g.appendChild(LegendElementBuilder.getNoPithWithNonRecorderLineExample(doc));
+		withoutPithNonrecorder_g.appendChild(legendEB.getNoPithWithNonRecorderLineExample());
 		withoutPith_g.appendChild(withoutPithNonrecorder_g);
-		Element withoutPithNonrecorder_desc = LegendElementBuilder.getDescriptionTextElement(doc, "Inner year without pith", leftJustified,
+		Element withoutPithNonrecorder_desc = legendEB.getDescriptionTextElement("Inner year without pith", leftJustified,
 				(labelHeight / 2));
 		withoutPith_g.appendChild(withoutPithNonrecorder_desc);
 		legend.appendChild(withoutPith_g);
@@ -1460,10 +1458,9 @@ public class FireChartSVG {
 		withBark_g.appendChild(withBark);
 		withBark_g.setAttributeNS(null, "transform", "translate(5, " + Integer.toString(currentY) + ")");
 		Element barkRecorder_g = doc.createElementNS(svgNS, "g");
-		barkRecorder_g.appendChild(LegendElementBuilder.getBarkWithRecorderLineExample(doc));
+		barkRecorder_g.appendChild(legendEB.getBarkWithRecorderLineExample());
 		withBark_g.appendChild(barkRecorder_g);
-		Element barkRecorder_desc = LegendElementBuilder.getDescriptionTextElement(doc, "Outer year with bark", leftJustified - 5,
-				(labelHeight / 2));
+		Element barkRecorder_desc = legendEB.getDescriptionTextElement("Outer year with bark", leftJustified - 5, (labelHeight / 2));
 		withBark_g.appendChild(barkRecorder_desc);
 		legend.appendChild(withBark_g);
 		
@@ -1474,9 +1471,9 @@ public class FireChartSVG {
 		withoutBark_g.appendChild(withoutBark);
 		withoutBark_g.setAttributeNS(null, "transform", "translate(5, " + Integer.toString(currentY) + ")");
 		Element withoutBarkRecorder_g = doc.createElementNS(svgNS, "g");
-		withoutBarkRecorder_g.appendChild(LegendElementBuilder.getNoBarkWithRecorderLineExample(doc));
+		withoutBarkRecorder_g.appendChild(legendEB.getNoBarkWithRecorderLineExample());
 		withoutBark_g.appendChild(withoutBarkRecorder_g);
-		Element withoutBarkRecorder_desc = LegendElementBuilder.getDescriptionTextElement(doc, "Outer year without bark", leftJustified - 5,
+		Element withoutBarkRecorder_desc = legendEB.getDescriptionTextElement("Outer year without bark", leftJustified - 5,
 				(labelHeight / 2));
 		withoutBark_g.appendChild(withoutBarkRecorder_desc);
 		legend.appendChild(withoutBark_g);
@@ -1493,7 +1490,7 @@ public class FireChartSVG {
 				s = StringUtils.capitalize("Composite based on " + App.prefs
 						.getEventTypePref(PrefKey.CHART_COMPOSITE_EVENT_TYPE, EventTypeToProcess.FIRE_EVENT).toString().toLowerCase()
 						+ " and filtered by:");
-				Element filterType = LegendElementBuilder.getDescriptionTextElement(doc, s, leftJustified, (labelHeight / 2));
+				Element filterType = legendEB.getDescriptionTextElement(s, leftJustified, (labelHeight / 2));
 				filterType.setAttributeNS(null, "transform", "translate(-25, " + Integer.toString(currentY) + ")");
 				legend.appendChild(filterType);
 				longestLabel = s;
@@ -1504,12 +1501,12 @@ public class FireChartSVG {
 				currentY += moveValue + (labelHeight * 1.3);
 				s = StringUtils.capitalize("Composite based on " + App.prefs
 						.getEventTypePref(PrefKey.CHART_COMPOSITE_EVENT_TYPE, EventTypeToProcess.FIRE_EVENT).toString().toLowerCase());
-				Element filterType = LegendElementBuilder.getDescriptionTextElement(doc, s, leftJustified, (labelHeight / 2));
+				Element filterType = legendEB.getDescriptionTextElement(s, leftJustified, (labelHeight / 2));
 				filterType.setAttributeNS(null, "transform", "translate(-25, " + Integer.toString(currentY) + ")");
 				legend.appendChild(filterType);
 				
 				currentY += labelHeight * 1.3;
-				filterType = LegendElementBuilder.getDescriptionTextElement(doc, "and filtered by:", leftJustified, (labelHeight / 2));
+				filterType = legendEB.getDescriptionTextElement("and filtered by:", leftJustified, (labelHeight / 2));
 				filterType.setAttributeNS(null, "transform", "translate(-25, " + Integer.toString(currentY) + ")");
 				legend.appendChild(filterType);
 				
@@ -1522,7 +1519,7 @@ public class FireChartSVG {
 				s = StringUtils.capitalize("Composite based on " + App.prefs
 						.getEventTypePref(PrefKey.CHART_COMPOSITE_EVENT_TYPE, EventTypeToProcess.FIRE_EVENT).toString().toLowerCase()
 						+ " and filtered by:");
-				Element filterType = LegendElementBuilder.getDescriptionTextElement(doc, s, leftJustified, (labelHeight / 2));
+				Element filterType = legendEB.getDescriptionTextElement(s, leftJustified, (labelHeight / 2));
 				filterType.setAttributeNS(null, "transform", "translate(-25, " + Integer.toString(currentY) + ")");
 				legend.appendChild(filterType);
 				longestLabel = s;
@@ -1532,7 +1529,7 @@ public class FireChartSVG {
 			s = " - " + StringUtils
 					.capitalize(App.prefs.getFireFilterTypePref(PrefKey.CHART_COMPOSITE_FILTER_TYPE, FireFilterType.NUMBER_OF_EVENTS)
 							.toString().toLowerCase() + " >= " + App.prefs.getIntPref(PrefKey.CHART_COMPOSITE_FILTER_VALUE, 1));
-			Element filterType = LegendElementBuilder.getDescriptionTextElement(doc, s, leftJustified, (labelHeight / 2));
+			Element filterType = legendEB.getDescriptionTextElement(s, leftJustified, (labelHeight / 2));
 			filterType.setAttributeNS(null, "transform", "translate(-25, " + Integer.toString(currentY) + ")");
 			legend.appendChild(filterType);
 			if (s.length() > longestLabel.length())
@@ -1542,17 +1539,16 @@ public class FireChartSVG {
 			s = " - " + StringUtils.capitalize(
 					App.prefs.getSampleDepthFilterTypePref(PrefKey.CHART_COMPOSITE_SAMPLE_DEPTH_TYPE, SampleDepthFilterType.MIN_NUM_SAMPLES)
 							.toString().toLowerCase() + " >= " + App.prefs.getIntPref(PrefKey.CHART_COMPOSITE_MIN_NUM_SAMPLES, 1));
-			filterType = LegendElementBuilder.getDescriptionTextElement(doc, s, leftJustified, (labelHeight / 2));
+			filterType = legendEB.getDescriptionTextElement(s, leftJustified, (labelHeight / 2));
 			filterType.setAttributeNS(null, "transform", "translate(-25, " + Integer.toString(currentY) + ")");
 			legend.appendChild(filterType);
 			
 			labelWidth = FireChartUtil.getStringWidth(Font.PLAIN, 8, longestLabel) + 10;
-			
 		}
 		
 		// Add rectangle around legend and append
 		legend.setAttributeNS(null, "transform", "scale(1.0)");
-		legend.appendChild(LegendElementBuilder.getChartRectangle(doc, labelWidth, currentY));
+		legend.appendChild(legendEB.getChartRectangle(labelWidth, currentY));
 		
 		// Only show the chart if the preference has been set to do so
 		if (App.prefs.getBooleanPref(PrefKey.CHART_SHOW_LEGEND, true))
