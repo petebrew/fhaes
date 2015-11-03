@@ -32,6 +32,8 @@ import org.fhaes.fhfilereader.FHFile;
 import org.fhaes.model.ReadOnlyDefaultTableModel;
 import org.fhaes.preferences.App;
 import org.fhaes.preferences.FHAESPreferences.PrefKey;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import au.com.bytecode.opencsv.CSVWriter;
 
@@ -43,55 +45,69 @@ import au.com.bytecode.opencsv.CSVWriter;
  */
 public class FHDescriptiveStats {
 	
-	public static DefaultTableModel getDescriptiveStatsTableModel(FHFile file) {
+	private static final Logger log = LoggerFactory.getLogger(FHDescriptiveStats.class);
 	
-		AbstractFireHistoryReader fr = file.getFireHistoryReader();
-		DecimalFormat twoPlace = new DecimalFormat("0.00");
-		
-		int[] sampledepths = fr.getSampleDepths();
-		int[] recordingdepths = fr.getRecordingDepths();
-		
-		EventTypeToProcess eventType = App.prefs.getEventTypePref(PrefKey.EVENT_TYPE_TO_PROCESS, EventTypeToProcess.FIRE_AND_INJURY_EVENT);
-		ArrayList<ArrayList<Double>> filterArray = fr.getFilterArrays(eventType);
-		
-		Vector<Object> headers = new Vector<Object>();
-		headers.add("Year");
-		headers.add("Sample depth");
-		headers.add("Recording depth");
-		headers.add("Number of " + eventType.toString());
-		headers.add("Percentage of " + eventType.toString());
-		Vector<Vector<Object>> rows = new Vector<Vector<Object>>();
-		
-		int i = 0;
-		for (int yr = fr.getFirstYear(); yr <= fr.getLastYear(); yr++)
+	public static DefaultTableModel getSingleFileSummaryTableModel(FHFile file) {
+	
+		try
 		{
-			Vector<Object> row = new Vector<Object>();
+			AbstractFireHistoryReader fr = file.getFireHistoryReader();
+			DecimalFormat twoPlace = new DecimalFormat("0.00");
 			
-			row.add(yr);
-			row.add(sampledepths[i]);
-			row.add(recordingdepths[i]);
-			row.add(filterArray.get(0).get(i));
-			if (filterArray.get(2).get(i).equals(-99.0))
+			int[] sampledepths = fr.getSampleDepths();
+			int[] recordingdepths = fr.getRecordingDepths();
+			
+			EventTypeToProcess eventType = App.prefs.getEventTypePref(PrefKey.EVENT_TYPE_TO_PROCESS,
+					EventTypeToProcess.FIRE_AND_INJURY_EVENT);
+			ArrayList<ArrayList<Double>> filterArray = fr.getFilterArrays(eventType);
+			
+			Vector<Object> headers = new Vector<Object>();
+			headers.add("Year");
+			headers.add("Sample depth");
+			headers.add("Recording depth");
+			headers.add("Number of " + eventType.toString());
+			headers.add("Percentage of " + eventType.toString());
+			Vector<Vector<Object>> rows = new Vector<Vector<Object>>();
+			
+			int i = 0;
+			for (int yr = fr.getFirstYear(); yr <= fr.getLastYear(); yr++)
 			{
-				row.add(filterArray.get(2).get(i));
-			}
-			else
-			{
-				row.add(twoPlace.format(filterArray.get(2).get(i) * 100));
+				Vector<Object> row = new Vector<Object>();
+				
+				row.add(yr);
+				row.add(sampledepths[i]);
+				row.add(recordingdepths[i]);
+				row.add(filterArray.get(0).get(i));
+				if (filterArray.get(2).get(i).equals(-99.0))
+				{
+					row.add(filterArray.get(2).get(i));
+				}
+				else
+				{
+					row.add(twoPlace.format(filterArray.get(2).get(i) * 100));
+				}
+				
+				rows.add(row);
+				i++;
 			}
 			
-			rows.add(row);
-			i++;
+			ReadOnlyDefaultTableModel model = new ReadOnlyDefaultTableModel(rows, headers);
+			
+			return model;
 		}
-		
-		ReadOnlyDefaultTableModel model = new ReadOnlyDefaultTableModel(rows, headers);
-		
-		return model;
+		catch (Exception e)
+		{
+			log.error("Error creating descriptive stats table model");
+			return null;
+		}
 	}
 	
-	public static File getDescriptiveStatsAsFile(FHFile infile, File outfile) {
+	public static File getSingleFileSummaryAsFile(FHFile infile, File outfile) {
 	
-		DefaultTableModel model = getDescriptiveStatsTableModel(infile);
+		DefaultTableModel model = getSingleFileSummaryTableModel(infile);
+		
+		if (model == null)
+			return null;
 		
 		if (outfile == null)
 		{
@@ -162,65 +178,76 @@ public class FHDescriptiveStats {
 	 * @param file
 	 * @return
 	 */
-	public static DefaultTableModel getEventSummaryTable(FHFile file, EventTypeToProcess eventType) {
+	public static DefaultTableModel getEventSummaryTableModel(FHFile file, EventTypeToProcess eventType) {
 	
-		AbstractFireHistoryReader fr = file.getFireHistoryReader();
-		
-		// Create array list to hold data
-		ArrayList<ArrayList<Integer>> list = new ArrayList<ArrayList<Integer>>();
-		for (int i = 0; i < fr.getNumberOfSeries(); i++)
+		try
 		{
-			list.add(new ArrayList<Integer>());
-		}
-		
-		ArrayList<Double> events = fr.getFilterArrays(eventType).get(0);
-		
-		int currentYear = fr.getFirstYear();
-		
-		for (int i = 0; i < events.size(); i++)
-		{
-			list.get(events.get(i).intValue()).add(currentYear);
-			currentYear++;
-		}
-		
-		Vector<Object> headers = new Vector<Object>();
-		headers.add("Trees recording");
-		headers.add("# of years");
-		headers.add("Years");
-		Vector<Vector<Object>> rows = new Vector<Vector<Object>>();
-		
-		for (int i = 0; i < list.size(); i++)
-		{
-			Vector<Object> row = new Vector<Object>();
-			ArrayList<Integer> r = list.get(i);
+			AbstractFireHistoryReader fr = file.getFireHistoryReader();
 			
-			// Skip indices where there are no years lists
-			if (r.size() == 0)
-				continue;
-			
-			row.add(i);
-			row.add(r.size());
-			String listOfYears = "";
-			for (Integer yr : r)
+			// Create array list to hold data
+			ArrayList<ArrayList<Integer>> list = new ArrayList<ArrayList<Integer>>();
+			for (int i = 0; i < fr.getNumberOfSeries(); i++)
 			{
-				listOfYears += yr + " ";
+				list.add(new ArrayList<Integer>());
 			}
-			row.add(listOfYears);
 			
-			rows.add(row);
+			ArrayList<Double> events = fr.getFilterArrays(eventType).get(0);
+			
+			int currentYear = fr.getFirstYear();
+			
+			for (int i = 0; i < events.size(); i++)
+			{
+				int x = events.get(i).intValue();
+				list.get(x).add(currentYear);
+				currentYear++;
+			}
+			
+			Vector<Object> headers = new Vector<Object>();
+			headers.add("Trees recording");
+			headers.add("# of years");
+			headers.add("Years");
+			Vector<Vector<Object>> rows = new Vector<Vector<Object>>();
+			
+			for (int i = 0; i < list.size(); i++)
+			{
+				Vector<Object> row = new Vector<Object>();
+				ArrayList<Integer> r = list.get(i);
+				
+				// Skip indices where there are no years lists
+				if (r.size() == 0)
+					continue;
+				
+				row.add(i);
+				row.add(r.size());
+				String listOfYears = "";
+				for (Integer yr : r)
+				{
+					listOfYears += yr + " ";
+				}
+				row.add(listOfYears);
+				
+				rows.add(row);
+			}
+			
+			ReadOnlyDefaultTableModel model = new ReadOnlyDefaultTableModel(rows, headers);
+			model.setColumnClass(0, Integer.class);
+			model.setColumnClass(1, Integer.class);
+			
+			return model;
 		}
-		
-		ReadOnlyDefaultTableModel model = new ReadOnlyDefaultTableModel(rows, headers);
-		model.setColumnClass(0, Integer.class);
-		model.setColumnClass(1, Integer.class);
-		
-		return model;
-		
+		catch (Exception e)
+		{
+			log.error("Error creating Event Summary table model");
+			return null;
+		}
 	}
 	
 	public static File getEventSummaryAsFile(FHFile infile, File outfile, EventTypeToProcess eventType) {
 	
-		DefaultTableModel model = getEventSummaryTable(infile, eventType);
+		DefaultTableModel model = getEventSummaryTableModel(infile, eventType);
+		
+		if (model == null)
+			return null;
 		
 		if (outfile == null)
 		{

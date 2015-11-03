@@ -217,9 +217,9 @@ public class ReportPanel extends JPanel implements PrefsListener {
 				panelChart.loadFile(fhxFile.getFireHistoryReader());
 				
 				log.debug("Populating descriptive stats");
-				panelResults.setSingleFileSummaryModel(FHDescriptiveStats.getDescriptiveStatsTableModel(fhxFile));
-				panelResults.singleFileSummaryFile = FHDescriptiveStats.getDescriptiveStatsAsFile(fhxFile, null);
-				panelResults.setSingleEventSummaryModel(FHDescriptiveStats.getEventSummaryTable(fhxFile,
+				panelResults.setSingleFileSummaryModel(FHDescriptiveStats.getSingleFileSummaryTableModel(fhxFile));
+				panelResults.singleFileSummaryFile = FHDescriptiveStats.getSingleFileSummaryAsFile(fhxFile, null);
+				panelResults.setSingleEventSummaryModel(FHDescriptiveStats.getEventSummaryTableModel(fhxFile,
 						App.prefs.getEventTypePref(PrefKey.EVENT_TYPE_TO_PROCESS, EventTypeToProcess.FIRE_AND_INJURY_EVENT)));
 				panelResults.singleEventSummaryFile = FHDescriptiveStats.getEventSummaryAsFile(fhxFile, null,
 						App.prefs.getEventTypePref(PrefKey.EVENT_TYPE_TO_PROCESS, EventTypeToProcess.FIRE_AND_INJURY_EVENT));
