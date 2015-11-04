@@ -78,8 +78,8 @@ import org.fhaes.filefilter.PDFFilter;
 import org.fhaes.filefilter.TABFilter;
 import org.fhaes.preferences.App;
 import org.fhaes.preferences.FHAESPreferences.PrefKey;
-import org.fhaes.preferences.wrappers.FireFilterTypeWrapper;
 import org.fhaes.preferences.wrappers.EventTypeWrapper;
+import org.fhaes.preferences.wrappers.FireFilterTypeWrapper;
 import org.fhaes.preferences.wrappers.ResamplingTypeWrapper;
 import org.fhaes.preferences.wrappers.SpinnerWrapper;
 import org.fhaes.segmentation.SegmentModel;
@@ -661,8 +661,10 @@ public class FHSampleSize extends JFrame implements ActionListener {
 		scrollPaneAsymptote.setViewportView(asymptoteTable);
 		panelAsymptote.setLayout(new BorderLayout());
 		panelAsymptote.add(scrollPaneAsymptote, BorderLayout.CENTER);
-		
 		panelResultsBottom.addTab("Asymptote", null, panelAsymptote, null);
+		
+		// Disable asymptote tab until it is implemented
+		panelResultsBottom.setEnabledAt(1, false);
 		
 		panelProgressBar = new JPanel();
 		panelProgressBar.setLayout(new BorderLayout());
