@@ -22,7 +22,6 @@ import java.awt.Color;
 import org.apache.batik.dom.svg.SVGDOMImplementation;
 import org.fhaes.preferences.App;
 import org.fhaes.preferences.FHAESPreferences.PrefKey;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Text;
 
@@ -34,23 +33,35 @@ import org.w3c.dom.Text;
  */
 public class SampleRecorderPlotElementBuilder {
 	
+	// Declare FireChartSVG parent
+	private final FireChartSVG parent;
+	
+	/**
+	 * Initializes the parent object for SampleRecorderPlotElementBuilder.
+	 * 
+	 * @param inParent
+	 */
+	public SampleRecorderPlotElementBuilder(FireChartSVG inParent) {
+		
+		parent = inParent;
+	}
+	
 	/**
 	 * Returns a depth count text element based on the input parameters.
 	 * 
-	 * @param doc
-	 * @param labelY
+	 * @param yPosition
 	 * @param fontSize
 	 * @param tickNum
 	 * @param tickSpacing
 	 * @return depthCountTextElement
 	 */
-	protected static Element getDepthCountTextElement(Document doc, int labelY, int fontSize, int tickNum, int tickSpacing) {
+	public Element getDepthCountTextElement(int yPosition, int fontSize, int tickNum, int tickSpacing) {
 		
-		Text depthCountText = doc.createTextNode(Integer.toString(tickNum * tickSpacing));
+		Text depthCountText = parent.getSVGDocument().createTextNode(Integer.toString(tickNum * tickSpacing));
 		
-		Element depthCountTextElement = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "text");
+		Element depthCountTextElement = parent.getSVGDocument().createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "text");
 		depthCountTextElement.setAttributeNS(null, "x", "-3");
-		depthCountTextElement.setAttributeNS(null, "y", labelY + "");
+		depthCountTextElement.setAttributeNS(null, "y", Integer.toString(yPosition));
 		depthCountTextElement.setAttributeNS(null, "font-family", App.prefs.getPref(PrefKey.CHART_FONT_FAMILY, "Verdana"));
 		depthCountTextElement.setAttributeNS(null, "font-size", fontSize + "");
 		depthCountTextElement.setAttributeNS(null, "text-anchor", "end");
@@ -62,14 +73,13 @@ public class SampleRecorderPlotElementBuilder {
 	/**
 	 * Returns a sample depth text element based on the input parameters.
 	 * 
-	 * @param doc
 	 * @return sampleDepthTextElement
 	 */
-	protected static Element getSampleDepthTextElement(Document doc) {
+	public Element getSampleDepthTextElement() {
 		
-		Text sampleDepthText = doc.createTextNode(App.prefs.getPref(PrefKey.CHART_AXIS_Y1_LABEL, "Sample Depth"));
+		Text sampleDepthText = parent.getSVGDocument().createTextNode(App.prefs.getPref(PrefKey.CHART_AXIS_Y1_LABEL, "Sample Depth"));
 		
-		Element sampleDepthTextElement = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "text");
+		Element sampleDepthTextElement = parent.getSVGDocument().createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "text");
 		sampleDepthTextElement.setAttributeNS(null, "x", "0");
 		sampleDepthTextElement.setAttributeNS(null, "y", "0");
 		sampleDepthTextElement.setAttributeNS(null, "font-family", App.prefs.getPref(PrefKey.CHART_FONT_FAMILY, "Verdana"));
@@ -82,15 +92,14 @@ public class SampleRecorderPlotElementBuilder {
 	/**
 	 * Returns a horizontal tick to be used in the sample or recorder depths plot.
 	 * 
-	 * @param doc
 	 * @param unscaleY
 	 * @param tickNum
 	 * @param tickSpacing
 	 * @return horizontalTick
 	 */
-	protected static Element getHorizontalTick(Document doc, double unscaleY, int tickNum, int tickSpacing) {
+	public Element getHorizontalTick(double unscaleY, int tickNum, int tickSpacing) {
 		
-		Element horizontalTick = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
+		Element horizontalTick = parent.getSVGDocument().createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
 		horizontalTick.setAttributeNS(null, "x1", "-5");
 		horizontalTick.setAttributeNS(null, "y1", Integer.toString(tickNum * tickSpacing));
 		horizontalTick.setAttributeNS(null, "x2", "0");
@@ -104,7 +113,6 @@ public class SampleRecorderPlotElementBuilder {
 	/**
 	 * Returns a horizontal trend line part to be used in the sample or recorder depths plot.
 	 * 
-	 * @param doc
 	 * @param lineColor
 	 * @param scaleY
 	 * @param x1Position
@@ -112,10 +120,9 @@ public class SampleRecorderPlotElementBuilder {
 	 * @param yPosition
 	 * @return horizontalTrendLinePart
 	 */
-	protected static Element getHorizontalTrendLinePart(Document doc, String lineColor, double scaleY, int x1Position, int x2Position,
-			int yPosition) {
-			
-		Element horizontalTrendLinePart = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
+	public Element getHorizontalTrendLinePart(String lineColor, double scaleY, int x1Position, int x2Position, int yPosition) {
+		
+		Element horizontalTrendLinePart = parent.getSVGDocument().createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
 		horizontalTrendLinePart.setAttributeNS(null, "x1", Double.toString(x1Position));
 		horizontalTrendLinePart.setAttributeNS(null, "y1", Double.toString(yPosition));
 		horizontalTrendLinePart.setAttributeNS(null, "x2", Double.toString(x2Position));
@@ -129,22 +136,18 @@ public class SampleRecorderPlotElementBuilder {
 	/**
 	 * Returns a vertical trend line part to be used in the sample or recorder depths plot.
 	 * 
-	 * @param doc
 	 * @param lineColor
 	 * @param xPosition
 	 * @param y1Position
 	 * @param y2Position
-	 * @param chartWidth
-	 * @param firstChartYear
-	 * @param lastChartYear
 	 * @return verticalTrendLinePart
 	 */
-	protected static Element getVerticalTrendLinePart(Document doc, String lineColor, int xPosition, int y1Position, int y2Position,
-			int chartWidth, int firstChartYear, int lastChartYear) {
-			
-		String strokeWidth = Double.toString(FireChartUtil.pixelsToYears(1, chartWidth, firstChartYear, lastChartYear));
+	public Element getVerticalTrendLinePart(String lineColor, int xPosition, int y1Position, int y2Position) {
 		
-		Element verticalTrendLinePart = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
+		String strokeWidth = Double
+				.toString(FireChartUtil.pixelsToYears(1, parent.getChartWidth(), parent.getFirstChartYear(), parent.getLastChartYear()));
+				
+		Element verticalTrendLinePart = parent.getSVGDocument().createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
 		verticalTrendLinePart.setAttributeNS(null, "x1", Double.toString(xPosition));
 		verticalTrendLinePart.setAttributeNS(null, "y1", Double.toString(y1Position));
 		verticalTrendLinePart.setAttributeNS(null, "x2", Double.toString(xPosition));
@@ -158,23 +161,20 @@ public class SampleRecorderPlotElementBuilder {
 	/**
 	 * Returns a threshold line to be used in the sample or recorder depths plot.
 	 * 
-	 * @param doc
 	 * @param scaleY
 	 * @param largestSampleDepth
-	 * @param firstChartYear
-	 * @param lastChartYear
 	 * @return thresholdLine
 	 */
-	protected static Element getThresholdLine(Document doc, double scaleY, int largestSampleDepth, int firstChartYear, int lastChartYear) {
+	public Element getThresholdLine(double scaleY, int largestSampleDepth) {
 		
 		int thresholdSampleDepthValue = App.prefs.getIntPref(PrefKey.CHART_DEPTH_THRESHOLD_VALUE, 10);
 		String stroke = FireChartUtil.colorToHexString(App.prefs.getColorPref(PrefKey.CHART_DEPTH_THRESHOLD_COLOR, Color.RED));
 		
-		Element thresholdLine = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
+		Element thresholdLine = parent.getSVGDocument().createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
 		thresholdLine.setAttributeNS(null, "id", "threshold_line");
 		thresholdLine.setAttributeNS(null, "x1", Integer.toString(0));
 		thresholdLine.setAttributeNS(null, "y1", Double.toString(thresholdSampleDepthValue));
-		thresholdLine.setAttributeNS(null, "x2", Integer.toString(lastChartYear - firstChartYear));
+		thresholdLine.setAttributeNS(null, "x2", Integer.toString(parent.getLastChartYear() - parent.getFirstChartYear()));
 		thresholdLine.setAttributeNS(null, "y2", Double.toString(thresholdSampleDepthValue));
 		thresholdLine.setAttributeNS(null, "stroke", stroke);
 		thresholdLine.setAttributeNS(null, "stroke-width", Double.toString(-1.0 / scaleY));
