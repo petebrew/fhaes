@@ -1252,7 +1252,9 @@ public class MainWindow implements PrefsListener {
 		}
 		catch (Exception e)
 		{
-			log.info("Error caught and ignored while evaluating file list.");
+			e.printStackTrace();
+			log.error("Error caught and ignored while evaluating file list.");
+			
 		}
 	}
 	
