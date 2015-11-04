@@ -175,13 +175,12 @@ public class TimeAxisElementBuilder {
 	 * Returns a year text element based on the input parameters.
 	 * 
 	 * @param yearToDisplay
-	 * @param readerFirstYear
 	 * @return yearTextElement
 	 */
-	public Element getYearTextElement(int yearToDisplay, int readerFirstYear) {
+	public Element getYearTextElement(int yearToDisplay) {
 		
 		// Display the year text with the correct BC and zero cases accounted for
-		if (yearToDisplay >= -1 && readerFirstYear < 0)
+		if (yearToDisplay >= -1 && parent.getReader().getFirstYear() < 0)
 			yearToDisplay += 1;
 			
 		if (yearToDisplay < 0)

@@ -1624,7 +1624,7 @@ public class FireChartSVG {
 				year_text_g.setAttributeNS(null, "transform", "translate(" + i + "," + height + ") scale("
 						+ FireChartUtil.pixelsToYears(chartWidth, getFirstChartYear(), getLastChartYear()) + ",1)");
 						
-				year_text_g.appendChild(timeAxisEB.getYearTextElement(removeBCYearOffset(i), reader.getFirstYear()));
+				year_text_g.appendChild(timeAxisEB.getYearTextElement(removeBCYearOffset(i)));
 				
 				timeAxis.appendChild(year_text_g);
 			}
