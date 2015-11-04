@@ -23,7 +23,6 @@ import org.apache.batik.dom.svg.SVGDOMImplementation;
 import org.fhaes.enums.LineStyle;
 import org.fhaes.preferences.App;
 import org.fhaes.preferences.FHAESPreferences.PrefKey;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Text;
 
@@ -37,20 +36,30 @@ public class TimeAxisElementBuilder {
 	// Declare local constants
 	private static final int TICK_HEIGHT = 10;
 	
+	// Declare FireChartSVG parent
+	private final FireChartSVG parent;
+	
+	/**
+	 * Initializes the parent object for TimeAxisElementBuilder.
+	 * 
+	 * @param inParent
+	 */
+	public TimeAxisElementBuilder(FireChartSVG inParent) {
+		
+		parent = inParent;
+	}
+	
 	/**
 	 * Returns a time axis element based on the input parameters.
 	 * 
-	 * @param doc
 	 * @param height
-	 * @param firstChartYear
-	 * @param lastChartYear
 	 * @return timeAxis
 	 */
-	protected static Element getTimeAxis(Document doc, int height, int firstChartYear, int lastChartYear) {
+	public Element getTimeAxis(int height) {
 		
-		Element timeAxis = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
-		timeAxis.setAttributeNS(null, "x1", Integer.toString(firstChartYear));
-		timeAxis.setAttributeNS(null, "x2", Integer.toString(lastChartYear));
+		Element timeAxis = parent.getSVGDocument().createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
+		timeAxis.setAttributeNS(null, "x1", Integer.toString(parent.getFirstChartYear()));
+		timeAxis.setAttributeNS(null, "x2", Integer.toString(parent.getLastChartYear()));
 		timeAxis.setAttributeNS(null, "y1", Integer.toString(height - (2 * FireChartSVG.SERIES_HEIGHT)));
 		timeAxis.setAttributeNS(null, "y2", Integer.toString(height - (2 * FireChartSVG.SERIES_HEIGHT)));
 		timeAxis.setAttributeNS(null, "stroke-dasharray", LineStyle.SOLID.getCode());
@@ -62,21 +71,16 @@ public class TimeAxisElementBuilder {
 	/**
 	 * Returns a major tick element based on the input parameters.
 	 * 
-	 * @param doc
 	 * @param yearPosition
-	 * @param chartWidth
 	 * @param height
-	 * @param firstChartYear
-	 * @param lastChartYear
 	 * @return majorTick
 	 */
-	protected static Element getMajorTick(Document doc, int yearPosition, int chartWidth, int height, int firstChartYear,
-			int lastChartYear) {
-			
+	public Element getMajorTick(int yearPosition, int height) {
+		
 		String strokeWidth = Double.toString(App.prefs.getIntPref(PrefKey.CHART_VERTICAL_GUIDE_WEIGHT, 1)
-				* FireChartUtil.pixelsToYears(chartWidth, firstChartYear, lastChartYear));
+				* FireChartUtil.pixelsToYears(parent.getChartWidth(), parent.getFirstChartYear(), parent.getLastChartYear()));
 				
-		Element majorTick = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
+		Element majorTick = parent.getSVGDocument().createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
 		majorTick.setAttributeNS(null, "x1", Integer.toString(yearPosition));
 		majorTick.setAttributeNS(null, "x2", Integer.toString(yearPosition));
 		majorTick.setAttributeNS(null, "y1", Integer.toString(height - (2 * TICK_HEIGHT)));
@@ -91,21 +95,16 @@ public class TimeAxisElementBuilder {
 	/**
 	 * Returns a minor tick element based on the input parameters.
 	 * 
-	 * @param doc
 	 * @param yearPosition
-	 * @param chartWidth
 	 * @param height
-	 * @param firstChartYear
-	 * @param lastChartYear
 	 * @return minorTick
 	 */
-	protected static Element getMinorTick(Document doc, int yearPosition, int chartWidth, int height, int firstChartYear,
-			int lastChartYear) {
-			
+	public Element getMinorTick(int yearPosition, int height) {
+		
 		String strokeWidth = Double.toString(App.prefs.getIntPref(PrefKey.CHART_VERTICAL_GUIDE_WEIGHT, 1)
-				* FireChartUtil.pixelsToYears(chartWidth, firstChartYear, lastChartYear));
+				* FireChartUtil.pixelsToYears(parent.getChartWidth(), parent.getFirstChartYear(), parent.getLastChartYear()));
 				
-		Element minorTick = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
+		Element minorTick = parent.getSVGDocument().createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
 		minorTick.setAttributeNS(null, "x1", Integer.toString(yearPosition));
 		minorTick.setAttributeNS(null, "x2", Integer.toString(yearPosition));
 		minorTick.setAttributeNS(null, "y1", Integer.toString(height - (2 * TICK_HEIGHT)));
@@ -120,25 +119,19 @@ public class TimeAxisElementBuilder {
 	/**
 	 * Returns a highlight line element based on the input parameters.
 	 * 
-	 * @param doc
 	 * @param yearPosition
-	 * @param chartWidth
 	 * @param height
-	 * @param tickHeight
-	 * @param firstChartYear
-	 * @param lastChartYear
 	 * @return highlightLine
 	 */
-	protected static Element getHighlightLine(Document doc, int yearPosition, int chartWidth, int height, int firstChartYear,
-			int lastChartYear) {
-			
+	public Element getHighlightLine(int yearPosition, int height) {
+		
 		String strokeWidth = Double.toString(App.prefs.getIntPref(PrefKey.CHART_HIGHLIGHT_YEARS_WEIGHT, 1)
-				* FireChartUtil.pixelsToYears(chartWidth, firstChartYear, lastChartYear));
+				* FireChartUtil.pixelsToYears(parent.getChartWidth(), parent.getFirstChartYear(), parent.getLastChartYear()));
 				
 		String strokeDashArray = App.prefs.getLineStylePref(PrefKey.CHART_HIGHLIGHT_YEAR_STYLE, LineStyle.SOLID).getCode();
 		String stroke = FireChartUtil.colorToHexString(App.prefs.getColorPref(PrefKey.CHART_HIGHLIGHT_YEARS_COLOR, Color.YELLOW));
 		
-		Element highlightLine = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
+		Element highlightLine = parent.getSVGDocument().createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
 		highlightLine.setAttributeNS(null, "x1", Integer.toString(yearPosition));
 		highlightLine.setAttributeNS(null, "x2", Integer.toString(yearPosition));
 		highlightLine.setAttributeNS(null, "y1", "0");
@@ -153,25 +146,20 @@ public class TimeAxisElementBuilder {
 	/**
 	 * Returns a highlight line element based on the input parameters.
 	 * 
-	 * @param doc
 	 * @param yearPosition
 	 * @param vertGuidesOffsetAmount
-	 * @param chartWidth
 	 * @param height
-	 * @param firstChartYear
-	 * @param lastChartYear
 	 * @return verticalGuide
 	 */
-	protected static Element getVerticalGuide(Document doc, int yearPosition, int vertGuidesOffsetAmount, int chartWidth, int height,
-			int firstChartYear, int lastChartYear) {
-			
+	public Element getVerticalGuide(int yearPosition, int vertGuidesOffsetAmount, int height) {
+		
 		String strokeWidth = Double.toString(App.prefs.getIntPref(PrefKey.CHART_VERTICAL_GUIDE_WEIGHT, 1)
-				* FireChartUtil.pixelsToYears(chartWidth, firstChartYear, lastChartYear));
+				* FireChartUtil.pixelsToYears(parent.getChartWidth(), parent.getFirstChartYear(), parent.getLastChartYear()));
 				
 		String strokeDashArray = App.prefs.getLineStylePref(PrefKey.CHART_VERTICAL_GUIDE_STYLE, LineStyle.SOLID).getCode();
 		String stroke = FireChartUtil.colorToHexString(App.prefs.getColorPref(PrefKey.CHART_VERTICAL_GUIDE_COLOR, Color.BLACK));
 		
-		Element verticalGuide = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
+		Element verticalGuide = parent.getSVGDocument().createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
 		verticalGuide.setAttributeNS(null, "x1", Integer.toString(yearPosition));
 		verticalGuide.setAttributeNS(null, "x2", Integer.toString(yearPosition));
 		verticalGuide.setAttributeNS(null, "y1", Integer.toString(vertGuidesOffsetAmount));
@@ -186,16 +174,11 @@ public class TimeAxisElementBuilder {
 	/**
 	 * Returns a year text element based on the input parameters.
 	 * 
-	 * @param doc
 	 * @param yearToDisplay
-	 * @param yearPosition
-	 * @param chartWidth
-	 * @param height
-	 * @param firstChartYear
-	 * @param lastChartYear
+	 * @param readerFirstYear
 	 * @return yearTextElement
 	 */
-	protected static Element getYearTextElement(Document doc, int yearToDisplay, int readerFirstYear) {
+	public Element getYearTextElement(int yearToDisplay, int readerFirstYear) {
 		
 		// Display the year text with the correct BC and zero cases accounted for
 		if (yearToDisplay >= -1 && readerFirstYear < 0)
@@ -204,7 +187,7 @@ public class TimeAxisElementBuilder {
 		if (yearToDisplay < 0)
 			yearToDisplay = 0 - yearToDisplay;
 			
-		Element yearTextElement = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "text");
+		Element yearTextElement = parent.getSVGDocument().createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "text");
 		yearTextElement.setAttributeNS(null, "x", "0");
 		yearTextElement.setAttributeNS(null, "y", "0");
 		yearTextElement.setAttributeNS(null, "text-anchor", "middle");
@@ -213,12 +196,12 @@ public class TimeAxisElementBuilder {
 		
 		if (yearToDisplay == 0)
 		{
-			Text yearText = doc.createTextNode("BC AD");
+			Text yearText = parent.getSVGDocument().createTextNode("BC AD");
 			yearTextElement.appendChild(yearText);
 		}
 		else
 		{
-			Text yearText = doc.createTextNode(Integer.toString(yearToDisplay));
+			Text yearText = parent.getSVGDocument().createTextNode(Integer.toString(yearToDisplay));
 			yearTextElement.appendChild(yearText);
 		}
 		

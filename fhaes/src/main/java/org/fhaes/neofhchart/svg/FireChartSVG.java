@@ -115,6 +115,7 @@ public class FireChartSVG {
 	private final PercentScarredPlotElementBuilder percentScarredPlotEB;
 	private final SampleRecorderPlotElementBuilder sampleRecorderPlotEB;
 	private final SeriesElementBuilder seriesEB;
+	private final TimeAxisElementBuilder timeAxisEB;
 	
 	// Java <-> ECMAScript interop used for message passing with ECMAScript. Note not thread-safe
 	private static int chartCounter = 0;
@@ -136,6 +137,7 @@ public class FireChartSVG {
 		percentScarredPlotEB = new PercentScarredPlotElementBuilder(this);
 		sampleRecorderPlotEB = new SampleRecorderPlotElementBuilder(this);
 		seriesEB = new SeriesElementBuilder(this);
+		timeAxisEB = new TimeAxisElementBuilder(this);
 		
 		// Assign number for message passing from ECMAscript
 		chartNum = chartCounter;
@@ -1592,8 +1594,7 @@ public class FireChartSVG {
 				if (i > this.getLastChartYear() || i < this.getFirstChartYear())
 					continue;
 					
-				timeAxis.appendChild(
-						TimeAxisElementBuilder.getHighlightLine(doc, i, chartWidth, height, getFirstChartYear(), getLastChartYear()));
+				timeAxis.appendChild(timeAxisEB.getHighlightLine(i, height));
 			}
 		}
 		
@@ -1610,14 +1611,12 @@ public class FireChartSVG {
 						vertGuidesOffsetAmount = App.prefs.getIntPref(PrefKey.CHART_TITLE_FONT_SIZE, 20) + 10;
 					}
 					
-					timeAxis.appendChild(TimeAxisElementBuilder.getVerticalGuide(doc, i, vertGuidesOffsetAmount, chartWidth, height,
-							getFirstChartYear(), getLastChartYear()));
+					timeAxis.appendChild(timeAxisEB.getVerticalGuide(i, vertGuidesOffsetAmount, height));
 				}
 				
 				if (majorTicks)
 				{
-					timeAxis.appendChild(
-							TimeAxisElementBuilder.getMajorTick(doc, i, chartWidth, height, getFirstChartYear(), getLastChartYear()));
+					timeAxis.appendChild(timeAxisEB.getMajorTick(i, height));
 				}
 				
 				Element year_text_g = doc.createElementNS(svgNS, "g");
@@ -1625,19 +1624,18 @@ public class FireChartSVG {
 				year_text_g.setAttributeNS(null, "transform", "translate(" + i + "," + height + ") scale("
 						+ FireChartUtil.pixelsToYears(chartWidth, getFirstChartYear(), getLastChartYear()) + ",1)");
 						
-				year_text_g.appendChild(TimeAxisElementBuilder.getYearTextElement(doc, removeBCYearOffset(i), reader.getFirstYear()));
+				year_text_g.appendChild(timeAxisEB.getYearTextElement(removeBCYearOffset(i), reader.getFirstYear()));
 				
 				timeAxis.appendChild(year_text_g);
 			}
 			
 			if (minorTicks && i % minorTickInterval == 0) // && i % tickInterval != 0)
 			{
-				timeAxis.appendChild(
-						TimeAxisElementBuilder.getMinorTick(doc, i, chartWidth, height, getFirstChartYear(), getLastChartYear()));
+				timeAxis.appendChild(timeAxisEB.getMinorTick(i, height));
 			}
 		}
 		
-		timeAxis.appendChild(TimeAxisElementBuilder.getTimeAxis(doc, height, getFirstChartYear(), getLastChartYear()));
+		timeAxis.appendChild(timeAxisEB.getTimeAxis(height));
 		
 		return timeAxis;
 	}
