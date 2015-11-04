@@ -630,7 +630,7 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 		
 		// Categories
 		rootNode = new FHAESCategoryTreeNode("FHAES analysis results");
-		categoryGeneral = new FHAESCategoryTreeNode("General", Builder.getImageIcon("interval16.png"));
+		categoryGeneral = new FHAESCategoryTreeNode("Descriptive summaries", Builder.getImageIcon("interval16.png"));
 		categoryInterval = new FHAESCategoryTreeNode("Interval analysis", Builder.getImageIcon("interval16.png"));
 		categorySeasonality = new FHAESCategoryTreeNode("Seasonality", Builder.getImageIcon("seasonality16.png"));
 		categoryBinarySummaryMatrices = new FHAESCategoryTreeNode("Binary summary matrices", Builder.getImageIcon("matrix16.png"));
@@ -1531,6 +1531,7 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 			setBin01Status();
 			setBin10Status();
 			setBin11Status();
+			setBinSumStatus();
 			setDSCOHStatus();
 			setSCOHStatus();
 			setDSJACStatus();
