@@ -186,7 +186,7 @@ public class FHDescriptiveStats {
 			
 			// Create array list to hold data
 			ArrayList<ArrayList<Integer>> list = new ArrayList<ArrayList<Integer>>();
-			for (int i = 0; i < fr.getNumberOfSeries(); i++)
+			for (int i = 0; i <= fr.getNumberOfSeries(); i++)
 			{
 				list.add(new ArrayList<Integer>());
 			}
@@ -237,6 +237,7 @@ public class FHDescriptiveStats {
 		}
 		catch (Exception e)
 		{
+			e.printStackTrace();
 			log.error("Error creating Event Summary table model");
 			return null;
 		}
