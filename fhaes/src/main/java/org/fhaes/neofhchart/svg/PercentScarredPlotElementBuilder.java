@@ -22,7 +22,6 @@ import java.awt.Color;
 import org.apache.batik.dom.svg.SVGDOMImplementation;
 import org.fhaes.preferences.App;
 import org.fhaes.preferences.FHAESPreferences.PrefKey;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Text;
 
@@ -33,20 +32,30 @@ import org.w3c.dom.Text;
  */
 public class PercentScarredPlotElementBuilder {
 	
+	// Declare FireChartSVG parent
+	private final FireChartSVG parent;
+	
+	/**
+	 * Initializes the parent object for PercentScarredPlotElementBuilder.
+	 * 
+	 * @param inParent
+	 */
+	public PercentScarredPlotElementBuilder(FireChartSVG inParent) {
+		
+		parent = inParent;
+	}
+	
 	/**
 	 * Returns one part of the rectangular box which surrounds the percent scarred plot.
 	 * 
-	 * @param doc
-	 * @param chartWidth
-	 * @param firstChartYear
-	 * @param lastChartYear
 	 * @return borderLine1
 	 */
-	protected static Element getBorderLine1(Document doc, int chartWidth, int firstChartYear, int lastChartYear) {
+	public Element getBorderLine1() {
 		
-		String strokeWidth = Double.toString(FireChartUtil.pixelsToYears(1, chartWidth, firstChartYear, lastChartYear));
-		
-		Element borderLine1 = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
+		String strokeWidth = Double
+				.toString(FireChartUtil.pixelsToYears(1, parent.getChartWidth(), parent.getFirstChartYear(), parent.getLastChartYear()));
+				
+		Element borderLine1 = parent.getSVGDocument().createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
 		borderLine1.setAttributeNS(null, "x1", "0");
 		borderLine1.setAttributeNS(null, "y1", "0");
 		borderLine1.setAttributeNS(null, "x2", "0");
@@ -61,18 +70,15 @@ public class PercentScarredPlotElementBuilder {
 	/**
 	 * Returns one part of the rectangular box which surrounds the percent scarred plot.
 	 * 
-	 * @param doc
 	 * @param unscaleY
-	 * @param firstChartYear
-	 * @param lastChartYear
 	 * @return borderLine2
 	 */
-	protected static Element getBorderLine2(Document doc, double unscaleY, int firstChartYear, int lastChartYear) {
+	public Element getBorderLine2(double unscaleY) {
 		
-		Element borderLine2 = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
+		Element borderLine2 = parent.getSVGDocument().createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
 		borderLine2.setAttributeNS(null, "x1", "0");
 		borderLine2.setAttributeNS(null, "y1", "100");
-		borderLine2.setAttributeNS(null, "x2", Integer.toString(lastChartYear - firstChartYear));
+		borderLine2.setAttributeNS(null, "x2", Integer.toString(parent.getLastChartYear() - parent.getFirstChartYear()));
 		borderLine2.setAttributeNS(null, "y2", "100");
 		borderLine2.setAttributeNS(null, "stroke-width", 0 - unscaleY + "");
 		borderLine2.setAttributeNS(null, "stroke", "black");
@@ -84,20 +90,17 @@ public class PercentScarredPlotElementBuilder {
 	/**
 	 * Returns one part of the rectangular box which surrounds the percent scarred plot.
 	 * 
-	 * @param doc
-	 * @param chartWidth
-	 * @param firstChartYear
-	 * @param lastChartYear
 	 * @return borderLine3
 	 */
-	protected static Element getBorderLine3(Document doc, int chartWidth, int firstChartYear, int lastChartYear) {
+	public Element getBorderLine3() {
 		
-		String strokeWidth = Double.toString(FireChartUtil.pixelsToYears(1, chartWidth, firstChartYear, lastChartYear));
-		
-		Element borderLine3 = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
-		borderLine3.setAttributeNS(null, "x1", Integer.toString(lastChartYear - firstChartYear));
+		String strokeWidth = Double
+				.toString(FireChartUtil.pixelsToYears(1, parent.getChartWidth(), parent.getFirstChartYear(), parent.getLastChartYear()));
+				
+		Element borderLine3 = parent.getSVGDocument().createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
+		borderLine3.setAttributeNS(null, "x1", Integer.toString(parent.getLastChartYear() - parent.getFirstChartYear()));
 		borderLine3.setAttributeNS(null, "y1", "100");
-		borderLine3.setAttributeNS(null, "x2", Integer.toString(lastChartYear - firstChartYear));
+		borderLine3.setAttributeNS(null, "x2", Integer.toString(parent.getLastChartYear() - parent.getFirstChartYear()));
 		borderLine3.setAttributeNS(null, "y2", "0");
 		borderLine3.setAttributeNS(null, "stroke-width", strokeWidth);
 		borderLine3.setAttributeNS(null, "stroke", "black");
@@ -109,16 +112,13 @@ public class PercentScarredPlotElementBuilder {
 	/**
 	 * Returns one part of the rectangular box which surrounds the percent scarred plot.
 	 * 
-	 * @param doc
 	 * @param unscaleY
-	 * @param firstChartYear
-	 * @param lastChartYear
 	 * @return borderLine4
 	 */
-	protected static Element getBorderLine4(Document doc, double unscaleY, int firstChartYear, int lastChartYear) {
+	public Element getBorderLine4(double unscaleY) {
 		
-		Element borderLine4 = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
-		borderLine4.setAttributeNS(null, "x1", Integer.toString(lastChartYear - firstChartYear));
+		Element borderLine4 = parent.getSVGDocument().createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
+		borderLine4.setAttributeNS(null, "x1", Integer.toString(parent.getLastChartYear() - parent.getFirstChartYear()));
 		borderLine4.setAttributeNS(null, "y1", "0");
 		borderLine4.setAttributeNS(null, "x2", "0");
 		borderLine4.setAttributeNS(null, "y2", "0");
@@ -132,19 +132,18 @@ public class PercentScarredPlotElementBuilder {
 	/**
 	 * Returns a percent scarred text element based on the input parameters.
 	 * 
-	 * @param doc
-	 * @param labelY
+	 * @param yPosition
 	 * @param percentTextAsNum
 	 * @param yAxisFontSize
 	 * @return percentScarredTextElement
 	 */
-	protected static Element getPercentScarredTextElement(Document doc, int labelY, int percentTextAsNum, int yAxisFontSize) {
+	public Element getPercentScarredTextElement(int yPosition, int percentTextAsNum, int yAxisFontSize) {
 		
-		Text percentScarredText = doc.createTextNode(Integer.toString(percentTextAsNum));
+		Text percentScarredText = parent.getSVGDocument().createTextNode(Integer.toString(percentTextAsNum));
 		
-		Element percentScarredTextElement = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "text");
+		Element percentScarredTextElement = parent.getSVGDocument().createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "text");
 		percentScarredTextElement.setAttributeNS(null, "x", "7");
-		percentScarredTextElement.setAttributeNS(null, "y", labelY + "");
+		percentScarredTextElement.setAttributeNS(null, "y", Integer.toString(yPosition));
 		percentScarredTextElement.setAttributeNS(null, "font-family", App.prefs.getPref(PrefKey.CHART_FONT_FAMILY, "Verdana"));
 		percentScarredTextElement.setAttributeNS(null, "font-size", yAxisFontSize + "");
 		percentScarredTextElement.appendChild(percentScarredText);
@@ -155,15 +154,14 @@ public class PercentScarredPlotElementBuilder {
 	/**
 	 * Returns a horizontal tick to be used in the percent scarred plot.
 	 * 
-	 * @param doc
 	 * @param unscaleY
 	 * @return horizontalTick
 	 */
-	protected static Element getHorizontalTick(Document doc, double unscaleY) {
+	public Element getHorizontalTick(double unscaleY) {
 		
 		String stroke = FireChartUtil.colorToHexString(App.prefs.getColorPref(PrefKey.CHART_PERCENT_SCARRED_COLOR, Color.BLACK));
 		
-		Element horizontalTick = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
+		Element horizontalTick = parent.getSVGDocument().createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
 		horizontalTick.setAttributeNS(null, "x1", "0");
 		horizontalTick.setAttributeNS(null, "y1", "0");
 		horizontalTick.setAttributeNS(null, "x2", "5");
@@ -177,24 +175,20 @@ public class PercentScarredPlotElementBuilder {
 	/**
 	 * Returns a vertical line to be used in the percent scarred plot.
 	 * 
-	 * @param doc
-	 * @param percent
-	 * @param percentArrayIndex
-	 * @param chartWidth
-	 * @param firstChartYear
-	 * @param lastChartYear
+	 * @param xPosition
+	 * @param y2Position
 	 * @return verticalLine
 	 */
-	protected static Element getVerticalLine(Document doc, double percent, int percentArrayIndex, int chartWidth, int firstChartYear,
-			int lastChartYear) {
-			
-		String strokeWidth = Double.toString(FireChartUtil.pixelsToYears(1, chartWidth, firstChartYear, lastChartYear));
+	public Element getVerticalLine(int xPosition, double y2Position) {
 		
-		Element verticalLine = doc.createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
-		verticalLine.setAttributeNS(null, "x1", Integer.toString(percentArrayIndex));
+		String strokeWidth = Double
+				.toString(FireChartUtil.pixelsToYears(1, parent.getChartWidth(), parent.getFirstChartYear(), parent.getLastChartYear()));
+				
+		Element verticalLine = parent.getSVGDocument().createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
+		verticalLine.setAttributeNS(null, "x1", Integer.toString(xPosition));
 		verticalLine.setAttributeNS(null, "y1", "0");
-		verticalLine.setAttributeNS(null, "x2", Integer.toString(percentArrayIndex));
-		verticalLine.setAttributeNS(null, "y2", Double.toString(percent));
+		verticalLine.setAttributeNS(null, "x2", Integer.toString(xPosition));
+		verticalLine.setAttributeNS(null, "y2", Double.toString(y2Position));
 		verticalLine.setAttributeNS(null, "stroke", "black");
 		verticalLine.setAttributeNS(null, "stroke-width", strokeWidth);
 		
