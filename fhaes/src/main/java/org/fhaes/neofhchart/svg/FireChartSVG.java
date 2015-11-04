@@ -113,6 +113,7 @@ public class FireChartSVG {
 	private final CompositePlotElementBuilder compositePlotEB;
 	private final LegendElementBuilder legendEB;
 	private final PercentScarredPlotElementBuilder percentScarredPlotEB;
+	private final SampleRecorderPlotElementBuilder sampleRecorderPlotEB;
 	
 	// Java <-> ECMAScript interop used for message passing with ECMAScript. Note not thread-safe
 	private static int chartCounter = 0;
@@ -132,6 +133,7 @@ public class FireChartSVG {
 		compositePlotEB = new CompositePlotElementBuilder(this);
 		legendEB = new LegendElementBuilder(this);
 		percentScarredPlotEB = new PercentScarredPlotElementBuilder(this);
+		sampleRecorderPlotEB = new SampleRecorderPlotElementBuilder(this);
 		
 		// Assign number for message passing from ECMAscript
 		chartNum = chartCounter;
@@ -1849,11 +1851,11 @@ public class FireChartSVG {
 		{
 			if (sample_depths[i] != sample_depths[begin_index])
 			{
-				sample_g_chart.appendChild(SampleRecorderPlotElementBuilder.getVerticalTrendLinePart(doc, lineColor, i,
-						sample_depths[begin_index], sample_depths[i], chartWidth, getFirstChartYear(), getLastChartYear()));
+				sample_g_chart.appendChild(
+						sampleRecorderPlotEB.getVerticalTrendLinePart(lineColor, i, sample_depths[begin_index], sample_depths[i]));
 						
-				sample_g_chart.appendChild(SampleRecorderPlotElementBuilder.getHorizontalTrendLinePart(doc, lineColor, scale_y, begin_index,
-						i, sample_depths[begin_index]));
+				sample_g_chart.appendChild(
+						sampleRecorderPlotEB.getHorizontalTrendLinePart(lineColor, scale_y, begin_index, i, sample_depths[begin_index]));
 						
 				begin_index = i;
 			}
@@ -1861,15 +1863,14 @@ public class FireChartSVG {
 			// draw in the final line
 			if (i + 1 == sample_depths.length)
 			{
-				sample_g_chart.appendChild(SampleRecorderPlotElementBuilder.getHorizontalTrendLinePart(doc, lineColor, scale_y, begin_index,
-						i, sample_depths[begin_index]));
+				sample_g_chart.appendChild(
+						sampleRecorderPlotEB.getHorizontalTrendLinePart(lineColor, scale_y, begin_index, i, sample_depths[begin_index]));
 			}
 		}
 		
 		// add the threshold depth
-		sample_g_chart.appendChild(SampleRecorderPlotElementBuilder.getThresholdLine(doc, scale_y, largest_sample_depth,
-				getFirstChartYear(), getLastChartYear()));
-				
+		sample_g_chart.appendChild(sampleRecorderPlotEB.getThresholdLine(scale_y, largest_sample_depth));
+		
 		// add in the tick lines
 		int num_ticks = FireChartUtil.calculateNumSampleDepthTicks(largest_sample_depth);
 		int tick_spacing = (int) Math.ceil((double) largest_sample_depth / (double) num_ticks);
@@ -1879,11 +1880,11 @@ public class FireChartSVG {
 		
 		for (int i = 0; i < num_ticks; i++)
 		{
-			sample_g.appendChild(SampleRecorderPlotElementBuilder.getHorizontalTick(doc, unscale_y, i, tick_spacing));
+			sample_g.appendChild(sampleRecorderPlotEB.getHorizontalTick(unscale_y, i, tick_spacing));
 			
 			Element unscale_g = doc.createElementNS(svgNS, "g");
 			unscale_g.setAttributeNS(null, "transform", "translate(-5," + (i * tick_spacing) + ") scale(1," + (1.0 / scale_y) + ")");
-			unscale_g.appendChild(SampleRecorderPlotElementBuilder.getDepthCountTextElement(doc, labelY, yAxisFontSize, i, tick_spacing));
+			unscale_g.appendChild(sampleRecorderPlotEB.getDepthCountTextElement(labelY, yAxisFontSize, i, tick_spacing));
 			
 			sample_g.appendChild(unscale_g);
 		}
@@ -1895,7 +1896,7 @@ public class FireChartSVG {
 		unscale_g.setAttributeNS(null, "transform",
 				"translate(" + (-5 - labelWidth - 10) + "," + 0 + ") scale(1," + (1.0 / scale_y) + ") rotate(270)");
 				
-		unscale_g.appendChild(SampleRecorderPlotElementBuilder.getSampleDepthTextElement(doc));
+		unscale_g.appendChild(sampleRecorderPlotEB.getSampleDepthTextElement());
 		sample_g.appendChild(unscale_g);
 		sample_g.appendChild(sample_g_chart);
 		
