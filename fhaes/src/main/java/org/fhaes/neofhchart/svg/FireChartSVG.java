@@ -114,6 +114,7 @@ public class FireChartSVG {
 	private final LegendElementBuilder legendEB;
 	private final PercentScarredPlotElementBuilder percentScarredPlotEB;
 	private final SampleRecorderPlotElementBuilder sampleRecorderPlotEB;
+	private final SeriesElementBuilder seriesEB;
 	
 	// Java <-> ECMAScript interop used for message passing with ECMAScript. Note not thread-safe
 	private static int chartCounter = 0;
@@ -134,6 +135,7 @@ public class FireChartSVG {
 		legendEB = new LegendElementBuilder(this);
 		percentScarredPlotEB = new PercentScarredPlotElementBuilder(this);
 		sampleRecorderPlotEB = new SampleRecorderPlotElementBuilder(this);
+		seriesEB = new SeriesElementBuilder(this);
 		
 		// Assign number for message passing from ECMAscript
 		chartNum = chartCounter;
@@ -605,13 +607,11 @@ public class FireChartSVG {
 						if (App.prefs.getBooleanPref(PrefKey.CHART_AUTOMATICALLY_COLORIZE_LABELS, false))
 						{
 							Color labelColor = FireChartUtil.pickColorFromInteger(categoryGroupsProcessed.size());
-							label_text_g.appendChild(
-									SeriesElementBuilder.getCategoryLabelTextElement(doc, currentCategoryGroup, labelColor, chartWidth));
+							label_text_g.appendChild(seriesEB.getCategoryLabelTextElement(currentCategoryGroup, labelColor));
 						}
 						else
 						{
-							label_text_g.appendChild(
-									SeriesElementBuilder.getCategoryLabelTextElement(doc, currentCategoryGroup, Color.BLACK, chartWidth));
+							label_text_g.appendChild(seriesEB.getCategoryLabelTextElement(currentCategoryGroup, Color.BLACK));
 						}
 						series_group.appendChild(label_text_g);
 						
@@ -828,9 +828,8 @@ public class FireChartSVG {
 				if (isRecording != recording_years[j] || j == last_index)
 				{
 					// Need to draw a line
-					line_group.appendChild(SeriesElementBuilder.getSeriesLine(doc, isRecording, getFirstChartYear(), getLastChartYear(),
-							begin_index, j, seriesSVG.getLineColor()));
-							
+					line_group.appendChild(seriesEB.getSeriesLine(isRecording, begin_index, j, seriesSVG.getLineColor()));
+					
 					begin_index = j;
 					isRecording = recording_years[j];
 				}
@@ -858,7 +857,7 @@ public class FireChartSVG {
 					fire_event_g.setAttributeNS(null, "class", "fire_marker");
 					fire_event_g.setAttributeNS(null, "stroke", FireChartUtil.colorToHexString(seriesSVG.getLineColor()));
 					fire_event_g.setAttributeNS(null, "transform", translate + scale);
-					fire_event_g.appendChild(SeriesElementBuilder.getFireYearMarker(doc, seriesSVG.getLineColor()));
+					fire_event_g.appendChild(seriesEB.getFireYearMarker(seriesSVG.getLineColor()));
 					series_fire_events.appendChild(fire_event_g);
 				}
 			}
@@ -884,7 +883,7 @@ public class FireChartSVG {
 					injury_event_g.setAttributeNS(null, "class", "injury_marker");
 					injury_event_g.setAttributeNS(null, "stroke", FireChartUtil.colorToHexString(seriesSVG.getLineColor()));
 					injury_event_g.setAttributeNS(null, "transform", translate + scale);
-					injury_event_g.appendChild(SeriesElementBuilder.getInjuryYearMarker(doc, 3, seriesSVG.getLineColor()));
+					injury_event_g.appendChild(seriesEB.getInjuryYearMarker(3, seriesSVG.getLineColor()));
 					
 					series_injury_events.appendChild(injury_event_g);
 				}
@@ -905,8 +904,7 @@ public class FireChartSVG {
 				
 				Element pith_marker_g = doc.createElementNS(svgNS, "g");
 				pith_marker_g.setAttributeNS(null, "transform", translate + scale);
-				pith_marker_g
-						.appendChild(SeriesElementBuilder.getInnerYearPithMarker(doc, seriesSVG.hasPith(), 5, seriesSVG.getLineColor()));
+				pith_marker_g.appendChild(seriesEB.getInnerYearPithMarker(seriesSVG.hasPith(), 5, seriesSVG.getLineColor()));
 				series_group.appendChild(pith_marker_g);
 			}
 		}
@@ -923,8 +921,7 @@ public class FireChartSVG {
 				
 				Element bark_marker_g = doc.createElementNS(svgNS, "g");
 				bark_marker_g.setAttribute("transform", translate + scale);
-				bark_marker_g
-						.appendChild(SeriesElementBuilder.getOuterYearBarkMarker(doc, seriesSVG.hasBark(), 5, seriesSVG.getLineColor()));
+				bark_marker_g.appendChild(seriesEB.getOuterYearBarkMarker(seriesSVG.hasBark(), 5, seriesSVG.getLineColor()));
 				series_group.appendChild(bark_marker_g);
 			}
 		}
@@ -1052,7 +1049,7 @@ public class FireChartSVG {
 			series_line.setAttributeNS(null, "transform", scale_string + " " + translate_string);
 			
 			// Add in the label for the series
-			Element series_name = SeriesElementBuilder.getSeriesNameTextElement(doc, seriesSVG, fontSize, chartWidth);
+			Element series_name = seriesEB.getSeriesNameTextElement(seriesSVG, fontSize);
 			
 			// Add in the up button
 			Element up_button_g = doc.createElementNS(svgNS, "g");
@@ -1064,7 +1061,7 @@ public class FireChartSVG {
 					+ "\"); evt.target.setAttribute('opacity', '0.2');");
 			up_button_g.setAttributeNS(null, "onmouseover", "evt.target.setAttribute('opacity', '1');");
 			up_button_g.setAttributeNS(null, "onmouseout", "evt.target.setAttribute('opacity', '0.2');");
-			up_button_g.appendChild(SeriesElementBuilder.getUpButton(doc));
+			up_button_g.appendChild(seriesEB.getUpButton());
 			
 			// Add in the down button
 			Element down_button_g = doc.createElementNS(svgNS, "g");
@@ -1076,7 +1073,7 @@ public class FireChartSVG {
 					+ "\"); evt.target.setAttribute('opacity', '0.2');");
 			down_button_g.setAttributeNS(null, "onmouseover", "evt.target.setAttribute('opacity', '1');");
 			down_button_g.setAttributeNS(null, "onmouseout", "evt.target.setAttribute('opacity', '0.2');");
-			down_button_g.appendChild(SeriesElementBuilder.getDownButton(doc));
+			down_button_g.appendChild(seriesEB.getDownButton());
 			
 			// Determine whether to draw the chronology plot labels
 			if (App.prefs.getBooleanPref(PrefKey.CHART_SHOW_CHRONOLOGY_PLOT_LABELS, true))
@@ -1407,7 +1404,7 @@ public class FireChartSVG {
 			// FIRE EVENT MARKER
 			currentY += moveValue;
 			Element fireMarker_g = doc.createElementNS(svgNS, "g");
-			Element fireMarker = SeriesElementBuilder.getFireYearMarker(doc, Color.BLACK);
+			Element fireMarker = seriesEB.getFireYearMarker(Color.BLACK);
 			fireMarker.setAttributeNS(null, "width", "2");
 			fireMarker_g.appendChild(fireMarker);
 			fireMarker_g.setAttributeNS(null, "transform", "translate(0, " + currentY + ")");
@@ -1421,7 +1418,7 @@ public class FireChartSVG {
 			// INJURY EVENT MARKER
 			currentY += moveValue;
 			Element injuryMarker_g = doc.createElementNS(svgNS, "g");
-			injuryMarker_g.appendChild(SeriesElementBuilder.getInjuryYearMarker(doc, 3, Color.BLACK));
+			injuryMarker_g.appendChild(seriesEB.getInjuryYearMarker(3, Color.BLACK));
 			injuryMarker_g.setAttributeNS(null, "transform", "translate(0, " + Integer.toString(currentY) + ")");
 			Element injuryMarker_desc = legendEB.getDescriptionTextElement("Injury event", leftJustified, (labelHeight / 2));
 			injuryMarker_g.appendChild(injuryMarker_desc);
@@ -1431,7 +1428,7 @@ public class FireChartSVG {
 		// PITH WITH NON-RECORDER LINE
 		currentY += moveValue;
 		Element innerPith_g = doc.createElementNS(svgNS, "g");
-		Element innerPith = SeriesElementBuilder.getInnerYearPithMarker(doc, true, 5, Color.BLACK);
+		Element innerPith = seriesEB.getInnerYearPithMarker(true, 5, Color.BLACK);
 		innerPith_g.appendChild(innerPith);
 		innerPith_g.setAttributeNS(null, "transform", "translate(0, " + Integer.toString(currentY) + ")");
 		Element pithNonrecorder_g = doc.createElementNS(svgNS, "g");
@@ -1444,7 +1441,7 @@ public class FireChartSVG {
 		// NO PITH WITH NON-RECORDER LINE
 		currentY += moveValue;
 		Element withoutPith_g = doc.createElementNS(svgNS, "g");
-		Element withoutPith = SeriesElementBuilder.getInnerYearPithMarker(doc, false, SERIES_HEIGHT, Color.BLACK);
+		Element withoutPith = seriesEB.getInnerYearPithMarker(false, SERIES_HEIGHT, Color.BLACK);
 		withoutPith_g.appendChild(withoutPith);
 		withoutPith_g.setAttributeNS(null, "transform", "translate(0, " + Integer.toString(currentY) + ")");
 		Element withoutPithNonrecorder_g = doc.createElementNS(svgNS, "g");
@@ -1458,7 +1455,7 @@ public class FireChartSVG {
 		// BARK WITH RECORDER LINE
 		currentY += moveValue;
 		Element withBark_g = doc.createElementNS(svgNS, "g");
-		Element withBark = SeriesElementBuilder.getOuterYearBarkMarker(doc, true, 5, Color.BLACK);
+		Element withBark = seriesEB.getOuterYearBarkMarker(true, 5, Color.BLACK);
 		withBark_g.appendChild(withBark);
 		withBark_g.setAttributeNS(null, "transform", "translate(5, " + Integer.toString(currentY) + ")");
 		Element barkRecorder_g = doc.createElementNS(svgNS, "g");
@@ -1471,7 +1468,7 @@ public class FireChartSVG {
 		// NO BARK WITH RECORDER LINE
 		currentY += moveValue;
 		Element withoutBark_g = doc.createElementNS(svgNS, "g");
-		Element withoutBark = SeriesElementBuilder.getOuterYearBarkMarker(doc, false, SERIES_HEIGHT, Color.BLACK);
+		Element withoutBark = seriesEB.getOuterYearBarkMarker(false, SERIES_HEIGHT, Color.BLACK);
 		withoutBark_g.appendChild(withoutBark);
 		withoutBark_g.setAttributeNS(null, "transform", "translate(5, " + Integer.toString(currentY) + ")");
 		Element withoutBarkRecorder_g = doc.createElementNS(svgNS, "g");
