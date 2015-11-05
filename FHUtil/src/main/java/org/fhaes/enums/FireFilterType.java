@@ -22,7 +22,7 @@ package org.fhaes.enums;
  */
 public enum FireFilterType {
 	
-	NUMBER_OF_EVENTS("Number of fires"), PERCENTAGE_OF_RECORDING("Percent of recording trees scarred"), PERCENTAGE_OF_ALL_TREES(
+	NUMBER_OF_EVENTS("Number of trees recording fires"), PERCENTAGE_OF_RECORDING("Percent of recording trees scarred"), PERCENTAGE_OF_ALL_TREES(
 			"Percent of all trees scarred");
 	
 	// Declare local variables

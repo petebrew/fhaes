@@ -314,20 +314,29 @@ public abstract class AbstractFireHistoryReader implements IFHAESReader {
 			log.debug("Doing recording trees");
 			
 			ArrayList<Double> numberOfEvents = this.getFilterArrays(eventsToProcess).get(0);
-			ArrayList<Double> numberOfTrees = this.getFilterArrays(eventsToProcess).get(1);
-			ArrayList<Double> percentScarred = this.getFilterArrays(eventsToProcess).get(2);
+			int[] recordingDepths = this.getRecordingDepths();
 			
 			Integer currentYear = this.getFirstYear();
-			for (int i = 0; i < percentScarred.size(); i++)
+			for (int i = 0; i < recordingDepths.length; i++)
 			{
-				double datavalue = percentScarred.get(i) * 100;
+				double datavalue = 0.0;
+				try
+				{
+					datavalue = (numberOfEvents.get(i) / recordingDepths[i]) * 100;
+				}
+				catch (Exception e)
+				{
+					log.debug("Rejected " + currentYear + " because of calc error");
+					continue;
+					
+				}
 				if (datavalue >= filterValue)
 				{
 					if (depths[i] >= minNumberOfSamples)
 					{
 						compositeYears.add(currentYear);
 						log.debug("Keeping   " + currentYear + ": percentofrecscarred = " + datavalue + "; number of events = "
-								+ numberOfEvents.get(i) + "; number of trees = " + numberOfTrees.get(i));
+								+ numberOfEvents.get(i) + "; number of recording trees = " + recordingDepths[i]);
 					}
 					else
 					{
@@ -337,7 +346,7 @@ public abstract class AbstractFireHistoryReader implements IFHAESReader {
 				else
 				{
 					log.debug("Rejecting " + currentYear + ": percentofrecscarred = " + datavalue + "; number of events = "
-							+ numberOfEvents.get(i) + "; number of trees = " + numberOfTrees.get(i));
+							+ numberOfEvents.get(i) + "; number of recording trees = " + recordingDepths[i]);
 				}
 				currentYear++;
 			}

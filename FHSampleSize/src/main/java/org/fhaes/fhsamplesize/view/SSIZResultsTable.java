@@ -82,19 +82,19 @@ public class SSIZResultsTable extends JXTable {
 		private int i;
 		
 		Columns(String str, int in) {
-			
+		
 			string = str;
 			i = in;
 		}
 		
 		@Override
 		public String toString() {
-			
+		
 			return string;
 		}
 		
 		public int getInt() {
-			
+		
 			return i;
 		}
 	}
@@ -103,7 +103,7 @@ public class SSIZResultsTable extends JXTable {
 	 * Initializes the SSIZResultsTable.
 	 */
 	public SSIZResultsTable() {
-		
+	
 		// Block reordering of the table columns
 		getTableHeader().setReorderingAllowed(false);
 		
@@ -117,7 +117,7 @@ public class SSIZResultsTable extends JXTable {
 			@SuppressWarnings({ "rawtypes", "unchecked" })
 			@Override
 			public Class getColumnClass(int column) {
-				
+			
 				switch (column)
 				{
 					case 0:
@@ -170,7 +170,7 @@ public class SSIZResultsTable extends JXTable {
 	 * Removes all rows from the SSIZResultsTable.
 	 */
 	public void removeAllRows() {
-		
+	
 		if (this.getModel().getRowCount() > 0)
 			for (int i = this.getModel().getRowCount() - 1; i >= 0; i--)
 				((DefaultTableModel) this.getModel()).removeRow(i);
@@ -179,8 +179,8 @@ public class SSIZResultsTable extends JXTable {
 	/**
 	 * Redraws the SSIZResultsTable with the new analysis results.
 	 */
-	public void redrawTable(ArrayList<AnalysisResultsModel> analysisResults) {
-		
+	synchronized public void redrawTable(ArrayList<AnalysisResultsModel> analysisResults) {
+	
 		if (analysisResults == null || analysisResults.size() == 0)
 		{
 			log.debug("No analysis results to draw");
@@ -192,7 +192,7 @@ public class SSIZResultsTable extends JXTable {
 		int rowCount = tableModel.getRowCount();
 		for (int i = rowCount - 1; i >= 0; i--)
 			tableModel.removeRow(i);
-			
+		
 		// Then re-add the new set of analysis results as rows
 		for (AnalysisResultsModel res : analysisResults)
 		{
@@ -232,7 +232,7 @@ public class SSIZResultsTable extends JXTable {
 	 * Exports the SSIZResultsTable to a tab-delimited file format for external use.
 	 */
 	public static void exportResultsTableToTAB(File fileToSave, JTableSpreadsheetByRowAdapter adapter) {
-		
+	
 		try
 		{
 			adapter.saveToCSV(fileToSave);
@@ -248,7 +248,7 @@ public class SSIZResultsTable extends JXTable {
 	 */
 	@Override
 	public boolean isCellEditable(int row, int col) {
-		
+	
 		return false;
 	}
 	
@@ -263,22 +263,21 @@ public class SSIZResultsTable extends JXTable {
 		private final int dp;
 		
 		public DecimalFormatRenderer(int dp) {
-			
+		
 			this.dp = dp;
 		}
 		
 		@Override
-		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row,
-				int column) {
-				
+		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+		
 			String formatstring = "0.";
 			
 			for (int i = 0; i < dp; i++)
 				formatstring += "0";
-				
+			
 			if (value.equals(Double.NaN))
 				return super.getTableCellRendererComponent(table, "NaN", isSelected, hasFocus, row, column);
-				
+			
 			DecimalFormat formatter = new DecimalFormat(formatstring);
 			
 			// First format the cell value as required
@@ -299,9 +298,8 @@ public class SSIZResultsTable extends JXTable {
 		private static final long serialVersionUID = 1L;
 		
 		@Override
-		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row,
-				int column) {
-				
+		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+		
 			DecimalFormat formatter = new DecimalFormat("#");
 			value = formatter.format(value);
 			Component item = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);

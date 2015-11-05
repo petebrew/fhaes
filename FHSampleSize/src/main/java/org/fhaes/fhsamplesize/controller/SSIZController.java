@@ -93,6 +93,7 @@ public class SSIZController {
 		int rowindex = -1;
 		if (model.getThresholdType().equals(FireFilterType.NUMBER_OF_EVENTS))
 		{
+			log.debug("Calculating based on number of events filter");
 			for (Double yearval : filters.get(0))
 			{
 				rowindex++;
@@ -117,15 +118,17 @@ public class SSIZController {
 		}
 		else if (model.getThresholdType().equals(FireFilterType.PERCENTAGE_OF_ALL_TREES))
 		{
-			for (Double yearval : model.getReader().getPercentOfAllScarred(model.getEventType()))
+			log.debug("Calculating based on percentage of all trees filter");
+			double[] data = model.getPercentOfAllScarred();
+			for (Double yearval : data)
 			{
 				rowindex++;
-				double val = (yearval * 100);
+				// double val = (yearval * 100);
 				
 				if (model.isLowerThresholdSet())
 				{
 					// Doing upper as well as lower threshold
-					if ((val < model.getThresholdValueGT() || val > model.getThresholdValueLT()) && yearval != 0)
+					if ((yearval < model.getThresholdValueGT() || yearval > model.getThresholdValueLT()) && yearval != 0)
 					{
 						firesByYear[rowindex] = 0;
 					}
@@ -133,7 +136,7 @@ public class SSIZController {
 				else
 				{
 					// Just doing lower threshold
-					if (val < model.getThresholdValueGT() && yearval != 0)
+					if (yearval < model.getThresholdValueGT() && yearval != 0)
 					{
 						// log.debug("Filtering out index " + rowindex);
 						firesByYear[rowindex] = 0;
@@ -143,15 +146,18 @@ public class SSIZController {
 		}
 		else if (model.getThresholdType().equals(FireFilterType.PERCENTAGE_OF_RECORDING))
 		{
-			for (Double yearval : model.getReader().getPercentOfRecordingScarred(model.getEventType()))
+			log.debug("Calculating based on percentage of recording trees filter");
+			
+			double[] data = model.getPercentOfRecordedScarred();
+			for (Double yearval : data)
 			{
 				rowindex++;
-				double val = (yearval * 100);
+				// double val = (yearval * 100);
 				
 				if (model.isLowerThresholdSet())
 				{
 					// Doing upper as well as lower threshold
-					if ((val < model.getThresholdValueGT() || val > model.getThresholdValueLT()) && yearval != 0)
+					if ((yearval < model.getThresholdValueGT() || yearval > model.getThresholdValueLT()) && yearval != 0)
 					{
 						firesByYear[rowindex] = 0;
 					}
@@ -159,7 +165,7 @@ public class SSIZController {
 				else
 				{
 					// Just doing lower threshold
-					if (val < model.getThresholdValueGT() && yearval != 0)
+					if (yearval < model.getThresholdValueGT() && yearval != 0)
 					{
 						// log.debug("Filtering out index " + rowindex);
 						firesByYear[rowindex] = 0;
@@ -521,4 +527,5 @@ public class SSIZController {
 		
 		return tempPool;
 	}
+	
 }

@@ -50,6 +50,8 @@ public class SSIZAnalysisModel {
 	private ResamplingType resamplingType;
 	private FireFilterType thresholdType;
 	private boolean isLowerThresholdSet = false;
+	private double[] cachedPercentOfAllData;
+	private double[] cachedPercentOfRecordedData;
 	
 	private Random[] randomArray;
 	
@@ -329,6 +331,26 @@ public class SSIZAnalysisModel {
 	public ArrayList<ArrayList<Integer>> getSeriesPoolToAnalyze() {
 	
 		return this.seriesPoolToAnalyze;
+	}
+	
+	public double[] getPercentOfAllScarred() {
+	
+		if (cachedPercentOfAllData == null)
+		{
+			cachedPercentOfAllData = this.getReader().getPercentOfAllScarred(getEventType());
+		}
+		
+		return cachedPercentOfAllData;
+	}
+	
+	public double[] getPercentOfRecordedScarred() {
+	
+		if (cachedPercentOfRecordedData == null)
+		{
+			cachedPercentOfRecordedData = this.getReader().getPercentOfRecordingScarred(getEventType());
+		}
+		
+		return cachedPercentOfRecordedData;
 	}
 	
 }

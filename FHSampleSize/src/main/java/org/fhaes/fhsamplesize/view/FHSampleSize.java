@@ -31,6 +31,7 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 
 import javax.swing.DefaultComboBoxModel;
@@ -1170,13 +1171,17 @@ public class FHSampleSize extends JFrame implements ActionListener {
 			}
 			catch (InterruptedException e)
 			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				log.debug("Interrupted exception caught");
+				
 			}
 			catch (ExecutionException e)
 			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				log.debug("Execution exception caught");
+			}
+			catch (CancellationException e)
+			{
+				log.debug("Cancellation exception caught");
+				
 			}
 			
 			if (!taskWasCancelled)
@@ -1232,7 +1237,8 @@ public class FHSampleSize extends JFrame implements ActionListener {
 		
 		cboSegment.setModel(combomodel);
 		cboSegment.setEnabled(model.getSegments().size() > 1);
-		cboSegment.setSelectedIndex(segmentsDone);
+		
+		// cboSegment.setSelectedIndex(segmentsDone);
 		cboChartMetric.setEnabled(true);
 	}
 	
