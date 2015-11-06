@@ -79,6 +79,7 @@ import org.fhaes.filefilter.PDFFilter;
 import org.fhaes.filefilter.TABFilter;
 import org.fhaes.preferences.App;
 import org.fhaes.preferences.FHAESPreferences.PrefKey;
+import org.fhaes.preferences.wrappers.CheckBoxWrapper;
 import org.fhaes.preferences.wrappers.EventTypeWrapper;
 import org.fhaes.preferences.wrappers.FireFilterTypeWrapper;
 import org.fhaes.preferences.wrappers.ResamplingTypeWrapper;
@@ -468,31 +469,13 @@ public class FHSampleSize extends JFrame implements ActionListener {
 		new EventTypeWrapper(cboEventType, PrefKey.EVENT_TYPE_TO_PROCESS, EventTypeToProcess.FIRE_EVENT);
 		
 		chkCommonYears = new JCheckBox("<html>Only analyze years all series have in common");
-		chkCommonYears.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-			
-				if (chkCommonYears.isSelected())
-					App.prefs.setPref(PrefKey.SSIZ_CHK_COMMON_YEARS, "TRUE");
-				else
-					App.prefs.setPref(PrefKey.SSIZ_CHK_COMMON_YEARS, "FALSE");
-			}
-		});
+		chkCommonYears.setEnabled(false);
+		new CheckBoxWrapper(chkCommonYears, PrefKey.SSIZ_CHK_COMMON_YEARS, false);
 		panelAnalysisOptions.add(chkCommonYears, "cell 1 1 3 1");
 		
 		chkExcludeSeriesWithNoEvents = new JCheckBox("<html>Exclude series/segments with no events");
-		chkExcludeSeriesWithNoEvents.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-			
-				if (chkExcludeSeriesWithNoEvents.isSelected())
-					App.prefs.setPref(PrefKey.SSIZ_CHK_EXCLUDE_SERIES_WITH_NO_EVENTS, "TRUE");
-				else
-					App.prefs.setPref(PrefKey.SSIZ_CHK_EXCLUDE_SERIES_WITH_NO_EVENTS, "FALSE");
-			}
-		});
+		chkExcludeSeriesWithNoEvents.setEnabled(false);
+		new CheckBoxWrapper(chkExcludeSeriesWithNoEvents, PrefKey.SSIZ_CHK_EXCLUDE_SERIES_WITH_NO_EVENTS, false);
 		panelAnalysisOptions.add(chkExcludeSeriesWithNoEvents, "cell 1 2 3 1");
 		
 		JLabel lblThresholdType = new JLabel("Threshold:");
@@ -684,7 +667,6 @@ public class FHSampleSize extends JFrame implements ActionListener {
 		fileDialogWasUsed = false;
 		mouseListenersActive = false;
 		
-		this.setCheckBoxesToPrefKeyValues();
 		this.setGUIForFHFileReader();
 		this.setGUIForThresholdStatus();
 		
@@ -900,36 +882,6 @@ public class FHSampleSize extends JFrame implements ActionListener {
 			return false;
 		
 		return true;
-	}
-	
-	/**
-	 * Sets up the checkbox values according to the stored preference keys.
-	 */
-	private void setCheckBoxesToPrefKeyValues() {
-	
-		try
-		{
-			if (App.prefs.getPref(PrefKey.SSIZ_CHK_COMMON_YEARS, null).equals("TRUE"))
-				chkCommonYears.setSelected(true);
-			else
-				chkCommonYears.setSelected(false);
-		}
-		catch (NullPointerException ex)
-		{
-			App.prefs.setPref(PrefKey.SSIZ_CHK_COMMON_YEARS, "FALSE");
-		}
-		
-		try
-		{
-			if (App.prefs.getPref(PrefKey.SSIZ_CHK_EXCLUDE_SERIES_WITH_NO_EVENTS, null).equals("TRUE"))
-				chkExcludeSeriesWithNoEvents.setSelected(true);
-			else
-				chkExcludeSeriesWithNoEvents.setSelected(false);
-		}
-		catch (NullPointerException ex)
-		{
-			App.prefs.setPref(PrefKey.SSIZ_CHK_EXCLUDE_SERIES_WITH_NO_EVENTS, "FALSE");
-		}
 	}
 	
 	/**

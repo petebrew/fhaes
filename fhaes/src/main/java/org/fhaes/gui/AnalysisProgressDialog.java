@@ -52,6 +52,7 @@ import org.fhaes.enums.AnalysisType;
 import org.fhaes.enums.EventTypeToProcess;
 import org.fhaes.enums.FireFilterType;
 import org.fhaes.enums.NoDataLabel;
+import org.fhaes.enums.SampleDepthFilterType;
 import org.fhaes.fhfilereader.FHFile;
 import org.fhaes.preferences.App;
 import org.fhaes.preferences.FHAESPreferences.PrefKey;
@@ -234,7 +235,9 @@ public class AnalysisProgressDialog extends JDialog implements PropertyChangeLis
 						FireFilterType.NUMBER_OF_EVENTS), (double) App.prefs.getIntPref(PrefKey.COMPOSITE_FILTER_VALUE, 1),
 						App.prefs.getBooleanPref(PrefKey.INTERVALS_INCLUDE_OTHER_INJURIES, false), App.prefs.getEventTypePref(
 								PrefKey.EVENT_TYPE_TO_PROCESS, EventTypeToProcess.FIRE_EVENT), App.prefs.getDoublePref(
-								PrefKey.INTERVALS_ALPHA_LEVEL, 0.125));
+								PrefKey.INTERVALS_ALPHA_LEVEL, 0.125), App.prefs.getSampleDepthFilterTypePref(
+								PrefKey.COMPOSITE_SAMPLE_DEPTH_TYPE, SampleDepthFilterType.MIN_NUM_SAMPLES), App.prefs.getDoublePref(
+								PrefKey.COMPOSITE_MIN_SAMPLES, 1.0));
 				setProgress(10);
 				intervalsExceedenceFile = fhint.getExceedence();
 				intervalsExceedenceModel = getTableModelFromCSV(intervalsExceedenceFile);

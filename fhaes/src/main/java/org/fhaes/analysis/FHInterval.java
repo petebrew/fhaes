@@ -35,6 +35,7 @@ import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
 import org.fhaes.enums.AnalysisType;
 import org.fhaes.enums.EventTypeToProcess;
 import org.fhaes.enums.FireFilterType;
+import org.fhaes.enums.SampleDepthFilterType;
 import org.fhaes.fhfilereader.FHFile;
 import org.fhaes.fhfilereader.FHX2FileReader;
 import org.fhaes.filefilter.CSVFileFilter;
@@ -63,6 +64,8 @@ public class FHInterval {
 	private File exceedenceFile = null;
 	private File summaryFile = null;
 	private Double alphaLevel = 0.125;
+	private SampleDepthFilterType sampleDepthFilterType = SampleDepthFilterType.MIN_NUM_SAMPLES;
+	private Double sampleDepthFilterValue;
 	
 	/**
 	 * Construction for setting up an FHInterval analysis. After construction call doAnalysis() to run the analysis and then get results by
@@ -79,7 +82,8 @@ public class FHInterval {
 	 * @param alphaLevel
 	 */
 	public FHInterval(FHFile[] inputFileArray, AnalysisType analysisType, Integer startYear, Integer endYear, FireFilterType filterType,
-			Double filterValue, Boolean includeIncomplete, EventTypeToProcess eventTypeToProcess, Double alphaLevel) {
+			Double filterValue, Boolean includeIncomplete, EventTypeToProcess eventTypeToProcess, Double alphaLevel,
+			SampleDepthFilterType sampleDepthFilterType, Double sampleDepthFilterValue) {
 	
 		this.inputFileArray = inputFileArray;
 		
@@ -137,54 +141,8 @@ public class FHInterval {
 		this.includeIncomplete = includeIncomplete;
 		this.eventTypeToProcess = eventTypeToProcess;
 		this.alphaLevel = alphaLevel;
-		
-		doAnalysis();
-	}
-	
-	/**
-	 * Deprecated method for setting up an FHInterval analysis. Used by original stand-alone application.
-	 * 
-	 * @see FHInterval(FHFile[] inputFileArray, AnalysisType analysisType, Integer startYear, Integer endYear, FireFilterType filterType,
-	 *      Double filterValue, Boolean includeIncomplete, EventTypeToProcess eventTypeToProcess, Double alphaLevel)
-	 * @param inputFileArray
-	 * @param outputFileStem
-	 * @param doComposite
-	 * @param doSample
-	 * @param startYear
-	 * @param endYear
-	 * @param doNumberFilter
-	 * @param doPercentageFilter
-	 * @param filterValue
-	 * @param includeIncomplete
-	 */
-	@Deprecated
-	public FHInterval(FHFile[] inputFileArray, File outputFileStem, Boolean doComposite, Boolean doSample, Integer startYear,
-			Integer endYear, Boolean doNumberFilter, Boolean doPercentageFilter, Double filterValue, Boolean includeIncomplete) {
-	
-		this.inputFileArray = inputFileArray;
-		
-		try
-		{
-			summaryFile = File.createTempFile("FHInterval", ".tmp");
-			exceedenceFile = File.createTempFile("exceedence", ".tmp");
-			summaryFile.deleteOnExit();
-			exceedenceFile.deleteOnExit();
-		}
-		catch (IOException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return;
-		}
-		
-		this.doComposite = doComposite;
-		this.doSample = doSample;
-		this.startYear = startYear;
-		this.endYear = endYear;
-		this.doNumberFilter = doNumberFilter;
-		this.doPercentageFilter = doPercentageFilter;
-		this.filterValue = filterValue;
-		this.includeIncomplete = includeIncomplete;
+		this.sampleDepthFilterType = sampleDepthFilterType;
+		this.sampleDepthFilterValue = sampleDepthFilterValue;
 		
 		doAnalysis();
 	}
@@ -226,6 +184,10 @@ public class FHInterval {
 		log.debug("filterValue = " + filterValue);
 		log.debug("includeIncomplete = " + includeIncomplete);
 		log.debug("alphaLevel = " + alphaLevel);
+		
+		// NEW FOR ELENA
+		log.debug("Sample depth filter type = " + sampleDepthFilterType);
+		log.debug("Sample depth value = " + sampleDepthFilterValue);
 		
 		boolean run = false;
 		boolean highway = true;

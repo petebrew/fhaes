@@ -36,9 +36,13 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import net.miginfocom.swing.MigLayout;
+
+import org.fhaes.components.HelpTipButton;
 import org.fhaes.enums.EventTypeToProcess;
 import org.fhaes.enums.FireFilterType;
 import org.fhaes.enums.SampleDepthFilterType;
+import org.fhaes.help.LocalHelp;
 import org.fhaes.preferences.FHAESPreferences.PrefKey;
 import org.fhaes.preferences.wrappers.EventTypeWrapper;
 import org.fhaes.preferences.wrappers.FireFilterTypeWrapper;
@@ -47,8 +51,6 @@ import org.fhaes.preferences.wrappers.SpinnerWrapper;
 import org.fhaes.util.SharedConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import net.miginfocom.swing.MigLayout;
 
 /**
  * CompositeFilterDialog Class.
@@ -78,12 +80,15 @@ public class CompositeFilterDialog extends JDialog implements ActionListener {
 	private JLabel lblCompositeBasedOn;
 	@SuppressWarnings("rawtypes")
 	private JComboBox cboEventToProcess;
+	private HelpTipButton helpTipButton;
+	private HelpTipButton helpTipButton_1;
+	private HelpTipButton helpTipButton_2;
 	
 	/**
 	 * TODO
 	 */
 	public CompositeFilterDialog() {
-		
+	
 		setupGUI();
 		this.setCommentsVisible(false);
 		pack();
@@ -96,7 +101,7 @@ public class CompositeFilterDialog extends JDialog implements ActionListener {
 	 * @param includeComments
 	 */
 	public CompositeFilterDialog(boolean includeComments) {
-		
+	
 		setupGUI();
 		this.setCommentsVisible(includeComments);
 		pack();
@@ -108,7 +113,7 @@ public class CompositeFilterDialog extends JDialog implements ActionListener {
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private void setupGUI() {
-		
+	
 		// this.setLocationRelativeTo(null);
 		this.setTitle("Composite file options");
 		this.setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
@@ -121,7 +126,7 @@ public class CompositeFilterDialog extends JDialog implements ActionListener {
 			JPanel panel = new JPanel();
 			panel.setBorder(new TitledBorder(null, "Year range", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 			contentPanel.add(panel, "cell 0 0,grow");
-			panel.setLayout(new MigLayout("", "[][][grow]", "[][][]"));
+			panel.setLayout(new MigLayout("", "[][][grow][]", "[][][]"));
 			{
 				JLabel lblRange = new JLabel("Range:");
 				panel.add(lblRange, "cell 0 0,alignx right");
@@ -132,6 +137,10 @@ public class CompositeFilterDialog extends JDialog implements ActionListener {
 				cboStyle.setModel(new DefaultComboBoxModel(new String[] { "All years", "Restricted years" }));
 				cboStyle.setActionCommand("Style");
 				cboStyle.addActionListener(this);
+			}
+			{
+				helpTipButton_2 = new HelpTipButton(LocalHelp.RANGE_CALC_ALL_YEARS);
+				panel.add(helpTipButton_2, "cell 3 0");
 			}
 			{
 				JLabel lblStartYear = new JLabel("Start year:");
@@ -155,7 +164,7 @@ public class CompositeFilterDialog extends JDialog implements ActionListener {
 						
 						@Override
 						public void stateChanged(ChangeEvent arg0) {
-							
+						
 							updateGUI();
 						}
 						
@@ -165,7 +174,7 @@ public class CompositeFilterDialog extends JDialog implements ActionListener {
 					
 					@Override
 					public void stateChanged(ChangeEvent arg0) {
-						
+					
 						updateGUI();
 					}
 					
@@ -176,7 +185,7 @@ public class CompositeFilterDialog extends JDialog implements ActionListener {
 			JPanel panel = new JPanel();
 			panel.setBorder(new TitledBorder(null, "Composite filter", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 			contentPanel.add(panel, "cell 0 1,grow");
-			panel.setLayout(new MigLayout("", "[][][21.00][70.00]", "[][][]"));
+			panel.setLayout(new MigLayout("", "[][][21.00][70.00][]", "[][][]"));
 			{
 				lblCompositeBasedOn = new JLabel("Composite based on:");
 				lblCompositeBasedOn.setEnabled(false);
@@ -196,6 +205,8 @@ public class CompositeFilterDialog extends JDialog implements ActionListener {
 				cboFilterType = new JComboBox();
 				panel.add(cboFilterType, "cell 1 1,growx");
 				new FireFilterTypeWrapper(cboFilterType, PrefKey.COMPOSITE_FILTER_TYPE, FireFilterType.NUMBER_OF_EVENTS);
+				cboFilterType.addActionListener(this);
+				cboFilterType.setActionCommand("Style");
 				
 			}
 			{
@@ -204,8 +215,13 @@ public class CompositeFilterDialog extends JDialog implements ActionListener {
 			}
 			{
 				spnFilterValue = new JSpinner();
-				spnFilterValue.setModel(new SpinnerNumberModel(new Integer(1), new Integer(1), null, new Integer(1)));
+				new SpinnerWrapper(spnFilterValue, PrefKey.COMPOSITE_FILTER_VALUE, 1);
+				
 				panel.add(spnFilterValue, "cell 3 1,growx");
+			}
+			{
+				helpTipButton = new HelpTipButton(LocalHelp.COMPOSITE_FILTER_THRESHOLD);
+				panel.add(helpTipButton, "cell 4 1");
 			}
 			{
 				cboSampleDepthFilterType = new JComboBox();
@@ -222,6 +238,10 @@ public class CompositeFilterDialog extends JDialog implements ActionListener {
 				spnMinSamples.setModel(new SpinnerNumberModel(new Integer(1), new Integer(1), null, new Integer(1)));
 				new SpinnerWrapper(spnMinSamples, PrefKey.COMPOSITE_MIN_SAMPLES, 1);
 				panel.add(spnMinSamples, "cell 3 2,growx");
+			}
+			{
+				helpTipButton_1 = new HelpTipButton(LocalHelp.COMPOSITE_FILTER_SAMPLE_DEPTH_FILTER_TYPE);
+				panel.add(helpTipButton_1, "cell 4 2");
 			}
 		}
 		{
@@ -265,7 +285,7 @@ public class CompositeFilterDialog extends JDialog implements ActionListener {
 	 * @param b
 	 */
 	private void setCommentsVisible(boolean b) {
-		
+	
 		panelComments.setVisible(b);
 		txtComments.setVisible(b);
 	}
@@ -274,20 +294,20 @@ public class CompositeFilterDialog extends JDialog implements ActionListener {
 	 * Update the GUI depending on current selections.
 	 */
 	private void updateGUI() {
-		
+	
 		if (cboFilterType.getSelectedItem().equals(FireFilterType.NUMBER_OF_EVENTS))
 		{
-			
+			// Set to integer with no bounds
 			Number currval = (Number) spnFilterValue.getValue();
 			spnFilterValue.setModel(new SpinnerNumberModel(currval.intValue(), new Integer(1), null, new Integer(1)));
 		}
-		else if (cboFilterType.getSelectedItem().equals(FireFilterType.PERCENTAGE_OF_RECORDING))
+		else
 		{
-			
+			// Set to double limited to percent value
 			Number currval = (Number) spnFilterValue.getValue();
 			if (currval.doubleValue() < 0 || currval.doubleValue() > 100)
 				currval = 1.0;
-			spnFilterValue.setModel(new SpinnerNumberModel(1.0, 0.0, 100.0, 1.0));
+			spnFilterValue.setModel(new SpinnerNumberModel(currval.doubleValue(), 0.0, 100.0, 1.0));
 		}
 		
 		spnStart.setEnabled(cboStyle.getSelectedIndex() > 0);
@@ -297,7 +317,7 @@ public class CompositeFilterDialog extends JDialog implements ActionListener {
 		
 		if (cboStyle.getSelectedIndex() == 0)
 			return;
-			
+		
 		Integer start = (Integer) spnStart.getValue();
 		Integer end = (Integer) spnEnd.getValue();
 		
@@ -314,7 +334,7 @@ public class CompositeFilterDialog extends JDialog implements ActionListener {
 	
 	@Override
 	public void actionPerformed(ActionEvent evt) {
-		
+	
 		if (evt.getActionCommand().equals("OK"))
 		{
 			allDone = true;
@@ -337,7 +357,7 @@ public class CompositeFilterDialog extends JDialog implements ActionListener {
 	 * @return
 	 */
 	public Integer getStartYear() {
-		
+	
 		if (cboStyle.getSelectedIndex() == 0)
 		{
 			// All years selected so we use 0
@@ -359,7 +379,7 @@ public class CompositeFilterDialog extends JDialog implements ActionListener {
 	 * @return
 	 */
 	public Integer getEndYear() {
-		
+	
 		if (cboStyle.getSelectedIndex() == 0)
 		{
 			// All years selected so we use 0
@@ -382,7 +402,7 @@ public class CompositeFilterDialog extends JDialog implements ActionListener {
 	 * @return
 	 */
 	public Integer getMinNumberOfSamples() {
-		
+	
 		return (Integer) this.spnMinSamples.getValue();
 		
 		/*
@@ -397,7 +417,7 @@ public class CompositeFilterDialog extends JDialog implements ActionListener {
 	 * @return
 	 */
 	public Double getFireFilterValue() {
-		
+	
 		return ((Number) spnFilterValue.getValue()).doubleValue();
 	}
 	
@@ -407,7 +427,7 @@ public class CompositeFilterDialog extends JDialog implements ActionListener {
 	 * @return
 	 */
 	public Integer getMinSamplesValues() {
-		
+	
 		return (Integer) this.spnMinSamples.getValue();
 		
 	}
@@ -418,7 +438,7 @@ public class CompositeFilterDialog extends JDialog implements ActionListener {
 	 * @return
 	 */
 	public FireFilterType getFireFilterType() {
-		
+	
 		return (FireFilterType) cboFilterType.getSelectedItem();
 	}
 	
@@ -428,7 +448,7 @@ public class CompositeFilterDialog extends JDialog implements ActionListener {
 	 * @return
 	 */
 	public SampleDepthFilterType getSampleDepthFilterType() {
-		
+	
 		return (SampleDepthFilterType) this.cboSampleDepthFilterType.getSelectedItem();
 	}
 	
@@ -438,7 +458,7 @@ public class CompositeFilterDialog extends JDialog implements ActionListener {
 	 * @return
 	 */
 	public String getComments() {
-		
+	
 		if (txtComments.isVisible())
 		{
 			return txtComments.getText();
@@ -455,7 +475,7 @@ public class CompositeFilterDialog extends JDialog implements ActionListener {
 	 * @return
 	 */
 	public Boolean success() {
-		
+	
 		return allDone;
 	}
 	

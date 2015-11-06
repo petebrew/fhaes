@@ -19,6 +19,7 @@ package org.fhaes.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -45,6 +46,7 @@ import org.fhaes.enums.AnalysisType;
 import org.fhaes.enums.EventTypeToProcess;
 import org.fhaes.enums.FireFilterType;
 import org.fhaes.enums.NoDataLabel;
+import org.fhaes.enums.SampleDepthFilterType;
 import org.fhaes.help.LocalHelp;
 import org.fhaes.preferences.App;
 import org.fhaes.preferences.FHAESPreferences.PrefKey;
@@ -55,6 +57,7 @@ import org.fhaes.preferences.wrappers.DoubleSpinnerWrapper;
 import org.fhaes.preferences.wrappers.EventTypeWrapper;
 import org.fhaes.preferences.wrappers.FireFilterTypeWrapperWithoutAllTrees;
 import org.fhaes.preferences.wrappers.NoDataLabelWrapper;
+import org.fhaes.preferences.wrappers.SampleDepthFilterTypeWrapper;
 import org.fhaes.preferences.wrappers.SpinnerWrapper;
 import org.fhaes.util.Builder;
 
@@ -87,8 +90,6 @@ public class ParamConfigDialog extends JDialog implements ActionListener, Change
 	private JCheckBox cbxAllYears;
 	private JLabel lblNewLabel;
 	private JPanel panel_1;
-	private JLabel lblCompositeThreshold;
-	private JPanel panel_2;
 	private JLabel label_2;
 	private JSpinner spnFilterValue;
 	private JPanel panelAnalysisOptions;
@@ -128,6 +129,12 @@ public class ParamConfigDialog extends JDialog implements ActionListener, Change
 	private JLabel lblLabelNoData;
 	private JComboBox cboNoDataValue;
 	private HelpTipButton helpTipButton_1;
+	private JLabel lblCompositeBasedOn;
+	private JComboBox cboEventToProcess;
+	private JComboBox cboSampleDepthFilterType;
+	private JLabel label_3;
+	private JSpinner spnMinSamples;
+	private HelpTipButton btnHelpSampleDepthFilterType;
 	
 	/**
 	 * Create the dialog.
@@ -277,24 +284,24 @@ public class ParamConfigDialog extends JDialog implements ActionListener, Change
 			JPanel panelRange = new JPanel();
 			tabFiltersAndYears.add(panelRange, "cell 0 0");
 			panelRange.setBorder(new TitledBorder(null, "Year range", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-			panelRange.setLayout(new MigLayout("", "[178px:178px][159px,grow,fill]", "[][]"));
-			{
-				lblNewLabel = new JLabel("Calculate across all years:");
-				panelRange.add(lblNewLabel, "cell 0 0,alignx right");
-			}
+			panelRange.setLayout(new MigLayout("", "[160px:160.00][159px,grow,fill]", "[][]"));
 			panel_1 = new JPanel();
 			panelRange.add(panel_1, "cell 1 0,grow");
 			panel_1.setLayout(new MigLayout("", "[159px,grow]", "[]"));
+			{
+				lblNewLabel = new JLabel("Calculate across all years:");
+				panel_1.add(lblNewLabel, "flowx,cell 0 0");
+			}
 			cbxAllYears = new JCheckBox("");
-			panel_1.add(cbxAllYears, "flowx,cell 0 0");
+			panel_1.add(cbxAllYears, "cell 0 0");
 			cbxAllYears.setSelected(true);
 			cbxAllYears.setActionCommand("AllYearsCheckbox");
 			new CheckBoxWrapper(cbxAllYears, PrefKey.RANGE_CALC_OVER_ALL_YEARS, true);
-			btnHelpAllYears = new HelpTipButton("");
+			btnHelpAllYears = new HelpTipButton(LocalHelp.RANGE_CALC_ALL_YEARS);
 			panel_1.add(btnHelpAllYears, "cell 0 0");
 			cbxAllYears.addActionListener(this);
 			{
-				lblYearRange = new JLabel("Calculate only from:");
+				lblYearRange = new JLabel("Time period:");
 				panelRange.add(lblYearRange, "cell 0 1,alignx right,aligny center");
 			}
 			panel = new JPanel();
@@ -314,34 +321,59 @@ public class ParamConfigDialog extends JDialog implements ActionListener, Change
 			panel.add(spnLastYear, "flowx,cell 2 0,alignx left,aligny top");
 			panelCompositeFilter = new JPanel();
 			tabFiltersAndYears.add(panelCompositeFilter, "cell 0 1");
-			panelCompositeFilter.setBorder(new TitledBorder(null, "Composite fire threshold", TitledBorder.LEADING, TitledBorder.TOP, null,
-					null));
-			panelCompositeFilter.setLayout(new MigLayout("", "[178px:178px][grow,fill]", "[]"));
+			panelCompositeFilter.setBorder(new TitledBorder(null, "Composite filters", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+			panelCompositeFilter.setLayout(new MigLayout("", "[160px:160,right][fill][][grow,fill][]", "[][][]"));
 			{
-				lblCompositeThreshold = new JLabel("Threshold:");
-				panelCompositeFilter.add(lblCompositeThreshold, "cell 0 0,alignx right,aligny center");
+				lblCompositeBasedOn = new JLabel("Composite based on:");
+				panelCompositeFilter.add(lblCompositeBasedOn, "cell 0 0,alignx trailing");
 			}
-			panel_2 = new JPanel();
-			panelCompositeFilter.add(panel_2, "cell 1 0");
-			panel_2.setLayout(new MigLayout("", "[grow,fill][][190px,grow,fill][]", "[]"));
+			{
+				cboEventToProcess = new JComboBox();
+				new EventTypeWrapper(cboEventToProcess, PrefKey.COMPOSITE_EVENT_TYPE, EventTypeToProcess.FIRE_EVENT);
+				// Disable and force to fire events until implemented
+				cboEventToProcess.setSelectedItem(EventTypeToProcess.FIRE_EVENT);
+				cboEventToProcess.setEnabled(false);
+				
+				panelCompositeFilter.add(cboEventToProcess, "cell 1 0 3 1,growx");
+			}
 			{
 				cboFilterType = new JComboBox();
-				panel_2.add(cboFilterType, "cell 0 0");
+				panelCompositeFilter.add(cboFilterType, "cell 1 1");
 				cboFilterType.setModel(new DefaultComboBoxModel(FireFilterType.values()));
 				new FireFilterTypeWrapperWithoutAllTrees(cboFilterType, PrefKey.COMPOSITE_FILTER_TYPE, FireFilterType.NUMBER_OF_EVENTS);
 			}
 			{
 				label_2 = new JLabel(">=");
-				panel_2.add(label_2, "cell 1 0");
+				panelCompositeFilter.add(label_2, "cell 2 1");
 			}
 			{
 				spnFilterValue = new JSpinner();
+				panelCompositeFilter.add(spnFilterValue, "cell 3 1");
 				spnFilterValue.setModel(new SpinnerNumberModel(new Integer(1), new Integer(1), null, new Integer(1)));
 				new SpinnerWrapper(spnFilterValue, PrefKey.COMPOSITE_FILTER_VALUE, 1);
-				panel_2.add(spnFilterValue, "flowx,cell 2 0,growx");
 			}
 			btnHelpThreshold = new HelpTipButton(LocalHelp.COMPOSITE_FILTER_THRESHOLD);
-			panel_2.add(btnHelpThreshold, "cell 3 0");
+			panelCompositeFilter.add(btnHelpThreshold, "cell 4 1");
+			{
+				cboSampleDepthFilterType = new JComboBox();
+				new SampleDepthFilterTypeWrapper(cboSampleDepthFilterType, PrefKey.COMPOSITE_SAMPLE_DEPTH_TYPE,
+						SampleDepthFilterType.MIN_NUM_SAMPLES);
+				panelCompositeFilter.add(cboSampleDepthFilterType, "cell 1 2,growx");
+			}
+			{
+				label_3 = new JLabel(">=");
+				panelCompositeFilter.add(label_3, "cell 2 2");
+			}
+			{
+				spnMinSamples = new JSpinner();
+				spnMinSamples.setModel(new SpinnerNumberModel(new Integer(1), new Integer(1), null, new Integer(1)));
+				new SpinnerWrapper(spnMinSamples, PrefKey.COMPOSITE_MIN_SAMPLES, 1);
+				panelCompositeFilter.add(spnMinSamples, "cell 3 2");
+			}
+			{
+				btnHelpSampleDepthFilterType = new HelpTipButton(LocalHelp.COMPOSITE_FILTER_SAMPLE_DEPTH_FILTER_TYPE);
+				panelCompositeFilter.add(btnHelpSampleDepthFilterType, "cell 4 2");
+			}
 			spnLastYear.addChangeListener(this);
 			spnFirstYear.addChangeListener(this);
 			{
@@ -474,6 +506,7 @@ public class ParamConfigDialog extends JDialog implements ActionListener, Change
 		
 		setFromPreferences();
 		
+		setMinimumSize(new Dimension(640, 500));
 		pack();
 		setIconImage(Builder.getApplicationIcon());
 		setLocationRelativeTo(parent);
@@ -495,7 +528,11 @@ public class ParamConfigDialog extends JDialog implements ActionListener, Change
 		}
 		
 		this.cboFilterType.setEnabled(enableFilters);
+		// this.cboEventToProcess.setEnabled(enableFilters);
+		this.cboSampleDepthFilterType.setEnabled(enableFilters);
 		this.spnFilterValue.setEnabled(enableFilters);
+		this.spnMinSamples.setEnabled(enableFilters);
+		
 	}
 	
 	public Boolean havePreferencesChanged() {
@@ -564,6 +601,9 @@ public class ParamConfigDialog extends JDialog implements ActionListener, Change
 		cbxIncludeIncomplete.setSelected(false);
 		cboEventType.setSelectedItem(EventTypeToProcess.FIRE_EVENT);
 		cboFilterType.setSelectedItem(FireFilterType.NUMBER_OF_EVENTS);
+		cboEventToProcess.setSelectedItem(EventTypeToProcess.FIRE_EVENT);
+		cboSampleDepthFilterType.setSelectedItem(SampleDepthFilterType.MIN_NUM_SAMPLES);
+		spnMinSamples.setValue(1);
 		spnFilterValue.setValue(1);
 		cboLabelType.setSelectedItem(AnalysisLabelType.INPUT_FILENAME);
 		spnAlphaLevel.setValue(0.125);
