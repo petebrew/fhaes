@@ -56,7 +56,7 @@ import org.fhaes.preferences.wrappers.AnalysisTypeWrapper;
 import org.fhaes.preferences.wrappers.CheckBoxWrapper;
 import org.fhaes.preferences.wrappers.DoubleSpinnerWrapper;
 import org.fhaes.preferences.wrappers.EventTypeWrapper;
-import org.fhaes.preferences.wrappers.FireFilterTypeWrapperWithoutAllTrees;
+import org.fhaes.preferences.wrappers.FireFilterTypeWrapper;
 import org.fhaes.preferences.wrappers.NoDataLabelWrapper;
 import org.fhaes.preferences.wrappers.SampleDepthFilterTypeWrapper;
 import org.fhaes.preferences.wrappers.SpinnerWrapper;
@@ -91,7 +91,7 @@ public class ParamConfigDialog extends JDialog implements ActionListener, Change
 	private JCheckBox cbxAllYears;
 	private JLabel lblNewLabel;
 	private JPanel panel_1;
-	private JLabel label_2;
+	private JLabel lblGT1;
 	private JSpinner spnFilterValue;
 	private JPanel panelAnalysisOptions;
 	private JLabel lblIntervalAnalysisType;
@@ -132,7 +132,7 @@ public class ParamConfigDialog extends JDialog implements ActionListener, Change
 	private HelpTipButton helpTipButton_1;
 	private JLabel lblComp;
 	private JComboBox cboSampleDepthFilterType;
-	private JLabel label_3;
+	private JLabel lblGT2;
 	private JSpinner spnMinSamples;
 	private HelpTipButton btnHelpSampleDepthFilterType;
 	private JLabel lblCompositeBasedOn;
@@ -339,11 +339,11 @@ public class ParamConfigDialog extends JDialog implements ActionListener, Change
 				cboFilterType = new JComboBox();
 				panelCompositeFilter.add(cboFilterType, "cell 1 1");
 				cboFilterType.setModel(new DefaultComboBoxModel(FireFilterType.values()));
-				new FireFilterTypeWrapperWithoutAllTrees(cboFilterType, PrefKey.COMPOSITE_FILTER_TYPE, FireFilterType.NUMBER_OF_EVENTS);
+				new FireFilterTypeWrapper(cboFilterType, PrefKey.COMPOSITE_FILTER_TYPE, FireFilterType.NUMBER_OF_EVENTS);
 			}
 			{
-				label_2 = new JLabel(">=");
-				panelCompositeFilter.add(label_2, "cell 2 1");
+				lblGT1 = new JLabel(">=");
+				panelCompositeFilter.add(lblGT1, "cell 2 1");
 			}
 			{
 				spnFilterValue = new JSpinner();
@@ -360,8 +360,8 @@ public class ParamConfigDialog extends JDialog implements ActionListener, Change
 				panelCompositeFilter.add(cboSampleDepthFilterType, "cell 1 2,growx");
 			}
 			{
-				label_3 = new JLabel(">=");
-				panelCompositeFilter.add(label_3, "cell 2 2");
+				lblGT2 = new JLabel(">=");
+				panelCompositeFilter.add(lblGT2, "cell 2 2");
 			}
 			{
 				spnMinSamples = new JSpinner();
@@ -526,12 +526,16 @@ public class ParamConfigDialog extends JDialog implements ActionListener, Change
 			enableFilters = true;
 		}
 		
-		this.cboFilterType.setEnabled(enableFilters);
-		// this.cboEventToProcess.setEnabled(enableFilters);
-		this.cboSampleDepthFilterType.setEnabled(enableFilters);
-		this.spnFilterValue.setEnabled(enableFilters);
-		this.spnMinSamples.setEnabled(enableFilters);
-		
+		cboFilterType.setEnabled(enableFilters);
+		cboSampleDepthFilterType.setEnabled(enableFilters);
+		spnFilterValue.setEnabled(enableFilters);
+		spnMinSamples.setEnabled(enableFilters);
+		lblCompositeBasedOn.setEnabled(enableFilters);
+		lblComp.setEnabled(enableFilters);
+		btnHelpSampleDepthFilterType.setEnabled(enableFilters);
+		btnHelpThreshold.setEnabled(enableFilters);
+		lblGT1.setEnabled(enableFilters);
+		lblGT2.setEnabled(enableFilters);
 	}
 	
 	public Boolean havePreferencesChanged() {
@@ -752,8 +756,4 @@ public class ParamConfigDialog extends JDialog implements ActionListener, Change
 		
 	}
 	
-	public JLabel getLblCompositeBasedOn() {
-	
-		return lblCompositeBasedOn;
-	}
 }

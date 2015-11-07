@@ -56,8 +56,9 @@ public class FHInterval {
 	private Boolean doSample;
 	private Integer startYear;
 	private Integer endYear;
-	private Boolean doNumberFilter;
-	private Boolean doPercentageFilter;
+	// private Boolean doNumberFilter;
+	// private Boolean doPercentageFilter;
+	private FireFilterType fireFilterType;
 	private Double filterValue;
 	private Boolean includeIncomplete;
 	private EventTypeToProcess eventTypeToProcess;
@@ -118,24 +119,9 @@ public class FHInterval {
 			this.doSample = true;
 		}
 		
-		if (filterType == null)
-		{
-			log.warn("FireFilterType in FHInterval was null. Defaulting to 'Number'");
-			this.doNumberFilter = true;
-			this.doPercentageFilter = false;
-		}
-		else if (filterType.equals(FireFilterType.NUMBER_OF_EVENTS))
-		{
-			this.doNumberFilter = true;
-			this.doPercentageFilter = false;
-		}
-		else if (filterType.equals(FireFilterType.PERCENTAGE_OF_RECORDING))
-		{
-			this.doNumberFilter = false;
-			this.doPercentageFilter = true;
-		}
-		
+		this.fireFilterType = filterType;
 		this.filterValue = filterValue;
+		
 		this.startYear = startYear;
 		this.endYear = endYear;
 		this.includeIncomplete = includeIncomplete;
@@ -179,8 +165,7 @@ public class FHInterval {
 		log.debug("doSample = " + doSample);
 		log.debug("startYear = " + startYear);
 		log.debug("endYear = " + endYear);
-		log.debug("doNumberFilter = " + doNumberFilter);
-		log.debug("doPercentageFilter = " + doPercentageFilter);
+		log.debug("fireFilterType = " + fireFilterType);
 		log.debug("filterValue = " + filterValue);
 		log.debug("includeIncomplete = " + includeIncomplete);
 		log.debug("alphaLevel = " + alphaLevel);
@@ -191,11 +176,11 @@ public class FHInterval {
 		
 		if (sampleDepthFilterType.equals(SampleDepthFilterType.MIN_NUM_SAMPLES))
 		{
-			
+			// TODO ELENA
 		}
 		else if (sampleDepthFilterType.equals(SampleDepthFilterType.MIN_NUM_RECORDER_SAMPLES))
 		{
-			
+			// TODO ELENA
 		}
 		
 		boolean run = false;
@@ -469,18 +454,32 @@ public class FHInterval {
 			 */
 			Integer firesFilter1 = new Integer(0);
 			Double firesFilter2 = new Double(0);
-			if (doNumberFilter && filterValue != 1)
+			if (fireFilterType.equals(FireFilterType.NUMBER_OF_EVENTS))
 			{
-				firesFilter1 = filterValue.intValue();
+				if (filterValue != 1)
+					firesFilter1 = filterValue.intValue();
 				// log.debug("number of fires is selected is: "+
 				// firesFilter1);
 			}
-			if (doPercentageFilter && filterValue != 1)
+			else if (fireFilterType.equals(FireFilterType.PERCENTAGE_OF_RECORDING))
 			{
-				firesFilter2 = filterValue / 100.0;
+				if (filterValue != 1)
+					firesFilter2 = filterValue / 100.0;
 				// log.debug("percentage of fires is selected is: "+
 				// firesFilter2);
 			}
+			else if (fireFilterType.equals(FireFilterType.PERCENTAGE_OF_ALL_TREES))
+			{
+				if (filterValue != 1)
+					firesFilter2 = filterValue / 100.0;
+				// TODO ELENA TO CHECK
+			}
+			else
+			{
+				log.error("Unknown FireFilterType");
+				return;
+			}
+			
 			boolean[] enoughIntComp = new boolean[myReader.size()];
 			boolean[] enoughIntSamp = new boolean[myReader.size()];
 			/*
@@ -573,7 +572,7 @@ public class FHInterval {
 						{
 							if (filterValue != 1)
 							{
-								if (doNumberFilter)
+								if (fireFilterType.equals(FireFilterType.NUMBER_OF_EVENTS))
 								{
 									// log.debug("fire filter: "+firesFilter1+" year is: "+listYears.get(j)
 									// +" fires: "+filterMatrix.get(3*i).get(j)+" climatevector:
@@ -588,7 +587,7 @@ public class FHInterval {
 										climateVectorActualSite.add(climateVector.get(climateYear.indexOf(listYears.get(j))));
 									}
 								}
-								if (doPercentageFilter)
+								else if (fireFilterType.equals(FireFilterType.PERCENTAGE_OF_RECORDING))
 								{
 									// log.debug("percent of fires is selected is: "+
 									// firesFilter2+" "+climateVector.get(climateYear.indexOf(listYearsComp.get(j))));
@@ -610,6 +609,19 @@ public class FHInterval {
 										}
 									}
 								}
+								else if (fireFilterType.equals(FireFilterType.PERCENTAGE_OF_ALL_TREES))
+								{
+									
+									// TODO
+									// ELENA TO IMPLEMENT
+									
+								}
+								else
+								{
+									log.error("Unknown FireFilterType");
+									return;
+								}
+								
 							} // end of if filter not equal to 1 (429-454)
 							else
 							{
