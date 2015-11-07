@@ -189,6 +189,15 @@ public class FHInterval {
 		log.debug("Sample depth filter type = " + sampleDepthFilterType);
 		log.debug("Sample depth value = " + sampleDepthFilterValue);
 		
+		if (sampleDepthFilterType.equals(SampleDepthFilterType.MIN_NUM_SAMPLES))
+		{
+			
+		}
+		else if (sampleDepthFilterType.equals(SampleDepthFilterType.MIN_NUM_RECORDER_SAMPLES))
+		{
+			
+		}
+		
 		boolean run = false;
 		boolean highway = true;
 		

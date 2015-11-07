@@ -20,6 +20,7 @@ package org.fhaes.gui;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -129,12 +130,12 @@ public class ParamConfigDialog extends JDialog implements ActionListener, Change
 	private JLabel lblLabelNoData;
 	private JComboBox cboNoDataValue;
 	private HelpTipButton helpTipButton_1;
-	private JLabel lblCompositeBasedOn;
-	private JComboBox cboEventToProcess;
+	private JLabel lblComp;
 	private JComboBox cboSampleDepthFilterType;
 	private JLabel label_3;
 	private JSpinner spnMinSamples;
 	private HelpTipButton btnHelpSampleDepthFilterType;
+	private JLabel lblCompositeBasedOn;
 	
 	/**
 	 * Create the dialog.
@@ -173,6 +174,8 @@ public class ParamConfigDialog extends JDialog implements ActionListener, Change
 							panelCommon.add(cboEventType, "cell 1 0");
 							cboEventType.setModel(new DefaultComboBoxModel(EventTypeToProcess.values()));
 							new EventTypeWrapper(cboEventType, PrefKey.EVENT_TYPE_TO_PROCESS, EventTypeToProcess.FIRE_EVENT);
+							cboEventType.addActionListener(this);
+							cboEventType.setActionCommand("EventTypeChanged");
 						}
 						btnHelpEventType = new HelpTipButton(LocalHelp.EVENT_TYPE);
 						panelCommon.add(btnHelpEventType, "cell 2 0");
@@ -324,17 +327,13 @@ public class ParamConfigDialog extends JDialog implements ActionListener, Change
 			panelCompositeFilter.setBorder(new TitledBorder(null, "Composite filters", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 			panelCompositeFilter.setLayout(new MigLayout("", "[160px:160,right][fill][][grow,fill][]", "[][][]"));
 			{
-				lblCompositeBasedOn = new JLabel("Composite based on:");
-				panelCompositeFilter.add(lblCompositeBasedOn, "cell 0 0,alignx trailing");
+				lblComp = new JLabel("Composite based on:");
+				panelCompositeFilter.add(lblComp, "cell 0 0,alignx trailing,aligny top");
 			}
 			{
-				cboEventToProcess = new JComboBox();
-				new EventTypeWrapper(cboEventToProcess, PrefKey.COMPOSITE_EVENT_TYPE, EventTypeToProcess.FIRE_EVENT);
-				// Disable and force to fire events until implemented
-				cboEventToProcess.setSelectedItem(EventTypeToProcess.FIRE_EVENT);
-				cboEventToProcess.setEnabled(false);
-				
-				panelCompositeFilter.add(cboEventToProcess, "cell 1 0 3 1,growx");
+				lblCompositeBasedOn = new JLabel("<html><b>Fire events</b><br><font size=-2><i>[change on analysis options tab]</i>");
+				lblCompositeBasedOn.setFont(new Font("Dialog", Font.PLAIN, 12));
+				panelCompositeFilter.add(lblCompositeBasedOn, "cell 1 0 4 1");
 			}
 			{
 				cboFilterType = new JComboBox();
@@ -574,6 +573,9 @@ public class ParamConfigDialog extends JDialog implements ActionListener, Change
 		spnLastYear.setEnabled(!cbxAllYears.isSelected());
 		this.lblYearRange.setEnabled(!cbxAllYears.isSelected());
 		
+		this.lblCompositeBasedOn.setText("<html><b>" + ((EventTypeToProcess) this.cboEventType.getSelectedItem()).toString()
+				+ "</b><br><font size=\"-2\"><i>[change on analysis tab]</i>");
+		
 		btnOK.setEnabled(ret);
 		
 		return ret;
@@ -601,7 +603,6 @@ public class ParamConfigDialog extends JDialog implements ActionListener, Change
 		cbxIncludeIncomplete.setSelected(false);
 		cboEventType.setSelectedItem(EventTypeToProcess.FIRE_EVENT);
 		cboFilterType.setSelectedItem(FireFilterType.NUMBER_OF_EVENTS);
-		cboEventToProcess.setSelectedItem(EventTypeToProcess.FIRE_EVENT);
 		cboSampleDepthFilterType.setSelectedItem(SampleDepthFilterType.MIN_NUM_SAMPLES);
 		spnMinSamples.setValue(1);
 		spnFilterValue.setValue(1);
@@ -738,6 +739,10 @@ public class ParamConfigDialog extends JDialog implements ActionListener, Change
 			cbxLateFirst.setSelected(!cbxLateSecond.isSelected());
 			validateChoices();
 		}
+		else if (evt.getActionCommand().equals("EventTypeChanged"))
+		{
+			validateChoices();
+		}
 	}
 	
 	@Override
@@ -747,4 +752,8 @@ public class ParamConfigDialog extends JDialog implements ActionListener, Change
 		
 	}
 	
+	public JLabel getLblCompositeBasedOn() {
+	
+		return lblCompositeBasedOn;
+	}
 }

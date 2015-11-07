@@ -29,6 +29,6 @@ public class RemoteHelp {
 	public static String FHAES_HOMEPAGE = "http://www.fhaes.org";
 	public static String FHAES_HELP_HOME = "http://help.fhaes.org";
 	public static String FHAES_ABOUT = "http://www.fhaes.org/about-fhaes/";
-	public static String HELP_ANALYSIS_RESULTS = "http://help.fhaes.org/analysisresults/";
+	public static String HELP_ANALYSIS_RESULTS = "http://help.fhaes.org/2.0.0/#pf1f";
 	public static String LAUNCH_LAG_MAP = "http://map.fhaes.org/lagmap.php";
 }
