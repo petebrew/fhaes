@@ -79,38 +79,53 @@ public abstract class AbstractFireHistoryReader implements IFHAESReader {
 	 * @return
 	 */
 	@SuppressWarnings("unused")
-	public int[] getSampleDepths() {
+	public int[] getSampleDepths(EventTypeToProcess eventTypeToProcess) {
 	
-		// Instantiate the array ready to populate
-		int[] arr = new int[this.getYearArray().size()];
-		int totaltreeperyear = 0;
-		
-		ArrayList<ArrayList<Integer>> data = this.getRecorderYears2DArray();
-		
-		for (int yearIndex = 0; yearIndex < this.getRecorderYears2DArray().get(0).size(); yearIndex++)
+		if (eventTypeToProcess.equals(EventTypeToProcess.FIRE_EVENT) || eventTypeToProcess.equals(EventTypeToProcess.FIRE_AND_INJURY_EVENT))
 		{
-			totaltreeperyear = 0;
-			for (int sampleIndex = 0; sampleIndex < this.getNumberOfSeries(); sampleIndex++)
+			
+			// Instantiate the array ready to populate
+			int[] arr = new int[this.getYearArray().size()];
+			int totaltreeperyear = 0;
+			
+			ArrayList<ArrayList<Integer>> data = this.getRecorderYears2DArray();
+			
+			for (int yearIndex = 0; yearIndex < this.getRecorderYears2DArray().get(0).size(); yearIndex++)
 			{
-				try
+				totaltreeperyear = 0;
+				for (int sampleIndex = 0; sampleIndex < this.getNumberOfSeries(); sampleIndex++)
 				{
-					if ((this.getRecorderYears2DArray().get(sampleIndex).get(yearIndex) == 1)
-							|| (this.getRecorderYears2DArray().get(sampleIndex).get(yearIndex) == 0))
+					try
 					{
-						totaltreeperyear = totaltreeperyear + 1;
+						if ((this.getRecorderYears2DArray().get(sampleIndex).get(yearIndex) == 1)
+								|| (this.getRecorderYears2DArray().get(sampleIndex).get(yearIndex) == 0))
+						{
+							totaltreeperyear = totaltreeperyear + 1;
+						}
+					}
+					catch (IndexOutOfBoundsException e)
+					{
+						ArrayList<ArrayList<Integer>> array = this.getRecorderYears2DArray();
+						log.error("Failed on Year index " + yearIndex + " and sample " + sampleIndex);
+						
 					}
 				}
-				catch (IndexOutOfBoundsException e)
-				{
-					ArrayList<ArrayList<Integer>> array = this.getRecorderYears2DArray();
-					log.error("Failed on Year index " + yearIndex + " and sample " + sampleIndex);
-					
-				}
+				arr[yearIndex] = totaltreeperyear;
 			}
-			arr[yearIndex] = totaltreeperyear;
+			
+			return arr;
 		}
+		else if (eventTypeToProcess.equals(EventTypeToProcess.INJURY_EVENT))
+		{
+			// TODO ELENA
+		}
+		else
+		{
+			log.error("Insupported EventTypeToProcess");
+			return null;
+		}
+		return null;
 		
-		return arr;
 	}
 	
 	/**
@@ -120,28 +135,43 @@ public abstract class AbstractFireHistoryReader implements IFHAESReader {
 	 * @return
 	 */
 	@SuppressWarnings("unused")
-	public int[] getRecordingDepths() {
+	public int[] getRecordingDepths(EventTypeToProcess eventTypeToProcess) {
 	
-		// Instantiate the array ready to populate
-		int[] arr = new int[this.getYearArray().size()];
-		int totalrecorderperyear;
-		
-		ArrayList<ArrayList<Integer>> data = this.getRecorderYears2DArray();
-		
-		for (int j = 0; j < this.getYearArray().size(); j++)
+		if (eventTypeToProcess.equals(EventTypeToProcess.FIRE_EVENT) || eventTypeToProcess.equals(EventTypeToProcess.FIRE_AND_INJURY_EVENT))
 		{
-			totalrecorderperyear = 0;
-			for (int k = 0; k < this.getNumberOfSeries(); k++)
+			
+			// Instantiate the array ready to populate
+			int[] arr = new int[this.getYearArray().size()];
+			int totalrecorderperyear;
+			
+			ArrayList<ArrayList<Integer>> data = this.getRecorderYears2DArray();
+			
+			for (int j = 0; j < this.getYearArray().size(); j++)
 			{
-				if (this.getRecorderYears2DArray().get(k).get(j) == 1)
+				totalrecorderperyear = 0;
+				for (int k = 0; k < this.getNumberOfSeries(); k++)
 				{
-					totalrecorderperyear = totalrecorderperyear + 1;
+					if (this.getRecorderYears2DArray().get(k).get(j) == 1)
+					{
+						totalrecorderperyear = totalrecorderperyear + 1;
+					}
 				}
+				arr[j] = totalrecorderperyear;
 			}
-			arr[j] = totalrecorderperyear;
+			
+			return arr;
 		}
-		
-		return arr;
+		else if (eventTypeToProcess.equals(EventTypeToProcess.INJURY_EVENT))
+		{
+			// TODO ELENA TO IMPLEMENT
+			
+		}
+		else
+		{
+			log.error("Insupported EventTypeToProcess");
+			return null;
+		}
+		return null;
 	}
 	
 	/**
@@ -193,7 +223,7 @@ public abstract class AbstractFireHistoryReader implements IFHAESReader {
 	
 		// Instantiate the array ready to populate
 		double[] arrpc = new double[this.getYearArray().size()];
-		int[] arr1 = getSampleDepths();
+		int[] arr1 = getSampleDepths(eventTypeToProcess);
 		
 		for (int j = 0; j < this.getYearArray().size(); j++)
 		{
@@ -213,7 +243,7 @@ public abstract class AbstractFireHistoryReader implements IFHAESReader {
 	/**
 	 * Returns an ArrayList of years which fulfill the composite filter options specified.
 	 * 
-	 * @param eventsToProcess - whether to calculate the composite based on fire events, injury events, or both
+	 * @param eventTypeToProcess - whether to calculate the composite based on fire events, injury events, or both
 	 * @param filterType - whether to filter on absolute numbers of fires, or percentage of recording trees
 	 * @param filterValue - either the number of samples or percentage of samples that must be scared before the year is included in the
 	 *            composite
@@ -222,7 +252,7 @@ public abstract class AbstractFireHistoryReader implements IFHAESReader {
 	 * @param sampleDepthFilterType
 	 * @return
 	 */
-	public ArrayList<Integer> getCompositeFireYears(EventTypeToProcess eventsToProcess, FireFilterType filterType, double filterValue,
+	public ArrayList<Integer> getCompositeFireYears(EventTypeToProcess eventTypeToProcess, FireFilterType filterType, double filterValue,
 			int minNumberOfSamples, SampleDepthFilterType sampleDepthFilterType) {
 	
 		// Instantiate the array ready to populate
@@ -233,12 +263,12 @@ public abstract class AbstractFireHistoryReader implements IFHAESReader {
 		if (sampleDepthFilterType.equals(SampleDepthFilterType.MIN_NUM_SAMPLES))
 		{
 			log.debug("Minimum sample count filter is of type SampleDepthFilterType.MIN_NUM_SAMPLES");
-			depths = getSampleDepths();
+			depths = getSampleDepths(eventTypeToProcess);
 		}
 		else if (sampleDepthFilterType.equals(SampleDepthFilterType.MIN_NUM_RECORDER_SAMPLES))
 		{
 			log.debug("Minimum sample count filter is of type SampleDepthFilterType.MIN_NUM_RECORDER_SAMPLES");
-			depths = getRecordingDepths();
+			depths = getRecordingDepths(eventTypeToProcess);
 		}
 		else
 		{
@@ -250,7 +280,7 @@ public abstract class AbstractFireHistoryReader implements IFHAESReader {
 		if (filterType.equals(FireFilterType.NUMBER_OF_EVENTS))
 		{
 			
-			ArrayList<Double> dataArray = this.getFilterArrays(eventsToProcess).get(0);
+			ArrayList<Double> dataArray = this.getFilterArrays(eventTypeToProcess).get(0);
 			
 			Integer currentYear = this.getFirstYear();
 			for (int i = 0; i < dataArray.size(); i++)
@@ -279,9 +309,9 @@ public abstract class AbstractFireHistoryReader implements IFHAESReader {
 		{
 			log.debug("Doing all trees");
 			
-			double[] percentScarred = getPercentOfAllScarred(eventsToProcess);
-			ArrayList<Double> numberOfEvents = this.getFilterArrays(eventsToProcess).get(0);
-			ArrayList<Double> numberOfTrees = this.getFilterArrays(eventsToProcess).get(1);
+			double[] percentScarred = getPercentOfAllScarred(eventTypeToProcess);
+			ArrayList<Double> numberOfEvents = this.getFilterArrays(eventTypeToProcess).get(0);
+			ArrayList<Double> numberOfTrees = this.getFilterArrays(eventTypeToProcess).get(1);
 			
 			Integer currentYear = this.getFirstYear();
 			for (int i = 0; i < percentScarred.length; i++)
@@ -313,8 +343,8 @@ public abstract class AbstractFireHistoryReader implements IFHAESReader {
 		{
 			log.debug("Doing recording trees");
 			
-			ArrayList<Double> numberOfEvents = this.getFilterArrays(eventsToProcess).get(0);
-			int[] recordingDepths = this.getRecordingDepths();
+			ArrayList<Double> numberOfEvents = this.getFilterArrays(eventTypeToProcess).get(0);
+			int[] recordingDepths = this.getRecordingDepths(eventTypeToProcess);
 			
 			Integer currentYear = this.getFirstYear();
 			for (int i = 0; i < recordingDepths.length; i++)
