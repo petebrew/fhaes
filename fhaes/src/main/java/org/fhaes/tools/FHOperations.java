@@ -594,19 +594,22 @@ public class FHOperations {
 				 */
 				Integer firesFilter1 = new Integer(0);
 				Double firesFilter2 = new Double(0);
-				if (fireFilterType.equals(FireFilterType.NUMBER_OF_EVENTS) && fireFilterValue.intValue() != 1)
+				if (fireFilterType.equals(FireFilterType.NUMBER_OF_EVENTS))
 				{
-					firesFilter1 = fireFilterValue.intValue();
+					if (fireFilterValue.intValue() != 1)
+						firesFilter1 = fireFilterValue.intValue();
 					// log.debug("number of fires is selected is: "+ firesFilter1);
 				}
-				else if (fireFilterType.equals(FireFilterType.PERCENTAGE_OF_RECORDING) && fireFilterValue.intValue() != 1)
+				else if (fireFilterType.equals(FireFilterType.PERCENTAGE_OF_RECORDING))
 				{
-					firesFilter2 = fireFilterValue / 100.0;
+					if (fireFilterValue.intValue() != 1)
+						firesFilter2 = fireFilterValue / 100.0;
 					// log.debug("percentage of fires is selected is: "+ firesFilter2);
 				}
-				else if (fireFilterType.equals(FireFilterType.PERCENTAGE_OF_ALL_TREES) && fireFilterValue.intValue() != 1)
+				else if (fireFilterType.equals(FireFilterType.PERCENTAGE_OF_ALL_TREES))
 				{
-					firesFilter2 = fireFilterValue / 100.0;
+					if (fireFilterValue.intValue() != 1)
+						firesFilter2 = fireFilterValue / 100.0;
 					// log.debug("percentage of fires is selected is: "+ firesFilter2);
 				}
 				else

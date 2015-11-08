@@ -118,7 +118,7 @@ public class FHFileChecker extends JFrame {
 	 * This is the default constructor.
 	 */
 	public FHFileChecker() {
-	
+		
 		super();
 		initialize();
 	}
@@ -129,7 +129,7 @@ public class FHFileChecker extends JFrame {
 	 * @return void
 	 */
 	private void initialize() {
-	
+		
 		this.setSize(530, 300);
 		this.setContentPane(getJPanel());
 		// titlenow = new Date();
@@ -138,7 +138,7 @@ public class FHFileChecker extends JFrame {
 	}
 	
 	public String getReport() {
-	
+		
 		return formatReport;
 	}
 	
@@ -148,7 +148,7 @@ public class FHFileChecker extends JFrame {
 	 * @return javax.swing.JPanel
 	 */
 	private JPanel getJPanel() {
-	
+		
 		if (jPanel == null)
 		{
 			jPanel = new JPanel();
@@ -172,7 +172,7 @@ public class FHFileChecker extends JFrame {
 	 * @return javax.swing.JButton
 	 */
 	private JButton getButtonBrowse() {
-	
+		
 		if (buttonBrowse == null)
 		{
 			buttonBrowse = new JButton();
@@ -181,7 +181,7 @@ public class FHFileChecker extends JFrame {
 				
 				@Override
 				public void actionPerformed(java.awt.event.ActionEvent e) {
-				
+					
 					int fileBrowseReturn = 0;
 					// TODO Event stub for buttonBrowse.actionPerformed()
 					// log.debug("buttonBrowse actionPerformed()");
@@ -207,9 +207,10 @@ public class FHFileChecker extends JFrame {
 					}
 					else
 					{
-						JOptionPane.showMessageDialog(null, " You have selected " + fileBrowse.getSelectedFiles().length
-								+ " files. You must select at least one fhx file to run this program.", "Number Of Selected Files",
-								JOptionPane.INFORMATION_MESSAGE);
+						JOptionPane.showMessageDialog(null,
+								" You have selected " + fileBrowse.getSelectedFiles().length
+										+ " files. You must select at least one fhx file to run this program.",
+								"Number Of Selected Files", JOptionPane.INFORMATION_MESSAGE);
 					}
 				}// end or action performed button browse
 			});
@@ -223,7 +224,7 @@ public class FHFileChecker extends JFrame {
 	 * @return javax.swing.JButton
 	 */
 	private JButton getButtonRun() {
-	
+		
 		if (buttonRun == null)
 		{
 			buttonRun = new JButton();
@@ -235,7 +236,7 @@ public class FHFileChecker extends JFrame {
 				
 				@Override
 				public void actionPerformed(java.awt.event.ActionEvent e) {
-				
+					
 					doCheck(buttonRun, inputFile, null, jcheckformatreport.isSelected(), jcheckindivreport.isSelected());
 					
 				}// end of if action perform for the run button
@@ -247,7 +248,7 @@ public class FHFileChecker extends JFrame {
 	
 	@SuppressWarnings("unused")
 	public boolean doCheck(Component parent, File[] inputFile, File outputFile, Boolean jcheckformatreport, Boolean jcheckindivreport) {
-	
+		
 		boolean run = false;
 		log.debug("buttonRun (check and save) actionPerformed()");
 		
@@ -392,13 +393,12 @@ public class FHFileChecker extends JFrame {
 							for (int j = 0; j < myReaderArray.get(i).getBadDataLineNumbers().size(); j++)
 							{
 								log.debug("bad line number " + myReaderArray.get(i).getBadDataLineNumbers().get(j).intValue());
-								log.debug("bad line length "
-										+ myReaderArray.get(i).getRawRowData()
-												.get(myReaderArray.get(i).getBadDataLineNumbers().get(j).intValue()).length());
+								log.debug("bad line length " + myReaderArray.get(i).getRawRowData()
+										.get(myReaderArray.get(i).getBadDataLineNumbers().get(j).intValue()).length());
 								log.debug("Number of series: " + myReaderArray.get(i).getNumberOfSeries());
 								if ((myReaderArray.get(i).getRawRowData()
-										.get(myReaderArray.get(i).getBadDataLineNumbers().get(j).intValue()).length()) > myReaderArray.get(
-										i).getNumberOfSeries())
+										.get(myReaderArray.get(i).getBadDataLineNumbers().get(j).intValue()).length()) > myReaderArray
+												.get(i).getNumberOfSeries())
 								{
 									
 									formatReport = formatReport + "\t" + "Row number: "
@@ -425,8 +425,7 @@ public class FHFileChecker extends JFrame {
 					}
 					else
 					{
-						formatReport = formatReport
-								+ "\t"
+						formatReport = formatReport + "\t"
 								+ "There an issue with the longest length of the ID codes of your samples in your data, please make sure it is an whole number."
 								+ "\n";
 						passFormat = false;
@@ -456,8 +455,7 @@ public class FHFileChecker extends JFrame {
 							if ((myReaderArray.get(i).getStartYearIndexPerSample()[j] == -1))
 							{
 								
-								formatReport = formatReport
-										+ "\t"
+								formatReport = formatReport + "\t"
 										+ " WARNING All samples Should have either { or [, or at least one of the following symbols D, E, M, L, A, U. Sample: "
 										+ (j + 1) + " seems to have this issue" + "\n";
 								// passFormat = false;
@@ -465,8 +463,7 @@ public class FHFileChecker extends JFrame {
 							if ((myReaderArray.get(i).getLastYearIndexPerSample()[j] == -1))
 							{
 								
-								formatReport = formatReport
-										+ "\t"
+								formatReport = formatReport + "\t"
 										+ " WARNING All samples should have either }, or ], or at least one of the following symbols D,d, E,e, M,m, L,l, A,a, U,u. Sample: "
 										+ (j + 1) + " seems to have this issue " + "\n";
 								// passFormat = false;
@@ -475,15 +472,13 @@ public class FHFileChecker extends JFrame {
 						if (linecounter == (myReaderArray.get(i).getLastYear() - myReaderArray.get(i).getFirstYear() + 1))
 						{
 							
-							formatReport = formatReport + "\t" + "The beginning year of the data is: "
-									+ myReaderArray.get(i).getFirstYear() + " The end year of your data is: "
-									+ myReaderArray.get(i).getLastYear() + " for a total of : " + linecounter
-									+ " lines in the data section \n";
+							formatReport = formatReport + "\t" + "The beginning year of the data is: " + myReaderArray.get(i).getFirstYear()
+									+ " The end year of your data is: " + myReaderArray.get(i).getLastYear() + " for a total of : "
+									+ linecounter + " lines in the data section \n";
 						}
 						else
 						{
-							formatReport = formatReport
-									+ "\t"
+							formatReport = formatReport + "\t"
 									+ "Although the all the data lines pass the checked, there seems to be something wrong the the total number of lines of your data section"
 									+ "\n";
 							passFormat = false;
@@ -534,7 +529,7 @@ public class FHFileChecker extends JFrame {
 				{
 					formatReport = formatReport + "\n\n" + " INDIVIDUAL SAMPLE SUMMARY FOR FHX FILE :" + myReaderArray.get(i).getName()
 							+ "\n";
-					
+							
 					// These are generated automatically now
 					// myReaderArray.get(i).generateRecorderYearsArray();
 					// myReaderArray.get(i).makeClimate();
@@ -575,11 +570,8 @@ public class FHFileChecker extends JFrame {
 							}
 						}
 						
-						formatReport = formatReport
-								+ "\t"
-								+ "Length of sample: "
-								+ ((myReaderArray.get(i).getLastYearIndexPerSample()[k] - myReaderArray.get(i).getStartYearIndexPerSample()[k]) + 1)
-								+ "\n";
+						formatReport = formatReport + "\t" + "Length of sample: " + ((myReaderArray.get(i).getLastYearIndexPerSample()[k]
+								- myReaderArray.get(i).getStartYearIndexPerSample()[k]) + 1) + "\n";
 						formatReport = formatReport + "\t" + "Number of recorder years in sample: "
 								+ (myReaderArray.get(i).getTotalRecorderYearsPerSample()[k]) + "\n";
 						formatReport = formatReport + "\t" + "INFORMATION ON FIRE HISTORY: " + "\n";
@@ -602,10 +594,10 @@ public class FHFileChecker extends JFrame {
 							if ((myReaderArray.get(i).getCalosperSample2d().get(k).get(j) >= 'a')
 									&& (myReaderArray.get(i).getCalosperSample2d().get(k).get(j) <= 'z'))
 							{
-								formatReport = formatReport
-										+ "\t   "
-										+ (myReaderArray.get(i).getCalosYearperSample2d().get(k).get(j) + myReaderArray.get(i)
-												.getFirstYear()) + "   " + myReaderArray.get(i).getCalosperSample2d().get(k).get(j) + "\n";
+								formatReport = formatReport + "\t   "
+										+ (myReaderArray.get(i).getCalosYearperSample2d().get(k).get(j)
+												+ myReaderArray.get(i).getFirstYear())
+										+ "   " + myReaderArray.get(i).getCalosperSample2d().get(k).get(j) + "\n";
 							}
 							else
 							{
@@ -614,20 +606,19 @@ public class FHFileChecker extends JFrame {
 								if (myReaderArray.get(i).getCapsYearperSample2d().get(k).get(0).intValue() == myReaderArray.get(i)
 										.getCalosYearperSample2d().get(k).get(j).intValue())
 								{
-									formatReport = formatReport
-											+ "\t   "
-											+ (myReaderArray.get(i).getCalosYearperSample2d().get(k).get(j) + myReaderArray.get(i)
-													.getFirstYear()) + "   " + myReaderArray.get(i).getCalosperSample2d().get(k).get(j)
-											+ "\n";
+									formatReport = formatReport + "\t   "
+											+ (myReaderArray.get(i).getCalosYearperSample2d().get(k).get(j)
+													+ myReaderArray.get(i).getFirstYear())
+											+ "   " + myReaderArray.get(i).getCalosperSample2d().get(k).get(j) + "\n";
 									FIcount = 0;
 								}
 								else
 								{
-									formatReport = formatReport
-											+ "\t   "
-											+ (myReaderArray.get(i).getCalosYearperSample2d().get(k).get(j) + myReaderArray.get(i)
-													.getFirstYear()) + "   " + myReaderArray.get(i).getCalosperSample2d().get(k).get(j)
-											+ "    FI = " + FIyearperSample.get(k).get(FIcount) + "\n";
+									formatReport = formatReport + "\t   "
+											+ (myReaderArray.get(i).getCalosYearperSample2d().get(k).get(j)
+													+ myReaderArray.get(i).getFirstYear())
+											+ "   " + myReaderArray.get(i).getCalosperSample2d().get(k).get(j) + "    FI = "
+											+ FIyearperSample.get(k).get(FIcount) + "\n";
 									FIcount = FIcount + 1;
 								}
 								
@@ -644,11 +635,10 @@ public class FHFileChecker extends JFrame {
 						// log.debug("FireIntervalyearperSample: "+FIyearperSample.get(k).size());
 						if (myReaderArray.get(i).getCapsperSample2d().get(k).size() != 0)
 						{
-							formatReport = formatReport
-									+ "\t"
-									+ "Average number years per fire: "
-									+ onePlace.format((((double) myReaderArray.get(i).getTotalRecorderYearsPerSample()[k]) / myReaderArray
-											.get(i).getCapsperSample2d().get(k).size())) + "\n";
+							formatReport = formatReport + "\t" + "Average number years per fire: "
+									+ onePlace.format((((double) myReaderArray.get(i).getTotalRecorderYearsPerSample()[k])
+											/ myReaderArray.get(i).getCapsperSample2d().get(k).size()))
+									+ "\n";
 						}
 						else
 						{
@@ -719,14 +709,14 @@ public class FHFileChecker extends JFrame {
 					}
 					formatReport = formatReport + "\t" + "Average all sample mean fire intervals: "
 							+ onePlace.format(totalMeanFireIntervals / myReaderArray.get(i).getNumberOfSeries()) + "\n";
-					formatReport = formatReport + "\t" + "Total number of years with fire: " + totalAllIndicatorsPerSite + "\n";
+					formatReport = formatReport + "\t" + "Total number of years with fire: " + totalYearsWithFirePerSite + "\n";
 					formatReport = formatReport + "\t" + "Percentage of years with fire: "
 							+ onePlace.format(((double) totalYearsWithFirePerSite / linecounter * 100)) + "\n";
 					formatReport = formatReport + "\t" + "Percentage of years with without fire: "
 							+ onePlace.format((100 - ((double) totalYearsWithFirePerSite / linecounter * 100))) + "\n";
 					formatReport = formatReport + "\t" + "Percentage of years with MFI: "
 							+ onePlace.format((100 / ((double) totalYearsWithFirePerSite / linecounter * 100))) + "\n";
-					
+							
 				} // end of if for indvireports
 					// prg.setValue(i);
 					// if(i==)
@@ -824,7 +814,7 @@ public class FHFileChecker extends JFrame {
 				}
 				finally
 				{
-					
+				
 				}
 			} // end of if filebrowserretur==0
 				// else {
@@ -848,7 +838,7 @@ public class FHFileChecker extends JFrame {
 	 * @return javax.swing.JButton
 	 */
 	private JButton getButtonHelp() {
-	
+		
 		if (buttonHelp == null)
 		{
 			buttonHelp = new JButton();
@@ -857,7 +847,7 @@ public class FHFileChecker extends JFrame {
 				
 				@Override
 				public void actionPerformed(java.awt.event.ActionEvent e) {
-				
+					
 					// TODO Event stub for buttonHelp.actionPerformed()
 					log.debug("buttonHelp actionPerformed()");
 					FrameViewHelp dlg = new FrameViewHelp();
@@ -877,7 +867,7 @@ public class FHFileChecker extends JFrame {
 	 * @return javax.swing.JButton
 	 */
 	private JButton getButtonExit() {
-	
+		
 		if (buttonExit == null)
 		{
 			buttonExit = new JButton();
@@ -886,7 +876,7 @@ public class FHFileChecker extends JFrame {
 				
 				@Override
 				public void actionPerformed(java.awt.event.ActionEvent e) {
-				
+					
 					// TODO Event stub for buttonExit.actionPerformed()
 					log.debug("buttonExit actionPerformed()");
 					System.exit(1);
@@ -902,7 +892,7 @@ public class FHFileChecker extends JFrame {
 	 * @return javax.swing.JPanel
 	 */
 	private JPanel getJPanelBrowse() {
-	
+		
 		if (jPanelBrowse == null)
 		{
 			jLabelBrowse = new JLabel();
@@ -960,7 +950,7 @@ public class FHFileChecker extends JFrame {
 	 * @return javax.swing.JPanel
 	 */
 	private JPanel getJPanelReportType() {
-	
+		
 		if (jPanelReportType == null)
 		{
 			jPanelReportType = new JPanel();
@@ -988,7 +978,7 @@ public class FHFileChecker extends JFrame {
 	 * @return javax.swing.JPanel
 	 */
 	private JPanel getJPanelExit() {
-	
+		
 		if (jPanelExit == null)
 		{
 			jPanelExit = new JPanel();
@@ -1009,7 +999,7 @@ public class FHFileChecker extends JFrame {
 	 * @return
 	 */
 	private JCheckBox getJCheckformatreport() {
-	
+		
 		if (jcheckformatreport == null)
 		{
 			jcheckformatreport = new JCheckBox(" ", true);
@@ -1023,7 +1013,7 @@ public class FHFileChecker extends JFrame {
 	 * @return
 	 */
 	private JCheckBox getJCheckindivreport() {
-	
+		
 		if (jcheckindivreport == null)
 		{
 			jcheckindivreport = new JCheckBox(" ", true);
