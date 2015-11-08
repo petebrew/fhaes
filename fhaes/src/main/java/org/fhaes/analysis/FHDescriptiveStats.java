@@ -54,11 +54,10 @@ public class FHDescriptiveStats {
 			AbstractFireHistoryReader fr = file.getFireHistoryReader();
 			DecimalFormat twoPlace = new DecimalFormat("0.00");
 			
-			int[] sampledepths = fr.getSampleDepths();
-			int[] recordingdepths = fr.getRecordingDepths();
-			
 			EventTypeToProcess eventType = App.prefs.getEventTypePref(PrefKey.EVENT_TYPE_TO_PROCESS,
 					EventTypeToProcess.FIRE_AND_INJURY_EVENT);
+			int[] sampledepths = fr.getSampleDepths(eventType);
+			int[] recordingdepths = fr.getRecordingDepths(eventType);
 			ArrayList<ArrayList<Double>> filterArray = fr.getFilterArrays(eventType);
 			
 			Vector<Object> headers = new Vector<Object>();
