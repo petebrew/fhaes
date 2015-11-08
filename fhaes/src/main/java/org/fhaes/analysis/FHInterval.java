@@ -40,7 +40,6 @@ import org.fhaes.fhfilereader.FHFile;
 import org.fhaes.fhfilereader.FHX2FileReader;
 import org.fhaes.filefilter.CSVFileFilter;
 import org.fhaes.math.Weibull;
-import org.fhaes.preferences.App;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,21 +51,19 @@ public class FHInterval {
 	private static final Logger log = LoggerFactory.getLogger(FHInterval.class);
 	
 	private FHFile[] inputFileArray;
-	private Boolean doComposite;
-	private Boolean doSample;
 	private Integer startYear;
 	private Integer endYear;
-	// private Boolean doNumberFilter;
-	// private Boolean doPercentageFilter;
 	private FireFilterType fireFilterType;
 	private Double filterValue;
 	private Boolean includeIncomplete;
+	private AnalysisType analysisType;
 	private EventTypeToProcess eventTypeToProcess;
+	private SampleDepthFilterType sampleDepthFilterType = SampleDepthFilterType.MIN_NUM_SAMPLES;
+	private Double sampleDepthFilterValue;
+	
 	private File exceedenceFile = null;
 	private File summaryFile = null;
 	private Double alphaLevel = 0.125;
-	private SampleDepthFilterType sampleDepthFilterType = SampleDepthFilterType.MIN_NUM_SAMPLES;
-	private Double sampleDepthFilterValue;
 	
 	/**
 	 * Construction for setting up an FHInterval analysis. After construction call doAnalysis() to run the analysis and then get results by
@@ -86,6 +83,12 @@ public class FHInterval {
 			Double filterValue, Boolean includeIncomplete, EventTypeToProcess eventTypeToProcess, Double alphaLevel,
 			SampleDepthFilterType sampleDepthFilterType, Double sampleDepthFilterValue) {
 	
+		if (inputFileArray == null || inputFileArray.length == 0)
+		{
+			log.error("FHInterval must be passed an input file array");
+			return;
+		}
+		
 		this.inputFileArray = inputFileArray;
 		
 		try
@@ -102,23 +105,7 @@ public class FHInterval {
 			return;
 		}
 		
-		if (analysisType == null)
-		{
-			log.warn("Analysis type in FHInterval was null.  Defaulting to Sample");
-			this.doComposite = false;
-			this.doSample = true;
-		}
-		else if (analysisType.equals(AnalysisType.COMPOSITE))
-		{
-			this.doComposite = true;
-			this.doSample = false;
-		}
-		else if (analysisType.equals(AnalysisType.SAMPLE))
-		{
-			this.doComposite = false;
-			this.doSample = true;
-		}
-		
+		this.analysisType = analysisType;
 		this.fireFilterType = filterType;
 		this.filterValue = filterValue;
 		
@@ -161,8 +148,7 @@ public class FHInterval {
 	
 		log.debug("INPUT PARAMETERS");
 		log.debug("inputFileArray = " + inputFileArray);
-		log.debug("doComposite = " + doComposite);
-		log.debug("doSample = " + doSample);
+		log.debug("analyissType = " + analysisType);
 		log.debug("startYear = " + startYear);
 		log.debug("endYear = " + endYear);
 		log.debug("fireFilterType = " + fireFilterType);
@@ -185,32 +171,6 @@ public class FHInterval {
 		
 		boolean run = false;
 		boolean highway = true;
-		
-		/*
-		 * If at least one file has been choosen then the progam will run otherwise get message
-		 */
-		// FIRST CHECK
-		if (inputFileArray != null)
-		{
-			run = true;
-			// SECOND CHECK
-			if (doComposite || doSample)
-			{
-				run = true;
-			}
-			else
-			{
-				run = false;
-				JOptionPane.showMessageDialog(App.mainFrame, "At least one output file should be selected.", "Error",
-						JOptionPane.ERROR_MESSAGE);
-			}
-		} // end of if for checks file selected, file type selected and begining
-			// and end year correct (201-229)
-		else
-		{
-			run = false;
-			JOptionPane.showMessageDialog(App.mainFrame, "Select at least one file.", "Error", JOptionPane.ERROR_MESSAGE);
-		} // end of else of if checks (201-229)
 		
 		// MAIN RUN
 		if (run)
@@ -536,7 +496,7 @@ public class FHInterval {
 				 * get matrix climate binary matrix by site (binary analysis) if Composite is selected.
 				 */
 				// if ((doComposite)&&(!jTextOfFires.getText().equals("1"))){
-				if (doComposite)
+				if (analysisType.equals(AnalysisType.COMPOSITE))
 				{
 					log.debug("inside the comp");
 					// System.out.println("inside the comp " + " working on file "+ myReader.get(i).getName() );
@@ -812,7 +772,7 @@ public class FHInterval {
 				/*
 				 * starting the process for the sample mode.
 				 */
-				if (doSample)
+				if (analysisType.equals(AnalysisType.SAMPLE))
 				{
 					log.debug("I am in sample ");
 					
@@ -1138,7 +1098,7 @@ public class FHInterval {
 			 */
 			try
 			{
-				if (doComposite)
+				if (analysisType.equals(AnalysisType.COMPOSITE))
 				{
 					wr = new BufferedWriter(new FileWriter(summaryFile));
 					wrWDE = new BufferedWriter(new FileWriter(exceedenceFile));
@@ -1238,7 +1198,7 @@ public class FHInterval {
 					wrWDE.close();
 					
 				} // end of if jRadioComp is selecte
-				if (doSample)
+				if (analysisType.equals(AnalysisType.SAMPLE))
 				{
 					wrSample = new BufferedWriter(new FileWriter(summaryFile));
 					wrWDESample = new BufferedWriter(new FileWriter(exceedenceFile));
