@@ -57,9 +57,9 @@ import org.fhaes.preferences.FHAESPreferences.PrefKey;
 import org.fhaes.preferences.PrefsEvent;
 import org.fhaes.preferences.PrefsListener;
 import org.fhaes.preferences.wrappers.SpinnerWrapper;
+import org.fhaes.tools.FHCluster;
 import org.fhaes.tools.FHOperations;
 import org.fhaes.util.Builder;
-import org.fhaes.util.FHCluster;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

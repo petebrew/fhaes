@@ -31,10 +31,10 @@ public class ColorPalette {
 	int currentColor = 0;
 	
 	/**
-	 * TODO
+	 * Instantiate a ColorPalette with default colors
 	 */
 	public ColorPalette() {
-		
+	
 		colors.add(Color.RED);
 		colors.add(Color.GREEN);
 		colors.add(Color.BLUE);
@@ -71,12 +71,12 @@ public class ColorPalette {
 	}
 	
 	/**
-	 * TODO
+	 * Get the next color in the sequence from the palette
 	 * 
 	 * @return
 	 */
 	public Color getNextColor() {
-		
+	
 		Color c = colors.get(currentColor);
 		if ((currentColor + 1) < colors.size())
 		{

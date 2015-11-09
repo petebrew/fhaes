@@ -15,7 +15,7 @@
  * 		If not, see <http://www.gnu.org/licenses/>.
  * 
  *************************************************************************************************/
-package org.fhaes.util;
+package org.fhaes.tools;
 
 import java.util.ArrayList;
 
