@@ -155,19 +155,6 @@ public class FHInterval {
 		log.debug("includeIncomplete = " + includeIncomplete);
 		log.debug("alphaLevel = " + alphaLevel);
 		
-		// NEW FOR ELENA
-		log.debug("Sample depth filter type = " + sampleDepthFilterType);
-		log.debug("Sample depth value = " + sampleDepthFilterValue);
-		
-		if (sampleDepthFilterType.equals(SampleDepthFilterType.MIN_NUM_SAMPLES))
-		{
-			// TODO ELENA
-		}
-		else if (sampleDepthFilterType.equals(SampleDepthFilterType.MIN_NUM_RECORDER_SAMPLES))
-		{
-			// TODO ELENA
-		}
-		
 		boolean highway = true;
 		
 		ArrayList<FHX2FileReader> myReader = new ArrayList<FHX2FileReader>();
@@ -300,6 +287,8 @@ public class FHInterval {
 		ArrayList<Integer> climateVectorActualSite = null;
 		ArrayList<Double> filterVectorActual = null;
 		ArrayList<Integer> climateYear = new ArrayList<Integer>();
+		ArrayList<Integer> minSampleFilter = null;
+		ArrayList<Double> percentOfRecordingfilter = null;
 		Double[] Dfireintervalspersite;
 		double[] dfireintervalspersite;
 		String[] statsparam = new String[22];
@@ -437,6 +426,18 @@ public class FHInterval {
 		
 		boolean[] enoughIntComp = new boolean[myReader.size()];
 		boolean[] enoughIntSamp = new boolean[myReader.size()];
+		// NEW FOR ELENA
+		log.debug("Sample depth filter type = " + sampleDepthFilterType);
+		log.debug("Sample depth value = " + sampleDepthFilterValue);
+		
+		// if (sampleDepthFilterType.equals(SampleDepthFilterType.MIN_NUM_SAMPLES))
+		// {
+		//// TODO ELENA
+		// }
+		// else if (sampleDepthFilterType.equals(SampleDepthFilterType.MIN_NUM_RECORDER_SAMPLES))
+		// {
+		// // TODO ELENA
+		// }
 		/*
 		 * start processing each file individually: The analysis can be done by either tree (by sample/non-binary) or by site
 		 * (composite/binary). by tree the box selected is: jCheckTree. by site the box selected is:
@@ -450,8 +451,42 @@ public class FHInterval {
 			 */
 			
 			climateYear = myReader.get(i).getYearArray();
+			// new stuff
+			// Create filter based on min number of samples/recorder samples
+			int[] depths = null;
+			if (sampleDepthFilterType.equals(SampleDepthFilterType.MIN_NUM_SAMPLES))
+			{
+				depths = myReader.get(i).getSampleDepths(eventTypeToProcess);
+				log.debug("MIN_NUM_SAMPLES ");
+			}
+			else if (sampleDepthFilterType.equals(SampleDepthFilterType.MIN_NUM_RECORDER_SAMPLES))
+			{
+				depths = myReader.get(i).getRecordingDepths(eventTypeToProcess);
+				log.debug(" MIN_NUM_RECORDER_SAMPLES");
+			}
+			else
+			{
+				log.error("Unknown sample depth filter type.");
+				return;
+			}
+			minSampleFilter = new ArrayList<Integer>();
+			for (int ij = 0; ij < listYears.size(); ij++)
+			{
+				if (climateYear.indexOf(listYears.get(ij)) == -1)
+				{
+					minSampleFilter.add(-1);
+				}
+				else
+				{
+					// log.debug("the sample depth is "
+					// + myReader.get(i).getSampleDepths()[climateYear.indexOf(listYearsComp.get(ij))]);
+					minSampleFilter.add(new Integer(depths[climateYear.indexOf(listYears.get(ij))]));
+				}
+				// log.debug(" " + minSampleFilter.get(ij));
+			}
 			
-			// if ((doComposite)&&(!jTextOfFires.getText().equals("1"))){
+			// end new stuff
+			
 			/*
 			 * get filter matrix for each file.
 			 * 

@@ -311,7 +311,7 @@ public class FHOperations {
 		boolean run = false;
 		
 		/**
-		 * PERFORM SANITY CHECKS
+		 * PERFORM SANITY CHECKSS
 		 */
 		// FIRST CHECK
 		if (inputFileArray != null)
@@ -615,482 +615,479 @@ public class FHOperations {
 						firesFilter2 = fireFilterValue / 100.0;
 						log.debug("PERCENTAGE_OF_ALL_TREES is: " + firesFilter2);
 					}
-					
-					else if (fireFilterType.equals(FireFilterType.PERCENTAGE_OF_RECORDING))
+				}
+				else if (fireFilterType.equals(FireFilterType.PERCENTAGE_OF_RECORDING))
+				{
+					if (fireFilterValue.intValue() != 1)
 					{
-						if (fireFilterValue.intValue() != 1)
-						{
-							firesFilter2 = fireFilterValue / 100.0;
-							log.debug("PERCENTAGE_OF_RECORDING: " + firesFilter2);
-						}
+						firesFilter2 = fireFilterValue / 100.0;
+						log.debug("PERCENTAGE_OF_RECORDING: " + firesFilter2);
+					}
+				}
+				else
+				{
+					log.error("Unsupported fire filter tpye");
+				}
+				
+				/*
+				 * Calculate the listYears the common years where the file will be analyzed
+				 */
+				for (int i = 0; i < maxLastYearComp - minFirstYearComp + 1; i++)
+				{
+					listYearsComp.add(minFirstYearComp + i);
+				}
+				/*
+				 * start processing each file individually: The analysis can be done by either tree (non-binary) or by site (binary). by
+				 * tree the box selected is: jCheckTree. by site the box selected is:
+				 */
+				for (int i = 0; i < myReader.size(); i++)
+				{
+					log.debug("  Starting to Process file in Composite : " + myReader.get(i).getName());
+					log.debug(" the first year of the file above is: " + myReader.get(i).getFirstYear());
+					log.debug("  sampledepths at year 1565 : " + myReader.get(i).getSampleDepths(eventType)[189]);
+					log.debug(" the size of sampledepths is:  " + myReader.get(i).getSampleDepths(eventType).length);
+					/*
+					 * set the beginning Year accounting for the filter
+					 */
+					/*
+					 * create the arraylist with the names of each file so that we can create the sample name for the fhx file
+					 */
+					// sampleNameComp.add(myReader.get(i).getName().substring(0,myReader.get(i).getName().length()-4));
+					
+					// if(myReader.get(i).getClimate2d().get(myReader.get(i).getstartYearperSample()[0]).contains(1)){
+					/*
+					 * log.debug("size of climate2d is: " + myReader.get(i).getClimate2d().size() + " X " +
+					 * myReader.get(i).getClimate2d().get(1).size());
+					 */
+					/*
+					 * get the vector Year containing the vector of year of a given fhx file load it into the array list climateYear.
+					 */
+					// log.debug("got pass the if ");
+					climateYear = myReader.get(i).getYearArray();
+					
+					// Create filter based on min number of samples/recorder samples
+					int[] depths = null;
+					if (sampleDepthFilterType.equals(SampleDepthFilterType.MIN_NUM_SAMPLES))
+					{
+						depths = myReader.get(i).getSampleDepths(eventType);
+						log.debug("MIN_NUM_SAMPLES ");
+					}
+					else if (sampleDepthFilterType.equals(SampleDepthFilterType.MIN_NUM_RECORDER_SAMPLES))
+					{
+						depths = myReader.get(i).getRecordingDepths(eventType);
+						log.debug(" MIN_NUM_RECORDER_SAMPLES");
 					}
 					else
 					{
-						log.error("Unsupported fire filter tpye");
+						log.error("Unknown sample depth filter type.");
+						return;
 					}
-					
-					/*
-					 * Calculate the listYears the common years where the file will be analyzed
-					 */
-					for (int i = 0; i < maxLastYearComp - minFirstYearComp + 1; i++)
+					minSampleFilter = new ArrayList<Integer>();
+					for (int ij = 0; ij < listYearsComp.size(); ij++)
 					{
-						listYearsComp.add(minFirstYearComp + i);
-					}
-					/*
-					 * start processing each file individually: The analysis can be done by either tree (non-binary) or by site (binary). by
-					 * tree the box selected is: jCheckTree. by site the box selected is:
-					 */
-					for (int i = 0; i < myReader.size(); i++)
-					{
-						log.debug("  Starting to Process file in Composite : " + myReader.get(i).getName());
-						log.debug(" the first year of the file above is: " + myReader.get(i).getFirstYear());
-						log.debug("  sampledepths at year 1565 : " + myReader.get(i).getSampleDepths(eventType)[189]);
-						log.debug(" the size of sampledepths is:  " + myReader.get(i).getSampleDepths(eventType).length);
-						/*
-						 * set the beginning Year accounting for the filter
-						 */
-						/*
-						 * create the arraylist with the names of each file so that we can create the sample name for the fhx file
-						 */
-						// sampleNameComp.add(myReader.get(i).getName().substring(0,myReader.get(i).getName().length()-4));
-						
-						// if(myReader.get(i).getClimate2d().get(myReader.get(i).getstartYearperSample()[0]).contains(1)){
-						/*
-						 * log.debug("size of climate2d is: " + myReader.get(i).getClimate2d().size() + " X " +
-						 * myReader.get(i).getClimate2d().get(1).size());
-						 */
-						/*
-						 * get the vector Year containing the vector of year of a given fhx file load it into the array list climateYear.
-						 */
-						// log.debug("got pass the if ");
-						climateYear = myReader.get(i).getYearArray();
-						
-						// Create filter based on min number of samples/recorder samples
-						int[] depths = null;
-						if (sampleDepthFilterType.equals(SampleDepthFilterType.MIN_NUM_SAMPLES))
+						if (climateYear.indexOf(listYearsComp.get(ij)) == -1)
 						{
-							depths = myReader.get(i).getSampleDepths(eventType);
-							log.debug("MIN_NUM_SAMPLES ");
-						}
-						else if (sampleDepthFilterType.equals(SampleDepthFilterType.MIN_NUM_RECORDER_SAMPLES))
-						{
-							depths = myReader.get(i).getRecordingDepths(eventType);
-							log.debug(" MIN_NUM_RECORDER_SAMPLES");
+							minSampleFilter.add(-1);
 						}
 						else
 						{
-							log.error("Unknown sample depth filter type.");
-							return;
+							// log.debug("the sample depth is "
+							// + myReader.get(i).getSampleDepths()[climateYear.indexOf(listYearsComp.get(ij))]);
+							minSampleFilter.add(new Integer(depths[climateYear.indexOf(listYearsComp.get(ij))]));
 						}
-						minSampleFilter = new ArrayList<Integer>();
-						for (int ij = 0; ij < listYearsComp.size(); ij++)
-						{
-							if (climateYear.indexOf(listYearsComp.get(ij)) == -1)
-							{
-								minSampleFilter.add(-1);
-							}
-							else
-							{
-								// log.debug("the sample depth is "
-								// + myReader.get(i).getSampleDepths()[climateYear.indexOf(listYearsComp.get(ij))]);
-								minSampleFilter.add(new Integer(depths[climateYear.indexOf(listYearsComp.get(ij))]));
-							}
-							// log.debug(" " + minSampleFilter.get(ij));
-						}
+						// log.debug(" " + minSampleFilter.get(ij));
+					}
+					
+					if (fireFilterValue.intValue() != 1)
+					{
+						/*
+						 * get both matrices:
+						 * 
+						 * 2. filters2d matrix composed of the 3 filters number of fires (total capital letter per row) total number of tree
+						 * (total lower case letter plus bars counting only after a fire) percent of scared trees total fires/total trees
+						 */
 						
-						if (fireFilterValue.intValue() != 1)
+						climateVectorFilter2 = myReader.get(i).getfilters2d();
+						
+						/*
+						 * if by tree analysis is selected create two matrices (array list) 1. filterMatrix containing the three filter
+						 * vectors only in between common years (so using the listYearComp array list subset of the years vector) 2.
+						 * climateMatrix 2 dimensional array list containing binary matrices restricted to the listYear list.
+						 */
+						if (fireFilterType.equals(FireFilterType.PERCENTAGE_OF_RECORDING))
 						{
-							/*
-							 * get both matrices:
-							 * 
-							 * 2. filters2d matrix composed of the 3 filters number of fires (total capital letter per row) total number of
-							 * tree (total lower case letter plus bars counting only after a fire) percent of scared trees total fires/total
-							 * trees
-							 */
+							percentOfRecordingfilter = new ArrayList<Double>();
 							
-							climateVectorFilter2 = myReader.get(i).getfilters2d();
-							
-							/*
-							 * if by tree analysis is selected create two matrices (array list) 1. filterMatrix containing the three filter
-							 * vectors only in between common years (so using the listYearComp array list subset of the years vector) 2.
-							 * climateMatrix 2 dimensional array list containing binary matrices restricted to the listYear list.
-							 */
-							if (fireFilterType.equals(FireFilterType.PERCENTAGE_OF_RECORDING))
+							for (int ij = 0; ij < listYearsComp.size(); ij++)
 							{
-								percentOfRecordingfilter = new ArrayList<Double>();
 								
-								for (int ij = 0; ij < listYearsComp.size(); ij++)
+								if (climateYear.indexOf(listYearsComp.get(ij)) == -1)
 								{
-									
-									if (climateYear.indexOf(listYearsComp.get(ij)) == -1)
+									percentOfRecordingfilter.add(-1.0);
+								}
+								else
+								{
+									if (myReader.get(i).getRecordingDepths(eventType)[climateYear.indexOf(listYearsComp.get(ij))] != 0)
 									{
-										percentOfRecordingfilter.add(-1.0);
+										percentOfRecordingfilter.add(new Double(
+												climateVectorFilter2.get(0).get(climateYear.indexOf(listYearsComp.get(ij))) / myReader
+														.get(i).getRecordingDepths(eventType)[climateYear.indexOf(listYearsComp.get(ij))]));
 									}
 									else
 									{
-										if (myReader.get(i).getRecordingDepths(eventType)[climateYear.indexOf(listYearsComp.get(ij))] != 0)
-										{
-											percentOfRecordingfilter.add(
-													new Double(climateVectorFilter2.get(0).get(climateYear.indexOf(listYearsComp.get(ij)))
-															/ myReader.get(i).getRecordingDepths(eventType)[climateYear
-																	.indexOf(listYearsComp.get(ij))]));
-										}
-										else
-										{
-											percentOfRecordingfilter.add(-99.0);
-										}
+										percentOfRecordingfilter.add(-99.0);
 									}
-									log.debug("PERCENTAGE_OF_RECORDING is: " + percentOfRecordingfilter.get(ij));
 								}
+								log.debug("PERCENTAGE_OF_RECORDING is: " + percentOfRecordingfilter.get(ij));
 							}
-							else
-							{
-								for (int ik = 0; ik < 3; ik++)
-								{
-									log.debug("filter number is: " + ik);
-									filterVectorActual = new ArrayList<Double>();
-									for (int ij = 0; ij < listYearsComp.size(); ij++)
-									{ // log.debug(" climateYear.indexOf(listYearsComp.get(j))" +
-										// climateYear.indexOf(listYearsComp.get(ij)));
-										// if(ik==0){log.debug("number of fires
-										// "+climateVectorFilter2.get(0).get(climateYear.indexOf(listYearsComp.get(ij)))+" year
-										// "+listYearsComp.get(ij));}
-										if (climateYear.indexOf(listYearsComp.get(ij)) == -1)
-										{
-											filterVectorActual.add(-1.0);
-										}
-										else
-										{
-											filterVectorActual.add(new Double(
-													climateVectorFilter2.get(ik).get(climateYear.indexOf(listYearsComp.get(ij)))));
-										}
-										if (ik == 2)
-										{
-											log.debug("filteperc  " + filterVectorActual.get(ij));
-										}
-									}
-									// log.debug("size of filterVectorActual is : "+filterVectorActual.size());
-									filterMatrix.add(filterVectorActual);
-									// if(ik==0){log.debug("filters is: "+filter);
-								}
-							} // end of if-else percentageofrecording
-								// log.debug("size of the FilterMatrix is" + filterMatrix.size());
-							
-						} // end of if filters not equal to 1
-						/*
-						 * get matrix climate binary matrix by site (binary analysis)
-						 */
-						climateVector = myReader.get(i).getClimate();
-						// log.debug("the climateyear first is: " + climateYear.get(0)+ " listYearsComp.get(0) "
-						// +climateYear.indexOf(listYearsComp.get(0)));
-						climateVectorActualSite = new ArrayList<Integer>();
-						
-						for (int j = 0; j < listYearsComp.size(); j++)
+						}
+						else
 						{
-							
-							if (climateYear.indexOf(listYearsComp.get(j)) == -1)
+							for (int ik = 0; ik < 3; ik++)
 							{
-								climateVectorActualSite.add(-1);
-							}
-							else
-							{
-								if (minSampleFilter.get(j).intValue() >= minSamples.intValue())
-								{
-									// log.debug("j is: " + j + "inside minsampleFilter " + minSampleFilter.get(j));
-									if (fireFilterValue.intValue() != 1)
+								log.debug("filter number is: " + ik);
+								filterVectorActual = new ArrayList<Double>();
+								for (int ij = 0; ij < listYearsComp.size(); ij++)
+								{ // log.debug(" climateYear.indexOf(listYearsComp.get(j))" +
+									// climateYear.indexOf(listYearsComp.get(ij)));
+									// if(ik==0){log.debug("number of fires
+									// "+climateVectorFilter2.get(0).get(climateYear.indexOf(listYearsComp.get(ij)))+" year
+									// "+listYearsComp.get(ij));}
+									if (climateYear.indexOf(listYearsComp.get(ij)) == -1)
 									{
-										// log.debug("inside fileFilter !=1 ");
-										if (fireFilterType.equals(FireFilterType.NUMBER_OF_EVENTS))
+										filterVectorActual.add(-1.0);
+									}
+									else
+									{
+										filterVectorActual.add(
+												new Double(climateVectorFilter2.get(ik).get(climateYear.indexOf(listYearsComp.get(ij)))));
+									}
+									if (ik == 2)
+									{
+										log.debug("filteperc  " + filterVectorActual.get(ij));
+									}
+								}
+								// log.debug("size of filterVectorActual is : "+filterVectorActual.size());
+								filterMatrix.add(filterVectorActual);
+								// if(ik==0){log.debug("filters is: "+filter);
+							}
+						} // end of if-else percentageofrecording
+							// log.debug("size of the FilterMatrix is" + filterMatrix.size());
+						
+					} // end of if filters not equal to 1
+					/*
+					 * get matrix climate binary matrix by site (binary analysis)
+					 */
+					climateVector = myReader.get(i).getClimate();
+					// log.debug("the climateyear first is: " + climateYear.get(0)+ " listYearsComp.get(0) "
+					// +climateYear.indexOf(listYearsComp.get(0)));
+					climateVectorActualSite = new ArrayList<Integer>();
+					
+					for (int j = 0; j < listYearsComp.size(); j++)
+					{
+						
+						if (climateYear.indexOf(listYearsComp.get(j)) == -1)
+						{
+							climateVectorActualSite.add(-1);
+						}
+						else
+						{
+							if (minSampleFilter.get(j).intValue() >= minSamples.intValue())
+							{
+								// log.debug("j is: " + j + "inside minsampleFilter " + minSampleFilter.get(j));
+								if (fireFilterValue.intValue() != 1)
+								{
+									// log.debug("inside fileFilter !=1 ");
+									if (fireFilterType.equals(FireFilterType.NUMBER_OF_EVENTS))
+									{
+										// climateVectorActualSite.add(climateVector.get(climateYear.indexOf(listYears.get(j))));
+										// log.debug("number of fires is selected is: "+
+										// firesFilter1+" "+climateVector.get(climateYear.indexOf(listYears.get(j))));
+										// log.debug("fire filter: "+firesFilter1+" year is: "+listYears.get(j)
+										// +" fires: "+filterMatrix.get(3*i).get(j)+" climatevector:
+										// "+climateVector.get(climateYear.indexOf(listYears.get(j))));
+										log.debug("fire filter: " + firesFilter1 + " year is: " + listYearsComp.get(j) + " fires: "
+												+ filterMatrix.get(3 * i).get(j) + " climatevector: "
+												+ climateVector.get(climateYear.indexOf(listYearsComp.get(j))));
+										if ((filterMatrix.get(3 * i).get(j) < firesFilter1)
+												&& (climateVector.get(climateYear.indexOf(listYearsComp.get(j)))) != -1.0)
 										{
-											// climateVectorActualSite.add(climateVector.get(climateYear.indexOf(listYears.get(j))));
-											// log.debug("number of fires is selected is: "+
-											// firesFilter1+" "+climateVector.get(climateYear.indexOf(listYears.get(j))));
-											// log.debug("fire filter: "+firesFilter1+" year is: "+listYears.get(j)
-											// +" fires: "+filterMatrix.get(3*i).get(j)+" climatevector:
-											// "+climateVector.get(climateYear.indexOf(listYears.get(j))));
-											log.debug("fire filter: " + firesFilter1 + " year is: " + listYearsComp.get(j) + " fires: "
-													+ filterMatrix.get(3 * i).get(j) + " climatevector: "
-													+ climateVector.get(climateYear.indexOf(listYearsComp.get(j))));
-											if ((filterMatrix.get(3 * i).get(j) < firesFilter1)
-													&& (climateVector.get(climateYear.indexOf(listYearsComp.get(j)))) != -1.0)
+											climateVectorActualSite.add(0);
+										}
+										else
+										{
+											climateVectorActualSite.add(climateVector.get(climateYear.indexOf(listYearsComp.get(j))));
+										}
+									}
+									else if (fireFilterType.equals(FireFilterType.PERCENTAGE_OF_ALL_TREES))
+									{
+										// log.debug("percent of fires is selected is: "+
+										// firesFilter2+" "+climateVector.get(climateYear.indexOf(listYearsComp.get(j))));
+										// log.debug("the filter percent of fires is"+filterMatrix.get((3*i+2)).get(j));
+										if ((filterMatrix.get(3 * i + 2).get(j) == -99))
+										{
+											climateVectorActualSite.add(-1);
+										}
+										else
+										{
+											if ((filterMatrix.get(3 * i + 2).get(j) < firesFilter2)
+													&& ((climateVector.get(climateYear.indexOf(listYears.get(j)))) != -1.0))
 											{
 												climateVectorActualSite.add(0);
 											}
 											else
 											{
-												climateVectorActualSite.add(climateVector.get(climateYear.indexOf(listYearsComp.get(j))));
+												climateVectorActualSite.add(climateVector.get(climateYear.indexOf(listYears.get(j))));
 											}
 										}
-										else if (fireFilterType.equals(FireFilterType.PERCENTAGE_OF_ALL_TREES))
+									}
+									else if (fireFilterType.equals(FireFilterType.PERCENTAGE_OF_RECORDING))
+									{
+										// TODO !!!!!
+										// NEED ELENA'S INPUT ON THIS!
+										
+										// log.debug("percent of fires is selected is: "+
+										// firesFilter2+" "+climateVector.get(climateYear.indexOf(listYearsComp.get(j))));
+										// log.debug("the filter percent of fires is"+filterMatrix.get((3*i+2)).get(j));
+										if (percentOfRecordingfilter.get(j) == -99)
 										{
-											// log.debug("percent of fires is selected is: "+
-											// firesFilter2+" "+climateVector.get(climateYear.indexOf(listYearsComp.get(j))));
-											// log.debug("the filter percent of fires is"+filterMatrix.get((3*i+2)).get(j));
-											if ((filterMatrix.get(3 * i + 2).get(j) == -99))
-											{
-												climateVectorActualSite.add(-1);
-											}
-											else
-											{
-												if ((filterMatrix.get(3 * i + 2).get(j) < firesFilter2)
-														&& ((climateVector.get(climateYear.indexOf(listYears.get(j)))) != -1.0))
-												{
-													climateVectorActualSite.add(0);
-												}
-												else
-												{
-													climateVectorActualSite.add(climateVector.get(climateYear.indexOf(listYears.get(j))));
-												}
-											}
-										}
-										else if (fireFilterType.equals(FireFilterType.PERCENTAGE_OF_RECORDING))
-										{
-											// TODO !!!!!
-											// NEED ELENA'S INPUT ON THIS!
-											
-											// log.debug("percent of fires is selected is: "+
-											// firesFilter2+" "+climateVector.get(climateYear.indexOf(listYearsComp.get(j))));
-											// log.debug("the filter percent of fires is"+filterMatrix.get((3*i+2)).get(j));
-											if (percentOfRecordingfilter.get(j) == -99)
-											{
-												climateVectorActualSite.add(-1);
-											}
-											else
-											{
-												if ((percentOfRecordingfilter.get(j) < firesFilter2)
-														&& ((climateVector.get(climateYear.indexOf(listYears.get(j)))) != -1.0))
-												{
-													climateVectorActualSite.add(0);
-												}
-												else
-												{
-													climateVectorActualSite.add(climateVector.get(climateYear.indexOf(listYears.get(j))));
-												}
-											}
-											
+											climateVectorActualSite.add(-1);
 										}
 										else
 										{
-											log.error("Unsupported fire filter type");
+											if ((percentOfRecordingfilter.get(j) < firesFilter2)
+													&& ((climateVector.get(climateYear.indexOf(listYears.get(j)))) != -1.0))
+											{
+												climateVectorActualSite.add(0);
+											}
+											else
+											{
+												climateVectorActualSite.add(climateVector.get(climateYear.indexOf(listYears.get(j))));
+											}
 										}
-									} // end of if filter not equal to 1
+										
+									}
 									else
 									{
-										climateVectorActualSite.add(climateVector.get(climateYear.indexOf(listYearsComp.get(j))));
-										// climateVectorActualSite.add(0);
-										// log.debug("j is " + j + "numberof fires is "
-										// + climateVector.get(climateYear.indexOf(listYearsComp.get(j))));
-										// climateVectorActualSite.add(-1);
-									} // end of else of if filter not equal to 1
-								} // end of if for minsamplefilter bigger or equal to minSamples
+										log.error("Unsupported fire filter type");
+									}
+								} // end of if filter not equal to 1
 								else
 								{
-									// log.debug("j is " + j + "minSampleFilter is " + minSampleFilter.get(j));
-									climateVectorActualSite.add(-1);
+									climateVectorActualSite.add(climateVector.get(climateYear.indexOf(listYearsComp.get(j))));
+									// climateVectorActualSite.add(0);
+									// log.debug("j is " + j + "numberof fires is "
+									// + climateVector.get(climateYear.indexOf(listYearsComp.get(j))));
 									// climateVectorActualSite.add(-1);
-								}
-							} // end else for if climateYear.indexOf(listYearsComp.get(j)) == -1
-								// log.debug("j is " + j + "numberof fires is " +
-								// climateVector.get(climateYear.indexOf(listYearsComp.get(j))));
-						} // end of j loop listyears
-							// log.debug("size by site binary "+climateVectorActualSite.size()+" "+climateVectorActualSite);
-						climateMatrixSite.add(climateVectorActualSite);
-						
-						/*
-						 * Create the section of the fhx file with the name of the sample in columns. the names of the samples will be the
-						 */
-						// log.debug("the reader size is "+ myReader.size());
-						// log.debug("the size of sampleNameComp is "+sampleNameComp.size());
-						ArrayList<Character> nameVectorActualComp = new ArrayList<Character>();
-						for (int j = 0; j < maxSeriesNameLengthComp; j++)
-						{
-							if (sampleNameComp.get(i).length() > j)
-							{
-								// log.debug("lenght is "+sampleNameComp.get(i)+" j "+ j );
-								nameVectorActualComp.add(sampleNameComp.get(i).charAt(j));
-							}
+								} // end of else of if filter not equal to 1
+							} // end of if for minsamplefilter bigger or equal to minSamples
 							else
 							{
-								// log.debug("lenght else is "+sampleNameComp.get(i)+" j "+ j );
-								nameVectorActualComp.add(' ');
+								// log.debug("j is " + j + "minSampleFilter is " + minSampleFilter.get(j));
+								climateVectorActualSite.add(-1);
+								// climateVectorActualSite.add(-1);
 							}
-						}
-						nameLine.add(nameVectorActualComp);
-						// log.debug("size of nameline "+nameLine.size()+" X "+nameLine.get(i).size());
-						// log.debug(" endding to Process file : "+ myReader.get(i).getName());
-					} // end of i reader do loop
+						} // end else for if climateYear.indexOf(listYearsComp.get(j)) == -1
+							// log.debug("j is " + j + "numberof fires is " +
+							// climateVector.get(climateYear.indexOf(listYearsComp.get(j))));
+					} // end of j loop listyears
+						// log.debug("size by site binary "+climateVectorActualSite.size()+" "+climateVectorActualSite);
+					climateMatrixSite.add(climateVectorActualSite);
 					
-				} // end of if jcheckcomp is selected
+					/*
+					 * Create the section of the fhx file with the name of the sample in columns. the names of the samples will be the
+					 */
+					// log.debug("the reader size is "+ myReader.size());
+					// log.debug("the size of sampleNameComp is "+sampleNameComp.size());
+					ArrayList<Character> nameVectorActualComp = new ArrayList<Character>();
+					for (int j = 0; j < maxSeriesNameLengthComp; j++)
+					{
+						if (sampleNameComp.get(i).length() > j)
+						{
+							// log.debug("lenght is "+sampleNameComp.get(i)+" j "+ j );
+							nameVectorActualComp.add(sampleNameComp.get(i).charAt(j));
+						}
+						else
+						{
+							// log.debug("lenght else is "+sampleNameComp.get(i)+" j "+ j );
+							nameVectorActualComp.add(' ');
+						}
+					}
+					nameLine.add(nameVectorActualComp);
+					// log.debug("size of nameline "+nameLine.size()+" X "+nameLine.get(i).size());
+					// log.debug(" endding to Process file : "+ myReader.get(i).getName());
+				} // end of i reader do loop
 				
-				// Instantiate the file and writer objects
-				File outputFileJoin = outputFile;
-				File outputFileComp = outputFile;
-				File outputFileEvent = outputFile;
-				Writer wr = null;
-				Writer wrComp = null;
-				Writer wrEvent = null;
+			} // end of if jcheckcomp is selected
+			
+			// Instantiate the file and writer objects
+			File outputFileJoin = outputFile;
+			File outputFileComp = outputFile;
+			File outputFileEvent = outputFile;
+			Writer wr = null;
+			Writer wrComp = null;
+			Writer wrEvent = null;
+			
+			/**
+			 * Write data to output files
+			 */
+			try
+			{
 				
 				/**
-				 * Write data to output files
+				 * Create join file if requested
 				 */
-				try
+				if (createJoinFile)
 				{
 					
-					/**
-					 * Create join file if requested
-					 */
-					if (createJoinFile)
+					wr = new BufferedWriter(new FileWriter(outputFileJoin));
+					
+					// write the format heading to the files
+					wr.write("FHX2 FORMAT" + System.getProperty("line.separator"));
+					wr.write(minFirstYear.toString() + " " + totalNumberOfseriesJoin.toString() + " " + maxSeriesNameLengthJoin.toString()
+							+ System.getProperty("line.separator"));
+					for (int k = 0; k < joinNameMatrix.size(); k++)
 					{
-						
-						wr = new BufferedWriter(new FileWriter(outputFileJoin));
-						
-						// write the format heading to the files
-						wr.write("FHX2 FORMAT" + System.getProperty("line.separator"));
-						wr.write(minFirstYear.toString() + " " + totalNumberOfseriesJoin.toString() + " "
-								+ maxSeriesNameLengthJoin.toString() + System.getProperty("line.separator"));
-						for (int k = 0; k < joinNameMatrix.size(); k++)
-						{
-							wr.write(joinNameMatrix.get(k) + System.getProperty("line.separator"));
-						}
+						wr.write(joinNameMatrix.get(k) + System.getProperty("line.separator"));
+					}
+					wr.write(System.getProperty("line.separator"));
+					for (int i = 0; i < listYears.size(); i++)
+					{
+						wr.write(JoinMatrix.get(i) + " " + listYears.get(i).toString());
 						wr.write(System.getProperty("line.separator"));
-						for (int i = 0; i < listYears.size(); i++)
-						{
-							wr.write(JoinMatrix.get(i) + " " + listYears.get(i).toString());
-							wr.write(System.getProperty("line.separator"));
-						}
-						
 					}
 					
-					/**
-					 * Create composite file if requested
-					 */
-					if (createCompositeFile)
+				}
+				
+				/**
+				 * Create composite file if requested
+				 */
+				if (createCompositeFile)
+				{
+					wrComp = new BufferedWriter(new FileWriter(outputFileComp));
+					
+					// write the format heading to the files
+					wrComp.write("FHX2 FORMAT" + System.getProperty("line.separator"));
+					wrComp.write(minFirstYearComp.toString() + " " + totalNumberOfseriesComp.toString() + " "
+							+ maxSeriesNameLengthComp.toString() + System.getProperty("line.separator"));
+					for (int j = 0; j < maxSeriesNameLengthComp; j++)
 					{
-						wrComp = new BufferedWriter(new FileWriter(outputFileComp));
-						
-						// write the format heading to the files
-						wrComp.write("FHX2 FORMAT" + System.getProperty("line.separator"));
-						wrComp.write(minFirstYearComp.toString() + " " + totalNumberOfseriesComp.toString() + " "
-								+ maxSeriesNameLengthComp.toString() + System.getProperty("line.separator"));
-						for (int j = 0; j < maxSeriesNameLengthComp; j++)
+						for (int i = 0; i < nameLine.size(); i++)
 						{
-							for (int i = 0; i < nameLine.size(); i++)
-							{
-								wrComp.write(nameLine.get(i).get(j));
-							}
-							wrComp.write(System.getProperty("line.separator"));
+							wrComp.write(nameLine.get(i).get(j));
 						}
 						wrComp.write(System.getProperty("line.separator"));
-						for (int i = 0; i < listYearsComp.size(); i++)
-						{
-							for (int j = 0; j < climateMatrixSite.size(); j++)
-							{
-								if ((i + minFirstYearComp) == startCompYear.get(j).intValue())
-								{
-									if (climateMatrixSite.get(j).get(i) == 1)
-									{
-										wrComp.write("U");
-									}
-									if (climateMatrixSite.get(j).get(i) != 1)
-									{
-										wrComp.write("{");
-									}
-								}
-								else
-								{
-									if (climateMatrixSite.get(j).get(i) == -1)
-									{
-										wrComp.write(".");
-									}
-									if (climateMatrixSite.get(j).get(i) == 0)
-									{
-										wrComp.write("|");
-									}
-									if (climateMatrixSite.get(j).get(i) == 1)
-									{
-										wrComp.write("U");
-									}
-								}
-							}
-							wrComp.write(" " + listYearsComp.get(i).toString());
-							wrComp.write(System.getProperty("line.separator"));
-						}
-						
 					}
-					
-					/**
-					 * Create event file if requested
-					 */
-					if (createEventFile)
+					wrComp.write(System.getProperty("line.separator"));
+					for (int i = 0; i < listYearsComp.size(); i++)
 					{
-						Boolean eventFlag;
-						wrEvent = new BufferedWriter(new FileWriter(outputFileEvent));
-						
-						// write the format heading to the file
-						wrEvent.write(
-								"* this is an Event file created from the following FHX files:" + System.getProperty("line.separator"));
-						for (File f : this.inputFileArray)
+						for (int j = 0; j < climateMatrixSite.size(); j++)
 						{
-							wrEvent.write("*   - " + f.getAbsolutePath() + System.getProperty("line.separator"));
-						}
-						
-						// Write any comments
-						for (String line : this.comments.split(System.getProperty("line.separator")))
-						{
-							wrEvent.write("* " + line + System.getProperty("line.separator"));
-						}
-						
-						// write the data to the file
-						for (int i = 0; i < listYearsComp.size(); i++)
-						{
-							eventFlag = false;
-							for (int j = 0; j < climateMatrixSite.size(); j++)
+							if ((i + minFirstYearComp) == startCompYear.get(j).intValue())
 							{
 								if (climateMatrixSite.get(j).get(i) == 1)
 								{
-									eventFlag = true;
+									wrComp.write("U");
 								}
-								
+								if (climateMatrixSite.get(j).get(i) != 1)
+								{
+									wrComp.write("{");
+								}
 							}
-							if (eventFlag)
+							else
 							{
-								wrEvent.write(listYearsComp.get(i).toString());
-								wrEvent.write(System.getProperty("line.separator"));
+								if (climateMatrixSite.get(j).get(i) == -1)
+								{
+									wrComp.write(".");
+								}
+								if (climateMatrixSite.get(j).get(i) == 0)
+								{
+									wrComp.write("|");
+								}
+								if (climateMatrixSite.get(j).get(i) == 1)
+								{
+									wrComp.write("U");
+								}
 							}
-						} // end of i loop
+						}
+						wrComp.write(" " + listYearsComp.get(i).toString());
+						wrComp.write(System.getProperty("line.separator"));
 					}
+					
 				}
-				catch (IOException ex)
+				
+				/**
+				 * Create event file if requested
+				 */
+				if (createEventFile)
 				{
-					ex.printStackTrace();
-					log.error("IOException caught writing merge, composite or event file");
-				}
-				finally
-				{
-					// Make sure all writers are closed
-					try
+					Boolean eventFlag;
+					wrEvent = new BufferedWriter(new FileWriter(outputFileEvent));
+					
+					// write the format heading to the file
+					wrEvent.write("* this is an Event file created from the following FHX files:" + System.getProperty("line.separator"));
+					for (File f : this.inputFileArray)
 					{
-						wr.close();
+						wrEvent.write("*   - " + f.getAbsolutePath() + System.getProperty("line.separator"));
 					}
-					catch (Exception e)
+					
+					// Write any comments
+					for (String line : this.comments.split(System.getProperty("line.separator")))
 					{
+						wrEvent.write("* " + line + System.getProperty("line.separator"));
 					}
-					try
+					
+					// write the data to the file
+					for (int i = 0; i < listYearsComp.size(); i++)
 					{
-						wrComp.close();
-					}
-					catch (Exception e)
-					{
-					}
-					try
-					{
-						wrEvent.close();
-					}
-					catch (Exception e)
-					{
-					}
+						eventFlag = false;
+						for (int j = 0; j < climateMatrixSite.size(); j++)
+						{
+							if (climateMatrixSite.get(j).get(i) == 1)
+							{
+								eventFlag = true;
+							}
+							
+						}
+						if (eventFlag)
+						{
+							wrEvent.write(listYearsComp.get(i).toString());
+							wrEvent.write(System.getProperty("line.separator"));
+						}
+					} // end of i loop
 				}
 			}
+			catch (IOException ex)
+			{
+				ex.printStackTrace();
+				log.error("IOException caught writing merge, composite or event file");
+			}
+			finally
+			{
+				// Make sure all writers are closed
+				try
+				{
+					wr.close();
+				}
+				catch (Exception e)
+				{
+				}
+				try
+				{
+					wrComp.close();
+				}
+				catch (Exception e)
+				{
+				}
+				try
+				{
+					wrEvent.close();
+				}
+				catch (Exception e)
+				{
+				}
+			}
+			// }
 		}
 	}
 	
