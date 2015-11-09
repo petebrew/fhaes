@@ -179,3 +179,5 @@ Making a new release should be a relatively quick and simply process, but there 
  * __TEST__!  Make sure all packages are working on the major operating systems being supported.
  * Copy the packages to the website and change the most recent build number on the website.  This will inform users of the new release the next time they load FHAES.
  * Update FRAMES website to show new compile date and version number
+ * Tag the release in Github
+ * Check and cleanup metadata for DOI in Zenodo
