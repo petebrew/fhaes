@@ -59,13 +59,16 @@ public class FHDescriptiveStats {
 			int[] sampledepths = fr.getSampleDepths(eventType);
 			int[] recordingdepths = fr.getRecordingDepths(eventType);
 			ArrayList<ArrayList<Double>> filterArray = fr.getFilterArrays(eventType);
+			double[] percentScarred = fr.getPercentOfRecordingScarred(eventType);
+			double[] percentAllScarred = fr.getPercentOfAllScarred(eventType);
 			
 			Vector<Object> headers = new Vector<Object>();
 			headers.add("Year");
 			headers.add("Sample depth");
 			headers.add("Recording depth");
-			headers.add("Number of " + eventType.toString());
-			headers.add("Percentage of " + eventType.toString());
+			headers.add("Number of " + eventType.toString().toLowerCase());
+			headers.add("Percentage of recording trees with " + eventType.toString().toLowerCase());
+			headers.add("Percentage of all trees with " + eventType.toString().toLowerCase());
 			Vector<Vector<Object>> rows = new Vector<Vector<Object>>();
 			
 			int i = 0;
@@ -77,15 +80,8 @@ public class FHDescriptiveStats {
 				row.add(sampledepths[i]);
 				row.add(recordingdepths[i]);
 				row.add(filterArray.get(0).get(i));
-				if (filterArray.get(2).get(i).equals(-99.0))
-				{
-					row.add(filterArray.get(2).get(i));
-				}
-				else
-				{
-					row.add(twoPlace.format(filterArray.get(2).get(i) * 100));
-				}
-				
+				row.add(twoPlace.format(percentScarred[i]));
+				row.add(twoPlace.format(percentAllScarred[i]));
 				rows.add(row);
 				i++;
 			}
