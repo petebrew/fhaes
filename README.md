@@ -166,6 +166,10 @@ The documentation in FHAES is written in the well established typesetting langua
 Making a new release should be a relatively quick and simply process, but there are still a few things to remember:
 
  * Make sure this documentation is up-to-date. 
+ * Compile manual including glossary, bibTeX and makeindex commands
+ * Run pdf2htmlEX to generate HTML version of manual
+ * Copy html file to server and update symbolic link for most recent version
+ * Update RemoteHelp URLs in FHAES code where necessary
  * Update the logging appenders to an appropriate level so that the user is not swamped by debug messages.
  * Increment the build version number(s) in the pom.xml of FHAES and any of the other modules as applicable.
  * Check the code in Eclipse and eliminate as many warnings as possible.
@@ -174,3 +178,4 @@ Making a new release should be a relatively quick and simply process, but there 
  * Run Maven package on the FHAES project itself.
  * __TEST__!  Make sure all packages are working on the major operating systems being supported.
  * Copy the packages to the website and change the most recent build number on the website.  This will inform users of the new release the next time they load FHAES.
+ * Update FRAMES website to show new compile date and version number
