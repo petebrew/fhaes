@@ -72,7 +72,6 @@ public class FHFile extends File {
 	private BigDecimal longitude;
 	private FHX2Reader tricycleReader;
 	private Boolean locationInitialize = false;
-	private boolean doCheck = true;
 	
 	/**
 	 * Initializes a new FHFile.
@@ -88,12 +87,11 @@ public class FHFile extends File {
 	public FHFile(File file, boolean doCheck) {
 	
 		super(file.getAbsolutePath());
-		this.doCheck = doCheck;
 		init();
 	}
 	
 	/**
-	 * TODO
+	 * Construct a new FHFile using a string containing the full filename
 	 * 
 	 * @param filename
 	 */
@@ -104,7 +102,7 @@ public class FHFile extends File {
 	}
 	
 	/**
-	 * TODO
+	 * Get the AbstractFireHistoryReader for this file
 	 * 
 	 * @return
 	 */
@@ -114,7 +112,7 @@ public class FHFile extends File {
 	}
 	
 	/**
-	 * TODO
+	 * Get a summary report about this file as a string. This report is normally displayed in the file summary tab of FHAES
 	 * 
 	 * @return
 	 */
@@ -124,7 +122,7 @@ public class FHFile extends File {
 	}
 	
 	/**
-	 * TODO
+	 * Get a string containing an error message reporting problems with the file. If the file is valid then this will return null.
 	 * 
 	 * @return
 	 */
@@ -167,7 +165,7 @@ public class FHFile extends File {
 	}
 	
 	/**
-	 * TODO
+	 * Check whether this is a valid FHX file
 	 * 
 	 * @return
 	 */
@@ -186,7 +184,7 @@ public class FHFile extends File {
 	}
 	
 	/**
-	 * TODO
+	 * If this is not a valid FHX file then get the line number at which the first error exists
 	 * 
 	 * @return
 	 */
@@ -205,7 +203,7 @@ public class FHFile extends File {
 	}
 	
 	/**
-	 * TODO
+	 * Does this file have fire events or other injuries?
 	 * 
 	 * @return
 	 */
@@ -224,7 +222,7 @@ public class FHFile extends File {
 	}
 	
 	/**
-	 * TODO
+	 * Does this file have any fire events?
 	 * 
 	 * @return
 	 */
@@ -243,7 +241,7 @@ public class FHFile extends File {
 	}
 	
 	/**
-	 * TODO
+	 * Does this file have any injuries recorded?
 	 * 
 	 * @return
 	 */
@@ -262,7 +260,7 @@ public class FHFile extends File {
 	}
 	
 	/**
-	 * TODO
+	 * Get the first year in this file
 	 * 
 	 * @return
 	 */
@@ -281,7 +279,7 @@ public class FHFile extends File {
 	}
 	
 	/**
-	 * TODO
+	 * Get the last year in this file
 	 * 
 	 * @return
 	 */
@@ -300,7 +298,7 @@ public class FHFile extends File {
 	}
 	
 	/**
-	 * TODO
+	 * Get the site code from the file metadata. If no site code is included returns "Unknown site code".
 	 * 
 	 * @return
 	 */
@@ -330,7 +328,7 @@ public class FHFile extends File {
 	}
 	
 	/**
-	 * TODO
+	 * Get the site name from the file's metadata. If no site name is included then it returns "Unknown site".
 	 * 
 	 * @return
 	 */
@@ -433,7 +431,7 @@ public class FHFile extends File {
 	}
 	
 	/**
-	 * TODO
+	 * Get's the first state or province specified in the metadata or null if no state is specified.
 	 * 
 	 * @return
 	 */
@@ -461,7 +459,7 @@ public class FHFile extends File {
 	}
 	
 	/**
-	 * TODO
+	 * Get's the first country specified in the metadata or null if no country is specified.
 	 * 
 	 * @return
 	 */
@@ -489,7 +487,7 @@ public class FHFile extends File {
 	}
 	
 	/**
-	 * TODO
+	 * Parse the location information from the metadata and store in latitude and longitude fields
 	 */
 	private void parseLocation() {
 	
@@ -546,7 +544,7 @@ public class FHFile extends File {
 	}
 	
 	/**
-	 * TODO
+	 * Get the latitude specified in the metadata as a string
 	 * 
 	 * @return
 	 */
@@ -566,7 +564,7 @@ public class FHFile extends File {
 	}
 	
 	/**
-	 * TODO
+	 * Get the longitude specified in the metadata as a string
 	 * 
 	 * @return
 	 */
@@ -586,7 +584,7 @@ public class FHFile extends File {
 	}
 	
 	/**
-	 * TODO
+	 * Get the latitude specified in the metadata as a double
 	 * 
 	 * @return
 	 */
@@ -606,7 +604,7 @@ public class FHFile extends File {
 	}
 	
 	/**
-	 * TODO
+	 * Get the longitude specified in the metadata as a double
 	 * 
 	 * @return
 	 */
@@ -626,7 +624,7 @@ public class FHFile extends File {
 	}
 	
 	/**
-	 * Returns the name of the file without the extension. E.g. if the name is "sample-test.fhx" this would return "sample-test".
+	 * Returns the name of the file without the extension. e.g. if the name is "sample-test.fhx" this would return "sample-test".
 	 * 
 	 * @return filename with no extension
 	 */
@@ -637,7 +635,7 @@ public class FHFile extends File {
 	}
 	
 	/**
-	 * Returns the file path of the default-named category file for this FHFile. E.g. if the name is "sample-test.fhx" this would return the
+	 * Returns the file path of the default-named category file for this FHFile. e.g. if the name is "sample-test.fhx" this would return the
 	 * absolute path of the file "sample-test-categories.csv", which is assumed to be located in the same directory.
 	 * 
 	 * @return the filepath of the default-named category file

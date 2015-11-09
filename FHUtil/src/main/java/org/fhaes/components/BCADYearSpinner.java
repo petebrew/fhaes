@@ -23,6 +23,7 @@ import static org.junit.Assert.assertNotNull;
 import java.awt.Dimension;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.Calendar;
 
 import javax.swing.SpinnerNumberModel;
 import javax.swing.text.NumberFormatter;
@@ -59,7 +60,7 @@ public class BCADYearSpinner extends javax.swing.JSpinner {
 	 * @param maximumValue
 	 */
 	public BCADYearSpinner(int initialValue, int minimumValue, int maximumValue) {
-		
+	
 		// Account for cases where the initial value may be out of range
 		if (initialValue < minimumValue)
 		{
@@ -84,12 +85,24 @@ public class BCADYearSpinner extends javax.swing.JSpinner {
 	}
 	
 	/**
+	 * Constructs a BCADYearSpinner with a value set as the current year, the max value as the current year and the minimum value as the
+	 * minimum number supported by a Java int.
+	 */
+	public BCADYearSpinner() {
+	
+		int year = Calendar.getInstance().get(Calendar.YEAR);
+		// Setup the year spinner with valid values
+		initGUI(year, Integer.MIN_VALUE, year);
+		
+	}
+	
+	/**
 	 * Gets the number editor for the spinner.
 	 * 
 	 * @return the spinner's number editor
 	 */
 	private NumberEditor getNumberEditor() {
-		
+	
 		return (NumberEditor) this.getEditor();
 	}
 	
@@ -99,7 +112,7 @@ public class BCADYearSpinner extends javax.swing.JSpinner {
 	 * @return the spinner's number formatter
 	 */
 	private NumberFormatter getNumberFormatter() {
-		
+	
 		return ((NumberFormatter) this.getNumberEditor().getTextField().getFormatter());
 	}
 	
@@ -109,7 +122,7 @@ public class BCADYearSpinner extends javax.swing.JSpinner {
 	 * @return the spinner's current value as an integer
 	 */
 	public Integer getValueAsInteger() {
-		
+	
 		return (Integer) this.getModel().getValue();
 	}
 	
@@ -119,7 +132,7 @@ public class BCADYearSpinner extends javax.swing.JSpinner {
 	 * @param inValue
 	 */
 	public void setValueFromInteger(int inValue) {
-		
+	
 		this.getModel().setValue(inValue);
 	}
 	
@@ -127,7 +140,7 @@ public class BCADYearSpinner extends javax.swing.JSpinner {
 	 * Gets the spinner's most recently displayed value.
 	 */
 	public Integer getMostRecentValue() {
-		
+	
 		return mostRecentValue;
 	}
 	
@@ -135,7 +148,7 @@ public class BCADYearSpinner extends javax.swing.JSpinner {
 	 * Updates the spinner's most recently displayed value with the spinner's current value.
 	 */
 	public void updateMostRecentValue() {
-		
+	
 		mostRecentValue = getValueAsInteger();
 	}
 	
@@ -147,7 +160,7 @@ public class BCADYearSpinner extends javax.swing.JSpinner {
 	 * @param maximumValue
 	 */
 	private void initGUI(int initialValue, int minimumValue, int maximumValue) {
-		
+	
 		// Assign the initial value to the spinner BEFORE setting up the custom model
 		this.setValue(initialValue);
 		
@@ -166,14 +179,18 @@ public class BCADYearSpinner extends javax.swing.JSpinner {
 		this.getNumberEditor().getTextField().addKeyListener(new KeyListener() {
 			
 			@Override
-			public void keyPressed(KeyEvent evt) {}
+			public void keyPressed(KeyEvent evt) {
+			
+			}
 			
 			@Override
-			public void keyReleased(KeyEvent evt) {}
+			public void keyReleased(KeyEvent evt) {
+			
+			}
 			
 			@Override
 			public void keyTyped(KeyEvent evt) {
-				
+			
 				if (evt.getKeyChar() == KeyEvent.VK_TAB || evt.getKeyChar() == KeyEvent.VK_ENTER)
 				{
 					try
@@ -213,7 +230,7 @@ public class BCADYearSpinner extends javax.swing.JSpinner {
 		private final int minimum;
 		
 		public BCADYearSpinnerModel(int initialValue, int minimumValue, int maximumValue) {
-			
+		
 			// Call to SpinnerNumberModel so that the spinner arrows work properly
 			super(initialValue, minimumValue, maximumValue, STEP_SIZE);
 			
@@ -227,7 +244,7 @@ public class BCADYearSpinner extends javax.swing.JSpinner {
 		 */
 		@Override
 		public Object getValue() {
-			
+		
 			return super.getValue();
 		}
 		
@@ -236,7 +253,7 @@ public class BCADYearSpinner extends javax.swing.JSpinner {
 		 */
 		@Override
 		public Object getNextValue() {
-			
+		
 			Integer nextValue = (Integer) super.getNextValue();
 			
 			if (nextValue != null)
@@ -265,7 +282,7 @@ public class BCADYearSpinner extends javax.swing.JSpinner {
 		 */
 		@Override
 		public Object getPreviousValue() {
-			
+		
 			Integer previousValue = (Integer) super.getPreviousValue();
 			
 			if (previousValue != null)
@@ -294,7 +311,7 @@ public class BCADYearSpinner extends javax.swing.JSpinner {
 		 */
 		@Override
 		public void setValue(Object object) {
-			
+		
 			Integer inputValue = (Integer) object;
 			Integer currentValue = (Integer) super.getValue();
 			
@@ -331,7 +348,7 @@ public class BCADYearSpinner extends javax.swing.JSpinner {
 		 */
 		@Test
 		public void runTestCases() {
-			
+		
 			// Create BCADYearSpinner with nominal values
 			{
 				BCADYearSpinner testSpinner = new BCADYearSpinner(5, 1, 10);

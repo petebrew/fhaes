@@ -137,10 +137,8 @@ public class FHOperations {
 		{
 			new FHOperations(parent, inputFileArray, file, startYear, endYear, 1.0, FireFilterType.NUMBER_OF_EVENTS,
 					SampleDepthFilterType.MIN_NUM_SAMPLES, false, false, true, minNumberSamples, null);
-			return file;
 		}
-		
-		return null;
+		return file;
 	}
 	
 	/**
@@ -513,14 +511,14 @@ public class FHOperations {
 					joinStringTemp = "";
 					for (int k = 0; k < myReader.size(); k++)
 					{
-						if (myReader.get(k).getYear().indexOf(listYears.get(j)) == -1)
+						if (myReader.get(k).getYearArray().indexOf(listYears.get(j)) == -1)
 						{
 							joinStringTemp = joinStringTemp + dotsTemp.substring(0, myReader.get(k).getNumberOfSeries());
 						}
 						else
 						{
 							joinStringTemp = joinStringTemp
-									+ myReader.get(k).getData().get(myReader.get(k).getYear().indexOf(listYears.get(j)));
+									+ myReader.get(k).getData().get(myReader.get(k).getYearArray().indexOf(listYears.get(j)));
 						}
 					} // end k loop
 					JoinMatrix.add(joinStringTemp);
@@ -703,7 +701,7 @@ public class FHOperations {
 						 * (total lower case letter plus bars counting only after a fire) percent of scared trees total fires/total trees
 						 */
 						
-						climateVectorFilter2 = myReader.get(i).getfilters2d();
+						climateVectorFilter2 = myReader.get(i).getFilterArrays(EventTypeToProcess.FIRE_EVENT);
 						
 						/*
 						 * if by tree analysis is selected create two matrices (array list) 1. filterMatrix containing the three filter
@@ -775,7 +773,7 @@ public class FHOperations {
 					/*
 					 * get matrix climate binary matrix by site (binary analysis)
 					 */
-					climateVector = myReader.get(i).getClimate();
+					climateVector = myReader.get(i).getFireEventsArray();
 					// log.debug("the climateyear first is: " + climateYear.get(0)+ " listYearsComp.get(0) "
 					// +climateYear.indexOf(listYearsComp.get(0)));
 					climateVectorActualSite = new ArrayList<Integer>();

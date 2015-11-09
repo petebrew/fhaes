@@ -30,8 +30,6 @@ import org.fhaes.preferences.App;
 import org.fhaes.preferences.FHAESPreferences.PrefKey;
 import org.fhaes.preferences.PrefsEvent;
 import org.fhaes.preferences.PrefsListener;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Simple text panel for reminder users what parameters they just selected.
@@ -39,8 +37,6 @@ import org.slf4j.LoggerFactory;
 public class GoldFishPanel extends JPanel implements PrefsListener {
 	
 	private static final long serialVersionUID = 1L;
-	
-	private static final Logger log = LoggerFactory.getLogger(GoldFishPanel.class);
 	private JTextPane textArea;
 	
 	/**
