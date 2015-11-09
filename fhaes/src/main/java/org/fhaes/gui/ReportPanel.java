@@ -138,7 +138,6 @@ public class ReportPanel extends JPanel implements PrefsListener {
 			fhxFile = inFile;
 		}
 		
-		populateSingleFileReports();
 	}
 	
 	/**
@@ -252,6 +251,7 @@ public class ReportPanel extends JPanel implements PrefsListener {
 		}
 		
 		panelMap.setFHFiles(fhxFiles);
+		populateSingleFileReports();
 	}
 	
 	/**
