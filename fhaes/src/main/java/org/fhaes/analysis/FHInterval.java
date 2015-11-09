@@ -81,7 +81,7 @@ public class FHInterval {
 	public FHInterval(FHFile[] inputFileArray, AnalysisType analysisType, Integer startYear, Integer endYear, FireFilterType filterType,
 			Double filterValue, Boolean includeIncomplete, EventTypeToProcess eventTypeToProcess, Double alphaLevel,
 			SampleDepthFilterType sampleDepthFilterType, Double sampleDepthFilterValue) {
-	
+			
 		if (inputFileArray == null || inputFileArray.length == 0)
 		{
 			log.error("FHInterval must be passed an input file array");
@@ -125,7 +125,7 @@ public class FHInterval {
 	 * @return
 	 */
 	public File getExceedence() {
-	
+		
 		return exceedenceFile;
 	}
 	
@@ -135,7 +135,7 @@ public class FHInterval {
 	 * @return
 	 */
 	public File getSummary() {
-	
+		
 		return summaryFile;
 	}
 	
@@ -144,7 +144,7 @@ public class FHInterval {
 	 */
 	@SuppressWarnings("deprecation")
 	private void doAnalysis() {
-	
+		
 		log.debug("INPUT PARAMETERS");
 		log.debug("inputFileArray = " + inputFileArray);
 		log.debug("analyissType = " + analysisType);
@@ -386,7 +386,7 @@ public class FHInterval {
 		
 		double[] fixvalt = { 0.999, 0.99, 0.975, 0.95, 0.9, 0.875, 0.8, 0.75, 0.7, 0.667, 0.5, 0.333, 0.3, 0.25, 0.2, 0.125, 0.1, 0.05,
 				0.025, 0.01, 0.001 };
-		
+				
 		double[][] ExceeProbcomp = new double[fixvalt.length][myReader.size()];
 		double[][] ExceeProbsample = new double[fixvalt.length][myReader.size()];
 		// log.debug("the size of statsparam is " +
@@ -416,14 +416,14 @@ public class FHInterval {
 			// log.debug("number of fires is selected is: "+
 			// firesFilter1);
 		}
-		else if (fireFilterType.equals(FireFilterType.PERCENTAGE_OF_RECORDING))
+		else if (fireFilterType.equals(FireFilterType.PERCENTAGE_OF_ALL_TREES))
 		{
 			if (filterValue != 1)
 				firesFilter2 = filterValue / 100.0;
 			// log.debug("percentage of fires is selected is: "+
 			// firesFilter2);
 		}
-		else if (fireFilterType.equals(FireFilterType.PERCENTAGE_OF_ALL_TREES))
+		else if (fireFilterType.equals(FireFilterType.PERCENTAGE_OF_RECORDING))
 		{
 			if (filterValue != 1)
 				firesFilter2 = filterValue / 100.0;
@@ -542,7 +542,7 @@ public class FHInterval {
 									climateVectorActualSite.add(climateVector.get(climateYear.indexOf(listYears.get(j))));
 								}
 							}
-							else if (fireFilterType.equals(FireFilterType.PERCENTAGE_OF_RECORDING))
+							else if (fireFilterType.equals(FireFilterType.PERCENTAGE_OF_ALL_TREES))
 							{
 								// log.debug("percent of fires is selected is: "+
 								// firesFilter2+" "+climateVector.get(climateYear.indexOf(listYearsComp.get(j))));
@@ -564,7 +564,7 @@ public class FHInterval {
 									}
 								}
 							}
-							else if (fireFilterType.equals(FireFilterType.PERCENTAGE_OF_ALL_TREES))
+							else if (fireFilterType.equals(FireFilterType.PERCENTAGE_OF_RECORDING))
 							{
 								
 								// TODO
@@ -909,7 +909,7 @@ public class FHInterval {
 					// ADDED BY PETE
 					if (dfireintervalspersample.length == 0)
 						continue;
-					
+						
 					/*
 					 * load the Summary Analysis for the Sample fire intervals
 					 */
@@ -1288,13 +1288,13 @@ public class FHInterval {
 		}
 		finally
 		{
-			
+		
 		}
 		
 	}
 	
 	public static ArrayList<Integer> generateFireIntervals(ArrayList<Integer> YearsWithFires) {
-	
+		
 		ArrayList<Integer> fireIntervals = new ArrayList<Integer>();
 		for (int i = 0; i < YearsWithFires.size() - 1; i++)
 		{
