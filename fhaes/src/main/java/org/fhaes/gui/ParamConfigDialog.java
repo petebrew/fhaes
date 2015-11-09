@@ -634,7 +634,6 @@ public class ParamConfigDialog extends JDialog implements ActionListener, Change
 		App.prefs.setBooleanPref(PrefKey.SEASONALITY_SECOND_GROUP_EARLY_EARLY, cbxEarlyEarlySecond.isSelected());
 		App.prefs.setBooleanPref(PrefKey.SEASONALITY_SECOND_GROUP_MIDDLE_EARLY, cbxMiddleEarlySecond.isSelected());
 		App.prefs.setBooleanPref(PrefKey.SEASONALITY_SECOND_GROUP_LATE_EARLY, cbxLateEarlySecond.isSelected());
-		
 		App.prefs.setBooleanPref(PrefKey.SEASONALITY_SECOND_GROUP_LATE, cbxLateSecond.isSelected());
 		
 		App.prefs.setEventTypePref(PrefKey.EVENT_TYPE_TO_PROCESS, (EventTypeToProcess) this.cboEventType.getSelectedItem());

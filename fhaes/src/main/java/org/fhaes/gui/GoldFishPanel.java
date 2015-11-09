@@ -20,11 +20,12 @@ package org.fhaes.gui;
 import java.awt.BorderLayout;
 
 import javax.swing.JPanel;
-import javax.swing.JTextArea;
+import javax.swing.JTextPane;
 
 import org.fhaes.enums.AnalysisType;
 import org.fhaes.enums.EventTypeToProcess;
 import org.fhaes.enums.FireFilterType;
+import org.fhaes.enums.SampleDepthFilterType;
 import org.fhaes.preferences.App;
 import org.fhaes.preferences.FHAESPreferences.PrefKey;
 import org.fhaes.preferences.PrefsEvent;
@@ -33,76 +34,115 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * GoldFishPanel Class.
+ * Simple text panel for reminder users what parameters they just selected.
  */
 public class GoldFishPanel extends JPanel implements PrefsListener {
 	
 	private static final long serialVersionUID = 1L;
 	
 	private static final Logger log = LoggerFactory.getLogger(GoldFishPanel.class);
-	private JTextArea textArea;
+	private JTextPane textArea;
 	
 	/**
-	 * TODO
+	 * Simple text panel for reminder users what parameters they just selected.
 	 */
 	public GoldFishPanel() {
-		
+	
 		setLayout(new BorderLayout(0, 0));
 		App.prefs.addPrefsListener(this);
 		
-		textArea = new JTextArea();
+		textArea = new JTextPane();
+		textArea.setContentType("text/html");
 		add(textArea, BorderLayout.CENTER);
 		setParamsText();
 	}
 	
 	/**
-	 * TODO
+	 * Preferences have changed so set parameters text
 	 */
 	@Override
 	public void prefChanged(PrefsEvent e) {
-		
-		log.debug("Preferences changed");
+	
 		setParamsText();
 	}
 	
 	/**
-	 * TODO
+	 * Set the text panel to show details of the parameters used of the analysis
 	 */
 	public void setParamsText() {
+	
+		StringBuilder sb = new StringBuilder();
 		
-		String text = "Filter: " + App.prefs.getFireFilterTypePref(PrefKey.COMPOSITE_FILTER_TYPE, FireFilterType.NUMBER_OF_EVENTS) + " >= "
-				+ App.prefs.getIntPref(PrefKey.COMPOSITE_FILTER_VALUE, 1) + System.getProperty("line.separator");
-				
-		boolean allyears = App.prefs.getBooleanPref(PrefKey.RANGE_CALC_OVER_ALL_YEARS, true);
-		text += "Years: ";
+		sb.append("<html>");
 		
-		if (allyears)
+		// EVENT TYPE
+		sb.append("<b>Event type for analysis: </b>");
+		sb.append(App.prefs.getEventTypePref(PrefKey.EVENT_TYPE_TO_PROCESS, EventTypeToProcess.FIRE_EVENT) + "<br/>");
+		
+		// FILTERS
+		sb.append("<b>Filter: </b>");
+		sb.append(App.prefs.getFireFilterTypePref(PrefKey.COMPOSITE_FILTER_TYPE, FireFilterType.NUMBER_OF_EVENTS));
+		sb.append(" >= " + App.prefs.getIntPref(PrefKey.COMPOSITE_FILTER_VALUE, 1) + "<br/>");
+		
+		sb.append("<b>Filter: </b>");
+		sb.append(App.prefs.getSampleDepthFilterTypePref(PrefKey.COMPOSITE_SAMPLE_DEPTH_TYPE, SampleDepthFilterType.MIN_NUM_SAMPLES));
+		sb.append(" >= " + App.prefs.getIntPref(PrefKey.COMPOSITE_MIN_SAMPLES, 1) + "<br/>");
+		
+		// TIME PERIOD
+		sb.append("<b>Years: </b>");
+		if (App.prefs.getBooleanPref(PrefKey.RANGE_CALC_OVER_ALL_YEARS, true))
 		{
-			text += "All years" + System.getProperty("line.separator");
+			sb.append("All years" + "<br/>");
 		}
 		else
 		{
-			text += App.prefs.getIntPref(PrefKey.RANGE_FIRST_YEAR, 1) + " - " + App.prefs.getIntPref(PrefKey.RANGE_LAST_YEAR, 2)
-					+ System.getProperty("line.separator");
+			sb.append(App.prefs.getIntPref(PrefKey.RANGE_FIRST_YEAR, 1) + " - " + App.prefs.getIntPref(PrefKey.RANGE_LAST_YEAR, 2)
+					+ "<br/>");
 		}
 		
-		text += "Event type for analysis: " + App.prefs.getEventTypePref(PrefKey.EVENT_TYPE_TO_PROCESS, EventTypeToProcess.FIRE_EVENT)
-				+ System.getProperty("line.separator");
-		text += "Interval analysis type: " + App.prefs.getAnalysisTypePref(PrefKey.INTERVALS_ANALYSIS_TYPE, AnalysisType.COMPOSITE)
-				+ System.getProperty("line.separator");
-				
-		boolean includeLastInterval = App.prefs.getBooleanPref(PrefKey.INTERVALS_INCLUDE_OTHER_INJURIES, false);
-		text += "Include interval after last event?: ";
+		// INTERVAL ANALYSIS TYPE
+		sb.append("<b>Interval analysis type: </b>");
+		sb.append(App.prefs.getAnalysisTypePref(PrefKey.INTERVALS_ANALYSIS_TYPE, AnalysisType.COMPOSITE) + "<br/>");
+		sb.append("<b>Interval analysis alpha level: </b>");
+		sb.append(App.prefs.getDoublePref(PrefKey.INTERVALS_ALPHA_LEVEL, 0.125) + "<br/>");
 		
-		if (includeLastInterval)
+		// INCLUDE LAST INTERVAL
+		sb.append("<b>Last interval: </b> ");
+		if (App.prefs.getBooleanPref(PrefKey.INTERVALS_INCLUDE_OTHER_INJURIES, false))
 		{
-			text += "Yes" + System.getProperty("line.separator");
+			sb.append("Include interval after last event" + "<br/>");
 		}
 		else
 		{
-			text += "No" + System.getProperty("line.separator");
+			sb.append("Do not include interval after last event" + "<br/>");
 		}
 		
-		textArea.setText(text);
+		// SEASON COMBINATIONS
+		sb.append("<b>First season combination: </b> ");
+		if (App.prefs.getBooleanPref(PrefKey.SEASONALITY_FIRST_GROUP_DORMANT, false))
+			sb.append("Dormant; ");
+		if (App.prefs.getBooleanPref(PrefKey.SEASONALITY_FIRST_GROUP_EARLY_EARLY, false))
+			sb.append("Early earlywood; ");
+		if (App.prefs.getBooleanPref(PrefKey.SEASONALITY_FIRST_GROUP_MIDDLE_EARLY, false))
+			sb.append("Middle earlywood; ");
+		if (App.prefs.getBooleanPref(PrefKey.SEASONALITY_FIRST_GROUP_LATE_EARLY, false))
+			sb.append("Late earlywood; ");
+		if (App.prefs.getBooleanPref(PrefKey.SEASONALITY_FIRST_GROUP_LATE, false))
+			sb.append("Latewood; ");
+		sb.append("<br/>");
+		sb.append("<b>Second season combination: </b> ");
+		if (App.prefs.getBooleanPref(PrefKey.SEASONALITY_SECOND_GROUP_DORMANT, false))
+			sb.append("Dormant; ");
+		if (App.prefs.getBooleanPref(PrefKey.SEASONALITY_SECOND_GROUP_EARLY_EARLY, false))
+			sb.append("Early earlywood; ");
+		if (App.prefs.getBooleanPref(PrefKey.SEASONALITY_SECOND_GROUP_MIDDLE_EARLY, false))
+			sb.append("Middle earlywood; ");
+		if (App.prefs.getBooleanPref(PrefKey.SEASONALITY_SECOND_GROUP_LATE_EARLY, false))
+			sb.append("Late earlywood; ");
+		if (App.prefs.getBooleanPref(PrefKey.SEASONALITY_SECOND_GROUP_LATE, false))
+			sb.append("Latewood; ");
+		sb.append("<br/>");
+		
+		textArea.setText(sb.toString());
 	}
 }
