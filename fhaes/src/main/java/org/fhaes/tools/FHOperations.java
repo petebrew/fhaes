@@ -851,7 +851,7 @@ public class FHOperations {
 											// log.debug("percent of fires is selected is: "+
 											// firesFilter2+" "+climateVector.get(climateYear.indexOf(listYearsComp.get(j))));
 											// log.debug("the filter percent of fires is"+filterMatrix.get((3*i+2)).get(j));
-											if (percentOfRecordingfilter.get(j) == -1)
+											if (percentOfRecordingfilter.get(j) == -99)
 											{
 												climateVectorActualSite.add(-1);
 											}
