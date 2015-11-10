@@ -2271,6 +2271,13 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 		return totalRecordYearsPerSample;
 	}
 	
+	public int[] getTotalRecorderYearsPerSampleII() {
+		
+		if (this.isRecorderYears2DArrayInitII == false)
+			this.generateRecorderYearsArrayII();
+		return totalRecordYearsPerSampleII;
+	}
+	
 	/**
 	 * TODO
 	 * 
@@ -2282,6 +2289,13 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 		if (this.isRecorderYears2DArrayInit == false)
 			this.generateRecorderYearsArray();
 		return this.recorderYears2DArray;
+	}
+	
+	public ArrayList<ArrayList<Integer>> getRecorderYears2DArrayII() {
+		
+		if (this.isRecorderYears2DArrayInitII == false)
+			this.generateRecorderYearsArrayII();
+		return this.recorderYears2DArrayII;
 	}
 	
 	/**
@@ -2867,10 +2881,12 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 				boolean[] recordingYears = new boolean[arraylength];
 				boolean[] eventYears = new boolean[arraylength];
 				boolean[] injuryYears = new boolean[arraylength];
+				boolean[] recordingYearsII = new boolean[arraylength];
 				
 				ArrayList<ArrayList<Integer>> rya = getRecorderYears2DArray();
 				ArrayList<ArrayList<Integer>> eda1 = getEventDataArrays(EventTypeToProcess.FIRE_EVENT);
 				ArrayList<ArrayList<Integer>> eda2 = getEventDataArrays(EventTypeToProcess.INJURY_EVENT);
+				ArrayList<ArrayList<Integer>> rya2 = getRecorderYears2DArray();
 				
 				int j = 0;
 				for (int ind = inner; ind <= outer; ind++)
@@ -2881,6 +2897,8 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 						eventYears[j] = eda1.get(i).get(ind) == 1;
 					if (eda2 != null && eda2.size() > 0)
 						injuryYears[j] = eda2.get(i).get(ind) == 1;
+					if (rya2 != null && rya2.size() > 0)
+						recordingYearsII[j] = rya2.get(i).get(ind) == 1;
 					j++;
 				}
 				
