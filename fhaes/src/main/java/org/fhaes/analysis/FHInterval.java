@@ -81,7 +81,7 @@ public class FHInterval {
 	public FHInterval(FHFile[] inputFileArray, AnalysisType analysisType, Integer startYear, Integer endYear, FireFilterType filterType,
 			Double filterValue, Boolean includeIncomplete, EventTypeToProcess eventTypeToProcess, Double alphaLevel,
 			SampleDepthFilterType sampleDepthFilterType, Double sampleDepthFilterValue) {
-			
+	
 		if (inputFileArray == null || inputFileArray.length == 0)
 		{
 			log.error("FHInterval must be passed an input file array");
@@ -125,7 +125,7 @@ public class FHInterval {
 	 * @return
 	 */
 	public File getExceedence() {
-		
+	
 		return exceedenceFile;
 	}
 	
@@ -135,7 +135,7 @@ public class FHInterval {
 	 * @return
 	 */
 	public File getSummary() {
-		
+	
 		return summaryFile;
 	}
 	
@@ -144,7 +144,7 @@ public class FHInterval {
 	 */
 	@SuppressWarnings("deprecation")
 	private void doAnalysis() {
-		
+	
 		log.debug("INPUT PARAMETERS");
 		log.debug("inputFileArray = " + inputFileArray);
 		log.debug("analyissType = " + analysisType);
@@ -375,7 +375,7 @@ public class FHInterval {
 		
 		double[] fixvalt = { 0.999, 0.99, 0.975, 0.95, 0.9, 0.875, 0.8, 0.75, 0.7, 0.667, 0.5, 0.333, 0.3, 0.25, 0.2, 0.125, 0.1, 0.05,
 				0.025, 0.01, 0.001 };
-				
+		
 		double[][] ExceeProbcomp = new double[fixvalt.length][myReader.size()];
 		double[][] ExceeProbsample = new double[fixvalt.length][myReader.size()];
 		// log.debug("the size of statsparam is " +
@@ -432,7 +432,7 @@ public class FHInterval {
 		
 		// if (sampleDepthFilterType.equals(SampleDepthFilterType.MIN_NUM_SAMPLES))
 		// {
-		//// TODO ELENA
+		// // TODO ELENA
 		// }
 		// else if (sampleDepthFilterType.equals(SampleDepthFilterType.MIN_NUM_RECORDER_SAMPLES))
 		// {
@@ -530,8 +530,8 @@ public class FHInterval {
 						{
 							if (myReader.get(i).getRecordingDepths(eventTypeToProcess)[climateYear.indexOf(listYears.get(ij))] != 0)
 							{
-								percentOfRecordingfilter.add(new Double(climateVectorFilter2.get(0)
-										.get(climateYear.indexOf(listYears.get(ij)))
+								percentOfRecordingfilter.add(new Double(climateVectorFilter2.get(0).get(
+										climateYear.indexOf(listYears.get(ij)))
 										/ myReader.get(i).getRecordingDepths(eventTypeToProcess)[climateYear.indexOf(listYears.get(ij))]));
 							}
 							else
@@ -1051,7 +1051,7 @@ public class FHInterval {
 					// ADDED BY PETE
 					if (dfireintervalspersample.length == 0)
 						continue;
-						
+					
 					/*
 					 * load the Summary Analysis for the Sample fire intervals
 					 */
@@ -1430,13 +1430,13 @@ public class FHInterval {
 		}
 		finally
 		{
-		
+			
 		}
 		
 	}
 	
 	public static ArrayList<Integer> generateFireIntervals(ArrayList<Integer> YearsWithFires) {
-		
+	
 		ArrayList<Integer> fireIntervals = new ArrayList<Integer>();
 		for (int i = 0; i < YearsWithFires.size() - 1; i++)
 		{

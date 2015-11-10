@@ -352,7 +352,7 @@ public class FHTridasReader extends AbstractFireHistoryReader {
 	}
 	
 	@Override
-	public ArrayList<ArrayList<Integer>> getRecorderYears2DArray() {
+	public ArrayList<ArrayList<Integer>> getRecorderYears2DArray(EventTypeToProcess eventTypeToProces) {
 	
 		// TODO Auto-generated method stub
 		return null;

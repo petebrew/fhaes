@@ -192,6 +192,8 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 	private CellStyle doubleStyle;
 	private JSplitPane splitPaneResult;
 	
+	private boolean areAnalysesRunAndCurrent = false;
+	
 	/**
 	 * Create the panel.
 	 */
@@ -1484,10 +1486,12 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 		NTPModel = null;
 		treeSummaryModel = null;
 		singleFileSummaryModel = null;
+		singleEventSummaryModel = null;
 		generalSummaryModel = null;
 		
 		setResultsEnabled(false);
 		table.setModel(new DefaultTableModel());
+		areAnalysesRunAndCurrent = false;
 	}
 	
 	/**
@@ -1508,6 +1512,7 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 			clearResults();
 			repaintTree();
 		}
+		
 	}
 	
 	/**
@@ -1538,7 +1543,10 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 			setSJACStatus();
 			setNTPStatus();
 			setSiteSummaryStatus();
+			setSingleFileSummaryStatus();
+			setSingleEventSummaryStatus();
 			setTreeSummaryStatus();
+			areAnalysesRunAndCurrent = true;
 		}
 	}
 	
@@ -1983,4 +1991,10 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 			}
 		}
 	}
+	
+	public boolean areAnalysesRunAndCurrent() {
+	
+		return areAnalysesRunAndCurrent;
+	}
+	
 }

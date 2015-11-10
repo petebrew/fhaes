@@ -394,6 +394,6 @@ public interface IFHAESReader {
 	 * 
 	 * @return
 	 */
-	public abstract ArrayList<ArrayList<Integer>> getRecorderYears2DArray();
+	public abstract ArrayList<ArrayList<Integer>> getRecorderYears2DArray(EventTypeToProcess eventTypeToProcess);
 	
 }

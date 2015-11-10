@@ -75,14 +75,21 @@ public class GoldFishPanel extends JPanel implements PrefsListener {
 		sb.append("<b>Event type for analysis: </b>");
 		sb.append(App.prefs.getEventTypePref(PrefKey.EVENT_TYPE_TO_PROCESS, EventTypeToProcess.FIRE_EVENT) + "<br/>");
 		
-		// FILTERS
-		sb.append("<b>Filter: </b>");
-		sb.append(App.prefs.getFireFilterTypePref(PrefKey.COMPOSITE_FILTER_TYPE, FireFilterType.NUMBER_OF_EVENTS));
-		sb.append(" >= " + App.prefs.getIntPref(PrefKey.COMPOSITE_FILTER_VALUE, 1) + "<br/>");
-		
-		sb.append("<b>Filter: </b>");
-		sb.append(App.prefs.getSampleDepthFilterTypePref(PrefKey.COMPOSITE_SAMPLE_DEPTH_TYPE, SampleDepthFilterType.MIN_NUM_SAMPLES));
-		sb.append(" >= " + App.prefs.getIntPref(PrefKey.COMPOSITE_MIN_SAMPLES, 1) + "<br/>");
+		// INTERVAL ANALYSIS TYPE
+		sb.append("<b>Interval analysis type: </b>");
+		sb.append(App.prefs.getAnalysisTypePref(PrefKey.INTERVALS_ANALYSIS_TYPE, AnalysisType.COMPOSITE) + "<br/>");
+		sb.append("<b>Interval analysis alpha level: </b>");
+		sb.append(App.prefs.getDoublePref(PrefKey.INTERVALS_ALPHA_LEVEL, 0.125) + "<br/>");
+		if (App.prefs.getAnalysisTypePref(PrefKey.INTERVALS_ANALYSIS_TYPE, AnalysisType.COMPOSITE).equals(AnalysisType.COMPOSITE))
+		{
+			// FILTERS
+			sb.append("<b>Filter: </b>");
+			sb.append(App.prefs.getFireFilterTypePref(PrefKey.COMPOSITE_FILTER_TYPE, FireFilterType.NUMBER_OF_EVENTS));
+			sb.append(" >= " + App.prefs.getIntPref(PrefKey.COMPOSITE_FILTER_VALUE, 1) + "<br/>");
+			sb.append("<b>Filter: </b>");
+			sb.append(App.prefs.getSampleDepthFilterTypePref(PrefKey.COMPOSITE_SAMPLE_DEPTH_TYPE, SampleDepthFilterType.MIN_NUM_SAMPLES));
+			sb.append(" >= " + App.prefs.getIntPref(PrefKey.COMPOSITE_MIN_SAMPLES, 1) + "<br/>");
+		}
 		
 		// TIME PERIOD
 		sb.append("<b>Years: </b>");
@@ -95,12 +102,6 @@ public class GoldFishPanel extends JPanel implements PrefsListener {
 			sb.append(App.prefs.getIntPref(PrefKey.RANGE_FIRST_YEAR, 1) + " - " + App.prefs.getIntPref(PrefKey.RANGE_LAST_YEAR, 2)
 					+ "<br/>");
 		}
-		
-		// INTERVAL ANALYSIS TYPE
-		sb.append("<b>Interval analysis type: </b>");
-		sb.append(App.prefs.getAnalysisTypePref(PrefKey.INTERVALS_ANALYSIS_TYPE, AnalysisType.COMPOSITE) + "<br/>");
-		sb.append("<b>Interval analysis alpha level: </b>");
-		sb.append(App.prefs.getDoublePref(PrefKey.INTERVALS_ALPHA_LEVEL, 0.125) + "<br/>");
 		
 		// INCLUDE LAST INTERVAL
 		sb.append("<b>Last interval: </b> ");

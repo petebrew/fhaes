@@ -17,6 +17,9 @@
  *************************************************************************************************/
 package org.fhaes.enums;
 
+import org.fhaes.preferences.App;
+import org.fhaes.preferences.FHAESPreferences.PrefKey;
+
 /**
  * NoDataLabel Enum.
  */
@@ -39,7 +42,7 @@ public enum NoDataLabel {
 	 * @param d
 	 */
 	NoDataLabel(Double d) {
-		
+	
 		value = d;
 	}
 	
@@ -48,10 +51,10 @@ public enum NoDataLabel {
 	 */
 	@Override
 	public String toString() {
-		
+	
 		if (value == null)
 			return "Null";
-			
+		
 		return value.toString();
 	}
 	
@@ -61,7 +64,7 @@ public enum NoDataLabel {
 	 * @return
 	 */
 	public Double toDouble() {
-		
+	
 		return value;
 	}
 	
@@ -72,10 +75,10 @@ public enum NoDataLabel {
 	 * @return
 	 */
 	public static NoDataLabel fromDouble(Double dbl) {
-		
+	
 		if (dbl == null)
 			return NoDataLabel.NULL;
-			
+		
 		for (NoDataLabel type : NoDataLabel.values())
 		{
 			if (type.toDouble() == null)
@@ -94,7 +97,7 @@ public enum NoDataLabel {
 	 * @return
 	 */
 	public static NoDataLabel fromString(String str) {
-		
+	
 		if (str.equals(NoDataLabel.MINUS_99.toString()))
 		{
 			return NoDataLabel.MINUS_99;
@@ -111,5 +114,10 @@ public enum NoDataLabel {
 		{
 			return NoDataLabel.NULL;
 		}
+	}
+	
+	public static Double preferred() {
+	
+		return App.prefs.getNoDataLabelPref(PrefKey.MATRIX_NO_DATA_LABEL, NoDataLabel.NAN).toDouble();
 	}
 }

@@ -51,7 +51,7 @@ public abstract class AbstractFireHistoryReader implements IFHAESReader {
 	 * @param seriesList
 	 */
 	public void replaceSeriesList(ArrayList<FHSeries> inSeriesList) {
-		
+	
 		seriesList.clear();
 		seriesList.addAll(inSeriesList);
 	}
@@ -62,7 +62,7 @@ public abstract class AbstractFireHistoryReader implements IFHAESReader {
 	 * @return
 	 */
 	public ArrayList<FHSeries> getSeriesList() {
-		
+	
 		if (needToPopulateSeriesList)
 		{
 			populateSeriesList();
@@ -80,83 +80,39 @@ public abstract class AbstractFireHistoryReader implements IFHAESReader {
 	 */
 	@SuppressWarnings("unused")
 	public int[] getSampleDepths(EventTypeToProcess eventTypeToProcess) {
+	
+		// Instantiate the array ready to populate
+		int[] arr = new int[this.getYearArray().size()];
+		int totaltreeperyear = 0;
 		
-		if (eventTypeToProcess.equals(EventTypeToProcess.FIRE_EVENT) || eventTypeToProcess.equals(EventTypeToProcess.FIRE_AND_INJURY_EVENT))
-		{
-			
-			// Instantiate the array ready to populate
-			int[] arr = new int[this.getYearArray().size()];
-			int totaltreeperyear = 0;
-			
-			ArrayList<ArrayList<Integer>> data = this.getRecorderYears2DArray();
-			
-			for (int yearIndex = 0; yearIndex < this.getRecorderYears2DArray().get(0).size(); yearIndex++)
-			{
-				totaltreeperyear = 0;
-				for (int sampleIndex = 0; sampleIndex < this.getNumberOfSeries(); sampleIndex++)
-				{
-					try
-					{
-						if ((this.getRecorderYears2DArray().get(sampleIndex).get(yearIndex) == 1)
-								|| (this.getRecorderYears2DArray().get(sampleIndex).get(yearIndex) == 0))
-						{
-							totaltreeperyear = totaltreeperyear + 1;
-						}
-					}
-					catch (IndexOutOfBoundsException e)
-					{
-						ArrayList<ArrayList<Integer>> array = this.getRecorderYears2DArray();
-						log.error("Failed on Year index " + yearIndex + " and sample " + sampleIndex);
-						
-					}
-				}
-				arr[yearIndex] = totaltreeperyear;
-			}
-			
-			return arr;
-		}
-		else if (eventTypeToProcess.equals(EventTypeToProcess.INJURY_EVENT))
-		{
-			// TODO ELENA
-			
-			// Instantiate the array ready to populate
-			int[] arr = new int[this.getYearArray().size()];
-			int totaltreeperyear = 0;
-			
-			ArrayList<ArrayList<Integer>> data = this.getRecorderYears2DArrayII();
-			
-			for (int yearIndex = 0; yearIndex < this.getRecorderYears2DArrayII().get(0).size(); yearIndex++)
-			{
-				totaltreeperyear = 0;
-				for (int sampleIndex = 0; sampleIndex < this.getNumberOfSeries(); sampleIndex++)
-				{
-					try
-					{
-						if ((this.getRecorderYears2DArrayII().get(sampleIndex).get(yearIndex) == 1)
-								|| (this.getRecorderYears2DArrayII().get(sampleIndex).get(yearIndex) == 0))
-						{
-							totaltreeperyear = totaltreeperyear + 1;
-						}
-					}
-					catch (IndexOutOfBoundsException e)
-					{
-						ArrayList<ArrayList<Integer>> array = this.getRecorderYears2DArrayII();
-						log.error("Failed on Year index " + yearIndex + " and sample " + sampleIndex);
-						
-					}
-				}
-				arr[yearIndex] = totaltreeperyear;
-			}
-			
-			return arr;
-			
-		}
-		else
-		{
-			log.error("Insupported EventTypeToProcess");
+		ArrayList<ArrayList<Integer>> data = this.getRecorderYears2DArray(eventTypeToProcess);
+		
+		if (data == null)
 			return null;
+		
+		for (int yearIndex = 0; yearIndex < data.get(0).size(); yearIndex++)
+		{
+			totaltreeperyear = 0;
+			for (int sampleIndex = 0; sampleIndex < this.getNumberOfSeries(); sampleIndex++)
+			{
+				try
+				{
+					if ((data.get(sampleIndex).get(yearIndex) == 1) || (data.get(sampleIndex).get(yearIndex) == 0))
+					{
+						totaltreeperyear = totaltreeperyear + 1;
+					}
+				}
+				catch (IndexOutOfBoundsException e)
+				{
+					ArrayList<ArrayList<Integer>> array = this.getRecorderYears2DArray(eventTypeToProcess);
+					log.error("Failed on Year index " + yearIndex + " and sample " + sampleIndex);
+					
+				}
+			}
+			arr[yearIndex] = totaltreeperyear;
 		}
-		return null;
+		
+		return arr;
 		
 	}
 	
@@ -168,42 +124,28 @@ public abstract class AbstractFireHistoryReader implements IFHAESReader {
 	 */
 	@SuppressWarnings("unused")
 	public int[] getRecordingDepths(EventTypeToProcess eventTypeToProcess) {
+	
+		// Instantiate the array ready to populate
+		int[] arr = new int[this.getYearArray().size()];
+		int totalrecorderperyear;
 		
-		if (eventTypeToProcess.equals(EventTypeToProcess.FIRE_EVENT) || eventTypeToProcess.equals(EventTypeToProcess.FIRE_AND_INJURY_EVENT))
+		ArrayList<ArrayList<Integer>> data = this.getRecorderYears2DArray(eventTypeToProcess);
+		
+		for (int j = 0; j < this.getYearArray().size(); j++)
 		{
-			
-			// Instantiate the array ready to populate
-			int[] arr = new int[this.getYearArray().size()];
-			int totalrecorderperyear;
-			
-			ArrayList<ArrayList<Integer>> data = this.getRecorderYears2DArray();
-			
-			for (int j = 0; j < this.getYearArray().size(); j++)
+			totalrecorderperyear = 0;
+			for (int k = 0; k < this.getNumberOfSeries(); k++)
 			{
-				totalrecorderperyear = 0;
-				for (int k = 0; k < this.getNumberOfSeries(); k++)
+				if (data.get(k).get(j) == 1)
 				{
-					if (this.getRecorderYears2DArray().get(k).get(j) == 1)
-					{
-						totalrecorderperyear = totalrecorderperyear + 1;
-					}
+					totalrecorderperyear = totalrecorderperyear + 1;
 				}
-				arr[j] = totalrecorderperyear;
 			}
-			
-			return arr;
+			arr[j] = totalrecorderperyear;
 		}
-		else if (eventTypeToProcess.equals(EventTypeToProcess.INJURY_EVENT))
-		{
-			// TODO ELENA TO IMPLEMENT
-			
-		}
-		else
-		{
-			log.error("Insupported EventTypeToProcess");
-			return null;
-		}
-		return null;
+		
+		return arr;
+		
 	}
 	
 	/**
@@ -214,7 +156,7 @@ public abstract class AbstractFireHistoryReader implements IFHAESReader {
 	 * @return
 	 */
 	public double[] getPercentOfRecordingScarred(EventTypeToProcess eventTypeToProcess) {
-		
+	
 		// Instantiate the array ready to populate
 		double[] arrpc = new double[this.getYearArray().size()];
 		int[] arr1 = new int[this.getYearArray().size()];
@@ -224,7 +166,7 @@ public abstract class AbstractFireHistoryReader implements IFHAESReader {
 			int totalrecorderperyear = 0;
 			for (int k = 0; k < this.getNumberOfSeries(); k++)
 			{
-				if (this.getRecorderYears2DArray().get(k).get(j) == 1)
+				if (this.getRecorderYears2DArray(eventTypeToProcess).get(k).get(j) == 1)
 				{
 					totalrecorderperyear = totalrecorderperyear + 1;
 				}
@@ -252,7 +194,7 @@ public abstract class AbstractFireHistoryReader implements IFHAESReader {
 	 * @return
 	 */
 	public double[] getPercentOfAllScarred(EventTypeToProcess eventTypeToProcess) {
-		
+	
 		// Instantiate the array ready to populate
 		double[] arrpc = new double[this.getYearArray().size()];
 		int[] arr1 = getSampleDepths(eventTypeToProcess);
@@ -286,7 +228,7 @@ public abstract class AbstractFireHistoryReader implements IFHAESReader {
 	 */
 	public ArrayList<Integer> getCompositeFireYears(EventTypeToProcess eventTypeToProcess, FireFilterType filterType, double filterValue,
 			int minNumberOfSamples, SampleDepthFilterType sampleDepthFilterType) {
-			
+	
 		// Instantiate the array ready to populate
 		ArrayList<Integer> compositeYears = new ArrayList<Integer>();
 		
