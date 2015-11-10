@@ -457,7 +457,7 @@ public class FHInterval {
 			int[] depths = null;
 			if (sampleDepthFilterType.equals(SampleDepthFilterType.MIN_NUM_SAMPLES))
 			{
-				depths = myReader.get(i).getSampleDepths(eventTypeToProcess);
+				depths = myReader.get(i).getSampleDepths();
 				log.debug("MIN_NUM_SAMPLES ");
 			}
 			else if (sampleDepthFilterType.equals(SampleDepthFilterType.MIN_NUM_RECORDER_SAMPLES))

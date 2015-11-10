@@ -1792,7 +1792,7 @@ public class FireChartSVG {
 		
 		int[] sample_depths;
 		if (plotSampleNorRecordingDepth)
-			sample_depths = reader.getSampleDepths(eventTypeToProcess);
+			sample_depths = reader.getSampleDepths();
 		else
 			sample_depths = reader.getRecordingDepths(eventTypeToProcess);
 		

@@ -93,7 +93,7 @@ public class FileReaderCalculationTests extends TestCase {
 			FHX2FileReader fr = new FHX2FileReader(f);
 			
 			int firstyear = fr.getFirstYear();
-			int[] sampledepths = fr.getSampleDepths(eventTypeToProcess);
+			int[] sampledepths = fr.getSampleDepths();
 			int[] recordingDepths = fr.getRecordingDepths(eventTypeToProcess);
 			double[] percentScarred = fr.getPercentOfAllScarred(eventTypeToProcess);
 			

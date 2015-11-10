@@ -78,14 +78,13 @@ public abstract class AbstractFireHistoryReader implements IFHAESReader {
 	 * 
 	 * @return
 	 */
-	@SuppressWarnings("unused")
-	public int[] getSampleDepths(EventTypeToProcess eventTypeToProcess) {
+	public int[] getSampleDepths() {
 	
 		// Instantiate the array ready to populate
 		int[] arr = new int[this.getYearArray().size()];
 		int totaltreeperyear = 0;
 		
-		ArrayList<ArrayList<Integer>> data = this.getRecorderYears2DArray(eventTypeToProcess);
+		ArrayList<ArrayList<Integer>> data = this.getRecorderYears2DArray(EventTypeToProcess.FIRE_EVENT);
 		
 		if (data == null)
 			return null;
@@ -104,9 +103,7 @@ public abstract class AbstractFireHistoryReader implements IFHAESReader {
 				}
 				catch (IndexOutOfBoundsException e)
 				{
-					ArrayList<ArrayList<Integer>> array = this.getRecorderYears2DArray(eventTypeToProcess);
 					log.error("Failed on Year index " + yearIndex + " and sample " + sampleIndex);
-					
 				}
 			}
 			arr[yearIndex] = totaltreeperyear;
@@ -197,7 +194,7 @@ public abstract class AbstractFireHistoryReader implements IFHAESReader {
 	
 		// Instantiate the array ready to populate
 		double[] arrpc = new double[this.getYearArray().size()];
-		int[] arr1 = getSampleDepths(eventTypeToProcess);
+		int[] arr1 = getSampleDepths();
 		
 		for (int j = 0; j < this.getYearArray().size(); j++)
 		{
@@ -237,7 +234,7 @@ public abstract class AbstractFireHistoryReader implements IFHAESReader {
 		if (sampleDepthFilterType.equals(SampleDepthFilterType.MIN_NUM_SAMPLES))
 		{
 			log.debug("Minimum sample count filter is of type SampleDepthFilterType.MIN_NUM_SAMPLES");
-			depths = getSampleDepths(eventTypeToProcess);
+			depths = getSampleDepths();
 		}
 		else if (sampleDepthFilterType.equals(SampleDepthFilterType.MIN_NUM_RECORDER_SAMPLES))
 		{
