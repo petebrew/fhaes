@@ -74,6 +74,7 @@ import org.fhaes.components.FHAESCheckBoxMenuItem;
 import org.fhaes.components.FHAESMenuItem;
 import org.fhaes.components.JToolBarButton;
 import org.fhaes.components.JToolBarToggleButton;
+import org.fhaes.enums.EventTypeToProcess;
 import org.fhaes.enums.FeedbackDisplayProtocol;
 import org.fhaes.enums.FeedbackMessageType;
 import org.fhaes.exceptions.CompositeFileException;
@@ -770,6 +771,12 @@ public class MainWindow implements PrefsListener {
 	 */
 	private void openCategoryFile(File categoryFile) {
 	
+		if (!categoryFile.exists())
+		{
+			log.debug("The specified category file does not exist");
+			return;
+		}
+		
 		// Set lastPathVisited
 		App.prefs.setPref(PrefKey.PREF_LAST_READ_FOLDER, categoryFile.getParent());
 		
@@ -1928,7 +1935,8 @@ public class MainWindow implements PrefsListener {
 				
 				try
 				{
-					File file = FHOperations.joinFiles(frame, getSelectedValidFiles(), dialog.getStartYear(), dialog.getEndYear(), 1);
+					File file = FHOperations.joinFiles(frame, getSelectedValidFiles(), dialog.getStartYear(), dialog.getEndYear(), 1,
+							EventTypeToProcess.FIRE_AND_INJURY_EVENT);
 					
 					if (file != null)
 					{
@@ -1975,7 +1983,7 @@ public class MainWindow implements PrefsListener {
 				
 				FHOperations.createEventFile(frame, getSelectedValidFilesWithEvents(), dialog.getStartYear(), dialog.getEndYear(),
 						dialog.getFireFilterType(), dialog.getSampleDepthFilterType(), dialog.getFireFilterValue(),
-						dialog.getMinNumberOfSamples(), dialog.getComments());
+						dialog.getMinNumberOfSamples(), dialog.getComments(), dialog.getEventTypeToProcess());
 			}
 		};
 		actionCreateEventFile.setEnabled(false);
@@ -2031,7 +2039,7 @@ public class MainWindow implements PrefsListener {
 				{
 					FHOperations.createEventFile(frame, fhfiles, dialog.getStartYear(), dialog.getEndYear(), dialog.getFireFilterType(),
 							dialog.getSampleDepthFilterType(), dialog.getFireFilterValue(), dialog.getMinNumberOfSamples(),
-							dialog.getComments());
+							dialog.getComments(), dialog.getEventTypeToProcess());
 				}
 				catch (Exception e)
 				{
@@ -2063,7 +2071,7 @@ public class MainWindow implements PrefsListener {
 				{
 					File file = FHOperations.createCompositeFile(frame, getSelectedValidFiles(), dialog.getStartYear(),
 							dialog.getEndYear(), dialog.getFireFilterType(), dialog.getSampleDepthFilterType(),
-							dialog.getFireFilterValue(), dialog.getMinNumberOfSamples());
+							dialog.getFireFilterValue(), dialog.getMinNumberOfSamples(), dialog.getEventTypeToProcess());
 					
 					if (file != null)
 					{
@@ -2134,7 +2142,7 @@ public class MainWindow implements PrefsListener {
 				
 				File file = FHOperations.createCompositeFile(frame, fhfiles, dialog.getStartYear(), dialog.getEndYear(),
 						dialog.getFireFilterType(), dialog.getSampleDepthFilterType(), dialog.getFireFilterValue(),
-						dialog.getMinNumberOfSamples());
+						dialog.getMinNumberOfSamples(), dialog.getEventTypeToProcess());
 				
 				if (file != null)
 				{
@@ -2160,8 +2168,7 @@ public class MainWindow implements PrefsListener {
 			@Override
 			public void actionPerformed(ActionEvent event) {
 			
-				ShapeFileDialog sfd = new ShapeFileDialog(reportPanel, reportPanel.panelResults.getFHMatrix());
-				sfd.setVisible(true);
+				new ShapeFileDialog(reportPanel, reportPanel.panelResults.getFHMatrix());
 			}
 		};
 		actionGenerateSHP.setEnabled(false);

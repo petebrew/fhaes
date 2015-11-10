@@ -1964,9 +1964,9 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 	 * Get an ArrayList with length equal to number of years in file, containing Integer codes meaning
 	 * </p>
 	 * <ul>
-	 * <li>1 = fire event</li>
-	 * <li>0 = injury event or recording year</li>
 	 * <li>-1 = no data</li>
+	 * <li>0 = injury event or recording year</li>
+	 * <li>1 = fire event</li>
 	 * </ul>
 	 * 
 	 * @return
@@ -2083,8 +2083,8 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 	 * 
 	 * <ul>
 	 * <li>-1 = no data (equivalent to a dot in the data file)</li>
-	 * <li>1 = event (a letter in the data file)</li>
 	 * <li>0 = susceptible to fire (recording) but no event detected (a pipe in the file)</li>
+	 * <li>1 = event (a letter in the data file)</li>
 	 * </ul>
 	 * 
 	 * @param eventType

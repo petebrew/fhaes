@@ -56,6 +56,8 @@ import net.miginfocom.swing.MigLayout;
 import org.apache.commons.lang.ArrayUtils;
 import org.codehaus.plexus.util.FileUtils;
 import org.fhaes.analysis.FHMatrix;
+import org.fhaes.enums.FeedbackDisplayProtocol;
+import org.fhaes.enums.FeedbackMessageType;
 import org.fhaes.filefilter.SHPFileFilter;
 import org.fhaes.model.SortedListModel;
 import org.fhaes.preferences.App;
@@ -116,10 +118,19 @@ public class ShapeFileDialog extends JDialog implements ActionListener, Document
 	public ShapeFileDialog(Component parent, FHMatrix fhm) throws NullPointerException {
 	
 		if (fhm == null)
-			throw new NullPointerException("FHMatrix cannot be null");
+		{
+			MainWindow
+					.getInstance()
+					.getFeedbackMessagePanel()
+					.updateFeedbackMessage(FeedbackMessageType.ERROR, FeedbackDisplayProtocol.AUTO_HIDE,
+							"You need to run an analysis with two or more files before using this tool");
+			return;
+		}
 		this.fhm = fhm;
 		initGUI();
 		populate();
+		setVisible(true);
+		
 	}
 	
 	/**

@@ -47,6 +47,7 @@ import javax.swing.event.ListSelectionListener;
 
 import net.miginfocom.swing.MigLayout;
 
+import org.fhaes.enums.EventTypeToProcess;
 import org.fhaes.fhfilereader.FHFile;
 import org.fhaes.model.FHFileGroup;
 import org.fhaes.model.FHFileGroupCellEditor;
@@ -346,7 +347,7 @@ public class SpatialJoinDialog extends JDialog implements PrefsListener, ActionL
 				new FHOperations(App.mainFrame, gr.getFiles().toArray(new FHFile[gr.getFiles().size()]), outputfile,
 						compositeDialog.getStartYear(), compositeDialog.getEndYear(), compositeDialog.getFireFilterValue(),
 						compositeDialog.getFireFilterType(), compositeDialog.getSampleDepthFilterType(), false, true, false,
-						compositeDialog.getMinNumberOfSamples(), null);
+						compositeDialog.getMinNumberOfSamples(), null, compositeDialog.getEventTypeToProcess());
 			}
 			else if (cboOutputType.getSelectedIndex() == 1)
 			{
@@ -355,7 +356,7 @@ public class SpatialJoinDialog extends JDialog implements PrefsListener, ActionL
 				// Merge
 				
 				FHOperations.joinFiles(App.mainFrame, gr.getFiles().toArray(new FHFile[gr.getFiles().size()]), outputfile,
-						temporalDialog.getStartYear(), temporalDialog.getEndYear());
+						temporalDialog.getStartYear(), temporalDialog.getEndYear(), EventTypeToProcess.FIRE_AND_INJURY_EVENT);
 				
 				// * new FHOperations(App.mainFrame, gr.getFiles().toArray(new File[gr.getFiles().size()]), outputfile,
 				// temporalDialog.getStartYear(), temporalDialog.getEndYear(), 1.0, FireFilterType.NUMBER_OF_EVENTS,
@@ -368,7 +369,7 @@ public class SpatialJoinDialog extends JDialog implements PrefsListener, ActionL
 				
 				// Event file
 				FHOperations.createEventFile(App.mainFrame, gr.getFiles().toArray(new FHFile[gr.getFiles().size()]), outputfile,
-						compositeDialog.getStartYear(), compositeDialog.getEndYear());
+						compositeDialog.getStartYear(), compositeDialog.getEndYear(), compositeDialog.getEventTypeToProcess());
 				
 			}
 			

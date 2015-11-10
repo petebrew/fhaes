@@ -806,8 +806,8 @@ public class AnalysisResultsPanel extends JPanel implements TreeSelectionListene
 			@Override
 			public void actionPerformed(ActionEvent event) {
 			
-				ShapeFileDialog sfd = new ShapeFileDialog(App.mainFrame, fhm);
-				sfd.setVisible(true);
+				new ShapeFileDialog(App.mainFrame, fhm);
+				
 			}
 		});
 		

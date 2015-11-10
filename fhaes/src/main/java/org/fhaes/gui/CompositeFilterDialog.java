@@ -83,6 +83,7 @@ public class CompositeFilterDialog extends JDialog implements ActionListener {
 	private HelpTipButton helpTipButton;
 	private HelpTipButton helpTipButton_1;
 	private HelpTipButton helpTipButton_2;
+	private HelpTipButton helpTipButton_3;
 	
 	/**
 	 * TODO
@@ -188,7 +189,6 @@ public class CompositeFilterDialog extends JDialog implements ActionListener {
 			panel.setLayout(new MigLayout("", "[][][21.00][70.00][]", "[][][]"));
 			{
 				lblCompositeBasedOn = new JLabel("Composite based on:");
-				lblCompositeBasedOn.setEnabled(false);
 				panel.add(lblCompositeBasedOn, "cell 0 0,alignx trailing");
 			}
 			{
@@ -196,10 +196,13 @@ public class CompositeFilterDialog extends JDialog implements ActionListener {
 				new EventTypeWrapper(cboEventToProcess, PrefKey.COMPOSITE_EVENT_TYPE, EventTypeToProcess.FIRE_EVENT);
 				
 				// Disable and force to fire events until implemented
-				cboEventToProcess.setSelectedItem(EventTypeToProcess.FIRE_EVENT);
-				cboEventToProcess.setEnabled(false);
+				// cboEventToProcess.setSelectedItem(EventTypeToProcess.FIRE_EVENT);
 				
 				panel.add(cboEventToProcess, "cell 1 0 3 1,growx");
+			}
+			{
+				helpTipButton_3 = new HelpTipButton(LocalHelp.COMPOSITE_BASED_ON);
+				panel.add(helpTipButton_3, "cell 4 0");
 			}
 			{
 				cboFilterType = new JComboBox();
@@ -477,6 +480,11 @@ public class CompositeFilterDialog extends JDialog implements ActionListener {
 	public Boolean success() {
 	
 		return allDone;
+	}
+	
+	public EventTypeToProcess getEventTypeToProcess() {
+	
+		return (EventTypeToProcess) this.cboEventToProcess.getSelectedItem();
 	}
 	
 }

@@ -262,11 +262,11 @@ public abstract class AbstractFireHistoryReader implements IFHAESReader {
 					if (depths[i] >= minNumberOfSamples)
 					{
 						compositeYears.add(currentYear);
-						log.trace("Keeping " + currentYear + ": ");
+						// log.trace("Keeping " + currentYear + ": ");
 					}
 					else
 					{
-						log.debug("Rejected because sample count of " + depths[i] + " is below threshold of " + minNumberOfSamples);
+						// log.debug("Rejected because sample count of " + depths[i] + " is below threshold of " + minNumberOfSamples);
 						
 					}
 					
@@ -278,7 +278,7 @@ public abstract class AbstractFireHistoryReader implements IFHAESReader {
 		}
 		else if (filterType.equals(FireFilterType.PERCENTAGE_OF_ALL_TREES))
 		{
-			log.debug("Doing all trees");
+			// log.debug("Doing all trees");
 			
 			double[] percentScarred = getPercentOfAllScarred(eventTypeToProcess);
 			ArrayList<Double> numberOfEvents = this.getFilterArrays(eventTypeToProcess).get(0);
@@ -292,18 +292,18 @@ public abstract class AbstractFireHistoryReader implements IFHAESReader {
 					if (depths[i] >= minNumberOfSamples)
 					{
 						compositeYears.add(currentYear);
-						log.debug("Keeping   " + currentYear + ": percentofallscarred = " + percentScarred[i] + "; number of trees = "
-								+ numberOfTrees.get(i) + "; number of events = " + numberOfEvents.get(i));
+						// log.debug("Keeping   " + currentYear + ": percentofallscarred = " + percentScarred[i] + "; number of trees = "
+						// + numberOfTrees.get(i) + "; number of events = " + numberOfEvents.get(i));
 					}
 					else
 					{
-						log.debug("Rejected because sample count of " + depths[i] + " is below threshold of " + minNumberOfSamples);
+						// log.debug("Rejected because sample count of " + depths[i] + " is below threshold of " + minNumberOfSamples);
 					}
 				}
 				else
 				{
-					log.debug("Rejecting " + currentYear + ": percentofallscarred = " + percentScarred[i] + "; number of trees = "
-							+ numberOfTrees.get(i) + "; number of events = " + numberOfEvents.get(i));
+					// log.debug("Rejecting " + currentYear + ": percentofallscarred = " + percentScarred[i] + "; number of trees = "
+					// + numberOfTrees.get(i) + "; number of events = " + numberOfEvents.get(i));
 				}
 				
 				currentYear++;
@@ -312,7 +312,7 @@ public abstract class AbstractFireHistoryReader implements IFHAESReader {
 		}
 		else if (filterType.equals(FireFilterType.PERCENTAGE_OF_RECORDING))
 		{
-			log.debug("Doing recording trees");
+			// log.debug("Doing recording trees");
 			
 			ArrayList<Double> numberOfEvents = this.getFilterArrays(eventTypeToProcess).get(0);
 			int[] recordingDepths = this.getRecordingDepths(eventTypeToProcess);
@@ -336,18 +336,18 @@ public abstract class AbstractFireHistoryReader implements IFHAESReader {
 					if (depths[i] >= minNumberOfSamples)
 					{
 						compositeYears.add(currentYear);
-						log.debug("Keeping   " + currentYear + ": percentofrecscarred = " + datavalue + "; number of events = "
-								+ numberOfEvents.get(i) + "; number of recording trees = " + recordingDepths[i]);
+						// log.debug("Keeping   " + currentYear + ": percentofrecscarred = " + datavalue + "; number of events = "
+						// + numberOfEvents.get(i) + "; number of recording trees = " + recordingDepths[i]);
 					}
 					else
 					{
-						log.debug("Rejected because sample count of " + depths[i] + " is below threshold of " + minNumberOfSamples);
+						// log.debug("Rejected because sample count of " + depths[i] + " is below threshold of " + minNumberOfSamples);
 					}
 				}
 				else
 				{
-					log.debug("Rejecting " + currentYear + ": percentofrecscarred = " + datavalue + "; number of events = "
-							+ numberOfEvents.get(i) + "; number of recording trees = " + recordingDepths[i]);
+					// log.debug("Rejecting " + currentYear + ": percentofrecscarred = " + datavalue + "; number of events = "
+					// + numberOfEvents.get(i) + "; number of recording trees = " + recordingDepths[i]);
 				}
 				currentYear++;
 			}
