@@ -2338,7 +2338,7 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 		else if (eventTypeToProcess.equals(EventTypeToProcess.INJURY_EVENT))
 		{
 			if (this.isRecorderYears2DArrayInitII == false)
-				this.generateRecorderYearsArray(EventTypeToProcess.FIRE_EVENT);
+				this.generateRecorderYearsArray(EventTypeToProcess.INJURY_EVENT);
 			return this.recorderYears2DArrayII;
 		}
 		else

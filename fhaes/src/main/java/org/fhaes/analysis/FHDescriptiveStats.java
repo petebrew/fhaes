@@ -93,6 +93,7 @@ public class FHDescriptiveStats {
 		catch (Exception e)
 		{
 			log.error("Error creating descriptive stats table model");
+			e.printStackTrace();
 			return null;
 		}
 	}
