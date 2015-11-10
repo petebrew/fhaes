@@ -451,6 +451,7 @@ public class FHInterval {
 			 */
 			
 			climateYear = myReader.get(i).getYearArray();
+			
 			// new stuff
 			// Create filter based on min number of samples/recorder samples
 			int[] depths = null;
@@ -494,34 +495,116 @@ public class FHInterval {
 			 * case letter plus bars counting only after a fire) percent of scared trees total fires/total trees
 			 */
 			
-			climateVectorFilter2 = myReader.get(i).getFilterArrays(eventTypeToProcess);
-			
+			// climateVectorFilter2 = myReader.get(i).getFilterArrays(eventTypeToProcess);
+			/*
+			 * More new stuff
+			 */
+			if (filterValue != 1)
+			{
+				/*
+				 * get both matrices:
+				 * 
+				 * 2. filters2d matrix composed of the 3 filters number of fires (total capital letter per row) total number of tree (total
+				 * lower case letter plus bars counting only after a fire) percent of scared trees total fires/total trees
+				 */
+				
+				climateVectorFilter2 = myReader.get(i).getFilterArrays(eventTypeToProcess);
+				
+				/*
+				 * if by tree analysis is selected create two matrices (array list) 1. filterMatrix containing the three filter vectors only
+				 * in between common years (so using the listYearComp array list subset of the years vector) 2. climateMatrix 2 dimensional
+				 * array list containing binary matrices restricted to the listYear list.
+				 */
+				if (fireFilterType.equals(FireFilterType.PERCENTAGE_OF_RECORDING))
+				{
+					percentOfRecordingfilter = new ArrayList<Double>();
+					
+					for (int ij = 0; ij < listYears.size(); ij++)
+					{
+						
+						if (climateYear.indexOf(listYears.get(ij)) == -1)
+						{
+							percentOfRecordingfilter.add(-1.0);
+						}
+						else
+						{
+							if (myReader.get(i).getRecordingDepths(eventTypeToProcess)[climateYear.indexOf(listYears.get(ij))] != 0)
+							{
+								percentOfRecordingfilter.add(new Double(climateVectorFilter2.get(0)
+										.get(climateYear.indexOf(listYears.get(ij)))
+										/ myReader.get(i).getRecordingDepths(eventTypeToProcess)[climateYear.indexOf(listYears.get(ij))]));
+							}
+							else
+							{
+								percentOfRecordingfilter.add(-99.0);
+							}
+						}
+						log.debug("PERCENTAGE_OF_RECORDING is: " + percentOfRecordingfilter.get(ij));
+					}
+				}
+				else
+				{
+					for (int ik = 0; ik < 3; ik++)
+					{
+						log.debug("filter number is: " + ik);
+						filterVectorActual = new ArrayList<Double>();
+						for (int ij = 0; ij < listYears.size(); ij++)
+						{ // log.debug(" climateYear.indexOf(listYearsComp.get(j))" +
+							// climateYear.indexOf(listYearsComp.get(ij)));
+							// if(ik==0){log.debug("number of fires
+							// "+climateVectorFilter2.get(0).get(climateYear.indexOf(listYears.get(ij)))+" year
+							// "+listYearsComp.get(ij));}
+							if (climateYear.indexOf(listYears.get(ij)) == -1)
+							{
+								filterVectorActual.add(-1.0);
+							}
+							else
+							{
+								filterVectorActual
+										.add(new Double(climateVectorFilter2.get(ik).get(climateYear.indexOf(listYears.get(ij)))));
+							}
+							if (ik == 2)
+							{
+								log.debug("filteperc  " + filterVectorActual.get(ij));
+							}
+						}
+						// log.debug("size of filterVectorActual is : "+filterVectorActual.size());
+						filterMatrix.add(filterVectorActual);
+						// if(ik==0){log.debug("filters is: "+filter);
+					}
+				} // end of if-else percentageofrecording
+					// log.debug("size of the FilterMatrix is" + filterMatrix.size());
+				
+			} // end of if filters not equal to 1
+			/*
+			 * end of more new stuff
+			 */
 			/*
 			 * 
 			 * 1. Create the filterMatrix containing the tree filter vectors only in between common years (so using the listYearComp array
 			 * list subset of the years vector)
 			 */
-			for (int ik = 0; ik < 3; ik++)
-			{
-				filterVectorActual = new ArrayList<Double>();
-				for (int ij = 0; ij < listYears.size(); ij++)
-				{
-					if (climateYear.indexOf(listYears.get(ij)) == -1)
-					{
-						filterVectorActual.add(-1.0);
-					}
-					else
-					{
-						filterVectorActual.add(new Double(climateVectorFilter2.get(ik).get(climateYear.indexOf(listYears.get(ij)))));
-					}
-					
-				}
-				/*
-				 * ArrayList filterMatrix containes the filter matrix for each of the files
-				 */
-				filterMatrix.add(filterVectorActual);
-			}
+			// for (int ik = 0; ik < 3; ik++)
+			// {
+			// filterVectorActual = new ArrayList<Double>();
+			// for (int ij = 0; ij < listYears.size(); ij++)
+			// {
+			// if (climateYear.indexOf(listYears.get(ij)) == -1)
+			// {
+			// filterVectorActual.add(-1.0);
+			// }
+			// else
+			// {
+			// filterVectorActual.add(new Double(climateVectorFilter2.get(ik).get(climateYear.indexOf(listYears.get(ij)))));
+			// }
+			
+			// }
+			/*
+			 * ArrayList filterMatrix containes the filter matrix for each of the files
+			 */
+			// filterMatrix.add(filterVectorActual);
 			// }//end of creating the filter matrix.
+			
 			/*
 			 * get matrix climate binary matrix by site (binary analysis) if Composite is selected.
 			 */
@@ -560,36 +643,17 @@ public class FHInterval {
 					}
 					else
 					{
-						if (filterValue != 1)
+						if (minSampleFilter.get(j).intValue() >= sampleDepthFilterValue.intValue())
 						{
-							if (fireFilterType.equals(FireFilterType.NUMBER_OF_EVENTS))
+							if (filterValue != 1)
 							{
-								// log.debug("fire filter: "+firesFilter1+" year is: "+listYears.get(j)
-								// +" fires: "+filterMatrix.get(3*i).get(j)+" climatevector:
-								// "+climateVector.get(climateYear.indexOf(listYears.get(j))));
-								if ((filterMatrix.get(3 * i).get(j) < firesFilter1)
-										&& (climateVector.get(climateYear.indexOf(listYears.get(j)))) != -1.0)
+								if (fireFilterType.equals(FireFilterType.NUMBER_OF_EVENTS))
 								{
-									climateVectorActualSite.add(0);
-								}
-								else
-								{
-									climateVectorActualSite.add(climateVector.get(climateYear.indexOf(listYears.get(j))));
-								}
-							}
-							else if (fireFilterType.equals(FireFilterType.PERCENTAGE_OF_ALL_TREES))
-							{
-								// log.debug("percent of fires is selected is: "+
-								// firesFilter2+" "+climateVector.get(climateYear.indexOf(listYearsComp.get(j))));
-								// log.debug("the filter percent of fires is"+filterMatrix.get((3*i+2)).get(j));
-								if ((filterMatrix.get(3 * i + 2).get(j) == -99))
-								{
-									climateVectorActualSite.add(-1);
-								}
-								else
-								{
-									if ((filterMatrix.get(3 * i + 2).get(j) < firesFilter2)
-											&& ((climateVector.get(climateYear.indexOf(listYears.get(j)))) != -1.0))
+									// log.debug("fire filter: "+firesFilter1+" year is: "+listYears.get(j)
+									// +" fires: "+filterMatrix.get(3*i).get(j)+" climatevector:
+									// "+climateVector.get(climateYear.indexOf(listYears.get(j))));
+									if ((filterMatrix.get(3 * i).get(j) < firesFilter1)
+											&& (climateVector.get(climateYear.indexOf(listYears.get(j)))) != -1.0)
 									{
 										climateVectorActualSite.add(0);
 									}
@@ -598,27 +662,70 @@ public class FHInterval {
 										climateVectorActualSite.add(climateVector.get(climateYear.indexOf(listYears.get(j))));
 									}
 								}
-							}
-							else if (fireFilterType.equals(FireFilterType.PERCENTAGE_OF_RECORDING))
-							{
+								else if (fireFilterType.equals(FireFilterType.PERCENTAGE_OF_ALL_TREES))
+								{
+									// log.debug("percent of fires is selected is: "+
+									// firesFilter2+" "+climateVector.get(climateYear.indexOf(listYearsComp.get(j))));
+									// log.debug("the filter percent of fires is"+filterMatrix.get((3*i+2)).get(j));
+									if ((filterMatrix.get(3 * i + 2).get(j) == -99))
+									{
+										climateVectorActualSite.add(-1);
+									}
+									else
+									{
+										if ((filterMatrix.get(3 * i + 2).get(j) < firesFilter2)
+												&& ((climateVector.get(climateYear.indexOf(listYears.get(j)))) != -1.0))
+										{
+											climateVectorActualSite.add(0);
+										}
+										else
+										{
+											climateVectorActualSite.add(climateVector.get(climateYear.indexOf(listYears.get(j))));
+										}
+									}
+								}
+								else if (fireFilterType.equals(FireFilterType.PERCENTAGE_OF_RECORDING))
+								{
+									
+									// TODO
+									// ELENA TO IMPLEMENT
+									if (percentOfRecordingfilter.get(j) == -99)
+									{
+										climateVectorActualSite.add(-1);
+									}
+									else
+									{
+										if ((percentOfRecordingfilter.get(j) < firesFilter2)
+												&& ((climateVector.get(climateYear.indexOf(listYears.get(j)))) != -1.0))
+										{
+											climateVectorActualSite.add(0);
+										}
+										else
+										{
+											climateVectorActualSite.add(climateVector.get(climateYear.indexOf(listYears.get(j))));
+										}
+									}
+									
+								}
+								else
+								{
+									log.error("Unknown FireFilterType");
+									return;
+								}
 								
-								// TODO
-								// ELENA TO IMPLEMENT
-								
-							}
+							} // end of if filter not equal to 1
 							else
 							{
-								log.error("Unknown FireFilterType");
-								return;
-							}
-							
-						} // end of if filter not equal to 1 (429-454)
+								climateVectorActualSite.add(climateVector.get(climateYear.indexOf(listYears.get(j))));
+							} // end of else of if filter not equal to 1
+						} // end of if the filter minsampedepth
 						else
 						{
-							climateVectorActualSite.add(climateVector.get(climateYear.indexOf(listYears.get(j))));
-						} // end of else of if filter not equal to 1
-							//
-					} // end else
+							// log.debug("j is " + j + "minSampleFilter is " + minSampleFilter.get(j));
+							climateVectorActualSite.add(-1);
+							
+						}
+					} // end else 645 to 721
 				} // end of j loop listyears (420-459)
 				/*
 				 * climateMatrixSite has the composite information taking in consideration both the filters and common years
