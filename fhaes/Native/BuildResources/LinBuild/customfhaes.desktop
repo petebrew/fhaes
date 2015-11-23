@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=${version}
+Type=Application
+Name=${name}
+Comment=Fire History Analysis and Exploration System
+GenericName=Fire History Analysis and Exploration System
+TryExec=fhaes
+Exec=fhaes %U
+Icon=/usr/share/pixmaps/fhaes.png
+Terminal=false
+Categories=Utility;Science

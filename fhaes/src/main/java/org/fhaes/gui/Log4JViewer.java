@@ -34,6 +34,8 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
+import net.miginfocom.swing.MigLayout;
+
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 import org.fhaes.util.Builder;
@@ -41,8 +43,6 @@ import org.fhaes.util.TextAreaLogger;
 
 import com.ibm.icu.text.DateFormat;
 import com.ibm.icu.text.SimpleDateFormat;
-
-import net.miginfocom.swing.MigLayout;
 
 /**
  * Log4JViewer Class.
@@ -58,7 +58,7 @@ public class Log4JViewer extends JDialog {
 	 * Create the dialog.
 	 */
 	public Log4JViewer() {
-		
+	
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
@@ -74,26 +74,26 @@ public class Log4JViewer extends JDialog {
 				
 				txtLog.setText("********************************\n" + "FHAES Application initialized\n" + "  " + dateFormat.format(date)
 						+ "\n" + "********************************\n\n");
-						
+				
 				txtLog.setFont(new Font("Andale Mono", Font.PLAIN, 11));
 				
 				txtLog.getDocument().addDocumentListener(new DocumentListener() {
 					
 					@Override
 					public void changedUpdate(DocumentEvent arg0) {
-						
+					
 						scrollToBottom();
 					}
 					
 					@Override
 					public void insertUpdate(DocumentEvent arg0) {
-						
+					
 						scrollToBottom();
 					}
 					
 					@Override
 					public void removeUpdate(DocumentEvent arg0) {
-						
+					
 						scrollToBottom();
 					}
 					
@@ -113,7 +113,7 @@ public class Log4JViewer extends JDialog {
 					
 					@Override
 					public void actionPerformed(ActionEvent arg0) {
-						
+					
 						setVisible(false);
 						
 					}
@@ -126,7 +126,7 @@ public class Log4JViewer extends JDialog {
 						
 						@Override
 						public void actionPerformed(ActionEvent arg0) {
-							
+						
 							txtLog.selectAll();
 							
 						}
@@ -140,7 +140,7 @@ public class Log4JViewer extends JDialog {
 						
 						@Override
 						public void actionPerformed(ActionEvent e) {
-							
+						
 							txtLog.copy();
 							
 						}
@@ -165,7 +165,7 @@ public class Log4JViewer extends JDialog {
 	 * TODO
 	 */
 	private void scrollToBottom() {
-		
+	
 		JScrollBar vertical = scrollPane.getVerticalScrollBar();
 		vertical.setValue(vertical.getMaximum());
 		
@@ -175,7 +175,7 @@ public class Log4JViewer extends JDialog {
 	 * TODO
 	 */
 	public static void showLogViewer() {
-		
+	
 		Log4JViewer viewer = new Log4JViewer();
 		viewer.setVisible(true);
 		

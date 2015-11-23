@@ -16,7 +16,7 @@
     <!-- Levels: Off, Fatal, Error, Warn, Info, Debug, Trace, All -->
     <filter class="org.apache.log4j.varia.LevelRangeFilter">
             <param name="LevelMax" value="FATAL" />
-            <param name="LevelMin" value="INFO" />
+            <param name="LevelMin" value="WARN" />
             <param name="AcceptOnMatch" value="true" />
     </filter>
   </appender>
@@ -32,7 +32,7 @@
     <!-- Levels: Off, Fatal, Error, Warn, Info, Debug, Trace, All -->
     <filter class="org.apache.log4j.varia.LevelRangeFilter">
             <param name="LevelMax" value="FATAL" />
-            <param name="LevelMin" value="TRACE" />
+            <param name="LevelMin" value="WARN" />
             <param name="AcceptOnMatch" value="true" />
     </filter>
   </appender>

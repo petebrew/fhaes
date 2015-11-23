@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <install4j version="6.0.1" transformSequenceNumber="5">
-  <directoryPresets config="http:/help.fhaes.org/beta" />
+  <directoryPresets config="../target/classes/LinBuild/fhaes.desktop" />
   <application name="FHAES" distributionSourceDir="" applicationId="0745-8927-8095-9837" mediaDir="../target/binaries/${compiler:sys.version}/${compiler:sys.platform}" mediaFilePattern="${compiler:sys.shortName}-${compiler:sys.version}" compression="6" lzmaCompression="true" pack200Compression="false" excludeSignedFromPacking="true" commonExternalFiles="false" createMd5Sums="true" shrinkRuntime="true" shortName="FHAES" publisher="University of Arizona" publisherWeb="http://www.fhaes.org" version="2.0.0" allPathsRelative="true" backupOnSave="false" autoSave="false" convertDotsToUnderscores="false" macSignature="????" macVolumeId="71ce969904c145c0" javaMinVersion="1.6" javaMaxVersion="" allowBetaVM="true" jdkMode="jdk" jdkName="JDK 1.7">
     <languages skipLanguageSelection="false" languageSelectionInPrincipalLanguage="false">
       <principalLanguage id="en" customLocalizationFile="" />
@@ -30,6 +30,7 @@
     </mountPoints>
     <entries>
       <fileEntry mountPoint="25" file="../target/fhaes-2.0.0.jar" overwriteMode="4" shared="false" fileMode="644" uninstallMode="0" overrideFileMode="false" overrideOverwriteMode="false" overrideUninstallMode="false" />
+      <fileEntry mountPoint="25" file="../target/classes/LinBuild/customfhaes.desktop" overwriteMode="4" shared="false" fileMode="644" uninstallMode="0" overrideFileMode="false" overrideOverwriteMode="false" overrideUninstallMode="false" />
       <dirEntry mountPoint="95" file="../src/main/resources/TestData" overwriteMode="4" shared="false" fileMode="644" uninstallMode="0" overrideFileMode="false" overrideOverwriteMode="false" overrideUninstallMode="false" entryMode="subdir" subDirectory="Test data" excludeSuffixes="" dirMode="755" overrideDirMode="false">
         <exclude />
       </dirEntry>
@@ -332,6 +333,12 @@
                       <void property="uninstallerMenuName">
                         <string>${i18n:UninstallerMenuEntry(${compiler:sys.fullName})}</string>
                       </void>
+                      <void property="unixMenuEntries">
+                        <boolean>false</boolean>
+                      </void>
+                      <void property="unixSymlinks">
+                        <boolean>false</boolean>
+                      </void>
                     </object>
                   </java>
                 </serializedBean>
@@ -527,7 +534,9 @@
       <excludedLaunchers />
       <excludedBeans />
       <overriddenPrincipalLanguage id="en" customLocalizationFile="" />
-      <exclude />
+      <exclude>
+        <entry location="customfhaes.desktop" fileType="regular" />
+      </exclude>
       <variables />
       <autoUpdate useMinUpdatableVersion="false" minUpdatableVersion="" useMaxUpdatableVersion="false" maxUpdatableVersion="">
         <commentFiles />
@@ -540,7 +549,9 @@
       <excludedLaunchers />
       <excludedBeans />
       <overriddenPrincipalLanguage id="en" customLocalizationFile="" />
-      <exclude />
+      <exclude>
+        <entry location="customfhaes.desktop" fileType="regular" />
+      </exclude>
       <variables />
       <autoUpdate useMinUpdatableVersion="false" minUpdatableVersion="" useMaxUpdatableVersion="false" maxUpdatableVersion="">
         <commentFiles />
@@ -565,14 +576,18 @@
       <preInstallScript mode="1" file="">
         <content />
       </preInstallScript>
-      <postInstallScript mode="1" file="">
-        <content />
+      <postInstallScript mode="3" file="">
+        <content>rm /opt/FHAES/fhaes.desktop
+cp /opt/FHAES/customfhaes.desktop /opt/FHAES/fhaes.desktop
+ln -s /opt/FHAES/fhaes.desktop /usr/share/applications
+ln -s /opt/FHAES/.install4j/fhaes.png /usr/share/pixmaps</content>
       </postInstallScript>
       <preUninstallScript mode="1" file="">
         <content />
       </preUninstallScript>
-      <postUninstallScript mode="1" file="">
-        <content />
+      <postUninstallScript mode="3" file="">
+        <content>rm /usr/share/applications/fhaes.desktop
+rm /usr/share/pixmaps/fhaes.png</content>
       </postUninstallScript>
     </linuxDeb>
     <linuxRPM name="Linux RPM" id="30" customizedId="" mediaFileName="" installDir="/opt/${compiler:sys.shortName}" overridePrincipalLanguage="false" jreBitType="all" runPostProcessor="false" postProcessor="" failOnPostProcessorError="false" useLegacyMediaFileIds="false" legacyMediaFileIds="" includedJRE="" manualJREEntry="false" os="linux" arch="i386">
@@ -588,20 +603,26 @@
       <preInstallScript mode="1" file="">
         <content />
       </preInstallScript>
-      <postInstallScript mode="1" file="">
-        <content />
+      <postInstallScript mode="3" file="">
+        <content>rm /opt/FHAES/fhaes.desktop
+cp /opt/FHAES/customfhaes.desktop /opt/FHAES/fhaes.desktop
+ln -s /opt/FHAES/fhaes.desktop /usr/share/applications
+ln -s /opt/FHAES/.install4j/fhaes.png /usr/share/pixmaps</content>
       </postInstallScript>
       <preUninstallScript mode="1" file="">
         <content />
       </preUninstallScript>
-      <postUninstallScript mode="1" file="">
-        <content />
+      <postUninstallScript mode="3" file="">
+        <content>rm /usr/share/applications/fhaes.desktop
+rm /usr/share/pixmaps/fhaes.png</content>
       </postUninstallScript>
     </linuxRPM>
     <macosArchive name="Mac OS X Single Bundle Archive" id="47" customizedId="" mediaFileName="" installDir="${compiler:sys.shortName}" overridePrincipalLanguage="false" jreBitType="all" runPostProcessor="false" postProcessor="" failOnPostProcessorError="false" useLegacyMediaFileIds="false" legacyMediaFileIds="" includedJRE="macosx-amd64-1.7.0_76_unpacked" manualJREEntry="false" appleJre="false" archiveType="dmg" volumeName="${compiler:sys.shortName}" launcherId="24">
       <excludedBeans />
       <overriddenPrincipalLanguage id="en" customLocalizationFile="" />
-      <exclude />
+      <exclude>
+        <entry location="customfhaes.desktop" fileType="regular" />
+      </exclude>
       <variables />
       <autoUpdate useMinUpdatableVersion="false" minUpdatableVersion="" useMaxUpdatableVersion="false" maxUpdatableVersion="">
         <commentFiles />
@@ -610,8 +631,8 @@
       <topLevelFiles />
     </macosArchive>
   </mediaSets>
-  <buildIds buildAll="true">
-    <mediaSet refId="26" />
+  <buildIds buildAll="false">
+    <mediaSet refId="29" />
   </buildIds>
   <buildOptions verbose="false" faster="false" disableSigning="false" disableJreBundling="false" debug="false" />
 </install4j>
