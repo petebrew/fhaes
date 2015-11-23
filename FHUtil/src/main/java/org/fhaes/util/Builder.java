@@ -41,7 +41,7 @@ public class Builder {
 	private final static ClassLoader cl = org.fhaes.util.Builder.class.getClassLoader();
 	private static final Logger log = LoggerFactory.getLogger(Builder.class);
 	private static final String VERSION = Builder.class.getPackage().getImplementationVersion();
-	private static final String DOI = "10.5281/zenodo.32983";
+	private static final String DOI = "10.5281/zenodo.34142";
 	
 	/**
 	 * Get an ImageIcon of the specified name from the src/main/resources/images folder
