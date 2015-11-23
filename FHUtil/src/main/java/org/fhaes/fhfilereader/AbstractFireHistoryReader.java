@@ -119,7 +119,6 @@ public abstract class AbstractFireHistoryReader implements IFHAESReader {
 	 * 
 	 * @return
 	 */
-	@SuppressWarnings("unused")
 	public int[] getRecordingDepths(EventTypeToProcess eventTypeToProcess) {
 	
 		// Instantiate the array ready to populate
@@ -281,8 +280,6 @@ public abstract class AbstractFireHistoryReader implements IFHAESReader {
 			// log.debug("Doing all trees");
 			
 			double[] percentScarred = getPercentOfAllScarred(eventTypeToProcess);
-			ArrayList<Double> numberOfEvents = this.getFilterArrays(eventTypeToProcess).get(0);
-			ArrayList<Double> numberOfTrees = this.getFilterArrays(eventTypeToProcess).get(1);
 			
 			Integer currentYear = this.getFirstYear();
 			for (int i = 0; i < percentScarred.length; i++)

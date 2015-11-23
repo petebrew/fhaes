@@ -857,7 +857,7 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 	 * Generate multi-dimensional ArrayList of recorder years. A recorder year is where the sample actually recorded an event or a year in
 	 * which it was capable of recording an event if one was present
 	 */
-	private void generateRecorderYearsArrayII() {
+	public void generateRecorderYearsArrayII() {
 	
 		if (this.isClimate2dIinit == false)
 			this.generate2DEventsI();
@@ -2932,7 +2932,7 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 				boolean[] recordingYears = new boolean[arraylength];
 				boolean[] eventYears = new boolean[arraylength];
 				boolean[] injuryYears = new boolean[arraylength];
-				boolean[] recordingYearsII = new boolean[arraylength];
+				// boolean[] recordingYearsII = new boolean[arraylength];
 				
 				ArrayList<ArrayList<Integer>> rya = getRecorderYears2DArray(EventTypeToProcess.FIRE_EVENT);
 				ArrayList<ArrayList<Integer>> eda1 = getEventDataArrays(EventTypeToProcess.FIRE_EVENT);
