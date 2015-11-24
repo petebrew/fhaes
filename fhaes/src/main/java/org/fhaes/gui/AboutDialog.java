@@ -105,7 +105,7 @@ public class AboutDialog extends JDialog implements ActionListener {
 		JTextPane txtcontributors = new JTextPane();
 		txtcontributors.setEditable(false);
 		txtcontributors.setFont(new Font("Dialog", Font.BOLD, 12));
-		txtcontributors.setText("Elaine Kennedy Sutherland; Peter Brewer; Donald Falk; and M. Elena Velasquez.");
+		txtcontributors.setText("Peter Brewer; M. Elena Velasquez; Elaine Kennedy Sutherland; and Donald Falk");
 		contentPanel.add(txtcontributors, "cell 1 7 2 1,alignx left,growy");
 		
 		JTextPane txtpnScientificSteeringCommittee = new JTextPane();
@@ -153,6 +153,12 @@ public class AboutDialog extends JDialog implements ActionListener {
 		btnFhaesWebsite.addActionListener(this);
 		btnFhaesWebsite.setFont(new Font("Dialog", Font.PLAIN, 10));
 		
+		JButton btnHowToCite = new JButton("How to cite");
+		btnHowToCite.setActionCommand("HowToCite");
+		btnHowToCite.addActionListener(this);
+		btnHowToCite.setFont(new Font("Dialog", Font.PLAIN, 10));
+		panel.add(btnHowToCite);
+		
 		this.setIconImage(Builder.getApplicationIcon());
 		this.setLocationRelativeTo(parent);
 		this.setModal(true);
@@ -173,6 +179,10 @@ public class AboutDialog extends JDialog implements ActionListener {
 		else if (e.getActionCommand().equals("FHAESWebsite"))
 		{
 			Platform.browseWebpage(RemoteHelp.FHAES_HOMEPAGE);
+		}
+		else if (e.getActionCommand().equals("HowToCite"))
+		{
+			Platform.browseWebpage(RemoteHelp.HOW_TO_CITE);
 		}
 	}
 }
