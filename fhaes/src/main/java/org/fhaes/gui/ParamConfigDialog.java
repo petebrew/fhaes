@@ -61,6 +61,7 @@ import org.fhaes.preferences.wrappers.NoDataLabelWrapper;
 import org.fhaes.preferences.wrappers.SampleDepthFilterTypeWrapper;
 import org.fhaes.preferences.wrappers.SpinnerWrapper;
 import org.fhaes.util.Builder;
+import org.fhaes.util.I18n;
 
 /**
  * ParamConfigDialog Class. This is the preferences dialog for the analysis modules.
@@ -142,7 +143,7 @@ public class ParamConfigDialog extends JDialog implements ActionListener, Change
 	 */
 	public ParamConfigDialog(Component parent) {
 	
-		setTitle("Analysis Options");
+		setTitle(I18n.getText("paramconfig.title"));
 		
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -153,7 +154,7 @@ public class ParamConfigDialog extends JDialog implements ActionListener, Change
 			contentPanel.add(tabbedPane, "cell 0 0,grow");
 			{
 				tabAnalysisOptions = new JPanel();
-				tabbedPane.addTab("Analysis Options", null, tabAnalysisOptions, null);
+				tabbedPane.addTab(I18n.getText("paramconfig.analysisoptions"), null, tabAnalysisOptions, null);
 				tabAnalysisOptions.setLayout(new BorderLayout(0, 0));
 				{
 					panelAnalysisOptions = new JPanel();
