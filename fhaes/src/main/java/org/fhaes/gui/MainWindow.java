@@ -136,7 +136,7 @@ public class MainWindow implements PrefsListener {
 	private static MainWindow instanceOfMainWindow = null;
 	
 	// Declare bundle and logger
-	private static final ResourceBundle BUNDLE = ResourceBundle.getBundle("locale/locale"); // ResourceBundle.getBundle("org.fhaes.gui.locale"); //$NON-NLS-1$
+	public static final ResourceBundle BUNDLE = ResourceBundle.getBundle("locale/locale"); // ResourceBundle.getBundle("org.fhaes.gui.locale"); //$NON-NLS-1$
 	private static final Logger log = LoggerFactory.getLogger(MainWindow.class);
 	
 	// Declare public constants
@@ -1402,7 +1402,7 @@ public class MainWindow implements PrefsListener {
 		frame.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
 		frame.setIconImage(Builder.getApplicationIcon());
 		frame.setMinimumSize(new Dimension(800, 600));
-		frame.setTitle(BUNDLE.getString("MainWindow.frame.title")); //$NON-NLS-1$
+		frame.setTitle(BUNDLE.getString("general.FHAES.titlebar")); //$NON-NLS-1$
 		frame.addWindowListener(new WindowAdapter() {
 			
 			@Override
