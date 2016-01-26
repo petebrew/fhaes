@@ -35,6 +35,7 @@ import net.miginfocom.swing.MigLayout;
 
 import org.fhaes.help.RemoteHelp;
 import org.fhaes.util.Builder;
+import org.fhaes.util.I18n;
 import org.fhaes.util.Platform;
 
 /**
@@ -75,20 +76,20 @@ public class AboutDialog extends JDialog implements ActionListener {
 		lblNewLabel.setIcon(Builder.getImageIcon("about.png"));
 		contentPanel.add(lblNewLabel, "cell 0 0 2 6,alignx left");
 		{
-			JLabel lblFhaesfireHistory = new JLabel(MainWindow.BUNDLE.getString("general.FHAES"));
+			JLabel lblFhaesfireHistory = new JLabel(I18n.getText("general.FHAES"));
 			lblFhaesfireHistory.setFont(new Font("Dialog", Font.BOLD, 23));
 			contentPanel.add(lblFhaesfireHistory, "cell 2 1,alignx right");
 		}
 		
-		JLabel lblF = new JLabel(MainWindow.BUNDLE.getString("general.FHAES.long"));
+		JLabel lblF = new JLabel(I18n.getText("general.FHAES.long"));
 		lblF.setFont(new Font("Dialog", Font.BOLD, 10));
 		contentPanel.add(lblF, "cell 2 2,alignx right,aligny top");
 		
-		JLabel lblVersionsnapshot = new JLabel(MainWindow.BUNDLE.getString("about.version") + ": \n" + Builder.getVersion());
+		JLabel lblVersionsnapshot = new JLabel(I18n.getText("about.version") + ": \n" + Builder.getVersion());
 		lblVersionsnapshot.setFont(new Font("Dialog", Font.PLAIN, 10));
 		contentPanel.add(lblVersionsnapshot, "cell 2 3,alignx right,aligny bottom");
 		
-		JLabel lblReleasedXxJune = new JLabel(MainWindow.BUNDLE.getString("about.built") + ": " + Builder.getBuildTimestamp());
+		JLabel lblReleasedXxJune = new JLabel(I18n.getText("about.built") + ": " + Builder.getBuildTimestamp());
 		lblReleasedXxJune.setFont(new Font("Dialog", Font.PLAIN, 10));
 		contentPanel.add(lblReleasedXxJune, "cell 2 4,alignx right,aligny top");
 		
@@ -99,7 +100,7 @@ public class AboutDialog extends JDialog implements ActionListener {
 		JTextPane txtpnWorkingGroup = new JTextPane();
 		txtpnWorkingGroup.setEditable(false);
 		txtpnWorkingGroup.setFont(new Font("Dialog", Font.BOLD, 12));
-		txtpnWorkingGroup.setText(MainWindow.BUNDLE.getString("about.authors") + ":");
+		txtpnWorkingGroup.setText(I18n.getText("about.authors") + ":");
 		contentPanel.add(txtpnWorkingGroup, "cell 0 7,alignx right,growy");
 		
 		JTextPane txtcontributors = new JTextPane();
@@ -109,7 +110,7 @@ public class AboutDialog extends JDialog implements ActionListener {
 		contentPanel.add(txtcontributors, "cell 1 7 2 1,alignx left,growy");
 		
 		JTextPane txtpnScientificSteeringCommittee = new JTextPane();
-		txtpnScientificSteeringCommittee.setText(MainWindow.BUNDLE.getString("about.steeringcommittee") + ":");
+		txtpnScientificSteeringCommittee.setText(I18n.getText("about.steeringcommittee") + ":");
 		txtpnScientificSteeringCommittee.setFont(new Font("Dialog", Font.PLAIN, 9));
 		contentPanel.add(txtpnScientificSteeringCommittee, "cell 0 8,alignx right,growy");
 		
@@ -120,7 +121,7 @@ public class AboutDialog extends JDialog implements ActionListener {
 		
 		JTextPane txtpnProgrammingContributions = new JTextPane();
 		txtpnProgrammingContributions.setFont(new Font("Dialog", Font.PLAIN, 9));
-		txtpnProgrammingContributions.setText(MainWindow.BUNDLE.getString("about.contributingprogrammers") + ":");
+		txtpnProgrammingContributions.setText(I18n.getText("about.contributingprogrammers") + ":");
 		contentPanel.add(txtpnProgrammingContributions, "cell 0 9,alignx right,growy");
 		
 		JTextPane txtProgrammers = new JTextPane();
@@ -132,7 +133,7 @@ public class AboutDialog extends JDialog implements ActionListener {
 		JTextPane txtpnThisProgramIs = new JTextPane();
 		txtpnThisProgramIs.setEditable(false);
 		txtpnThisProgramIs.setFont(new Font("Dialog", Font.PLAIN, 8));
-		txtpnThisProgramIs.setText(MainWindow.BUNDLE.getString("about.gpl_boilerplate"));
+		txtpnThisProgramIs.setText(I18n.getText("about.gpl_boilerplate"));
 		contentPanel.add(txtpnThisProgramIs, "cell 0 11 3 1,grow");
 		
 		JPanel panel = new JPanel();
@@ -140,19 +141,19 @@ public class AboutDialog extends JDialog implements ActionListener {
 		panel.setBorder(null);
 		contentPanel.add(panel, "cell 0 12 3 1,growx");
 		
-		JButton btnViewLicense = new JButton(MainWindow.BUNDLE.getString("about.gpllicense"));
+		JButton btnViewLicense = new JButton(I18n.getText("about.gpllicense"));
 		panel.add(btnViewLicense);
 		btnViewLicense.setActionCommand("License");
 		btnViewLicense.addActionListener(this);
 		btnViewLicense.setFont(new Font("Dialog", Font.PLAIN, 10));
 		
-		JButton btnFhaesWebsite = new JButton(MainWindow.BUNDLE.getString("about.fhaeswebsite"));
+		JButton btnFhaesWebsite = new JButton(I18n.getText("about.fhaeswebsite"));
 		panel.add(btnFhaesWebsite);
 		btnFhaesWebsite.setActionCommand("FHAESWebsite");
 		btnFhaesWebsite.addActionListener(this);
 		btnFhaesWebsite.setFont(new Font("Dialog", Font.PLAIN, 10));
 		
-		JButton btnHowToCite = new JButton(MainWindow.BUNDLE.getString("about.howtocite"));
+		JButton btnHowToCite = new JButton(I18n.getText("about.howtocite"));
 		btnHowToCite.setActionCommand("HowToCite");
 		btnHowToCite.addActionListener(this);
 		btnHowToCite.setFont(new Font("Dialog", Font.PLAIN, 10));
@@ -162,7 +163,7 @@ public class AboutDialog extends JDialog implements ActionListener {
 		this.setLocationRelativeTo(parent);
 		this.setModal(true);
 		this.setResizable(false);
-		this.setTitle(MainWindow.BUNDLE.getString("about.fhaes"));
+		this.setTitle(I18n.getText("about.fhaes"));
 	}
 	
 	/**

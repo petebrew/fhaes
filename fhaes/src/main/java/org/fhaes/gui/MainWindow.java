@@ -40,7 +40,6 @@ import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ResourceBundle;
 
 import javax.swing.Action;
 import javax.swing.DefaultComboBoxModel;
@@ -112,6 +111,7 @@ import org.fhaes.tools.FHOperations;
 import org.fhaes.tools.UpdateChecker;
 import org.fhaes.util.Builder;
 import org.fhaes.util.FHAESAction;
+import org.fhaes.util.I18n;
 import org.fhaes.util.IOUtil;
 import org.fhaes.util.OSX;
 import org.fhaes.util.Platform;
@@ -136,7 +136,7 @@ public class MainWindow implements PrefsListener {
 	private static MainWindow instanceOfMainWindow = null;
 	
 	// Declare bundle and logger
-	public static final ResourceBundle BUNDLE = ResourceBundle.getBundle("locale/locale"); // ResourceBundle.getBundle("org.fhaes.gui.locale"); //$NON-NLS-1$
+	//public static final ResourceBundle BUNDLE = ResourceBundle.getBundle("locale/locale"); // ResourceBundle.getBundle("org.fhaes.gui.locale"); //$NON-NLS-1$
 	private static final Logger log = LoggerFactory.getLogger(MainWindow.class);
 	
 	// Declare public constants
@@ -1402,7 +1402,7 @@ public class MainWindow implements PrefsListener {
 		frame.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
 		frame.setIconImage(Builder.getApplicationIcon());
 		frame.setMinimumSize(new Dimension(800, 600));
-		frame.setTitle(BUNDLE.getString("general.FHAES.titlebar")); //$NON-NLS-1$
+		frame.setTitle(I18n.getText("general.FHAES.titlebar")); //$NON-NLS-1$
 		frame.addWindowListener(new WindowAdapter() {
 			
 			@Override
@@ -1767,7 +1767,7 @@ public class MainWindow implements PrefsListener {
 			}
 		};
 		
-		actionFileExit = new FHAESAction(BUNDLE.getString("MainWindow.mntmExit.text"), "close.png") { //$NON-NLS-1$
+		actionFileExit = new FHAESAction(I18n.getText("MainWindow.mntmExit.text"), "close.png") { //$NON-NLS-1$
 		
 			private static final long serialVersionUID = 1L;
 			
@@ -1778,7 +1778,7 @@ public class MainWindow implements PrefsListener {
 			}
 		};
 		
-		actionAbout = new FHAESAction(BUNDLE.getString("MainWindow.mntmAboutFhaes.text"), "info.png") { //$NON-NLS-1$
+		actionAbout = new FHAESAction(I18n.getText("MainWindow.mntmAboutFhaes.text"), "info.png") { //$NON-NLS-1$
 		
 			private static final long serialVersionUID = 1L;
 			
@@ -1790,7 +1790,7 @@ public class MainWindow implements PrefsListener {
 			}
 		};
 		
-		actionHelp = new FHAESAction(BUNDLE.getString("MainWindow.mnHelp.text"), "help.png") { //$NON-NLS-1$
+		actionHelp = new FHAESAction(I18n.getText("MainWindow.mnHelp.text"), "help.png") { //$NON-NLS-1$
 		
 			private static final long serialVersionUID = 1L;
 			
@@ -1801,7 +1801,7 @@ public class MainWindow implements PrefsListener {
 			}
 		};
 		
-		this.actionClearList = new FHAESAction(BUNDLE.getString("MainWindow.mntmClearFileList.text"), "edit_clear.png", "Clear files") { //$NON-NLS-1$
+		this.actionClearList = new FHAESAction(I18n.getText("MainWindow.mntmClearFileList.text"), "edit_clear.png", "Clear files") { //$NON-NLS-1$
 		
 			private static final long serialVersionUID = 1L;
 			
@@ -1812,7 +1812,7 @@ public class MainWindow implements PrefsListener {
 			}
 		};
 		
-		this.actionClearCurrent = new FHAESAction(BUNDLE.getString("MainWindow.mntmClear.text"), "delete.png") { //$NON-NLS-1$
+		this.actionClearCurrent = new FHAESAction(I18n.getText("MainWindow.mntmClear.text"), "delete.png") { //$NON-NLS-1$
 		
 			private static final long serialVersionUID = 1L;
 			
@@ -1824,7 +1824,7 @@ public class MainWindow implements PrefsListener {
 		};
 		actionClearCurrent.setEnabled(false);
 		
-		this.actionDrawMap = new FHAESAction(BUNDLE.getString("MainWindow.mntmDrawMap.text"), "map.png") { //$NON-NLS-1$
+		this.actionDrawMap = new FHAESAction(I18n.getText("MainWindow.mntmDrawMap.text"), "map.png") { //$NON-NLS-1$
 		
 			private static final long serialVersionUID = 1L;
 			
@@ -1836,7 +1836,7 @@ public class MainWindow implements PrefsListener {
 		};
 		actionDrawMap.setEnabled(false);
 		
-		this.actionSave = new FHAESAction(BUNDLE.getString("MainWindow.mntmSave.text"), "save.png") { //$NON-NLS-1$
+		this.actionSave = new FHAESAction(I18n.getText("MainWindow.mntmSave.text"), "save.png") { //$NON-NLS-1$
 		
 			private static final long serialVersionUID = 1L;
 			
@@ -1872,7 +1872,7 @@ public class MainWindow implements PrefsListener {
 		};
 		actionSaveAllSummaries.setEnabled(false);
 		
-		this.actionSaveAll = new FHAESAction(BUNDLE.getString("MainWindow.mntmSaveAll.text"), "save_all.png") { //$NON-NLS-1$
+		this.actionSaveAll = new FHAESAction(I18n.getText("MainWindow.mntmSaveAll.text"), "save_all.png") { //$NON-NLS-1$
 		
 			private static final long serialVersionUID = 1L;
 			
@@ -2345,7 +2345,7 @@ public class MainWindow implements PrefsListener {
 		JMenuBar menuBar = new JMenuBar();
 		frame.setJMenuBar(menuBar);
 		
-		JMenu mnFile = new JMenu(BUNDLE.getString("MainWindow.mnFile.text")); //$NON-NLS-1$
+		JMenu mnFile = new JMenu(I18n.getText("MainWindow.mnFile.text")); //$NON-NLS-1$
 		mnFile.setMnemonic('F');
 		menuBar.add(mnFile);
 		
@@ -2419,7 +2419,7 @@ public class MainWindow implements PrefsListener {
 		 * 
 		 */
 		
-		JMenu mnEdit = new JMenu(BUNDLE.getString("MainWindow.mnEdit.text")); //$NON-NLS-1$
+		JMenu mnEdit = new JMenu(I18n.getText("MainWindow.mnEdit.text")); //$NON-NLS-1$
 		mnEdit.setMnemonic('e');
 		menuBar.add(mnEdit);
 		
@@ -2488,7 +2488,7 @@ public class MainWindow implements PrefsListener {
 		 * 
 		 */
 		
-		JMenu mnTools = new JMenu(BUNDLE.getString("MainWindow.mnTools.text")); //$NON-NLS-1$
+		JMenu mnTools = new JMenu(I18n.getText("MainWindow.mnTools.text")); //$NON-NLS-1$
 		menuBar.add(mnTools);
 		
 		mnTools.add(new FHAESMenuItem(reportPanel.actionParamConfig));
@@ -2516,7 +2516,7 @@ public class MainWindow implements PrefsListener {
 		 * 
 		 */
 		
-		JMenu mnHelp = new JMenu(BUNDLE.getString("MainWindow.mntmHelp.text")); //$NON-NLS-1$
+		JMenu mnHelp = new JMenu(I18n.getText("MainWindow.mntmHelp.text")); //$NON-NLS-1$
 		mnHelp.setMnemonic('H');
 		menuBar.add(mnHelp);
 		
