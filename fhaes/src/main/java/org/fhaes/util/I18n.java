@@ -1,5 +1,6 @@
 package org.fhaes.util;
 
+import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
@@ -20,13 +21,15 @@ public class I18n {
 		ResourceBundle bundle;
 		try
 		{
-			bundle = ResourceBundle.getBundle("locale/locale");
+			bundle = ResourceBundle.getBundle("locale.locale", Locale.getDefault());
 		}
 		catch (MissingResourceException mre)
 		{
+			mre.printStackTrace();
 			try
 			{
-				bundle = ResourceBundle.getBundle("locale");
+				Locale nonexistentLocale = new Locale("xx", "XX");
+				bundle = ResourceBundle.getBundle("locale.locale", nonexistentLocale);
 			}
 			catch (MissingResourceException mre2)
 			{
