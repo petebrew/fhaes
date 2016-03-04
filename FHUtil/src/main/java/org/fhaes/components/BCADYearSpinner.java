@@ -21,13 +21,14 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.awt.Dimension;
+import java.awt.KeyboardFocusManager;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.util.Calendar;
 
 import javax.swing.SpinnerNumberModel;
 import javax.swing.text.NumberFormatter;
 
+import org.fhaes.util.SharedConstants;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,10 +68,15 @@ public class BCADYearSpinner extends javax.swing.JSpinner {
 			log.warn("initialValue parameter was below minimumValue parameter (please adjust the value in the constructer call)");
 			initialValue = minimumValue;
 		}
-		else if (initialValue > maximumValue)
+		if (initialValue > maximumValue)
 		{
 			log.warn("initialValue parameter was above maximumValue parameter (please adjust the value in the constructer call)");
 			initialValue = maximumValue;
+		}
+		if (maximumValue > SharedConstants.CURRENT_YEAR)
+		{
+			log.warn("Maximum value cannot be in the future");
+			maximumValue = SharedConstants.CURRENT_YEAR;
 		}
 		
 		// Account for cases where the initial value may be zero
@@ -90,9 +96,8 @@ public class BCADYearSpinner extends javax.swing.JSpinner {
 	 */
 	public BCADYearSpinner() {
 	
-		int year = Calendar.getInstance().get(Calendar.YEAR);
 		// Setup the year spinner with valid values
-		initGUI(year, Integer.MIN_VALUE, year);
+		initGUI(SharedConstants.CURRENT_YEAR, Integer.MIN_VALUE, SharedConstants.CURRENT_YEAR);
 		
 	}
 	
@@ -193,11 +198,16 @@ public class BCADYearSpinner extends javax.swing.JSpinner {
 			
 				if (evt.getKeyChar() == KeyEvent.VK_TAB || evt.getKeyChar() == KeyEvent.VK_ENTER)
 				{
+					
+					BCADYearSpinnerModel model = (BCADYearSpinnerModel) getModel();
+					
 					try
 					{
-						Integer textAsInteger = new Integer(getNumberEditor().getTextField().toString());
+						Integer textAsInteger = new Integer(getNumberEditor().getTextField().getValue().toString());
+						Integer min = (Integer) model.getMinimum();
+						Integer max = (Integer) model.getMaximum();
 						
-						if (textAsInteger != 0)
+						if (textAsInteger != 0 && textAsInteger >= min && textAsInteger <= max)
 						{
 							getNumberEditor().getTextField().commitEdit();
 						}
@@ -210,6 +220,12 @@ public class BCADYearSpinner extends javax.swing.JSpinner {
 					{
 						getNumberEditor().getTextField().setText(getMostRecentValue().toString());
 					}
+				}
+				
+				if (evt.getKeyChar() == KeyEvent.VK_TAB)
+				{
+					KeyboardFocusManager manager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
+					manager.focusNextComponent();
 				}
 			}
 		});

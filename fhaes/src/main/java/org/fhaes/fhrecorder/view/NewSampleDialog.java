@@ -129,7 +129,7 @@ public class NewSampleDialog extends JDialog implements KeyListener {
 		
 		sampleNameTextBox = new JTextField();
 		sampleNameTextBox.addKeyListener(this);
-		sampleNameTextBox.setDocument(new LengthRestrictedDocument(SampleInputPanel.MAXIMUM_SAMPLE_NAME_LENGTH));
+		sampleNameTextBox.setDocument(new LengthRestrictedDocument(DataPanel.MAXIMUM_SAMPLE_NAME_LENGTH));
 		basePanel.add(sampleNameTextBox, "cell 1 0 2 1,grow");
 		
 		firstYearLabel = new JLabel();
@@ -225,10 +225,10 @@ public class NewSampleDialog extends JDialog implements KeyListener {
 	 */
 	private void handleOkButtonPressed(ActionEvent evt) {
 		
-		if (sampleNameTextBox.getText().length() < SampleInputPanel.MINIMUM_SAMPLE_NAME_LENGTH)
+		if (sampleNameTextBox.getText().length() < DataPanel.MINIMUM_SAMPLE_NAME_LENGTH)
 		{
 			FireHistoryRecorder.getFeedbackMessagePanel().updateFeedbackMessage(FeedbackMessageType.WARNING,
-					FeedbackDisplayProtocol.AUTO_HIDE, SampleInputPanel.MINIMUM_SAMPLE_NAME_LENGTH_MESSAGE);
+					FeedbackDisplayProtocol.AUTO_HIDE, DataPanel.MINIMUM_SAMPLE_NAME_LENGTH_MESSAGE);
 					
 			sampleNameTextBox.setForeground(Color.RED);
 		}

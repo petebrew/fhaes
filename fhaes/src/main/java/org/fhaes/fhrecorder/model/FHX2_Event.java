@@ -34,15 +34,15 @@ public class FHX2_Event implements Serializable {
 	public static int DEFAULT_EVENT_LAST_YEAR = SharedConstants.CURRENT_YEAR;
 	
 	private char eventType; // Event type could be 'D', 'E', 'M', 'L', or 'A'
-	private int eventYear;
+	private Integer eventYear;
 	
 	/**
 	 * Default constructor; makes the event a dormant season fire scar that sets at DEFAULT_FIRST_YEAR.
 	 */
 	public FHX2_Event() {
-		
+	
 		eventType = 'U';
-		eventYear = DEFAULT_EVENT_FIRST_YEAR;
+		eventYear = null;
 	}
 	
 	/**
@@ -51,8 +51,8 @@ public class FHX2_Event implements Serializable {
 	 * 
 	 * @param inEventYear year of event
 	 */
-	public FHX2_Event(int inEventYear) {
-		
+	public FHX2_Event(Integer inEventYear) {
+	
 		eventType = 'U';
 		eventYear = inEventYear;
 	}
@@ -64,7 +64,7 @@ public class FHX2_Event implements Serializable {
 	 * @param inEventtYear year of event
 	 */
 	public FHX2_Event(char inEventType, int inEventYear) {
-		
+	
 		eventType = inEventType;
 		eventYear = inEventYear;
 	}
@@ -75,7 +75,7 @@ public class FHX2_Event implements Serializable {
 	 * @return eventType, the event type
 	 */
 	public char getEventType() {
-		
+	
 		return eventType;
 	}
 	
@@ -85,7 +85,7 @@ public class FHX2_Event implements Serializable {
 	 * @param inEventType
 	 */
 	public void setEventType(char inEventType) {
-		
+	
 		eventType = inEventType;
 	}
 	
@@ -94,8 +94,8 @@ public class FHX2_Event implements Serializable {
 	 * 
 	 * @return the event year
 	 */
-	public int getEventYear() {
-		
+	public Integer getEventYear() {
+	
 		return eventYear;
 	}
 	
@@ -104,8 +104,8 @@ public class FHX2_Event implements Serializable {
 	 * 
 	 * @param inEventYear
 	 */
-	public void setEventYear(int inEventYear) {
-		
+	public void setEventYear(Integer inEventYear) {
+	
 		eventYear = inEventYear;
 	}
 	
@@ -115,7 +115,7 @@ public class FHX2_Event implements Serializable {
 	 * @param inYear
 	 */
 	public boolean containsYear(int inYear) {
-		
+	
 		return (eventYear == inYear);
 	}
 }

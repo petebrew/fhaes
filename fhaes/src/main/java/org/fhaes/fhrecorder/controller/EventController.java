@@ -31,28 +31,25 @@ public class EventController {
 	 * Adds a FHX2Event to the currently selected FHX2Sample.
 	 */
 	public static void addNewEvent() {
-		
+	
 		if (SampleController.getSelectedSampleIndex() > -1)
 		{
-			FHX2_Event newEvent = null;
+			FHX2_Event newEvent = new FHX2_Event();
 			FHX2_Sample selectedSample = IOController.getFile().getRequiredPart().getSample(SampleController.getSelectedSampleIndex());
 			
-			if (selectedSample.getNumOfEvents() > 0)
-			{
-				FHX2_Event prevEvent = selectedSample.getEvent(selectedSample.getNumOfEvents() - 1);
-				int year = selectedSample.getNextAvailableEventYear(prevEvent.getEventYear() + 1);
-				if (year != 0)
-					newEvent = new FHX2_Event(prevEvent.getEventType(), year);
-			}
-			else
-			{
-				int year = selectedSample.getNextAvailableEventYear();
-				if (year != 0)
-					newEvent = new FHX2_Event('U', year);
-			}
+			/*
+			 * if (selectedSample.getNumOfEvents() > 0) { FHX2_Event prevEvent = selectedSample.getEvent(selectedSample.getNumOfEvents() -
+			 * 1); int year = selectedSample.getNextAvailableEventYear(prevEvent.getEventYear() + 1); if (year != 0) newEvent = new
+			 * FHX2_Event(prevEvent.getEventType(), year); }
+			 */
+			/*
+			 * else { newEvent = new FHX2_Event(null);
+			 * 
+			 * int year = selectedSample.getNextAvailableEventYear(); if (year != 0) newEvent = new FHX2_Event('U', year); }
+			 */
 			
-			if (newEvent != null)
-				selectedSample.addEvent(newEvent);
+			// if (newEvent != null)
+			selectedSample.addEvent(newEvent);
 		}
 		
 		SampleController.setSelectedSampleIndex(SampleController.getSelectedSampleIndex());
@@ -64,7 +61,7 @@ public class EventController {
 	 * @param index
 	 */
 	public static void deleteEvent(int index) {
-		
+	
 		FHX2_Sample selectedSample = IOController.getFile().getRequiredPart().getSample(SampleController.getSelectedSampleIndex());
 		selectedSample.removeEvent(index);
 	}

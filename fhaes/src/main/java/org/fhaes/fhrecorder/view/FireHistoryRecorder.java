@@ -66,7 +66,7 @@ public class FireHistoryRecorder extends JDialog {
 	private final int GRAPH_TAB_INDEX = 3;
 	
 	// Declare primary GUI panels
-	private SampleInputPanel sampleInput;
+	private DataPanel sampleInput;
 	private MetaDataPanel metaDataPanel;
 	private CommentPanel commentPanel;
 	private SummaryPanel summaryPanel;
@@ -211,7 +211,7 @@ public class FireHistoryRecorder extends JDialog {
 		if (graphPanel != null)
 			graphsTab.remove(graphPanel);
 		
-		sampleInput = new SampleInputPanel(inFHX2File.getRequiredPart());
+		sampleInput = new DataPanel(inFHX2File.getRequiredPart());
 		metaDataPanel = new MetaDataPanel(inFHX2File.getOptionalPart());
 		commentPanel = new CommentPanel(inFHX2File.getOptionalPart());
 		summaryPanel = new SummaryPanel(this);

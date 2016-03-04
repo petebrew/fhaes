@@ -42,12 +42,12 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultHighlighter;
 import javax.swing.text.Highlighter;
 
+import net.miginfocom.swing.MigLayout;
+
 import org.fhaes.enums.FeedbackDisplayProtocol;
 import org.fhaes.enums.FeedbackMessageType;
 import org.fhaes.fhrecorder.controller.IOController;
 import org.fhaes.fhrecorder.util.SampleErrorModel;
-
-import net.miginfocom.swing.MigLayout;
 
 /**
  * ErrorDisplayPanel Class. This UI is used to address erroneous FHX2 files whenever they are attempted to be loaded.
@@ -81,7 +81,7 @@ public class ErrorDisplayPanel extends JPanel {
 	 * Creates a new GUI_ErrorDisplayPanel form.
 	 */
 	public ErrorDisplayPanel() {
-		
+	
 		setLayout(new BorderLayout(0, 0));
 		
 		splitPane = new JSplitPane();
@@ -99,11 +99,11 @@ public class ErrorDisplayPanel extends JPanel {
 			
 			@Override
 			public void stateChanged(ChangeEvent e) {
-				
-				originalFileDisplayScrollPane.getVerticalScrollBar()
-						.setValue(suggestedFileDisplayScrollPane.getVerticalScrollBar().getValue());
-				originalFileDisplayScrollPane.getHorizontalScrollBar()
-						.setValue(suggestedFileDisplayScrollPane.getHorizontalScrollBar().getValue());
+			
+				originalFileDisplayScrollPane.getVerticalScrollBar().setValue(
+						suggestedFileDisplayScrollPane.getVerticalScrollBar().getValue());
+				originalFileDisplayScrollPane.getHorizontalScrollBar().setValue(
+						suggestedFileDisplayScrollPane.getHorizontalScrollBar().getValue());
 			}
 		});
 		suggestedFileContainer.add(suggestedFileDisplayScrollPane, BorderLayout.CENTER);
@@ -185,11 +185,11 @@ public class ErrorDisplayPanel extends JPanel {
 			
 			@Override
 			public void stateChanged(ChangeEvent e) {
-				
-				suggestedFileDisplayScrollPane.getVerticalScrollBar()
-						.setValue(originalFileDisplayScrollPane.getVerticalScrollBar().getValue());
-				suggestedFileDisplayScrollPane.getHorizontalScrollBar()
-						.setValue(originalFileDisplayScrollPane.getHorizontalScrollBar().getValue());
+			
+				suggestedFileDisplayScrollPane.getVerticalScrollBar().setValue(
+						originalFileDisplayScrollPane.getVerticalScrollBar().getValue());
+				suggestedFileDisplayScrollPane.getHorizontalScrollBar().setValue(
+						originalFileDisplayScrollPane.getHorizontalScrollBar().getValue());
 			}
 		});
 		originalFileContainer.add(originalFileDisplayScrollPane, BorderLayout.CENTER);
@@ -207,7 +207,7 @@ public class ErrorDisplayPanel extends JPanel {
 	 * @param errors
 	 */
 	public void displayFileErrors(ArrayList<SampleErrorModel> errors) {
-		
+	
 		String displayOriginal = "";
 		String displaySuggested = "";
 		
@@ -219,6 +219,15 @@ public class ErrorDisplayPanel extends JPanel {
 		}
 		catch (IOException e)
 		{
+			FireHistoryRecorder.getFeedbackMessagePanel().updateFeedbackMessage(FeedbackMessageType.ERROR,
+					FeedbackDisplayProtocol.MANUAL_HIDE, "There was an error saving to this file.  Do you have permission to save here?");
+			e.printStackTrace();
+			return;
+		}
+		catch (Exception e)
+		{
+			FireHistoryRecorder.getFeedbackMessagePanel().updateFeedbackMessage(FeedbackMessageType.ERROR,
+					FeedbackDisplayProtocol.MANUAL_HIDE, "There was an internal error saving this file");
 			e.printStackTrace();
 		}
 		
@@ -230,7 +239,7 @@ public class ErrorDisplayPanel extends JPanel {
 				
 				@Override
 				public int compare(SampleErrorModel a, SampleErrorModel b) {
-					
+				
 					return Integer.signum(a.getYear() - b.getYear());
 				}
 			});
@@ -275,7 +284,7 @@ public class ErrorDisplayPanel extends JPanel {
 	 * Highlights the lines of the original file that contain detected errors.
 	 */
 	private void highlightErrorLines() {
-		
+	
 		String text = originalFileDisplayTextArea.getText();
 		String[] lines = text.split("\n");
 		for (int i = 0; i < lines.length; i++)
@@ -303,7 +312,7 @@ public class ErrorDisplayPanel extends JPanel {
 	 * @return the automatically fixed version of the FHX2 file
 	 */
 	public String getFixedFile() {
-		
+	
 		return suggestedFileDisplayTextArea.getText();
 	}
 	
@@ -311,12 +320,12 @@ public class ErrorDisplayPanel extends JPanel {
 	 * Sets the value of the scroll bars to zero.
 	 */
 	public void setScrollBarsToTop() {
-		
+	
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
 			
 			@Override
 			public void run() {
-				
+			
 				originalFileDisplayScrollPane.getHorizontalScrollBar().setValue(0);
 				suggestedFileDisplayScrollPane.getHorizontalScrollBar().setValue(0);
 				originalFileDisplayScrollPane.getVerticalScrollBar().setValue(0);

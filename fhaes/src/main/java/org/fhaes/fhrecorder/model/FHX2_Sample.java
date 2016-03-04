@@ -63,7 +63,7 @@ public class FHX2_Sample implements Serializable, ErrorTrackerInterface {
 	 * Default Constructor for FHX2_Sample.
 	 */
 	public FHX2_Sample() {
-		
+	
 		sampleName = "";
 		openingChar = '.';
 		closingChar = '.';
@@ -76,7 +76,7 @@ public class FHX2_Sample implements Serializable, ErrorTrackerInterface {
 	 * @param inName (the name of the sample)
 	 */
 	public FHX2_Sample(String inName) {
-		
+	
 		sampleName = checkSampleNameLength(inName);
 		openingChar = '.';
 		closingChar = '.';
@@ -90,7 +90,7 @@ public class FHX2_Sample implements Serializable, ErrorTrackerInterface {
 	 * @param inSampleLastYear (the last year of the sample)
 	 */
 	public FHX2_Sample(int inSampleFirstYear, int inSampleLastYear) {
-		
+	
 		sampleFirstYear = inSampleFirstYear;
 		sampleLastYear = inSampleLastYear;
 		openingChar = '.';
@@ -108,7 +108,7 @@ public class FHX2_Sample implements Serializable, ErrorTrackerInterface {
 	 * @param inBark (whether or not the sample ends at the bark)
 	 */
 	public FHX2_Sample(String inName, int inSampleFirstYear, int inSampleLastYear, boolean inPith, boolean inBark) {
-		
+	
 		sampleName = checkSampleNameLength(inName);
 		sampleFirstYear = inSampleFirstYear;
 		sampleLastYear = inSampleLastYear;
@@ -119,12 +119,12 @@ public class FHX2_Sample implements Serializable, ErrorTrackerInterface {
 			openingChar = '[';
 		else
 			openingChar = '{';
-			
+		
 		if (inBark)
 			closingChar = ']';
 		else
 			closingChar = '}';
-			
+		
 		initializeTables();
 	}
 	
@@ -132,7 +132,7 @@ public class FHX2_Sample implements Serializable, ErrorTrackerInterface {
 	 * Initializes the event and recording tables.
 	 */
 	private void initializeTables() {
-		
+	
 		eventTable = new EventTable(this);
 		recordingTable = new RecordingTable(this);
 	}
@@ -142,7 +142,7 @@ public class FHX2_Sample implements Serializable, ErrorTrackerInterface {
 	 */
 	@Override
 	public String toString() {
-		
+	
 		return sampleName + " [" + sampleFirstYear + "–" + sampleLastYear + "]";
 	}
 	
@@ -154,7 +154,7 @@ public class FHX2_Sample implements Serializable, ErrorTrackerInterface {
 	 * @return tempString
 	 */
 	public String toString(int inDatasetFirstYear, int inDatasetLastYear) {
-		
+	
 		String tempString = "";
 		for (int i = inDatasetFirstYear; i <= inDatasetLastYear; i++)
 			tempString += charAt(i);
@@ -167,7 +167,7 @@ public class FHX2_Sample implements Serializable, ErrorTrackerInterface {
 	 * @return sampleName
 	 */
 	public String getSampleName() {
-		
+	
 		return sampleName;
 	}
 	
@@ -177,7 +177,7 @@ public class FHX2_Sample implements Serializable, ErrorTrackerInterface {
 	 * @param inName
 	 */
 	public void setSampleName(String inName) {
-		
+	
 		sampleName = checkSampleNameLength(inName);
 	}
 	
@@ -187,7 +187,7 @@ public class FHX2_Sample implements Serializable, ErrorTrackerInterface {
 	 * @return sampleFirstYear
 	 */
 	public int getSampleFirstYear() {
-		
+	
 		return sampleFirstYear;
 	}
 	
@@ -197,7 +197,7 @@ public class FHX2_Sample implements Serializable, ErrorTrackerInterface {
 	 * @param inSampleFirstYear
 	 */
 	public void setSampleFirstYear(int inSampleFirstYear) {
-		
+	
 		sampleFirstYear = inSampleFirstYear;
 		fixEventsAndRecordingsWithNewYears();
 	}
@@ -208,7 +208,7 @@ public class FHX2_Sample implements Serializable, ErrorTrackerInterface {
 	 * @return sampleLastYear
 	 */
 	public int getSampleLastYear() {
-		
+	
 		return sampleLastYear;
 	}
 	
@@ -218,7 +218,7 @@ public class FHX2_Sample implements Serializable, ErrorTrackerInterface {
 	 * @param inSampleLastYear
 	 */
 	public void setSampleLastYear(int inSampleLastYear) {
-		
+	
 		sampleLastYear = inSampleLastYear;
 		fixEventsAndRecordingsWithNewYears();
 	}
@@ -229,7 +229,7 @@ public class FHX2_Sample implements Serializable, ErrorTrackerInterface {
 	 * @return true if the sample begins with pith, false otherwise
 	 */
 	public boolean hasPith() {
-		
+	
 		return pith;
 	}
 	
@@ -239,7 +239,7 @@ public class FHX2_Sample implements Serializable, ErrorTrackerInterface {
 	 * @return true if the sample ends with bark, false otherwise
 	 */
 	public boolean hasBark() {
-		
+	
 		return bark;
 	}
 	
@@ -249,7 +249,7 @@ public class FHX2_Sample implements Serializable, ErrorTrackerInterface {
 	 * @param inPith
 	 */
 	public void setPith(boolean inPith) {
-		
+	
 		pith = inPith;
 		
 		// Only update the character if series is not started with an event
@@ -268,7 +268,7 @@ public class FHX2_Sample implements Serializable, ErrorTrackerInterface {
 	 * @param inBark
 	 */
 	public void setBark(boolean inBark) {
-		
+	
 		bark = inBark;
 		
 		// Only update the character if the series is not ended with an event
@@ -287,7 +287,7 @@ public class FHX2_Sample implements Serializable, ErrorTrackerInterface {
 	 * @return true if it is an event, false otherwise
 	 */
 	public Boolean sampleStartsWithEvent() {
-		
+	
 		return sampleFirstYear == SampleController.getYearOfFirstEventInSelectedSample();
 	}
 	
@@ -297,7 +297,7 @@ public class FHX2_Sample implements Serializable, ErrorTrackerInterface {
 	 * @return true if it is an event, false otherwise
 	 */
 	public Boolean sampleEndsWithEvent() {
-		
+	
 		return sampleLastYear == SampleController.getYearOfLastEventInSelectedSample();
 	}
 	
@@ -307,7 +307,7 @@ public class FHX2_Sample implements Serializable, ErrorTrackerInterface {
 	 * @return openingChar
 	 */
 	private char sampleFirstYearAsChar() {
-		
+	
 		return openingChar;
 	}
 	
@@ -317,7 +317,7 @@ public class FHX2_Sample implements Serializable, ErrorTrackerInterface {
 	 * @return closingChar
 	 */
 	private char sampleLastYearAsChar() {
-		
+	
 		return closingChar;
 	}
 	
@@ -325,7 +325,7 @@ public class FHX2_Sample implements Serializable, ErrorTrackerInterface {
 	 * Updates the opening character of the sample.
 	 */
 	public void updateOpeningChar() {
-		
+	
 		if (sampleStartsWithEvent())
 			openingChar = eventTable.getEarliestEvent().getEventType();
 		else
@@ -341,7 +341,7 @@ public class FHX2_Sample implements Serializable, ErrorTrackerInterface {
 	 * Updates the closing character of the sample.
 	 */
 	public void updateClosingChar() {
-		
+	
 		if (sampleEndsWithEvent())
 			closingChar = eventTable.getLatestEvent().getEventType();
 		else
@@ -360,7 +360,7 @@ public class FHX2_Sample implements Serializable, ErrorTrackerInterface {
 	 * @return true if contained, false otherwise
 	 */
 	public boolean containsYear(int year) {
-		
+	
 		return year >= sampleFirstYear && year <= sampleLastYear;
 	}
 	
@@ -371,12 +371,12 @@ public class FHX2_Sample implements Serializable, ErrorTrackerInterface {
 	 * @return "" if the name exceeds the length requirement, name otherwise
 	 */
 	private String checkSampleNameLength(String inputName) {
-		
+	
 		if (inputName.length() > FileController.FHX2_MAX_SAMPLE_NAME_LENGTH && FileController.isEnforcingOldReqs())
 		{
 			FireHistoryRecorder.getFeedbackMessagePanel().updateFeedbackMessage(FeedbackMessageType.WARNING,
 					FeedbackDisplayProtocol.MANUAL_HIDE, FHX2_SAMPLE_NAME_LENGTH_MESSAGE);
-					
+			
 			return "";
 		}
 		
@@ -398,7 +398,7 @@ public class FHX2_Sample implements Serializable, ErrorTrackerInterface {
 	 * @return the number of events in the sample
 	 */
 	public int getNumOfEvents() {
-		
+	
 		return eventTable.getNumOfEvents();
 	}
 	
@@ -409,7 +409,7 @@ public class FHX2_Sample implements Serializable, ErrorTrackerInterface {
 	 * @return the event if it exists, null otherwise
 	 */
 	public FHX2_Event getEvent(int index) {
-		
+	
 		return eventTable.getEvent(index);
 	}
 	
@@ -417,7 +417,7 @@ public class FHX2_Sample implements Serializable, ErrorTrackerInterface {
 	 * Gets an ArrayList of all events in the eventTable.
 	 */
 	public ArrayList<FHX2_Event> getEvents() {
-		
+	
 		return eventTable.getEvents();
 	}
 	
@@ -427,7 +427,7 @@ public class FHX2_Sample implements Serializable, ErrorTrackerInterface {
 	 * @return
 	 */
 	public EventTable getEventTable() {
-		
+	
 		return eventTable;
 	}
 	
@@ -437,7 +437,7 @@ public class FHX2_Sample implements Serializable, ErrorTrackerInterface {
 	 * @return 0 if nothing is available (year 0 does not exist)
 	 */
 	public int getNextAvailableEventYear() {
-		
+	
 		return getNextAvailableEventYear(sampleFirstYear);
 	}
 	
@@ -448,19 +448,19 @@ public class FHX2_Sample implements Serializable, ErrorTrackerInterface {
 	 * @return 0 if nothing is available (year 0 does not exist)
 	 */
 	public int getNextAvailableEventYear(int preferredYear) {
-		
+	
 		int curYear = preferredYear;
 		
 		// First check for the preferred year and any years ahead of it
 		for (; curYear <= sampleLastYear; curYear++)
 			if (eventYearAvailable(curYear))
 				return curYear;
-				
+		
 		// Now check for any years before the preferred year
 		for (curYear = sampleFirstYear; curYear < preferredYear; curYear++)
 			if (eventYearAvailable(curYear))
 				return curYear;
-				
+		
 		// No years available
 		return 0;
 	}
@@ -471,7 +471,7 @@ public class FHX2_Sample implements Serializable, ErrorTrackerInterface {
 	 * @param inEvent
 	 */
 	public void addEvent(FHX2_Event inEvent) {
-		
+	
 		eventTable.addEvent(inEvent);
 	}
 	
@@ -481,7 +481,7 @@ public class FHX2_Sample implements Serializable, ErrorTrackerInterface {
 	 * @param index
 	 */
 	public void removeEvent(int index) {
-		
+	
 		eventTable.removeEvent(index);
 	}
 	
@@ -492,7 +492,7 @@ public class FHX2_Sample implements Serializable, ErrorTrackerInterface {
 	 * @param inEventType
 	 */
 	public int changeEventType(int inEventIndex, char inEventType) {
-		
+	
 		return eventTable.changeEventType(inEventIndex, inEventType);
 	}
 	
@@ -503,7 +503,7 @@ public class FHX2_Sample implements Serializable, ErrorTrackerInterface {
 	 * @return true if available, false otherwise
 	 */
 	public boolean eventYearAvailable(int year) {
-		
+	
 		return (year != 0 && isYearInRecordings(year) && !eventTable.yearHasAnEvent(year));
 	}
 	
@@ -514,7 +514,7 @@ public class FHX2_Sample implements Serializable, ErrorTrackerInterface {
 	 * @return true if an event occurred, false otherwise
 	 */
 	public boolean hasEventInYear(int year) {
-		
+	
 		for (FHX2_Event evt : eventTable.getEvents())
 			if (evt.containsYear(year))
 				return true;
@@ -525,7 +525,7 @@ public class FHX2_Sample implements Serializable, ErrorTrackerInterface {
 	 * Redraws the eventTable in the GUI.
 	 */
 	public void redrawEventTable() {
-		
+	
 		eventTable.redrawTable();
 	}
 	
@@ -533,7 +533,7 @@ public class FHX2_Sample implements Serializable, ErrorTrackerInterface {
 	 * Sorts events in the sample according to their year of occurrence.
 	 */
 	public void sortEvents() {
-		
+	
 		eventTable.sortEvents();
 	}
 	
@@ -547,7 +547,7 @@ public class FHX2_Sample implements Serializable, ErrorTrackerInterface {
 	 * @return the number of recordings in the sample
 	 */
 	public int getNumOfRecordings() {
-		
+	
 		return recordingTable.getNumOfRecordings();
 	}
 	
@@ -558,7 +558,7 @@ public class FHX2_Sample implements Serializable, ErrorTrackerInterface {
 	 * @return
 	 */
 	public FHX2_Recording getRecording(int index) {
-		
+	
 		return recordingTable.getRecording(index);
 	}
 	
@@ -566,7 +566,7 @@ public class FHX2_Sample implements Serializable, ErrorTrackerInterface {
 	 * Gets an ArrayList of all recordings in the recordingTable.
 	 */
 	public ArrayList<FHX2_Recording> getRecordings() {
-		
+	
 		return recordingTable.getRecordings();
 	}
 	
@@ -576,7 +576,7 @@ public class FHX2_Sample implements Serializable, ErrorTrackerInterface {
 	 * @return
 	 */
 	public RecordingTable getRecordingTable() {
-		
+	
 		return recordingTable;
 	}
 	
@@ -586,7 +586,7 @@ public class FHX2_Sample implements Serializable, ErrorTrackerInterface {
 	 * @return 0 if nothing is available (year 0 does not exist)
 	 */
 	public int getNextAvailableRecordingYear() {
-		
+	
 		return getNextAvailableRecordingYear(sampleFirstYear);
 	}
 	
@@ -597,19 +597,19 @@ public class FHX2_Sample implements Serializable, ErrorTrackerInterface {
 	 * @return 0 if nothing is available (year 0 does not exist)
 	 */
 	public int getNextAvailableRecordingYear(int preferredYear) {
-		
+	
 		int curYear = preferredYear;
 		
 		// First check for the preferred year and any years ahead of it
 		for (; curYear <= sampleLastYear; curYear++)
 			if (curYear != 0 && !isYearInRecordings(curYear))
 				return curYear;
-				
+		
 		// Now check for any years before the preferred year
 		for (curYear = sampleFirstYear; curYear < preferredYear; curYear++)
 			if (curYear != 0 && !isYearInRecordings(curYear))
 				return curYear;
-				
+		
 		// No years available
 		return 0;
 	}
@@ -620,7 +620,7 @@ public class FHX2_Sample implements Serializable, ErrorTrackerInterface {
 	 * @param recording
 	 */
 	public void addRecording(FHX2_Recording recording) {
-		
+	
 		recordingTable.addRecording(recording);
 	}
 	
@@ -630,8 +630,8 @@ public class FHX2_Sample implements Serializable, ErrorTrackerInterface {
 	 * @param index
 	 */
 	public void removeRecording(int index) {
-		
-		removeRecording(index, false);
+	
+		removeRecording(index, true);
 	}
 	
 	/**
@@ -642,7 +642,7 @@ public class FHX2_Sample implements Serializable, ErrorTrackerInterface {
 	 * @param ignoreOutOfRangeEvents
 	 */
 	public void removeRecording(int index, boolean ignoreOutOfRangeEvents) {
-		
+	
 		recordingTable.removeRecording(index);
 		
 		// If there are no recordings left, delete all of the events
@@ -674,7 +674,7 @@ public class FHX2_Sample implements Serializable, ErrorTrackerInterface {
 	 * @return true if it's in a recording, false otherwise
 	 */
 	public boolean isYearInRecordings(int year) {
-		
+	
 		return recordingTable.isYearInRecordings(year);
 	}
 	
@@ -682,7 +682,7 @@ public class FHX2_Sample implements Serializable, ErrorTrackerInterface {
 	 * Adjusts the table values with the new years after a change has occurred.
 	 */
 	private void fixEventsAndRecordingsWithNewYears() {
-		
+	
 		// Delete any events outside of the new range
 		eventTable.deleteEventsNotInRange(sampleFirstYear, sampleLastYear);
 		
@@ -701,7 +701,7 @@ public class FHX2_Sample implements Serializable, ErrorTrackerInterface {
 	 * @return the representing the event at inYear
 	 */
 	private char charAt(int inYear) {
-		
+	
 		char returnChar = '.';
 		for (int i = 0; i < recordingTable.getNumOfRecordings(); i++)
 			if (recordingTable.getRecording(i).containsYear(inYear))
@@ -709,21 +709,21 @@ public class FHX2_Sample implements Serializable, ErrorTrackerInterface {
 				returnChar = '|';
 				break;
 			}
-			
+		
 		for (int i = 0; i < eventTable.getNumOfEvents(); i++)
 			if (eventTable.getEvent(i).getEventYear() == inYear)
 			{
 				returnChar = eventTable.getEvent(i).getEventType();
 				break;
 			}
-			
+		
 		// Maintenance request: Fixed General Errors 4, Sample without events does not save start and end year.
 		if (inYear == sampleFirstYear)
 			returnChar = sampleFirstYearAsChar();
-			
+		
 		if (inYear == sampleLastYear && (returnChar == '.' || returnChar == '|'))
 			returnChar = sampleLastYearAsChar();
-			
+		
 		return returnChar;
 	}
 	
@@ -735,7 +735,7 @@ public class FHX2_Sample implements Serializable, ErrorTrackerInterface {
 	 * @throws CompositeFileException
 	 */
 	public void parseDataString(String inData, int dataSetFirstYear) throws CompositeFileException {
-		
+	
 		boolean openingCharAlreadySet = false; // Valid opening characters include: [, {, or a letter (an event)
 		boolean closingCharAlreadySet = false; // Valid closing characters include: ], }, or a letter (an event)
 		char previousChar = '.';
@@ -767,22 +767,20 @@ public class FHX2_Sample implements Serializable, ErrorTrackerInterface {
 						else if (Character.isLetter(openingChar))
 						{
 							FileController.setCorruptedState(true);
-							errors.add(new SampleErrorModel(
-									"Sample \"" + sampleName + "\" contains more than one start year (opening bracket after event).",
-									currentYear));
+							errors.add(new SampleErrorModel("Sample \"" + sampleName
+									+ "\" contains more than one start year (opening bracket after event).", currentYear));
 						}
 						
 						// Sample has multiple opening brackets
 						else
 						{
 							FileController.setCorruptedState(true);
-							errors.add(new SampleErrorModel(
-									"Sample \"" + sampleName + "\" contains more than one start year (multiple opening brackets).",
-									currentYear));
+							errors.add(new SampleErrorModel("Sample \"" + sampleName
+									+ "\" contains more than one start year (multiple opening brackets).", currentYear));
 						}
 						
 						break;
-						
+					
 					case '{':
 						
 						// Sample starts with no pith
@@ -798,33 +796,28 @@ public class FHX2_Sample implements Serializable, ErrorTrackerInterface {
 						else if (Character.isLetter(openingChar))
 						{
 							FileController.setCorruptedState(true);
-							errors.add(new SampleErrorModel(
-									"Sample \"" + sampleName + "\" contains more than one start year (opening bracket after event).",
-									currentYear));
+							errors.add(new SampleErrorModel("Sample \"" + sampleName
+									+ "\" contains more than one start year (opening bracket after event).", currentYear));
 						}
 						
 						// Sample has multiple opening brackets
 						else
 						{
 							FileController.setCorruptedState(true);
-							errors.add(new SampleErrorModel(
-									"Sample \"" + sampleName + "\" contains more than one start year (multiple opening brackets).",
-									currentYear));
+							errors.add(new SampleErrorModel("Sample \"" + sampleName
+									+ "\" contains more than one start year (multiple opening brackets).", currentYear));
 						}
 						
 						break;
-						
+					
 					case ']':
 						
 						// Sample has a closing bracket before any opening character
 						if (!openingCharAlreadySet)
 						{
 							FileController.setCorruptedState(true);
-							errors.add(
-									new SampleErrorModel(
-											"Sample \"" + sampleName
-													+ "\" contains last year before first year (closing bracket before valid data).",
-											currentYear));
+							errors.add(new SampleErrorModel("Sample \"" + sampleName
+									+ "\" contains last year before first year (closing bracket before valid data).", currentYear));
 						}
 						
 						// Sample ends with bark
@@ -840,9 +833,8 @@ public class FHX2_Sample implements Serializable, ErrorTrackerInterface {
 							else
 							{
 								FileController.setCorruptedState(true);
-								errors.add(new SampleErrorModel(
-										"Sample \"" + sampleName + "\" contains more than one end year (multiple closing brackets).",
-										currentYear));
+								errors.add(new SampleErrorModel("Sample \"" + sampleName
+										+ "\" contains more than one end year (multiple closing brackets).", currentYear));
 							}
 							
 							bark = true;
@@ -857,18 +849,15 @@ public class FHX2_Sample implements Serializable, ErrorTrackerInterface {
 						}
 						
 						break;
-						
+					
 					case '}':
 						
 						// Sample has a closing bracket before any opening character
 						if (!openingCharAlreadySet)
 						{
 							FileController.setCorruptedState(true);
-							errors.add(
-									new SampleErrorModel(
-											"Sample \"" + sampleName
-													+ "\" contains last year before first year (closing bracket before valid data).",
-											currentYear));
+							errors.add(new SampleErrorModel("Sample \"" + sampleName
+									+ "\" contains last year before first year (closing bracket before valid data).", currentYear));
 						}
 						
 						// Sample ends with no bark
@@ -884,9 +873,8 @@ public class FHX2_Sample implements Serializable, ErrorTrackerInterface {
 							else
 							{
 								FileController.setCorruptedState(true);
-								errors.add(new SampleErrorModel(
-										"Sample \"" + sampleName + "\" contains more than one end year (multiple closing brackets).",
-										currentYear));
+								errors.add(new SampleErrorModel("Sample \"" + sampleName
+										+ "\" contains more than one end year (multiple closing brackets).", currentYear));
 							}
 							
 							bark = false;
@@ -901,7 +889,7 @@ public class FHX2_Sample implements Serializable, ErrorTrackerInterface {
 						}
 						
 						break;
-						
+					
 					case '.':
 						
 						// Close the last recording if the previous year was a recording or an event
@@ -911,18 +899,15 @@ public class FHX2_Sample implements Serializable, ErrorTrackerInterface {
 						}
 						
 						break;
-						
+					
 					case '|':
 						// Sample starts with a recording year
 						if (!openingCharAlreadySet)
 						{
 							FileController.setCorruptedState(true);
-							errors.add(
-									new SampleErrorModel(
-											"Sample \"" + sampleName
-													+ "\" starts with a recording year (pipe before any opening bracket or event).",
-											currentYear));
-											
+							errors.add(new SampleErrorModel("Sample \"" + sampleName
+									+ "\" starts with a recording year (pipe before any opening bracket or event).", currentYear));
+							
 							pith = false;
 							sampleFirstYear = currentYear;
 							openingCharAlreadySet = true;
@@ -945,7 +930,7 @@ public class FHX2_Sample implements Serializable, ErrorTrackerInterface {
 						}
 						
 						break;
-						
+					
 					default:
 						
 						// Sample starts with an event
@@ -989,7 +974,7 @@ public class FHX2_Sample implements Serializable, ErrorTrackerInterface {
 		// This is the only check we can run on a sample-by-sample basis
 		if (closingChar == '|' && !FileController.isOverrideCompositeWarnings())
 			throw new CompositeFileException("One or more series ends with a recording year.");
-			
+		
 		// Close FHRecorder if a composite file is detected (files with no header that meet these criteria are always composite)
 		/*
 		 * if (!IOController.getFile().getOptionalPart().fileHasValidHeader()) { if (openingChar == '{' || Character.isLetter(openingChar)
@@ -1016,10 +1001,9 @@ public class FHX2_Sample implements Serializable, ErrorTrackerInterface {
 			else
 			{
 				FileController.setCorruptedState(true);
-				errors.add(new SampleErrorModel(
-						"Sample \"" + sampleName + "\" does not have a first or last year (no brackets or events in data).",
-						dataSetFirstYear));
-						
+				errors.add(new SampleErrorModel("Sample \"" + sampleName
+						+ "\" does not have a first or last year (no brackets or events in data).", dataSetFirstYear));
+				
 				sampleFirstYear = IOController.getFile().getRequiredPart().getDataSetFirstYear();
 				sampleLastYear = IOController.getFile().getRequiredPart().getDataSetLastYear();
 			}
@@ -1056,19 +1040,19 @@ public class FHX2_Sample implements Serializable, ErrorTrackerInterface {
 	private Vector<ChangeListener> listeners = new Vector<ChangeListener>();
 	
 	public synchronized void addChangeListener(ChangeListener l) {
-		
+	
 		if (!listeners.contains(l))
 			listeners.add(l);
 	}
 	
 	public synchronized void removeChangeListener(ChangeListener l) {
-		
+	
 		listeners.remove(l);
 	}
 	
 	@Override
 	public ArrayList<SampleErrorModel> getErrors() {
-		
+	
 		return errors;
 	}
 }

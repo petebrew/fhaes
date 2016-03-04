@@ -36,13 +36,15 @@ public class RecordingController {
 	 * Adds a new recording to the currently selected sample.
 	 */
 	public static void addNewRecording() {
-		
+	
 		if (SampleController.getSelectedSampleIndex() > -1)
 		{
 			FHX2_Recording newRecording = null;
 			FHX2_Sample selectedSample = IOController.getFile().getRequiredPart().getSample(SampleController.getSelectedSampleIndex());
+			
 			if (selectedSample.getNumOfRecordings() > 0)
 			{
+				// There are existing recordings so increment on from the last until the end of the sample
 				FHX2_Recording prevRecording = selectedSample.getRecording(selectedSample.getNumOfRecordings() - 1);
 				int year = selectedSample.getNextAvailableRecordingYear(prevRecording.getEndYear() + 1);
 				if (year != 0)
@@ -50,14 +52,30 @@ public class RecordingController {
 					newRecording = new FHX2_Recording(year, year);
 				}
 			}
+			else if (selectedSample.getEvent(0) != null)
+			{
+				// There are no existing recordings but there is one or more events. Create recording
+				// years from the first event until the end of the sample
+				FHX2_Event event = selectedSample.getEvent(0);
+				
+				int firstyear = event.getEventYear();
+				int lastyear = selectedSample.getSampleLastYear() - 1;
+				if (firstyear != 0 && lastyear != 0)
+				{
+					newRecording = new FHX2_Recording(firstyear, lastyear);
+				}
+			}
 			else
 			{
+				// There are no existing recordings and no events so just create recording years for
+				// the length of the sample
 				int firstyear = selectedSample.getNextAvailableRecordingYear();
 				int lastyear = selectedSample.getSampleLastYear() - 1;
 				if (firstyear != 0 && lastyear != 0)
 				{
 					newRecording = new FHX2_Recording(firstyear, lastyear);
 				}
+				
 			}
 			if (newRecording != null)
 			{
@@ -73,7 +91,7 @@ public class RecordingController {
 	 * @param recording
 	 */
 	public static void addRecordingFromFirstEventToEnd() {
-		
+	
 		if (SampleController.getSelectedSampleIndex() > -1)
 		{
 			FHX2_Recording newRecording = new FHX2_Recording();
@@ -84,7 +102,7 @@ public class RecordingController {
 			
 			if (events.size() == 0)
 				return;
-				
+			
 			Collections.sort(events, new CompareEventYears());
 			FHX2_Event event = events.get(0);
 			
@@ -96,7 +114,7 @@ public class RecordingController {
 				firstyear++;
 			if (lastyear == 0)
 				lastyear--;
-				
+			
 			newRecording.setStartYear(firstyear);
 			newRecording.setEndYear(lastyear);
 			
@@ -112,7 +130,7 @@ public class RecordingController {
 	 * @param recording
 	 */
 	public static void addRecordingFromBeginningToEnd() {
-		
+	
 		if (SampleController.getSelectedSampleIndex() > -1)
 		{
 			FHX2_Recording newRecording = new FHX2_Recording();
@@ -126,7 +144,7 @@ public class RecordingController {
 				firstyear++;
 			if (lastyear == 0)
 				lastyear--;
-				
+			
 			newRecording.setStartYear(firstyear);
 			newRecording.setEndYear(lastyear);
 			
@@ -137,12 +155,36 @@ public class RecordingController {
 	}
 	
 	/**
+	 * Add recording years only for years where there are events
+	 */
+	public static void addRecordingEventYearsOnly() {
+	
+		if (SampleController.getSelectedSampleIndex() > -1)
+		{
+			
+			FHX2_Sample selectedSample = IOController.getFile().getRequiredPart().getSample(SampleController.getSelectedSampleIndex());
+			
+			for (FHX2_Event event : selectedSample.getEvents())
+			{
+				if (event.getEventYear() == null)
+					continue;
+				
+				FHX2_Recording newRecording = new FHX2_Recording();
+				newRecording.setStartYear(event.getEventYear());
+				newRecording.setEndYear(event.getEventYear());
+				selectedSample.addRecording(newRecording);
+			}
+		}
+		SampleController.setSelectedSampleIndex(SampleController.getSelectedSampleIndex());
+	}
+	
+	/**
 	 * Removes a recording from the currently selected sample.
 	 * 
 	 * @param index
 	 */
 	public static void deleteRecording(int index) {
-		
+	
 		FHX2_Sample selectedSample = IOController.getFile().getRequiredPart().getSample(SampleController.getSelectedSampleIndex());
 		selectedSample.removeRecording(index);
 	}
@@ -151,7 +193,7 @@ public class RecordingController {
 	 * Delete all recordings from the currently selected sample but don't delete any events.
 	 */
 	public static void deleteAllRecordingsButNotEvents() {
-		
+	
 		FHX2_Sample selectedSample = IOController.getFile().getRequiredPart().getSample(SampleController.getSelectedSampleIndex());
 		while (selectedSample.getNumOfRecordings() > 0)
 		{

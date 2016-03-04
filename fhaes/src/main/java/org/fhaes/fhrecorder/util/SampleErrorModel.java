@@ -24,7 +24,7 @@ package org.fhaes.fhrecorder.util;
  */
 public class SampleErrorModel {
 	
-	private int year;
+	private Integer year;
 	private String message;
 	
 	/**
@@ -33,9 +33,21 @@ public class SampleErrorModel {
 	 * @param message
 	 * @param year
 	 */
-	public SampleErrorModel(String message, int year) {
-		
+	public SampleErrorModel(String message, Integer year) {
+	
 		this.year = year;
+		this.message = message;
+	}
+	
+	/**
+	 * Default Constructor for SampleErrorModel.
+	 * 
+	 * @param message
+	 * @param year
+	 */
+	public SampleErrorModel(String message) {
+	
+		this.year = null;
 		this.message = message;
 	}
 	
@@ -44,8 +56,8 @@ public class SampleErrorModel {
 	 * 
 	 * @return year
 	 */
-	public int getYear() {
-		
+	public Integer getYear() {
+	
 		return year;
 	}
 	
@@ -55,7 +67,7 @@ public class SampleErrorModel {
 	 * @return message
 	 */
 	public String getMessage() {
-		
+	
 		return message;
 	}
 	
@@ -64,7 +76,7 @@ public class SampleErrorModel {
 	 */
 	@Override
 	public String toString() {
-		
+	
 		return String.format("%d: %s", year, message);
 	}
 }

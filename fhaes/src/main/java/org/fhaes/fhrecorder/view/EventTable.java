@@ -59,19 +59,19 @@ public class EventTable extends JTable {
 		private int i;
 		
 		EventTypes(String str, int in) {
-			
+		
 			string = str;
 			i = in;
 		}
 		
 		@Override
 		public String toString() {
-			
+		
 			return string;
 		}
 		
 		public int getInt() {
-			
+		
 			return i;
 		}
 	};
@@ -99,7 +99,7 @@ public class EventTable extends JTable {
 		private int i;
 		
 		EventSeasons(String str, char t, int in) {
-			
+		
 			string = str;
 			type = t;
 			i = in;
@@ -107,17 +107,17 @@ public class EventTable extends JTable {
 		
 		@Override
 		public String toString() {
-			
+		
 			return string;
 		}
 		
 		public char typeChar() {
-			
+		
 			return type;
 		}
 		
 		public int getInt() {
-			
+		
 			return i;
 		}
 	};
@@ -138,19 +138,19 @@ public class EventTable extends JTable {
 		private int i;
 		
 		Columns(String str, int in) {
-			
+		
 			string = str;
 			i = in;
 		}
 		
 		@Override
 		public String toString() {
-			
+		
 			return string;
 		}
 		
 		public int getInt() {
-			
+		
 			return i;
 		}
 	}
@@ -160,7 +160,7 @@ public class EventTable extends JTable {
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public EventTable(FHX2_Sample s) {
-		
+	
 		events = new ArrayList<FHX2_Event>();
 		sample = s;
 		getTableHeader().setReorderingAllowed(false);
@@ -206,7 +206,7 @@ public class EventTable extends JTable {
 	 * @return the event, if it exists
 	 */
 	public FHX2_Event getEvent(int index) {
-		
+	
 		if (index < events.size() && index > -1)
 			return events.get(index);
 		return null;
@@ -218,7 +218,7 @@ public class EventTable extends JTable {
 	 * @return the ArrayList of events
 	 */
 	public ArrayList<FHX2_Event> getEvents() {
-		
+	
 		return events;
 	}
 	
@@ -228,7 +228,7 @@ public class EventTable extends JTable {
 	 * @return the number of events in the table
 	 */
 	public int getNumOfEvents() {
-		
+	
 		return events.size();
 	}
 	
@@ -238,7 +238,7 @@ public class EventTable extends JTable {
 	 * @return the earliest event
 	 */
 	public FHX2_Event getEarliestEvent() {
-		
+	
 		int minIndex = 0;
 		for (int i = 0; i < getNumOfEvents(); i++)
 			if (events.get(i).getEventYear() < events.get(minIndex).getEventYear())
@@ -252,7 +252,7 @@ public class EventTable extends JTable {
 	 * @return the latest event
 	 */
 	public FHX2_Event getLatestEvent() {
-		
+	
 		int maxIndex = 0;
 		for (int i = 0; i < getNumOfEvents(); i++)
 			if (events.get(i).getEventYear() > events.get(maxIndex).getEventYear())
@@ -264,7 +264,7 @@ public class EventTable extends JTable {
 	 * Adds a new event to the table and redraws it.
 	 */
 	public void addNewEvent() {
-		
+	
 		events.add(new FHX2_Event());
 		redrawTable();
 	}
@@ -275,7 +275,7 @@ public class EventTable extends JTable {
 	 * @param event
 	 */
 	public void addEvent(FHX2_Event event) {
-		
+	
 		events.add(event);
 		redrawTable();
 	}
@@ -286,7 +286,7 @@ public class EventTable extends JTable {
 	 * @param index
 	 */
 	public void removeEvent(int index) {
-		
+	
 		if (index < events.size() && index > -1)
 			events.remove(index);
 		redrawTable();
@@ -296,7 +296,7 @@ public class EventTable extends JTable {
 	 * Removes all events from the table.
 	 */
 	public void deleteAllEvents() {
-		
+	
 		events.clear();
 		redrawTable();
 	}
@@ -307,7 +307,7 @@ public class EventTable extends JTable {
 	 * @param year
 	 */
 	public void deleteEventInYear(int year) {
-		
+	
 		for (int i = 0; i < events.size(); i++)
 		{
 			if (events.get(i).containsYear(year))
@@ -326,7 +326,7 @@ public class EventTable extends JTable {
 	 * @param endYear
 	 */
 	public void deleteEventsNotInRange(int startYear, int endYear) {
-		
+	
 		for (int i = events.size() - 1; i >= 0; i--)
 			if (events.get(i).getEventYear() < startYear || events.get(i).getEventYear() > endYear)
 				events.remove(i);
@@ -341,7 +341,7 @@ public class EventTable extends JTable {
 	 * @return the year of the event that was changed
 	 */
 	public int changeEventType(int inEventIndex, char inEventType) {
-		
+	
 		FHX2_Event temp = events.get(inEventIndex);
 		temp.setEventType(inEventType);
 		
@@ -354,7 +354,7 @@ public class EventTable extends JTable {
 	 */
 	@Override
 	public boolean isCellEditable(int row, int col) {
-		
+	
 		return true;
 	}
 	
@@ -362,13 +362,13 @@ public class EventTable extends JTable {
 	 * Controls the redrawing of the table for whenever there is either an addition or a removal of an event.
 	 */
 	public void redrawTable() {
-		
+	
 		// First we remove all the rows in case something has changed
 		DefaultTableModel tableModel = (DefaultTableModel) getModel();
 		int rowCount = tableModel.getRowCount();
 		for (int i = rowCount - 1; i >= 0; i--)
 			tableModel.removeRow(i);
-			
+		
 		// Add the events back in as rows
 		for (int i = 0; i < events.size(); i++)
 		{
@@ -408,7 +408,16 @@ public class EventTable extends JTable {
 			{
 				row[Columns.EVENT_SEASON.getInt()] = EventSeasons.UNDETERMINED.toString();
 			}
-			row[Columns.EVENT_YEAR.getInt()] = ((Integer) events.get(i).getEventYear()).toString();
+			
+			Integer yearval = events.get(i).getEventYear();
+			if (yearval != null)
+			{
+				row[Columns.EVENT_YEAR.getInt()] = yearval.toString();
+			}
+			else
+			{
+				row[Columns.EVENT_YEAR.getInt()] = "";
+			}
 			tableModel.addRow(row);
 		}
 		revalidate();
@@ -421,7 +430,7 @@ public class EventTable extends JTable {
 	 */
 	@Override
 	public void setValueAt(final Object value, final int r, final int c) {
-		
+	
 		try
 		{
 			int col = super.convertColumnIndexToModel(c);
@@ -478,7 +487,7 @@ public class EventTable extends JTable {
 			}
 			else if (col == Columns.EVENT_YEAR.getInt())
 			{
-				int eventYear = Integer.parseInt(value.toString());
+				Integer eventYear = Integer.parseInt(value.toString());
 				if (eventYear <= sample.getSampleFirstYear())
 				{
 					eventYear = sample.getSampleFirstYear();
@@ -500,15 +509,19 @@ public class EventTable extends JTable {
 					eventYear = 1;
 				}
 				
+				events.get(row).setEventYear(eventYear);
+				super.setValueAt(Integer.toString(eventYear), r, c);
+				sortEvents();
+				
+				DataPanel.setCheckBoxEnabledValues();
+				
 				// The event must be in a recording range
-				if (sample.isYearInRecordings(eventYear) && sample.eventYearAvailable(eventYear))
-				{
-					events.get(row).setEventYear(eventYear);
-					super.setValueAt(Integer.toString(eventYear), r, c);
-					sortEvents();
-					
-					SampleInputPanel.setCheckBoxEnabledValues();
-				}
+				/*
+				 * if (sample.isYearInRecordings(eventYear) && sample.eventYearAvailable(eventYear)) {
+				 * events.get(row).setEventYear(eventYear); super.setValueAt(Integer.toString(eventYear), r, c); sortEvents();
+				 * 
+				 * DataPanel.setCheckBoxEnabledValues(); }
+				 */
 			}
 			else
 			{
@@ -525,7 +538,7 @@ public class EventTable extends JTable {
 	 * Sorts the event table.
 	 */
 	public void sortEvents() {
-		
+	
 		Collections.sort(events, new CompareEventYears());
 		redrawTable();
 	}
@@ -537,7 +550,7 @@ public class EventTable extends JTable {
 	 * @return true if there was an event, false otherwise
 	 */
 	public boolean yearHasAnEvent(int year) {
-		
+	
 		for (FHX2_Event event : events)
 			if (event.containsYear(year))
 				return true;

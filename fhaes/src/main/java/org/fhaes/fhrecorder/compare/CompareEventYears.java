@@ -35,6 +35,22 @@ public class CompareEventYears implements Comparator<FHX2_Event> {
 	 */
 	@Override
 	public int compare(FHX2_Event t, FHX2_Event t1) {
+	
+		if (t.getEventYear() == null)
+		{
+			if (t1.getEventYear() == null)
+			{
+				return 0;
+			}
+			else
+			{
+				return 1;
+			}
+		}
+		else if (t1.getEventYear() == null)
+		{
+			return -1;
+		}
 		
 		return t.getEventYear() - t1.getEventYear();
 	}

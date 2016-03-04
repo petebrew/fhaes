@@ -33,6 +33,8 @@ import javax.swing.JOptionPane;
 import org.fhaes.enums.FeedbackDisplayProtocol;
 import org.fhaes.enums.FeedbackMessageType;
 import org.fhaes.exceptions.CompositeFileException;
+import org.fhaes.fhrecorder.model.FHX2_Event;
+import org.fhaes.fhrecorder.model.FHX2_Sample;
 import org.fhaes.fhrecorder.util.CustomOptions;
 import org.fhaes.fhrecorder.util.YearSummary;
 import org.fhaes.fhrecorder.view.FireHistoryRecorder;
@@ -81,7 +83,7 @@ public class FileController {
 	 * @return true if yes, false if no
 	 */
 	public static Boolean isEnforcingOldReqs() {
-		
+	
 		return App.prefs.getBooleanPref(PrefKey.ENFORCE_FHX2_RESTRICTIONS, false);
 	}
 	
@@ -91,7 +93,7 @@ public class FileController {
 	 * @return true if the data has been changed since the file was opened, otherwise false
 	 */
 	public static Boolean isChangedSinceOpened() {
-		
+	
 		return isChangedSinceOpened;
 	}
 	
@@ -101,7 +103,7 @@ public class FileController {
 	 * @param b
 	 */
 	public static void setIsChangedSinceOpened(Boolean b) {
-		
+	
 		isChangedSinceOpened = b;
 	}
 	
@@ -111,7 +113,7 @@ public class FileController {
 	 * @return true if the file has been modified since the last save, otherwise false
 	 */
 	public static Boolean isChangedSinceLastSave() {
-		
+	
 		return isChangedSinceLastSave;
 	}
 	
@@ -121,7 +123,7 @@ public class FileController {
 	 * @param b
 	 */
 	public static void setIsChangedSinceLastSave(Boolean b) {
-		
+	
 		isChangedSinceLastSave = b;
 		if (b)
 			isChangedSinceOpened = true;
@@ -133,7 +135,7 @@ public class FileController {
 	 * @return true if errors were detected, false otherwise
 	 */
 	public static Boolean isFileCorrupted() {
-		
+	
 		return isCorrupted;
 	}
 	
@@ -143,7 +145,7 @@ public class FileController {
 	 * @return
 	 */
 	public static Boolean isFileNew() {
-		
+	
 		return isNewFile;
 	}
 	
@@ -153,7 +155,7 @@ public class FileController {
 	 * @param b
 	 */
 	public static void setCorruptedState(Boolean b) {
-		
+	
 		isCorrupted = b;
 	}
 	
@@ -163,7 +165,7 @@ public class FileController {
 	 * @return null if a new file was created, file path if a file was loaded
 	 */
 	public static File getSavedFile() {
-		
+	
 		if (filePath == null)
 			return null;
 		File f = new File(filePath);
@@ -176,7 +178,7 @@ public class FileController {
 	 * @param name
 	 */
 	public static void setTitleName(String name) {
-		
+	
 		thePrimaryWindow.setTitle(name);
 	}
 	
@@ -186,7 +188,7 @@ public class FileController {
 	 * @return true if it was originally defined, false otherwise
 	 */
 	public static Boolean wasLastYearDefinedInFile() {
-		
+	
 		return lastYearDefinedInFile;
 	}
 	
@@ -196,7 +198,7 @@ public class FileController {
 	 * @param inValue
 	 */
 	protected static void setLastYearDefinedInFile(Boolean inValue) {
-		
+	
 		lastYearDefinedInFile = inValue;
 	}
 	
@@ -206,7 +208,7 @@ public class FileController {
 	 * @param b
 	 */
 	protected static void setIsNewFile(Boolean b) {
-		
+	
 		isNewFile = b;
 	}
 	
@@ -214,7 +216,7 @@ public class FileController {
 	 * Calls the "showInput" method in GUI_FireHistoryRecorder.
 	 */
 	public static void showInput() {
-		
+	
 		thePrimaryWindow.showInput();
 	}
 	
@@ -222,7 +224,7 @@ public class FileController {
 	 * Calls the "showInfo" method in GUI_FireHistoryRecorder.
 	 */
 	public static void showInfo() {
-		
+	
 		thePrimaryWindow.showInfo();
 	}
 	
@@ -230,7 +232,7 @@ public class FileController {
 	 * Calls the "showComments" method in GUI_FireHistoryRecorder.
 	 */
 	public static void showComments() {
-		
+	
 		thePrimaryWindow.showComments();
 	}
 	
@@ -238,7 +240,7 @@ public class FileController {
 	 * Calls the "redrawSampleInputPanel" method in GUI_FireHistoryRecorder.
 	 */
 	public static void redrawSampleInputPanel() {
-		
+	
 		thePrimaryWindow.redrawSampleInputPanel();
 	}
 	
@@ -246,7 +248,7 @@ public class FileController {
 	 * Calls the "redrawEventPanel" method in GUI_FireHistoryRecorder.
 	 */
 	public static void redrawEventPanel() {
-		
+	
 		thePrimaryWindow.redrawEventPanel();
 	}
 	
@@ -254,7 +256,7 @@ public class FileController {
 	 * Calls the "enableCloseMenu" method in GUI_FireHistoryRecorder.
 	 */
 	public static void enableCloseMenu() {
-		
+	
 		thePrimaryWindow.enableDependentMenuItems();
 	}
 	
@@ -262,7 +264,7 @@ public class FileController {
 	 * Calls the "disableCloseMenu" method in GUI_FireHistoryRecorder.
 	 */
 	public static void disableCloseMenu() {
-		
+	
 		thePrimaryWindow.disableDependentMenuItems();
 	}
 	
@@ -270,7 +272,7 @@ public class FileController {
 	 * Redraws the necessary components to reflect updates that have been performed on the file since the last redraw.
 	 */
 	public static void displayUpdatedFile() {
-		
+	
 		SampleController.setSelectedSampleIndex(0);
 		thePrimaryWindow.generateScreens(IOController.getFile());
 		isChangedSinceLastSave = false;
@@ -282,11 +284,12 @@ public class FileController {
 	 * Issues a warning if the number of samples exceeds the original capabilities of FHX2
 	 */
 	public static void checkIfNumSamplesExceedsFHX2Reqs() {
-		
+	
 		if (IOController.getFile().getRequiredPart().getNumSamples() > FileController.FHX2_MAX_NUMBER_OF_SAMPLES
 				&& FileController.isEnforcingOldReqs())
 		{
-			FireHistoryRecorder.getFeedbackMessagePanel().updateFeedbackMessage(FeedbackMessageType.WARNING,
+			FireHistoryRecorder.getFeedbackMessagePanel().updateFeedbackMessage(
+					FeedbackMessageType.WARNING,
 					FeedbackDisplayProtocol.MANUAL_HIDE,
 					"The current number of samples (" + IOController.getFile().getRequiredPart().getNumSamples()
 							+ ") exceeds the capabilities of the original FHX2 software (maximum of 254).");
@@ -301,11 +304,12 @@ public class FileController {
 	 * Issues a warning if the data-set first year is below the minimum supported year of FHX2
 	 */
 	public static void checkIfYearLowerBoundaryIsWithinFHX2Reqs() {
-		
+	
 		if (IOController.getFile().getRequiredPart().getDataSetFirstYear() < FileController.FHX2_YEAR_LOWER_BOUNDARY
 				&& FileController.isEnforcingOldReqs())
 		{
-			FireHistoryRecorder.getFeedbackMessagePanel().updateFeedbackMessage(FeedbackMessageType.WARNING,
+			FireHistoryRecorder.getFeedbackMessagePanel().updateFeedbackMessage(
+					FeedbackMessageType.WARNING,
 					FeedbackDisplayProtocol.MANUAL_HIDE,
 					"The earliest year in the dataset (" + IOController.getFile().getRequiredPart().getDataSetFirstYear()
 							+ ") is below the minimum supported year of FHX2 (1200).");
@@ -320,11 +324,12 @@ public class FileController {
 	 * Issues a warning if the data-set last year is above the minimum supported year of FHX2
 	 */
 	public static void checkIfYearUpperBoundaryIsWithinFHX2Reqs() {
-		
+	
 		if (IOController.getFile().getRequiredPart().getDataSetLastYear() > FileController.FHX2_YEAR_UPPER_BOUNDARY
 				&& FileController.isEnforcingOldReqs())
 		{
-			FireHistoryRecorder.getFeedbackMessagePanel().updateFeedbackMessage(FeedbackMessageType.WARNING,
+			FireHistoryRecorder.getFeedbackMessagePanel().updateFeedbackMessage(
+					FeedbackMessageType.WARNING,
 					FeedbackDisplayProtocol.MANUAL_HIDE,
 					"The latest year in the dataset (" + IOController.getFile().getRequiredPart().getDataSetLastYear()
 							+ ") is above the maximum supported year of FHX2 (2020).");
@@ -339,7 +344,7 @@ public class FileController {
 	 * Handles the GUI-side setup of a new FHX2 file.
 	 */
 	public static void newFile() {
-		
+	
 		IOController.createNewFile();
 		setTitleName(progName);
 		SampleController.setSelectedSampleIndex(-1);
@@ -361,7 +366,7 @@ public class FileController {
 	 * @throws CompositeFileException
 	 */
 	public static void importFile(File theImportedFile) throws CompositeFileException {
-		
+	
 		filePath = theImportedFile.getPath();
 		fileName = theImportedFile.getName();
 		setCorruptedState(false);
@@ -401,7 +406,7 @@ public class FileController {
 	 * @throws CompositeFileException
 	 */
 	public static void loadDialog() throws CompositeFileException {
-		
+	
 		String lastVisitedFolder = App.prefs.getPref(PrefKey.PREF_LAST_READ_FOLDER, null);
 		
 		JFileChooser chooser = new JFileChooser(lastVisitedFolder);
@@ -432,7 +437,7 @@ public class FileController {
 	 * method is called to create one.
 	 */
 	public static void save() {
-		
+	
 		if (filePath == null)
 		{
 			saveAs();
@@ -444,13 +449,58 @@ public class FileController {
 	}
 	
 	/**
+	 * Kludge fix to ensure that tables contain valid data. Originally tables could only contain valid data but this was confusing users
+	 * resulting in them misentering data and not noticing.
+	 * 
+	 * 
+	 * @return
+	 */
+	private static boolean isFileGotValidEventsAndRecorders() {
+	
+		for (FHX2_Sample sample : IOController.getFile().getRequiredPart().getSampleList())
+		{
+			
+			for (FHX2_Event event : sample.getEvents())
+			{
+				Integer eventYear = event.getEventYear();
+				if (eventYear == null)
+				{
+					FireHistoryRecorder.getFeedbackMessagePanel().updateFeedbackMessage(FeedbackMessageType.ERROR,
+							FeedbackDisplayProtocol.MANUAL_HIDE,
+							"Sample \"" + sample.getSampleName() + "\" has an event with an empty year");
+					return false;
+				}
+				else
+				{
+					/*
+					 * boolean yearIsRecording = false; for (FHX2_Recording recording : sample.getRecordings()) { if
+					 * (recording.containsYear(eventYear)) { yearIsRecording = true; break; } }
+					 * 
+					 * if (yearIsRecording == false) { FireHistoryRecorder.getFeedbackMessagePanel().updateFeedbackMessage(
+					 * FeedbackMessageType.ERROR, FeedbackDisplayProtocol.MANUAL_HIDE, "Sample \"" + sample.getSampleName() +
+					 * "\" has an event in year " + eventYear + " which isn't a recording year."); return false; }
+					 */
+				}
+			}
+			
+		}
+		
+		return true;
+	}
+	
+	/**
 	 * Saves the data stored in theFHX2File as a FHX file at filePath.
 	 */
 	private static void doSaveFileFunctionality() {
-		
+	
 		File saveFile = new File(filePath);
 		try
 		{
+			if (!isFileGotValidEventsAndRecorders())
+			{
+				return;
+			}
+			
 			if (!saveFile.exists())
 			{
 				saveFile.createNewFile();
@@ -470,7 +520,14 @@ public class FileController {
 		}
 		catch (IOException e)
 		{
-			log.error("Error saving FHX file");
+			FireHistoryRecorder.getFeedbackMessagePanel().updateFeedbackMessage(FeedbackMessageType.ERROR,
+					FeedbackDisplayProtocol.MANUAL_HIDE, "There was an error saving to this file.  Do you have permission to save here?");
+			e.printStackTrace();
+		}
+		catch (Exception e)
+		{
+			FireHistoryRecorder.getFeedbackMessagePanel().updateFeedbackMessage(FeedbackMessageType.ERROR,
+					FeedbackDisplayProtocol.MANUAL_HIDE, "There was an internal error saving this file");
 			e.printStackTrace();
 		}
 	}
@@ -479,6 +536,11 @@ public class FileController {
 	 * Opens a JFileChooser for the user to set the filepath to save theFHX2File. to, then calls doSaveFileFunctionality()
 	 */
 	public static void saveAs() {
+	
+		if (!isFileGotValidEventsAndRecorders())
+		{
+			return;
+		}
 		
 		String lastVisitedFolder = App.prefs.getPref(PrefKey.PREF_LAST_EXPORT_FOLDER, null);
 		JFileChooser chooser = new JFileChooser(lastVisitedFolder);
@@ -488,13 +550,29 @@ public class FileController {
 		if (returnValue == JFileChooser.APPROVE_OPTION)
 		{
 			File selectedFile = chooser.getSelectedFile();
+			
+			if (selectedFile.exists())
+			{
+				Object[] options = { "Overwrite", "No", "Cancel" };
+				int response = JOptionPane.showOptionDialog(thePrimaryWindow, "The file '" + selectedFile.getName()
+						+ "' already exists.  Are you sure you want to overwrite?", "Confirm", JOptionPane.YES_NO_CANCEL_OPTION,
+						JOptionPane.QUESTION_MESSAGE, null, // do not use a custom Icon
+						options, // the titles of buttons
+						options[0]); // default button title
+				
+				if (response != JOptionPane.YES_OPTION)
+				{
+					return;
+				}
+			}
+			
 			filePath = selectedFile.getPath();
 			fileName = selectedFile.getName();
 			if (selectedFile.getName().length() > FHX2_MAX_FILE_NAME_LENGTH && isEnforcingOldReqs() == true)
 			{
 				FireHistoryRecorder.getFeedbackMessagePanel().updateFeedbackMessage(FeedbackMessageType.WARNING,
 						FeedbackDisplayProtocol.MANUAL_HIDE, "File name is too long for the original FHX program requirements.");
-						
+				
 				filePath = filePath.substring(0, filePath.length() - fileName.length());
 				fileName = fileName.substring(0, FHX2_MAX_FILE_NAME_LENGTH);
 				filePath = filePath + fileName + ".fhx";
@@ -511,7 +589,7 @@ public class FileController {
 				{
 					FireHistoryRecorder.getFeedbackMessagePanel().updateFeedbackMessage(FeedbackMessageType.WARNING,
 							FeedbackDisplayProtocol.MANUAL_HIDE, "File name is too long for the original FHX program requirements.");
-							
+					
 					filePath = filePath.substring(0, filePath.length() - fileName.length());
 					fileName = fileName.substring(0, FHX2_MAX_FILE_NAME_LENGTH);
 					filePath = filePath + fileName + ".fhx";
@@ -527,7 +605,7 @@ public class FileController {
 	 * @return
 	 */
 	public static CustomOptions getCustomOptions() {
-		
+	
 		return customOptions;
 	}
 	
@@ -537,7 +615,7 @@ public class FileController {
 	 * @param inCustomOptions
 	 */
 	public static void setCustomOptions(CustomOptions inCustomOptions) {
-		
+	
 		customOptions = inCustomOptions;
 	}
 	
@@ -547,7 +625,7 @@ public class FileController {
 	 * @return
 	 */
 	public static List<YearSummary> getYearSummaryList() {
-		
+	
 		int firstYear = IOController.getFile().getRequiredPart().getDataSetFirstYear();
 		int lastYear = IOController.getFile().getRequiredPart().getDataSetLastYear();
 		List<YearSummary> result = new ArrayList<YearSummary>(lastYear - firstYear);
@@ -563,7 +641,7 @@ public class FileController {
 	 * @return
 	 */
 	public static boolean isOverrideCompositeWarnings() {
-		
+	
 		return overrideCompositeWarnings;
 	}
 	
@@ -573,7 +651,7 @@ public class FileController {
 	 * @param overrideCompositeWarnings
 	 */
 	public static void setOverrideCompositeWarnings(boolean overrideCompositeWarnings) {
-		
+	
 		FileController.overrideCompositeWarnings = overrideCompositeWarnings;
 	}
 }

@@ -24,8 +24,10 @@ import java.io.Writer;
 import java.util.List;
 
 import org.fhaes.exceptions.CompositeFileException;
+import org.fhaes.fhrecorder.model.FHX2_Event;
 import org.fhaes.fhrecorder.model.FHX2_File;
 import org.fhaes.fhrecorder.model.FHX2_Sample;
+import org.fhaes.fhrecorder.util.SampleErrorModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -397,12 +399,36 @@ public class IOController {
 	 * @param bw
 	 * @throws IOException
 	 */
-	public static void writeFileToDisk(Writer bw) throws IOException {
+	public static void writeFileToDisk(Writer bw) throws Exception {
 	
 		writeOptionalPartToDisk(bw);
 		SampleController.updateAllSampleOpeningAndClosingChars();
 		if (theFHX2File.getRequiredPart().getNumSamples() != 0)
 			writeRequiredPartToDisk(bw);
+	}
+	
+	/**
+	 * Returns null if all is well
+	 * 
+	 * @return
+	 */
+	private static boolean checkForMissingBits() {
+	
+		for (FHX2_Sample sample : theFHX2File.getRequiredPart().getSampleList())
+		{
+			
+			for (FHX2_Event event : sample.getEvents())
+			{
+				if (event.getEventYear() == null)
+				{
+					sample.getErrors().add(
+							new SampleErrorModel("Sample \"" + sample.getSampleName() + "\" contains and event with a null year"));
+					return false;
+				}
+			}
+		}
+		
+		return true;
 	}
 	
 	/**

@@ -87,12 +87,12 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Alex Beatty, Clayton Bodendein, Kyle Hartmann, Scott Goble
  */
-public class SampleInputPanel extends JPanel implements ChangeListener, PropertyChangeListener {
+public class DataPanel extends JPanel implements ChangeListener, PropertyChangeListener {
 	
 	private static final long serialVersionUID = 1L;;
 	
 	// Declare FHAES logger
-	private static final Logger log = LoggerFactory.getLogger(SampleInputPanel.class);
+	private static final Logger log = LoggerFactory.getLogger(DataPanel.class);
 	
 	// Declare public constants
 	public static final String MINIMUM_SAMPLE_NAME_LENGTH_MESSAGE = "Sample name must be at least 3 characters in length.";
@@ -169,7 +169,7 @@ public class SampleInputPanel extends JPanel implements ChangeListener, Property
 	/**
 	 * Constructor for SampleinputPanel.
 	 */
-	public SampleInputPanel() {
+	public DataPanel() {
 	
 		initGUI();
 	}
@@ -179,7 +179,7 @@ public class SampleInputPanel extends JPanel implements ChangeListener, Property
 	 * 
 	 * @param inReqPart
 	 */
-	public SampleInputPanel(FHX2_FileRequiredPart inReqPart) {
+	public DataPanel(FHX2_FileRequiredPart inReqPart) {
 	
 		this.inReqPart = inReqPart;
 		initGUI();
@@ -194,6 +194,7 @@ public class SampleInputPanel extends JPanel implements ChangeListener, Property
 	 * @return
 	 */
 	public RecordingTable getRecordingTable() {
+	
 		return this.recordingTable;
 	}
 	
@@ -203,6 +204,7 @@ public class SampleInputPanel extends JPanel implements ChangeListener, Property
 	 * @return
 	 */
 	public EventTable getEventTable() {
+	
 		return this.eventTable;
 	}
 	
@@ -214,26 +216,39 @@ public class SampleInputPanel extends JPanel implements ChangeListener, Property
 	 */
 	private void autoPopulateButtonActionPerformed(ActionEvent evt) {
 	
-		String[] options = { "From first event", "From beginning of sample" };
+		String[] options = { "From first event to end of sample", "From beginning to end of sample", "Only in event years" };
 		
 		String res = (String) JOptionPane.showInputDialog(this, "Note that auto-populating the recording years will remove any\n"
-				+ "existing recording entries." + "\n\nSelect where recording should begin:", "Auto populate recordings",
+				+ "existing recording entries." + "\n\nCreate recording year entries:", "Auto populate recordings",
 				JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
 		
-		if (res != options[0] && res != options[1])
+		if (res != options[0] && res != options[1] && res != options[2])
 			return;
 		
 		// Remove any existing records
 		if (recordingTable != null)
 			RecordingController.deleteAllRecordingsButNotEvents();
 		
-		// Start recording at first event
 		if (res == options[0])
+		{
+			// Start recording at first event
 			RecordingController.addRecordingFromFirstEventToEnd();
-		
-		// Start recording from beginning of sample
-		else
+		}
+		else if (res == options[1])
+		{
+			// Start recording from beginning of sample
 			RecordingController.addRecordingFromBeginningToEnd();
+		}
+		else if (res == options[2])
+		{
+			// Add recording for event years only
+			RecordingController.addRecordingEventYearsOnly();
+		}
+		else
+		{
+			log.error("Invalid response");
+			
+		}
 	}
 	
 	/**
@@ -451,9 +466,10 @@ public class SampleInputPanel extends JPanel implements ChangeListener, Property
 	
 		if (eventTable != null)
 		{
+			
 			if (recordingTable.getNumOfRecordings() == 0 || eventTable.getNumOfEvents() == recordingTable.getMaxNumOfEvents())
 			{
-				RecordingController.addNewRecording();
+				// RecordingController.addNewRecording();
 				EventController.addNewEvent();
 				setCheckBoxEnabledValues();
 			}
