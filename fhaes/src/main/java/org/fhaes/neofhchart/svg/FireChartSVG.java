@@ -786,6 +786,8 @@ public class FireChartSVG {
 		deleteAllChildren(index_plot_g);
 		index_plot_g.appendChild(getIndexPlot());
 		
+		sortSeriesAccordingToPreference();
+		
 		// Rebuild the chronology plot
 		rebuildChronologyPlot();
 		
@@ -819,11 +821,24 @@ public class FireChartSVG {
 		
 		int begin_index = 0;
 		int last_index = recording_years.length - 1;
+		
 		if (recording_years.length != 0)
 		{
+			if (applyBCYearOffset(seriesSVG.getFirstYear()) < this.getFirstChartYear())
+			{
+				// User has trimmed the start of this data series off
+				int firstyear = applyBCYearOffset(seriesSVG.getFirstYear());
+				int thisfirstyear = this.getFirstChartYear();
+				begin_index = thisfirstyear - firstyear;
+			}
+			
 			if (applyBCYearOffset(seriesSVG.getLastYear()) > this.getLastChartYear())
 			{
-				last_index = recording_years.length - applyBCYearOffset(seriesSVG.getLastYear()) - this.getLastChartYear();
+				// User has trimmed the end of this data series off
+				int recleng = recording_years.length;
+				int lastyear = applyBCYearOffset(seriesSVG.getLastYear());
+				int thislastyear = this.getLastChartYear();
+				last_index = recleng - (lastyear - thislastyear);
 			}
 			
 			boolean isRecording = recording_years[0];
@@ -2263,6 +2278,10 @@ public class FireChartSVG {
 		{
 			sortBySampleEndYear();
 		}
+		else
+		{
+			sortByPositionInFile();
+		}
 	}
 	
 	/**
@@ -2370,10 +2389,6 @@ public class FireChartSVG {
 		log.debug("Finished sorting chart series by series start year");
 	}
 	
-	public void sortAsInFile() {
-	
-	}
-	
 	/**
 	 * Sort the series by end year.
 	 */
@@ -2393,6 +2408,30 @@ public class FireChartSVG {
 		rebuildChronologyPlot();
 		
 		log.debug("Finished sorting chart series by series end year");
+	}
+	
+	/**
+	 * Sort the series by end year.
+	 */
+	public void sortByPositionInFile() {
+	
+		Comparator<FHSeriesSVG> comparator = new Comparator<FHSeriesSVG>() {
+			
+			@Override
+			public int compare(FHSeriesSVG c1, FHSeriesSVG c2) {
+			
+				Integer c1pos = c1.getSequenceInFile();
+				Integer c2pos = c2.getSequenceInFile();
+				
+				return c1pos.compareTo(c2pos);
+			}
+		};
+		
+		Collections.sort(seriesSVGList, comparator);
+		lastTypeSortedBy = SeriesSortType.AS_IN_FILE;
+		rebuildChronologyPlot();
+		
+		log.debug("Finished sorting chart series by position in file");
 	}
 	
 	// public boolean setCommonTickAttrib(int weight, Color color, LineStyle style) {
