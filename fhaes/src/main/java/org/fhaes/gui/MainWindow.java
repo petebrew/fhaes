@@ -103,6 +103,7 @@ import org.fhaes.model.FHFileValidityComparator;
 import org.fhaes.model.FileDropTargetListener;
 import org.fhaes.model.FileListModel;
 import org.fhaes.neofhchart.ChartActions;
+import org.fhaes.neofhchart.ChartPropertiesDialog;
 import org.fhaes.preferences.App;
 import org.fhaes.preferences.FHAESPreferences.PrefKey;
 import org.fhaes.preferences.PrefsEvent;
@@ -286,6 +287,7 @@ public class MainWindow implements PrefsListener {
 		frame.getRootPane().setFocusable(false);
 		
 		App.init(frame);
+		ChartPropertiesDialog.setChartPreferencesToDefaults();
 		initGUI();
 		
 		UpdateChecker uc = new UpdateChecker();
@@ -915,8 +917,16 @@ public class MainWindow implements PrefsListener {
 			// Reload the category file for this FHX file if it exists and if the auto-load preference is set
 			if (App.prefs.getBooleanPref(PrefKey.AUTO_LOAD_CATEGORIES, true))
 			{
-				FHFile currentFHFile = new FHFile(f);
-				openCategoryFile(new File(currentFHFile.getDefaultCategoryFilePath()));
+				try
+				{
+					FHFile currentFHFile = new FHFile(f);
+					openCategoryFile(new File(currentFHFile.getDefaultCategoryFilePath()));
+				}
+				catch (Exception e)
+				{
+					log.error("Error opening category file");
+				}
+				
 			}
 			
 			// Go ahead and force the GUI to update by selecting this file
@@ -2481,6 +2491,7 @@ public class MainWindow implements PrefsListener {
 		mnChart.addSeparator();
 		mnChart.add(new FHAESMenuItem(actionEditCategories));
 		mnChart.add(new FHAESMenuItem(chartActions.actionShowChartProperties));
+		mnChart.add(new FHAESMenuItem(chartActions.actionResetChartPrefsToDefaults));
 		
 		/**
 		 * 
@@ -2557,6 +2568,8 @@ public class MainWindow implements PrefsListener {
 		JToolBarButton btnZoomIn = new JToolBarButton(MainWindow.chartActions.actionZoomIn);
 		JToolBarButton btnZoomOut = new JToolBarButton(MainWindow.chartActions.actionZoomOut);
 		JToolBarButton btnZoomReset = new JToolBarButton(MainWindow.chartActions.actionZoomReset);
+		JToolBarButton btnResetChart = new JToolBarButton(MainWindow.chartActions.actionResetChartPrefsToDefaults);
+		
 		JToolBarButton btnQuickLaunch = new JToolBarButton(this.actionShowQuickLaunch);
 		
 		if (Platform.isOSX())
@@ -2599,6 +2612,7 @@ public class MainWindow implements PrefsListener {
 			toolBar.addComponentToLeft(MacButtonFactory.makeUnifiedToolBarButton(btnZoomIn));
 			toolBar.addComponentToLeft(MacButtonFactory.makeUnifiedToolBarButton(btnZoomOut));
 			toolBar.addComponentToLeft(MacButtonFactory.makeUnifiedToolBarButton(btnZoomReset));
+			toolBar.addComponentToLeft(MacButtonFactory.makeUnifiedToolBarButton(btnResetChart));
 			toolBar.addComponentToLeft(MacButtonFactory.makeUnifiedToolBarButton(btnQuickLaunch));
 			
 			// Add the toolbar to the frame.
@@ -2646,6 +2660,7 @@ public class MainWindow implements PrefsListener {
 			toolBar.add(btnZoomIn);
 			toolBar.add(btnZoomOut);
 			toolBar.add(btnZoomReset);
+			toolBar.add(btnResetChart);
 			
 			toolBar.addSeparator();
 			toolBar.add(btnQuickLaunch);

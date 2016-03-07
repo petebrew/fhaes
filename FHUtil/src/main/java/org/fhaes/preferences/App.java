@@ -50,5 +50,6 @@ public class App {
 		mainFrame = frame;
 		prefs = new FHAESPreferences();
 		prefs.setBooleanPref(PrefKey.DONT_REQUEST_PARAM_CONFIRMATION, false);
+		
 	}
 }

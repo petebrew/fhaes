@@ -50,6 +50,7 @@ public class ChartActions {
 	public FHAESAction actionSetSampleDepthThreshold;
 	public FHAESAction actionShowSampleDepth;
 	public FHAESAction actionShowRecorderDepth;
+	public FHAESAction actionResetChartPrefsToDefaults;
 	
 	// Declare export actions
 	public FHAESAction actionExportCurrentChart;
@@ -91,6 +92,20 @@ public class ChartActions {
 	 */
 	public ChartActions(NeoFHChart neochart) {
 	
+		actionResetChartPrefsToDefaults = new FHAESAction("Reset plot to default", "chartreset.png", "Reset plot",
+				"Reset the plot style to default") {
+			
+			private static final long serialVersionUID = 1L;
+			
+			@Override
+			public void actionPerformed(ActionEvent event) {
+			
+				ChartPropertiesDialog.setChartPreferencesToDefaults();
+				if (neoFHChart != null)
+					neoFHChart.redrawChart();
+			}
+		};
+		
 		/*
 		 * SHOW INDEX PLOT
 		 */
@@ -548,10 +563,10 @@ public class ChartActions {
 						App.prefs.setPref(PrefKey.CHART_SORT_BY_PREFERENCE, SeriesSortType.SAMPLE_END_YEAR.toString());
 						neoFHChart.currentChart.sortBySampleEndYear();
 					}
-					else if (type.equals(SeriesSortType.AS_IN_FILE))
+					else
 					{
 						App.prefs.setPref(PrefKey.CHART_SORT_BY_PREFERENCE, SeriesSortType.AS_IN_FILE.toString());
-						neoFHChart.currentChart.sortAsInFile();
+						neoFHChart.currentChart.sortByPositionInFile();
 					}
 				}
 			};
@@ -565,17 +580,17 @@ public class ChartActions {
 	 */
 	public enum SeriesSortType {
 		
-		NAME("name"),
+		AS_IN_FILE("Position in file"),
 		
-		CATEGORY("category"),
+		NAME("Name"),
 		
-		FIRST_FIRE_YEAR("firstFireYear"),
+		CATEGORY("Category"),
 		
-		SAMPLE_START_YEAR("sampleStartYear"),
+		FIRST_FIRE_YEAR("First fire year"),
 		
-		SAMPLE_END_YEAR("sampleEndYear"),
+		SAMPLE_START_YEAR("Sample start year"),
 		
-		AS_IN_FILE("asInFile");
+		SAMPLE_END_YEAR("Sample end year");
 		
 		// Declare local variables
 		private String humanReadable;
@@ -597,6 +612,18 @@ public class ChartActions {
 		public String toString() {
 		
 			return humanReadable;
+		}
+		
+		public static SeriesSortType getSeriesSortTypeFromString(String human) {
+		
+			for (SeriesSortType sst : values())
+			{
+				if (sst.toString().equalsIgnoreCase(human))
+					return sst;
+			}
+			
+			return null;
+			
 		}
 	}
 	

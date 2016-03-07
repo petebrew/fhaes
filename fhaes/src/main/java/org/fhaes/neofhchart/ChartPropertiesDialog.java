@@ -60,6 +60,7 @@ import org.fhaes.enums.LabelOrientation;
 import org.fhaes.enums.LineStyle;
 import org.fhaes.enums.SampleDepthFilterType;
 import org.fhaes.help.LocalHelp;
+import org.fhaes.neofhchart.ChartActions.SeriesSortType;
 import org.fhaes.preferences.App;
 import org.fhaes.preferences.FHAESPreferences.PrefKey;
 import org.fhaes.preferences.wrappers.CheckBoxWrapper;
@@ -68,12 +69,15 @@ import org.fhaes.preferences.wrappers.SampleDepthFilterTypeWrapper;
 import org.fhaes.util.Builder;
 import org.fhaes.util.FontChooserComboBox;
 import org.fhaes.util.SharedConstants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * ChartPropertiesDialog Class.
  */
 public class ChartPropertiesDialog extends JDialog implements ActionListener {
 	
+	private static final Logger log = LoggerFactory.getLogger(ChartPropertiesDialog.class);
 	private static final long serialVersionUID = 1L;
 	
 	// Declare GUI components
@@ -245,6 +249,9 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 	private HelpTipButton htbYearLabelPadding;
 	private HelpTipButton htbYearLabelFontSize;
 	private HelpTipButton htbYearLabelOrientation;
+	private JLabel lblSortSamplesBy;
+	private JComboBox<SeriesSortType> cboSortType;
+	private HelpTipButton htbSortSamples;
 	
 	/**
 	 * Create the dialog.
@@ -312,7 +319,8 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 		}
 		else if (evt.getActionCommand().equals("Reset"))
 		{
-			setToDefaults();
+			setChartPreferencesToDefaults();
+			setFromPreferences();
 		}
 		else if (evt.getActionCommand().equals("VerticalGuides"))
 		{
@@ -526,7 +534,7 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 	/**
 	 * Return all the chart properties to their default values.
 	 */
-	private void setToDefaults() {
+	public static void setChartPreferencesToDefaults() {
 	
 		// Clear preferences first then set all to default
 		
@@ -589,6 +597,7 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 		App.prefs.clearPref(PrefKey.CHART_CATEGORY_LABEL_JUSTIFICATION);
 		App.prefs.clearPref(PrefKey.CHART_AUTOMATICALLY_COLORIZE_SERIES);
 		App.prefs.clearPref(PrefKey.CHART_AUTOMATICALLY_COLORIZE_LABELS);
+		App.prefs.clearPref(PrefKey.CHART_SORT_BY_PREFERENCE);
 		
 		// Composite plot tab
 		App.prefs.clearPref(PrefKey.CHART_SHOW_COMPOSITE_PLOT);
@@ -603,8 +612,6 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 		App.prefs.clearPref(PrefKey.CHART_COMPOSITE_YEAR_LABELS_TWO_DIGIT);
 		App.prefs.clearPref(PrefKey.CHART_COMPOSITE_YEAR_LABEL_BUFFER);
 		App.prefs.clearPref(PrefKey.CHART_COMPOSITE_LABEL_ALIGNMENT);
-		
-		setFromPreferences();
 	}
 	
 	/**
@@ -670,6 +677,8 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 				(JustificationType) cboCategoryLabelJustification.getSelectedItem());
 		App.prefs.setBooleanPref(PrefKey.CHART_AUTOMATICALLY_COLORIZE_SERIES, chkAutomaticallyColorizeSeries.isSelected());
 		App.prefs.setBooleanPref(PrefKey.CHART_AUTOMATICALLY_COLORIZE_LABELS, chkAutomaticallyColorizeLabels.isSelected());
+		String b = ((SeriesSortType) cboSortType.getSelectedItem()).toString();
+		App.prefs.setPref(PrefKey.CHART_SORT_BY_PREFERENCE, b);
 		
 		// Composite plot tab
 		App.prefs.setBooleanPref(PrefKey.CHART_SHOW_COMPOSITE_PLOT, chkCompositePlot.isSelected());
@@ -739,7 +748,7 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 		chkSampleThreshold.setSelected(App.prefs.getBooleanPref(PrefKey.CHART_SHOW_DEPTH_THRESHOLD, false));
 		setComponentColours(btnThresholdColor, App.prefs.getColorPref(PrefKey.CHART_DEPTH_THRESHOLD_COLOR, Color.RED));
 		spnThresholdValue.setValue(App.prefs.getIntPref(PrefKey.CHART_DEPTH_THRESHOLD_VALUE, 10));
-		txtAxisY1Label.setText(App.prefs.getPref(PrefKey.CHART_AXIS_Y1_LABEL, "Sample Depth"));
+		txtAxisY1Label.setText(App.prefs.getPref(PrefKey.CHART_AXIS_Y1_LABEL, "Recorder Depth"));
 		txtAxisY2Label.setText(App.prefs.getPref(PrefKey.CHART_AXIS_Y2_LABEL, "% Scarred"));
 		spnAxisY1FontSize.setValue(App.prefs.getIntPref(PrefKey.CHART_AXIS_Y1_FONT_SIZE, 10));
 		spnAxisY2FontSize.setValue(App.prefs.getIntPref(PrefKey.CHART_AXIS_Y2_FONT_SIZE, 10));
@@ -762,6 +771,18 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 				JustificationType.CENTER));
 		chkAutomaticallyColorizeSeries.setSelected(App.prefs.getBooleanPref(PrefKey.CHART_AUTOMATICALLY_COLORIZE_SERIES, false));
 		chkAutomaticallyColorizeLabels.setSelected(App.prefs.getBooleanPref(PrefKey.CHART_AUTOMATICALLY_COLORIZE_LABELS, false));
+		
+		try
+		{
+			String prefStr = App.prefs.getPref(PrefKey.CHART_SORT_BY_PREFERENCE, SeriesSortType.AS_IN_FILE.toString());
+			SeriesSortType sortpref = SeriesSortType.getSeriesSortTypeFromString(prefStr);
+			this.cboSortType.setSelectedItem(sortpref);
+		}
+		catch (Exception e)
+		{
+			log.debug("Error setting sample sort from preferences");
+			this.cboSortType.setSelectedItem(SeriesSortType.AS_IN_FILE);
+		}
 		
 		// Composite plot tab
 		chkCompositePlot.setSelected(App.prefs.getBooleanPref(PrefKey.CHART_SHOW_COMPOSITE_PLOT, true));
@@ -1423,7 +1444,7 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 		panelChronoPlotSeries = new JPanel();
 		panelChronoPlotSeries.setBorder(new TitledBorder(null, "Series", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		chronoPlotPanel.add(panelChronoPlotSeries, "cell 0 1,grow");
-		panelChronoPlotSeries.setLayout(new MigLayout("", "[180px][67][67][grow]", "[][][][]"));
+		panelChronoPlotSeries.setLayout(new MigLayout("", "[180px][67][67][grow]", "[][][][][]"));
 		
 		JButton btnChooseSeriesToPlot = new JButton("Choose series to plot");
 		btnChooseSeriesToPlot.addActionListener(new ActionListener() {
@@ -1441,36 +1462,50 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 		chkSeriesLabels = new JCheckBox("");
 		chkSeriesLabels.setSelected(true);
 		panelChronoPlotSeries.add(chkSeriesLabels, "flowx,cell 1 0,alignx left,aligny center");
-		panelChronoPlotSeries.add(btnChooseSeriesToPlot, "flowx,cell 1 1 2 1,growx,aligny center");
+		
+		lblSortSamplesBy = new JLabel("Sort samples by:");
+		panelChronoPlotSeries.add(lblSortSamplesBy, "cell 0 1,alignx trailing");
+		
+		cboSortType = new JComboBox<SeriesSortType>();
+		for (int i = 0; i < SeriesSortType.values().length; i++)
+		{
+			cboSortType.addItem(SeriesSortType.values()[i]);
+		}
+		
+		panelChronoPlotSeries.add(cboSortType, "cell 1 1 2 1,growx");
+		
+		htbSortSamples = new HelpTipButton("Choose how samples should be sorted in the chronology plot");
+		panelChronoPlotSeries.add(htbSortSamples, "cell 3 1");
+		panelChronoPlotSeries.add(btnChooseSeriesToPlot, "flowx,cell 1 2 2 1,growx,aligny center");
 		
 		JLabel lblFontSize3 = new JLabel("Font size:");
-		panelChronoPlotSeries.add(lblFontSize3, "cell 0 2,alignx right,aligny center");
+		panelChronoPlotSeries.add(lblFontSize3, "cell 0 3,alignx right,aligny center");
 		
 		spnSeriesLabelFontSize = new JSpinner();
 		spnSeriesLabelFontSize.setModel(new SpinnerNumberModel(8, 4, 64, 1));
-		panelChronoPlotSeries.add(spnSeriesLabelFontSize, "cell 1 2,growx,aligny center");
+		panelChronoPlotSeries.add(spnSeriesLabelFontSize, "cell 1 3,growx,aligny center");
 		
 		JLabel lblPt_2 = new JLabel("pt");
-		panelChronoPlotSeries.add(lblPt_2, "flowx,cell 2 2,alignx left,aligny center");
+		panelChronoPlotSeries.add(lblPt_2, "flowx,cell 2 3,alignx left,aligny center");
 		
 		JLabel lblSpacing = new JLabel("Spacing:");
-		panelChronoPlotSeries.add(lblSpacing, "cell 0 3,alignx right,aligny center");
+		panelChronoPlotSeries.add(lblSpacing, "cell 0 4,alignx right,aligny center");
 		
 		spnSeriesSpacing = new JSpinner();
 		spnSeriesSpacing.setModel(new SpinnerNumberModel(5, 0, 50, 1));
-		panelChronoPlotSeries.add(spnSeriesSpacing, "cell 1 3,growx,aligny center");
+		panelChronoPlotSeries.add(spnSeriesSpacing, "cell 1 4,growx,aligny center");
 		
 		JLabel lblPx_2 = new JLabel("px");
-		panelChronoPlotSeries.add(lblPx_2, "flowx,cell 2 3,alignx left,aligny center");
+		panelChronoPlotSeries.add(lblPx_2, "flowx,cell 2 4,alignx left,aligny center");
 		
 		htbShowSeriesLabels = new HelpTipButton(LocalHelp.SHOW_SERIES_LABELS);
 		panelChronoPlotSeries.add(htbShowSeriesLabels, "cell 1 0");
 		
 		htbSeriesLabelsFontSize = new HelpTipButton(LocalHelp.SERIES_LABELS_FONT_SIZE);
-		panelChronoPlotSeries.add(htbSeriesLabelsFontSize, "cell 2 2");
+		panelChronoPlotSeries.add(htbSeriesLabelsFontSize, "cell 2 3");
 		
 		htbSeriesSpacing = new HelpTipButton(LocalHelp.SERIES_SPACING);
-		panelChronoPlotSeries.add(htbSeriesSpacing, "cell 2 3");
+		panelChronoPlotSeries.add(htbSeriesSpacing, "cell 2 4");
 		
 		panelChronoPlotSymbols = new JPanel();
 		panelChronoPlotSymbols.setBorder(new TitledBorder(null, "Symbols", TitledBorder.LEADING, TitledBorder.TOP, null, null));
