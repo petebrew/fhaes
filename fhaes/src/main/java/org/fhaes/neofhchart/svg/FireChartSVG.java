@@ -838,7 +838,7 @@ public class FireChartSVG {
 				int recleng = recording_years.length;
 				int lastyear = applyBCYearOffset(seriesSVG.getLastYear());
 				int thislastyear = this.getLastChartYear();
-				last_index = recleng - (lastyear - thislastyear);
+				last_index = recleng - (lastyear - thislastyear) - 1;
 			}
 			
 			boolean isRecording = recording_years[0];

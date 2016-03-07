@@ -555,6 +555,7 @@ public class MainWindow implements PrefsListener {
 		{
 			String lastVisitedFolder = App.prefs.getPref(PrefKey.CHART_LAST_EXPORT_FOLDER, null);
 			final JFileChooser fc = new JFileChooser(lastVisitedFolder);
+			fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 			
 			PDFFilter pdff = new PDFFilter();
 			PNGFilter pngf = new PNGFilter();
@@ -583,6 +584,7 @@ public class MainWindow implements PrefsListener {
 				// fc.setAcceptAllFileFilterUsed(false);
 				fc.setMultiSelectionEnabled(false);
 				fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+				fc.setAcceptAllFileFilterUsed(false);
 				fc.setDialogTitle("Choose directory to bulk export charts...");
 				
 				int returnVal = fc.showSaveDialog(App.mainFrame);

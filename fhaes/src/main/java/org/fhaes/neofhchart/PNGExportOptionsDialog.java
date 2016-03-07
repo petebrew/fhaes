@@ -40,6 +40,8 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.text.DefaultFormatter;
 
+import net.miginfocom.swing.MigLayout;
+
 import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.TranscoderOutput;
 import org.apache.batik.transcoder.image.PNGTranscoder;
@@ -52,8 +54,6 @@ import org.fhaes.preferences.App;
 import org.fhaes.util.Builder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import net.miginfocom.swing.MigLayout;
 
 /**
  * PNGExportOptionsDialog Class. JDialog for getting size information when saving to a PNG image.
@@ -88,7 +88,7 @@ public class PNGExportOptionsDialog extends JDialog implements ActionListener {
 	 * @param isBulkExport
 	 */
 	public PNGExportOptionsDialog(FireChartSVG currentChart, File outputFile, boolean isBulkExport) {
-		
+	
 		this.currentChart = currentChart;
 		this.outputFile = outputFile;
 		
@@ -117,7 +117,7 @@ public class PNGExportOptionsDialog extends JDialog implements ActionListener {
 			
 			@Override
 			public void stateChanged(ChangeEvent e) {
-				
+			
 				if (btnLock.isSelected() && heightSpinnerEnabled)
 				{
 					Integer height = (Integer) spnHeight.getValue();
@@ -153,7 +153,7 @@ public class PNGExportOptionsDialog extends JDialog implements ActionListener {
 			
 			@Override
 			public void stateChanged(ChangeEvent e) {
-				
+			
 				if (btnLock.isSelected() && widthSpinnerEnabled)
 				{
 					Integer width = (Integer) spnWidth.getValue();
@@ -186,7 +186,12 @@ public class PNGExportOptionsDialog extends JDialog implements ActionListener {
 		
 		if (isBulkExport)
 		{
-			doExportToPNG();
+			if (doExportToPNG() == false)
+			{
+				
+				// Handle failure
+				
+			}
 			this.dispose();
 		}
 		else
@@ -201,7 +206,7 @@ public class PNGExportOptionsDialog extends JDialog implements ActionListener {
 	 */
 	@Override
 	public void actionPerformed(ActionEvent evt) {
-		
+	
 		if (evt.getActionCommand().equals("OK"))
 		{
 			// Perform the export operation
@@ -209,13 +214,19 @@ public class PNGExportOptionsDialog extends JDialog implements ActionListener {
 			
 			if (completedSuccessfully)
 			{
-				MainWindow.getInstance().getFeedbackMessagePanel().updateFeedbackMessage(FeedbackMessageType.INFO,
-						FeedbackDisplayProtocol.AUTO_HIDE, FeedbackDictionary.NEOFHCHART_PNG_EXPORT_MESSAGE.toString());
+				MainWindow
+						.getInstance()
+						.getFeedbackMessagePanel()
+						.updateFeedbackMessage(FeedbackMessageType.INFO, FeedbackDisplayProtocol.AUTO_HIDE,
+								FeedbackDictionary.NEOFHCHART_PNG_EXPORT_MESSAGE.toString());
 			}
 			else
 			{
-				MainWindow.getInstance().getFeedbackMessagePanel().updateFeedbackMessage(FeedbackMessageType.ERROR,
-						FeedbackDisplayProtocol.MANUAL_HIDE, "An error occured while attempting to export chart as PNG.");
+				MainWindow
+						.getInstance()
+						.getFeedbackMessagePanel()
+						.updateFeedbackMessage(FeedbackMessageType.ERROR, FeedbackDisplayProtocol.MANUAL_HIDE,
+								"An error occured while attempting to export chart as PNG.");
 			}
 			
 			this.dispose();
@@ -233,7 +244,7 @@ public class PNGExportOptionsDialog extends JDialog implements ActionListener {
 	 * @return true if the operation completed successfully, false otherwise
 	 */
 	private boolean doExportToPNG() {
-		
+	
 		boolean completedSuccessfully = false;
 		
 		if (currentChart != null)
@@ -273,7 +284,15 @@ public class PNGExportOptionsDialog extends JDialog implements ActionListener {
 			catch (Exception e)
 			{
 				log.error("Error charting chart");
+				
+				MainWindow
+						.getInstance()
+						.getFeedbackMessagePanel()
+						.updateFeedbackMessage(FeedbackMessageType.ERROR, FeedbackDisplayProtocol.AUTO_HIDE,
+								"Error exporting file.  " + e.getMessage());
+				
 				e.printStackTrace();
+				return false;
 			}
 		}
 		
