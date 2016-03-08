@@ -259,36 +259,40 @@ public class AnalysisProgressDialog extends JDialog implements PropertyChangeLis
 			setProgress(20);
 			
 			// But only if there is more than 1 input files.
-			if (array.length > 1)
+			// if (array.length > 1)
+			// {
+			
+			lblInfo.setText("Calculating matrices...");
+			try
 			{
+				fhm = new FHMatrix(array, App.prefs.getIntPref(PrefKey.RANGE_FIRST_YEAR, 0), App.prefs.getIntPref(PrefKey.RANGE_LAST_YEAR,
+						0), App.prefs.getFireFilterTypePref(PrefKey.COMPOSITE_FILTER_TYPE, FireFilterType.NUMBER_OF_EVENTS),
+						App.prefs.getEventTypePref(PrefKey.EVENT_TYPE_TO_PROCESS, EventTypeToProcess.FIRE_EVENT),
+						(double) App.prefs.getIntPref(PrefKey.COMPOSITE_FILTER_VALUE, 1), App.prefs.getIntPref(
+								PrefKey.RANGE_OVERLAP_REQUIRED, 25), NoDataLabel.MINUS_99);
 				
-				lblInfo.setText("Calculating matrices...");
-				try
+				binSumFile = fhm.getFileSumResult();
+				binSumModel = getTableModelFromCSV(binSumFile);
+				setProgress(25);
+				
+				if (array.length > 1)
 				{
-					fhm = new FHMatrix(array, App.prefs.getIntPref(PrefKey.RANGE_FIRST_YEAR, 0), App.prefs.getIntPref(
-							PrefKey.RANGE_LAST_YEAR, 0), App.prefs.getFireFilterTypePref(PrefKey.COMPOSITE_FILTER_TYPE,
-							FireFilterType.NUMBER_OF_EVENTS), App.prefs.getEventTypePref(PrefKey.EVENT_TYPE_TO_PROCESS,
-							EventTypeToProcess.FIRE_EVENT), (double) App.prefs.getIntPref(PrefKey.COMPOSITE_FILTER_VALUE, 1),
-							App.prefs.getIntPref(PrefKey.RANGE_OVERLAP_REQUIRED, 25), NoDataLabel.MINUS_99);
+					// These are only relevant with more than one input file
 					
 					bin00File = fhm.getFileMatrix00Result();
 					bin00Model = getTableModelFromCSV(bin00File);
-					setProgress(25);
+					setProgress(30);
 					
 					bin10File = fhm.getFileMatrix10Result();
 					bin10Model = getTableModelFromCSV(bin10File);
-					setProgress(30);
+					setProgress(35);
 					
 					bin01File = fhm.getFileMatrix01Result();
 					bin01Model = getTableModelFromCSV(bin01File);
-					setProgress(35);
+					setProgress(40);
 					
 					bin11File = fhm.getFileMatrix11Result();
 					bin11Model = getTableModelFromCSV(bin11File);
-					setProgress(40);
-					
-					binSumFile = fhm.getFileSumResult();
-					binSumModel = getTableModelFromCSV(binSumFile);
 					setProgress(45);
 					
 					fileDSCOH = fhm.getFileDSCOHResult();
@@ -303,31 +307,32 @@ public class AnalysisProgressDialog extends JDialog implements PropertyChangeLis
 					SCOHModel = getTableModelFromCSV(fileSCOH);
 					setProgress(60);
 					
-					fileSite = fhm.getFileSiteResult();
-					SiteModel = getTableModelFromCSV(fileSite);
-					setProgress(65);
-					
 					fileSJAC = fhm.getFileSJACResult();
 					SJACModel = getTableModelFromCSV(fileSJAC);
-					setProgress(70);
-					
-					fileNTP = fhm.getFileNTPResult();
-					NTPModel = getTableModelFromCSV(fileNTP);
-					setProgress(75);
-					
-					fileTree = fhm.getTreeSummaryFile();
-					TreeModel = getTableModelFromCSV(fileTree);
-					setProgress(80);
-					
+					setProgress(65);
 				}
-				catch (Exception e)
-				{
-					log.error("Error caught when running FHMatrix");
-					JOptionPane.showMessageDialog(App.mainFrame, "Error running matrix analysis.  Please check logs and inform developers",
-							"Error", JOptionPane.ERROR_MESSAGE);
-					e.printStackTrace();
-				}
+				
+				fileSite = fhm.getFileSiteResult();
+				SiteModel = getTableModelFromCSV(fileSite);
+				setProgress(70);
+				
+				fileNTP = fhm.getFileNTPResult();
+				NTPModel = getTableModelFromCSV(fileNTP);
+				setProgress(75);
+				
+				fileTree = fhm.getTreeSummaryFile();
+				TreeModel = getTableModelFromCSV(fileTree);
+				setProgress(80);
+				
 			}
+			catch (Exception e)
+			{
+				log.error("Error caught when running FHMatrix");
+				JOptionPane.showMessageDialog(App.mainFrame, "Error running matrix analysis.  Please check logs and inform developers",
+						"Error", JOptionPane.ERROR_MESSAGE);
+				e.printStackTrace();
+			}
+			// }
 			setProgress(100);
 			
 			// Run summary analysis
