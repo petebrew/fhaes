@@ -935,7 +935,8 @@ public class FHInterval {
 							{
 								if (myReader.get(i).getClimate2d().get(k).get(climateYear.indexOf(listYears.get(j))) == 1)
 								{
-									FyearperSampletemp.add((j + myReader.get(i).getFirstYear()));
+									// FyearperSampletemp.add((j + myReader.get(i).getFirstYear()));
+									FyearperSampletemp.add(listYears.get(j));
 								}
 							}
 							
@@ -956,7 +957,7 @@ public class FHInterval {
 							{
 								if (myReader.get(i).getClimate2dII().get(k).get(climateYear.indexOf(listYears.get(j))) == 1)
 								{
-									FyearperSampletemp.add((j + myReader.get(i).getFirstYear()));
+									FyearperSampletemp.add(listYears.get(j));
 								}
 							}
 							// if ((myReader.get(i).getClimate2dII().get(k).get(j) == 1))
@@ -970,7 +971,7 @@ public class FHInterval {
 							{
 								if (myReader.get(i).getClimate2dIII().get(k).get(climateYear.indexOf(listYears.get(j))) == 1)
 								{
-									FyearperSampletemp.add((j + myReader.get(i).getFirstYear()));
+									FyearperSampletemp.add(listYears.get(j));
 								}
 							}
 							// if ((myReader.get(i).getClimate2dIII().get(k).get(j) == 1))
@@ -984,7 +985,8 @@ public class FHInterval {
 							log.error("Unsupported event type caught");
 						}
 						
-					}
+					} /// end of the loop for listYears in common (finish loading the fire year per sample
+					log.debug("FyearperSampletemp.size() is first" + FyearperSampletemp.size());
 					if (FyearperSampletemp.size() != 0)
 					{
 						if (includeIncomplete)
@@ -1009,37 +1011,37 @@ public class FHInterval {
 						// endofnew
 					if ((FyearperSampletemp.size() >= 2))
 					{
+						log.debug("FyearperSampletemp.size() is " + FyearperSampletemp.size());
 						for (int jk = 0; jk < FyearperSampletemp.size() - 1; jk++)
 						{
 							// FIyearperSampletemp.add(FyearperSample.get(k).get(jk+1)
 							// - FyearperSample.get(k).get(jk));
+							log.debug("FyearperSampletemp is " + FyearperSampletemp.get(jk));
 							if ((FyearperSampletemp.get(jk + 1) - FyearperSampletemp.get(jk)) > 0)
 							{
 								FIyearperSampletemp.add(FyearperSampletemp.get(jk + 1) - FyearperSampletemp.get(jk));
 							}
 							// FIyearperSampletemp.add(FyearperSampletemp.get(jk+1)
 							// - FyearperSampletemp.get(jk));
-							// log.debug("fire intervals for sample "
-							// +k +" is "+ FIyearperSampletemp.get(jk));
+							log.debug("fire intervals for sample " + k + " is " + FIyearperSampletemp.get(jk));
 							// fisumtemp= fisumtemp +
 							// FIyearperSampletemp.get(jk).intValue();
 						}
 						if (includeIncomplete)
 						{
-							if ((myReader.get(i).getLastYearIndexPerSample()[k] + myReader.get(i).getFirstYear()) != FyearperSampletemp
-									.get(FyearperSampletemp.size() - 1))
+							if (maxLastYear != FyearperSampletemp.get(FyearperSampletemp.size() - 1))
+							// if ((myReader.get(i).getLastYearIndexPerSample()[k] + myReader.get(i).getFirstYear()) != FyearperSampletemp
+							// .get(FyearperSampletemp.size() - 1))
 							{
 								// log.debug("the sample number is "+k+
 								// " the size of the fyearpersampletemp is "+
 								// FyearperSampletemp.size() );
-								// log.debug("the last year per sample is "+
-								// (myReader.get(i).getlastYearperSample()[k]+myReader.get(i).getFirstYear()));
-								// log.debug(" the last fire year per sample "+FyearperSampletemp.get(FyearperSampletemp.size()-1));
-								FIyearperSampletemp.add((myReader.get(i).getFirstYear() + myReader.get(i).getLastYearIndexPerSample()[k])
-										- FyearperSampletemp.get(FyearperSampletemp.size() - 1));
-								// log.debug("the diff is "+
-								// ((myReader.get(i).getFirstYear()+
-								// myReader.get(i).getlastYearperSample()[k])-FyearperSampletemp.get(FyearperSampletemp.size()-1)));
+								log.debug("the last year per sample is "
+										+ (myReader.get(i).getLastYearIndexPerSample()[k] + myReader.get(i).getFirstYear()));
+								log.debug(" the last fire year per sample " + FyearperSampletemp.get(FyearperSampletemp.size() - 1));
+								FIyearperSampletemp.add((maxLastYear) - FyearperSampletemp.get(FyearperSampletemp.size() - 1));
+								log.debug("the last intrval in included is on is   "
+										+ FIyearperSampletemp.get(FIyearperSampletemp.size() - 1));
 							}
 						}
 					} // end of if at least 2 fier years so we have at least one interval in a given series.
