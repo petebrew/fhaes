@@ -81,7 +81,7 @@ public class FHInterval {
 	public FHInterval(FHFile[] inputFileArray, AnalysisType analysisType, Integer startYear, Integer endYear, FireFilterType filterType,
 			Double filterValue, Boolean includeIncomplete, EventTypeToProcess eventTypeToProcess, Double alphaLevel,
 			SampleDepthFilterType sampleDepthFilterType, Double sampleDepthFilterValue) {
-			
+	
 		if (inputFileArray == null || inputFileArray.length == 0)
 		{
 			log.error("FHInterval must be passed an input file array");
@@ -125,7 +125,7 @@ public class FHInterval {
 	 * @return
 	 */
 	public File getExceedence() {
-		
+	
 		return exceedenceFile;
 	}
 	
@@ -135,7 +135,7 @@ public class FHInterval {
 	 * @return
 	 */
 	public File getSummary() {
-		
+	
 		return summaryFile;
 	}
 	
@@ -144,7 +144,7 @@ public class FHInterval {
 	 */
 	@SuppressWarnings("deprecation")
 	private void doAnalysis() {
-		
+	
 		log.debug("INPUT PARAMETERS");
 		log.debug("inputFileArray = " + inputFileArray);
 		log.debug("analyissType = " + analysisType);
@@ -375,7 +375,7 @@ public class FHInterval {
 		
 		double[] fixvalt = { 0.999, 0.99, 0.975, 0.95, 0.9, 0.875, 0.8, 0.75, 0.7, 0.667, 0.5, 0.333, 0.3, 0.25, 0.2, 0.125, 0.1, 0.05,
 				0.025, 0.01, 0.001 };
-				
+		
 		double[][] ExceeProbcomp = new double[fixvalt.length][myReader.size()];
 		double[][] ExceeProbsample = new double[fixvalt.length][myReader.size()];
 		// log.debug("the size of statsparam is " +
@@ -530,8 +530,8 @@ public class FHInterval {
 						{
 							if (myReader.get(i).getRecordingDepths(eventTypeToProcess)[climateYear.indexOf(listYears.get(ij))] != 0)
 							{
-								percentOfRecordingfilter.add(new Double(climateVectorFilter2.get(0)
-										.get(climateYear.indexOf(listYears.get(ij)))
+								percentOfRecordingfilter.add(new Double(climateVectorFilter2.get(0).get(
+										climateYear.indexOf(listYears.get(ij)))
 										/ myReader.get(i).getRecordingDepths(eventTypeToProcess)[climateYear.indexOf(listYears.get(ij))]));
 							}
 							else
@@ -944,11 +944,11 @@ public class FHInterval {
 						// {
 						// if ((myReader.get(i).getClimate2d().get(k).get(j) == 1))
 						// {
-						/// log.debug("I here inside ==1 "+
-						/// j+" "+myReader.get(i).getFirstYear());
-						/// int temp=j+myReader.get(i).getFirstYear();
-						/// log.debug((j+myReader.get(i).getFirstYear()));
-						///// FyearperSampletemp.add((j + myReader.get(i).getFirstYear()));
+						// / log.debug("I here inside ==1 "+
+						// / j+" "+myReader.get(i).getFirstYear());
+						// / int temp=j+myReader.get(i).getFirstYear();
+						// / log.debug((j+myReader.get(i).getFirstYear()));
+						// /// FyearperSampletemp.add((j + myReader.get(i).getFirstYear()));
 						// }
 						// }
 						else if (eventTypeToProcess.equals(EventTypeToProcess.INJURY_EVENT))
@@ -985,7 +985,7 @@ public class FHInterval {
 							log.error("Unsupported event type caught");
 						}
 						
-					} /// end of the loop for listYears in common (finish loading the fire year per sample
+					} // / end of the loop for listYears in common (finish loading the fire year per sample
 					log.debug("FyearperSampletemp.size() is first" + FyearperSampletemp.size());
 					if (FyearperSampletemp.size() != 0)
 					{
@@ -1078,7 +1078,7 @@ public class FHInterval {
 					// ADDED BY PETE
 					if (dfireintervalspersample.length == 0)
 						continue;
-						
+					
 					/*
 					 * load the Summary Analysis for the Sample fire intervals
 					 */
@@ -1303,7 +1303,7 @@ public class FHInterval {
 							{
 								if (summaryComp[j][k] == -99)
 								{
-									buffer = buffer + "NA" + delim;
+									buffer = buffer + "�" + delim;
 								}
 								else
 								{
@@ -1312,7 +1312,7 @@ public class FHInterval {
 							}
 							else
 							{
-								buffer = buffer + "NA" + delim;
+								buffer = buffer + "�" + delim;
 							}
 						}
 					} // end of k loop filearray
@@ -1350,7 +1350,7 @@ public class FHInterval {
 						}
 						else
 						{
-							buffer = buffer + "NA" + delim;
+							buffer = buffer + "�" + delim;
 						}
 					}
 					wrWDE.write(buffer.substring(0, buffer.length() - 1) + System.getProperty("line.separator"));
@@ -1397,7 +1397,7 @@ public class FHInterval {
 							{
 								if (summarySample[j][k] == -99)
 								{
-									wrSample.write("NA" + delim);
+									wrSample.write("�" + delim);
 								}
 								else
 								{
@@ -1406,7 +1406,7 @@ public class FHInterval {
 							}
 							else
 							{
-								wrSample.write("NA" + delim);
+								wrSample.write("�" + delim);
 							}
 						}
 					} // end of k loop file array
@@ -1439,7 +1439,7 @@ public class FHInterval {
 						}
 						else
 						{
-							wrWDESample.write("NA" + delim);
+							wrWDESample.write("�" + delim);
 						}
 						
 					}
@@ -1457,13 +1457,13 @@ public class FHInterval {
 		}
 		finally
 		{
-		
+			
 		}
 		
 	}
 	
 	public static ArrayList<Integer> generateFireIntervals(ArrayList<Integer> YearsWithFires) {
-		
+	
 		ArrayList<Integer> fireIntervals = new ArrayList<Integer>();
 		for (int i = 0; i < YearsWithFires.size() - 1; i++)
 		{
