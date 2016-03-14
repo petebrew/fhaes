@@ -1066,8 +1066,7 @@ public class JSEAFrame extends JFrame implements ActionListener {
 					panel.add(lblLagsPriorTo, "cell 0 1");
 				}
 				{
-					HelpTipButton helpTipButton = new HelpTipButton(
-							"Whether to perform a z-score transformation or not.  When the z-score transformation is used the data are centered around the mean.");
+					HelpTipButton helpTipButton = new HelpTipButton("");
 					panel.add(helpTipButton, "cell 1 1");
 				}
 				{
@@ -1096,8 +1095,7 @@ public class JSEAFrame extends JFrame implements ActionListener {
 					panel.add(lblLagsFollowingThe, "cell 0 2");
 				}
 				{
-					HelpTipButton helpTipButton = new HelpTipButton(
-							"Whether to perform a z-score transformation or not.  When the z-score transformation is used the data are centered around the mean.");
+					HelpTipButton helpTipButton = new HelpTipButton("");
 					panel.add(helpTipButton, "cell 1 2");
 				}
 				{
