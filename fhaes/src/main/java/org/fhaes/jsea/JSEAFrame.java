@@ -64,6 +64,7 @@ import javax.swing.filechooser.FileFilter;
 import net.miginfocom.swing.MigLayout;
 
 import org.apache.commons.io.FilenameUtils;
+import org.fhaes.components.HelpTipButton;
 import org.fhaes.components.JToolBarButton;
 import org.fhaes.filefilter.CSVFileFilter;
 import org.fhaes.filefilter.PDFFilter;
@@ -957,16 +958,21 @@ public class JSEAFrame extends JFrame implements ActionListener {
 				JPanel panel = new JPanel();
 				panel.setBorder(new TitledBorder(null, "Input Files", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 				contentPanel.add(panel, "cell 0 0,grow");
-				panel.setLayout(new MigLayout("", "[][grow][]", "[][]"));
+				panel.setLayout(new MigLayout("", "[][][grow][]", "[][]"));
 				{
 					JLabel lblContinuousTimeSeries = new JLabel("Continuous time series file:");
 					panel.add(lblContinuousTimeSeries, "cell 0 0,alignx trailing");
 				}
 				{
+					HelpTipButton label = new HelpTipButton(
+							"Continuous time series data files should be two column comma seperated (CSV) text files.  Column one should contains the years (in sequence), and column two should contain the data values.  If there are header lines or comments in the file, these lines should beginning with a #");
+					panel.add(label, "cell 1 0,alignx trailing");
+				}
+				{
 					txtTimeSeriesFile = new JTextField();
 					txtwrapper = new TextComponentWrapper(txtTimeSeriesFile, PrefKey.JSEA_CONTINUOUS_TIME_SERIES_FILE, "");
 					txtTimeSeriesFile.setEditable(true);
-					panel.add(txtTimeSeriesFile, "cell 1 0,growx");
+					panel.add(txtTimeSeriesFile, "cell 2 0,growx");
 					txtTimeSeriesFile.setColumns(10);
 				}
 				{
@@ -979,17 +985,22 @@ public class JSEAFrame extends JFrame implements ActionListener {
 					btnTimeSeriesFile.putClientProperty("JButton.buttonType", "segmentedTextured");
 					btnTimeSeriesFile.putClientProperty("JButton.segmentPosition", "middle");
 					
-					panel.add(btnTimeSeriesFile, "cell 2 0");
+					panel.add(btnTimeSeriesFile, "cell 3 0");
 				}
 				{
 					JLabel lblEventListFile = new JLabel("Event list file:");
 					panel.add(lblEventListFile, "cell 0 1,alignx trailing");
 				}
 				{
+					HelpTipButton helpTipButton = new HelpTipButton(
+							"Event data files should be a text file with a single column of integer year values.  If there are any header or comment lines, these should begin with a #");
+					panel.add(helpTipButton, "cell 1 1,alignx trailing");
+				}
+				{
 					txtEventListFile = new JTextField();
 					new TextComponentWrapper(txtEventListFile, PrefKey.JSEA_EVENT_LIST_FILE, "");
 					txtEventListFile.setEditable(false);
-					panel.add(txtEventListFile, "cell 1 1,growx");
+					panel.add(txtEventListFile, "cell 2 1,growx");
 					txtEventListFile.setColumns(10);
 				}
 				{
@@ -1001,7 +1012,7 @@ public class JSEAFrame extends JFrame implements ActionListener {
 					btnEventListFile.setMaximumSize(new Dimension(25, 25));
 					btnEventListFile.putClientProperty("JButton.buttonType", "segmentedTextured");
 					btnEventListFile.putClientProperty("JButton.segmentPosition", "middle");
-					panel.add(btnEventListFile, "cell 2 1");
+					panel.add(btnEventListFile, "cell 3 1");
 				}
 			}
 			{
@@ -1009,14 +1020,18 @@ public class JSEAFrame extends JFrame implements ActionListener {
 				panel.setBorder(new TitledBorder(null, "Window, Simulation and Statistics", TitledBorder.LEADING, TitledBorder.TOP, null,
 						null));
 				contentPanel.add(panel, "cell 0 1,grow");
-				panel.setLayout(new MigLayout("", "[right][fill][10px:10px:10px][right][90.00,grow,fill]", "[grow][][][]"));
+				panel.setLayout(new MigLayout("", "[right][][fill][10px:10px:10px][right][][90.00,grow,fill]", "[grow][][][][]"));
 				{
 					JLabel lblYears = new JLabel("Years to analyse:");
 					panel.add(lblYears, "cell 0 0");
 				}
 				{
+					HelpTipButton helpTipButton = new HelpTipButton("Specify which years from the dataset to analyse.");
+					panel.add(helpTipButton, "cell 1 0");
+				}
+				{
 					JPanel panel_1 = new JPanel();
-					panel.add(panel_1, "cell 1 0 4 1,grow");
+					panel.add(panel_1, "cell 2 0 5 1,grow");
 					panel_1.setLayout(new MigLayout("fill, insets 0", "[80px:80px][][80px:80px,fill][grow]", "[]"));
 					{
 						spnFirstYear = new JSpinner();
@@ -1051,19 +1066,29 @@ public class JSEAFrame extends JFrame implements ActionListener {
 					panel.add(lblLagsPriorTo, "cell 0 1");
 				}
 				{
+					HelpTipButton helpTipButton = new HelpTipButton(
+							"Whether to perform a z-score transformation or not.  When the z-score transformation is used the data are centered around the mean.");
+					panel.add(helpTipButton, "cell 1 1");
+				}
+				{
 					spnLagsPrior = new JSpinner();
 					new SpinnerWrapper(spnLagsPrior, PrefKey.JSEA_LAGS_PRIOR_TO_EVENT, 6);
-					panel.add(spnLagsPrior, "cell 1 1,growx");
+					panel.add(spnLagsPrior, "cell 2 1,growx");
 					spnLagsPrior.setModel(new SpinnerNumberModel(6, 1, 100, 1));
 				}
 				{
 					JLabel lblSimulationsToRun = new JLabel("Simulations:");
-					panel.add(lblSimulationsToRun, "cell 3 1");
+					panel.add(lblSimulationsToRun, "cell 4 1");
+				}
+				{
+					HelpTipButton helpTipButton = new HelpTipButton(
+							"Number of simulations to run.  Increasing the number of simulations increases the analysis time.");
+					panel.add(helpTipButton, "cell 5 1");
 				}
 				{
 					spnSimulationsToRun = new JSpinner();
 					new SpinnerWrapper(spnSimulationsToRun, PrefKey.JSEA_SIMULATION_COUNT, 1000);
-					panel.add(spnSimulationsToRun, "cell 4 1");
+					panel.add(spnSimulationsToRun, "cell 6 1");
 					spnSimulationsToRun.setModel(new SpinnerNumberModel(1000, 1, 10096, 1));
 				}
 				{
@@ -1071,19 +1096,29 @@ public class JSEAFrame extends JFrame implements ActionListener {
 					panel.add(lblLagsFollowingThe, "cell 0 2");
 				}
 				{
+					HelpTipButton helpTipButton = new HelpTipButton(
+							"Whether to perform a z-score transformation or not.  When the z-score transformation is used the data are centered around the mean.");
+					panel.add(helpTipButton, "cell 1 2");
+				}
+				{
 					spnLagsAfter = new JSpinner();
 					new SpinnerWrapper(spnLagsAfter, PrefKey.JSEA_LAGS_AFTER_EVENT, 4);
-					panel.add(spnLagsAfter, "cell 1 2,growx");
+					panel.add(spnLagsAfter, "cell 2 2,growx");
 					spnLagsAfter.setModel(new SpinnerNumberModel(4, 1, 100, 1));
 				}
 				{
 					JLabel lblSeedNumber = new JLabel("Seed number:");
-					panel.add(lblSeedNumber, "cell 3 2");
+					panel.add(lblSeedNumber, "cell 4 2");
+				}
+				{
+					HelpTipButton helpTipButton = new HelpTipButton(
+							"The analysis requires a pseudo-random component which is seeded with the seed number (a large integer value).  Running analyses with the same seed number enables produces the same results.  You can leave the seed as the default number unless you specifically want to generate results from a different randomised pool.");
+					panel.add(helpTipButton, "cell 5 2");
 				}
 				{
 					spnSeedNumber = new JSpinner();
 					new SpinnerWrapper(spnSeedNumber, PrefKey.JSEA_SEED_NUMBER, 30188);
-					panel.add(spnSeedNumber, "cell 4 2");
+					panel.add(spnSeedNumber, "cell 6 2");
 					spnSeedNumber.setModel(new SpinnerNumberModel(30188, 10000, 1000000, 1));
 				}
 				{
@@ -1091,19 +1126,41 @@ public class JSEAFrame extends JFrame implements ActionListener {
 					panel.add(lblIncludeIncompleteWindow, "cell 0 3");
 				}
 				{
+					HelpTipButton helpTipButton = new HelpTipButton("");
+					panel.add(helpTipButton, "cell 1 3");
+				}
+				{
 					chkIncludeIncompleteWindow = new JCheckBox("");
 					new CheckBoxWrapper(chkIncludeIncompleteWindow, PrefKey.JSEA_INCLUDE_INCOMPLETE_WINDOW, false);
 					
-					panel.add(chkIncludeIncompleteWindow, "cell 1 3");
+					panel.add(chkIncludeIncompleteWindow, "cell 2 3");
 				}
 				{
 					JLabel lblPvalue = new JLabel("p-value:");
-					panel.add(lblPvalue, "cell 3 3");
+					panel.add(lblPvalue, "cell 4 3");
+				}
+				{
+					HelpTipButton helpTipButton = new HelpTipButton("The cutoff value to use for statistical significance");
+					panel.add(helpTipButton, "cell 5 3,alignx trailing");
 				}
 				{
 					cbxPValue = new JComboBox();
-					panel.add(cbxPValue, "cell 4 3");
+					panel.add(cbxPValue, "cell 6 3");
 					cbxPValue.setModel(new DefaultComboBoxModel(new Double[] { 0.05, 0.01, 0.001 }));
+				}
+				{
+					JLabel lblZscoreTransformation = new JLabel("Z-score transformation:");
+					panel.add(lblZscoreTransformation, "cell 0 4");
+				}
+				{
+					HelpTipButton helpTipButton = new HelpTipButton(
+							"Whether to perform a z-score transformation or not.  When the z-score transformation is used the data are centered around the mean.");
+					panel.add(helpTipButton, "cell 1 4");
+				}
+				{
+					JCheckBox chkZScore = new JCheckBox("");
+					new CheckBoxWrapper(chkZScore, PrefKey.JSEA_Z_SCORE, false);
+					panel.add(chkZScore, "cell 2 4");
 				}
 			}
 			{

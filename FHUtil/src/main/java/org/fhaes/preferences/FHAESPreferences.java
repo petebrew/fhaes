@@ -190,6 +190,8 @@ public class FHAESPreferences {
 		
 		JSEA_LAST_YEAR("jseaLastYear"),
 		
+		JSEA_Z_SCORE("jseaZScore"),
+		
 		/**
 		 * 
 		 * SSIZ PREFERENCES

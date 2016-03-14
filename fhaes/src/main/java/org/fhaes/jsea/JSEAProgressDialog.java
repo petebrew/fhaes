@@ -32,10 +32,10 @@ import javax.swing.JProgressBar;
 import javax.swing.SwingWorker;
 import javax.swing.UIManager;
 
+import net.miginfocom.swing.MigLayout;
+
 import org.fhaes.preferences.App;
 import org.fhaes.preferences.FHAESPreferences.PrefKey;
-
-import net.miginfocom.swing.MigLayout;
 
 /**
  * JSEAProgressDialog Class. This is a dialog that shows progress for loading multiple files. The dialog runs in a background thread to
@@ -56,7 +56,7 @@ public class JSEAProgressDialog extends JDialog implements PropertyChangeListene
 	 * @param jseaframe
 	 */
 	public JSEAProgressDialog(final JSEAFrame jseaframe) {
-		
+	
 		this.jseaframe = jseaframe;
 		
 		final Task task = new Task();
@@ -84,7 +84,7 @@ public class JSEAProgressDialog extends JDialog implements PropertyChangeListene
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				
+			
 				task.done();
 				jseaframe.jsea = null;
 			}
@@ -108,23 +108,25 @@ public class JSEAProgressDialog extends JDialog implements PropertyChangeListene
 		 */
 		@Override
 		public Void doInBackground() {
-			
+		
 			jseaframe.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 			
 			jseaframe.jsea = new JSEAStatsFunctions(
 					// App.prefs.getPref (PrefKey.JSEA_CHART_TITLE, "Chart Title"),
 					// App.prefs.getPref (PrefKey.JSEA_YAXIS_LABEL, "Y Axis label"),
 					"Chart Title", "Y Axis Label", App.prefs.getIntPref(PrefKey.JSEA_SEED_NUMBER, 30188),
-					App.prefs.getIntPref(PrefKey.JSEA_LAGS_PRIOR_TO_EVENT, 6), App.prefs.getIntPref(PrefKey.JSEA_LAGS_AFTER_EVENT, 4),
-					App.prefs.getIntPref(PrefKey.JSEA_SIMULATION_COUNT, 1000), App.prefs.getIntPref(PrefKey.JSEA_FIRST_YEAR, 0),
+					App.prefs.getIntPref(PrefKey.JSEA_LAGS_PRIOR_TO_EVENT, 6),
+					App.prefs.getIntPref(PrefKey.JSEA_LAGS_AFTER_EVENT, 4),
+					App.prefs.getIntPref(PrefKey.JSEA_SIMULATION_COUNT, 1000),
+					App.prefs.getIntPref(PrefKey.JSEA_FIRST_YEAR, 0),
 					App.prefs.getIntPref(PrefKey.JSEA_LAST_YEAR, 2020),
 					// App.prefs.getBooleanPref(PrefKey.JSEA_INCLUDE_INCOMPLETE_WINDOW, false),
 					App.prefs.getBooleanPref(PrefKey.JSEA_INCLUDE_INCOMPLETE_WINDOW, false), true, jseaframe.chronologyYears,
 					jseaframe.chronologyActual, jseaframe.events, false, false, jseaframe.segmentationPanel.chkSegmentation.isSelected(),
 					jseaframe.segmentationPanel.table, App.prefs.getPref(PrefKey.JSEA_CONTINUOUS_TIME_SERIES_FILE, "blah"),
 					jseaframe.cbxPValue.getSelectedIndex() == 0, jseaframe.cbxPValue.getSelectedIndex() == 1,
-					jseaframe.cbxPValue.getSelectedIndex() == 2);
-					
+					jseaframe.cbxPValue.getSelectedIndex() == 2, App.prefs.getBooleanPref(PrefKey.JSEA_Z_SCORE, false));
+			
 			return null;
 		}
 		
@@ -133,7 +135,7 @@ public class JSEAProgressDialog extends JDialog implements PropertyChangeListene
 		 */
 		@Override
 		public void done() {
-			
+		
 			jseaframe.setCursor(null); // turn off the wait cursor
 			finish();
 		}
@@ -141,7 +143,7 @@ public class JSEAProgressDialog extends JDialog implements PropertyChangeListene
 	
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
-		
+	
 		if ("progress" == evt.getPropertyName())
 		{
 			int progress = (Integer) evt.getNewValue();
@@ -150,7 +152,7 @@ public class JSEAProgressDialog extends JDialog implements PropertyChangeListene
 	}
 	
 	private void finish() {
-		
+	
 		this.setVisible(false);
 	}
 }

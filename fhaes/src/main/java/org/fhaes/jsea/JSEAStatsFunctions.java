@@ -66,6 +66,7 @@ public class JSEAStatsFunctions {
 	boolean alphaLevel95;
 	boolean alphaLevel99;
 	boolean alphaLevel999;
+	boolean doZScore;
 	
 	// statistical info on the Actual Series
 	double meanSensitivity;
@@ -238,7 +239,8 @@ public class JSEAStatsFunctions {
 			Integer yearsAfterTheEvent, Integer numberOfSimulations, Integer firstYearOfProcess, Integer lastYearOfProcess,
 			boolean includeIncompleteEpochs, boolean randomSampling, ArrayList<Integer> chronologyYears,
 			ArrayList<Double> chronologyActual, ArrayList<Integer> events, boolean growth, boolean save, boolean usingSegmentation,
-			SegmentTable segmentTable, String chronologyFile, boolean alphaLevel95, boolean alphaLevel99, boolean alphaLevel999) {
+			SegmentTable segmentTable, String chronologyFile, boolean alphaLevel95, boolean alphaLevel99, boolean alphaLevel999,
+			boolean doZScore) {
 	
 		long begintime = System.currentTimeMillis();
 		this.titleForRun = titleForRun;
@@ -264,6 +266,7 @@ public class JSEAStatsFunctions {
 		this.alphaLevel95 = alphaLevel95;
 		this.alphaLevel99 = alphaLevel99;
 		this.alphaLevel999 = alphaLevel999;
+		this.doZScore = doZScore;
 		
 		log.debug("this.titleForRun = " + titleForRun);
 		log.debug("this.outputFilePrefix = " + outputFilePrefix);
