@@ -981,23 +981,23 @@ public class JSEAStatsFunctions {
 						if (alphaLevel95)
 						{
 							tempStrA = String.format("\t %-12s" + "\t %-8s" + "\t %-8s" + "\t %-8s" + "\t %-20s" + "\t %-8s" + "\t %-8s",
-									" SEGMENT ", " LAGS ", " MEAN ", "STA DEV", " 95% CONF INT ", " MIN ", " MAX ");
+									" ADJ SEG ", " LAGS ", " MEAN ", "STA DEV", " 95% CONF INT ", " MIN ", " MAX ");
 						}
 						else if (alphaLevel99)
 						{
 							tempStrA = String.format("\t %-12s" + "\t %-8s" + "\t %-8s" + "\t %-8s" + "\t %-20s" + "\t %-8s" + "\t %-8s",
-									" SEGMENT ", " LAGS ", " MEAN ", "STA DEV", " 99% CONF INT ", " MIN ", " MAX ");
+									" ADJ SEG ", " LAGS ", " MEAN ", "STA DEV", " 99% CONF INT ", " MIN ", " MAX ");
 						}
 						else if (alphaLevel999)
 						{
 							tempStrA = String.format("\t %-12s" + "\t %-8s" + "\t %-8s" + "\t %-8s" + "\t %-20s" + "\t %-8s" + "\t %-8s",
-									" SEGMENT ", " LAGS ", " MEAN ", "STA DEV", " 99.9% CONF INT ", " MIN ", " MAX ");
+									" ADJ SEG ", " LAGS ", " MEAN ", "STA DEV", " 99.9% CONF INT ", " MIN ", " MAX ");
 						}
 						
 						report = report + tempStrA + "\n";
 						actualTable = actualTable + tempStrA.substring(1) + "\n";
 						
-						PdfPCell cell00A = new PdfPCell(new Paragraph(" SEGMENT "));
+						PdfPCell cell00A = new PdfPCell(new Paragraph(" ADJ SEG "));
 						tableAct.addCell(cell00A);
 						PdfPCell cell01A = new PdfPCell(new Paragraph(" LAGS "));
 						tableAct.addCell(cell01A);
@@ -1032,30 +1032,33 @@ public class JSEAStatsFunctions {
 					{
 						if (alphaLevel95)
 						{
-							pdfbufferA = String.format("\t %-12s" + "\t %-8s" + "\t %-8s" + "\t %-8s" + "\t %-20s" + "\t %-8s" + "\t %-8s",
-									(firstYearsArray.get(segmentIndex) + " - " + lastYearsArray.get(segmentIndex)),
-									(i - yearsPriorToEvent.intValue()), threePlacess.format(meanByWindow[i]),
-									threePlacess.format(standardDevByWindow[i]), "[" + threePlacess.format(leftEndPoint[i][0]) + ","
-											+ threePlacess.format(rightEndPoint[i][0]) + "]", threePlacess.format(minimunByWindow[i]),
-									threePlacess.format(maximunByWindow[i]));
+							pdfbufferA = String.format(
+									"\t %-12s" + "\t %-8s" + "\t %-8s" + "\t %-8s" + "\t %-20s" + "\t %-8s" + "\t %-8s",
+									// (firstYearsArray.get(segmentIndex) + " - " + lastYearsArray.get(segmentIndex)),
+									beginingYearAdj + " - " + lastYearAdj, (i - yearsPriorToEvent.intValue()),
+									threePlacess.format(meanByWindow[i]), threePlacess.format(standardDevByWindow[i]),
+									"[" + threePlacess.format(leftEndPoint[i][0]) + "," + threePlacess.format(rightEndPoint[i][0]) + "]",
+									threePlacess.format(minimunByWindow[i]), threePlacess.format(maximunByWindow[i]));
 						}
 						else if (alphaLevel99)
 						{
-							pdfbufferA = String.format("\t %-12s" + "\t %-8s" + "\t %-8s" + "\t %-8s" + "\t %-20s" + "\t %-8s" + "\t %-8s",
-									(firstYearsArray.get(segmentIndex) + " - " + lastYearsArray.get(segmentIndex)),
-									(i - yearsPriorToEvent.intValue()), threePlacess.format(meanByWindow[i]),
-									threePlacess.format(standardDevByWindow[i]), "[" + threePlacess.format(leftEndPoint[i][1]) + ","
-											+ threePlacess.format(rightEndPoint[i][1]) + "]", threePlacess.format(minimunByWindow[i]),
-									threePlacess.format(maximunByWindow[i]));
+							pdfbufferA = String.format(
+									"\t %-12s" + "\t %-8s" + "\t %-8s" + "\t %-8s" + "\t %-20s" + "\t %-8s" + "\t %-8s",
+									// (firstYearsArray.get(segmentIndex) + " - " + lastYearsArray.get(segmentIndex)),
+									beginingYearAdj + " - " + lastYearAdj, (i - yearsPriorToEvent.intValue()),
+									threePlacess.format(meanByWindow[i]), threePlacess.format(standardDevByWindow[i]),
+									"[" + threePlacess.format(leftEndPoint[i][1]) + "," + threePlacess.format(rightEndPoint[i][1]) + "]",
+									threePlacess.format(minimunByWindow[i]), threePlacess.format(maximunByWindow[i]));
 						}
 						else if (alphaLevel999)
 						{
-							pdfbufferA = String.format("\t %-12s" + "\t %-8s" + "\t %-8s" + "\t %-8s" + "\t %-20s" + "\t %-8s" + "\t %-8s",
-									(firstYearsArray.get(segmentIndex) + " - " + lastYearsArray.get(segmentIndex)),
-									(i - yearsPriorToEvent.intValue()), threePlacess.format(meanByWindow[i]),
-									threePlacess.format(standardDevByWindow[i]), "[" + threePlacess.format(leftEndPoint[i][2]) + ","
-											+ threePlacess.format(rightEndPoint[i][2]) + "]", threePlacess.format(minimunByWindow[i]),
-									threePlacess.format(maximunByWindow[i]));
+							pdfbufferA = String.format(
+									"\t %-12s" + "\t %-8s" + "\t %-8s" + "\t %-8s" + "\t %-20s" + "\t %-8s" + "\t %-8s",
+									// (firstYearsArray.get(segmentIndex) + " - " + lastYearsArray.get(segmentIndex)),
+									beginingYearAdj + " - " + lastYearAdj, (i - yearsPriorToEvent.intValue()),
+									threePlacess.format(meanByWindow[i]), threePlacess.format(standardDevByWindow[i]),
+									"[" + threePlacess.format(leftEndPoint[i][2]) + "," + threePlacess.format(rightEndPoint[i][2]) + "]",
+									threePlacess.format(minimunByWindow[i]), threePlacess.format(maximunByWindow[i]));
 						}
 						
 						report = report + pdfbufferA + "\n";
@@ -1126,23 +1129,23 @@ public class JSEAStatsFunctions {
 						if (alphaLevel95)
 						{
 							tempStrB = String.format("\t %-12s" + "\t %-8s" + "\t %-8s" + "\t %-8s" + "\t %-20s" + "\t %-8s" + "\t %-8s",
-									" SEGMENT ", " LAGS ", " MEAN ", "STA DEV", " 95% CONF INT ", " MIN ", " MAX ");
+									" ADJ SEG ", " LAGS ", " MEAN ", "STA DEV", " 95% CONF INT ", " MIN ", " MAX ");
 						}
 						else if (alphaLevel99)
 						{
 							tempStrB = String.format("\t %-12s" + "\t %-8s" + "\t %-8s" + "\t %-8s" + "\t %-20s" + "\t %-8s" + "\t %-8s",
-									" SEGMENT ", " LAGS ", " MEAN ", "STA DEV", " 99% CONF INT ", " MIN ", " MAX ");
+									" ADJ SEG ", " LAGS ", " MEAN ", "STA DEV", " 99% CONF INT ", " MIN ", " MAX ");
 						}
 						else if (alphaLevel999)
 						{
 							tempStrB = String.format("\t %-12s" + "\t %-8s" + "\t %-8s" + "\t %-8s" + "\t %-20s" + "\t %-8s" + "\t %-8s",
-									" SEGMENT ", " LAGS ", " MEAN ", "STA DEV", " 99.9% CONF INT ", " MIN ", " MAX ");
+									" ADJ SEG ", " LAGS ", " MEAN ", "STA DEV", " 99.9% CONF INT ", " MIN ", " MAX ");
 						}
 						
 						report = report + tempStrB + "\n";
 						simulationTable = simulationTable + tempStrB.substring(1) + "\n";
 						
-						PdfPCell cell00B = new PdfPCell(new Paragraph(" SEGMENT "));
+						PdfPCell cell00B = new PdfPCell(new Paragraph(" ADJ SEG "));
 						tableSim.addCell(cell00B);
 						PdfPCell cell01B = new PdfPCell(new Paragraph(" LAGS "));
 						tableSim.addCell(cell01B);
@@ -1179,30 +1182,33 @@ public class JSEAStatsFunctions {
 					{
 						if (alphaLevel95)
 						{
-							pdfbufferB = String.format("\t %-12s" + "\t %-8s" + "\t %-8s" + "\t %-8s" + "\t %-20s" + "\t %-8s" + "\t %-8s",
-									(firstYearsArray.get(segmentIndex) + " - " + lastYearsArray.get(segmentIndex)),
-									(i - yearsPriorToEvent.intValue()), threePlacess.format(meanMeanByWindow[i]),
-									threePlacess.format(standardDevMeanByWindow[i]), "[" + threePlacess.format(leftEndPointSim[i][0]) + ","
-											+ threePlacess.format(rightEndPointSim[i][0]) + "]", threePlacess.format(minMeanByWindow[i]),
-									threePlacess.format(maxMeanByWindow[i]));
+							pdfbufferB = String.format(
+									"\t %-12s" + "\t %-8s" + "\t %-8s" + "\t %-8s" + "\t %-20s" + "\t %-8s" + "\t %-8s",
+									// (firstYearsArray.get(segmentIndex) + " - " + lastYearsArray.get(segmentIndex)),
+									beginingYearAdj + " - " + lastYearAdj, (i - yearsPriorToEvent.intValue()),
+									threePlacess.format(meanMeanByWindow[i]), threePlacess.format(standardDevMeanByWindow[i]),
+									"[" + threePlacess.format(leftEndPointSim[i][0]) + "," + threePlacess.format(rightEndPointSim[i][0])
+											+ "]", threePlacess.format(minMeanByWindow[i]), threePlacess.format(maxMeanByWindow[i]));
 						}
 						else if (alphaLevel99)
 						{
-							pdfbufferB = String.format("\t %-12s" + "\t %-8s" + "\t %-8s" + "\t %-8s" + "\t %-20s" + "\t %-8s" + "\t %-8s",
-									(firstYearsArray.get(segmentIndex) + " - " + lastYearsArray.get(segmentIndex)),
-									(i - yearsPriorToEvent.intValue()), threePlacess.format(meanMeanByWindow[i]),
-									threePlacess.format(standardDevMeanByWindow[i]), "[" + threePlacess.format(leftEndPointSim[i][1]) + ","
-											+ threePlacess.format(rightEndPointSim[i][1]) + "]", threePlacess.format(minMeanByWindow[i]),
-									threePlacess.format(maxMeanByWindow[i]));
+							pdfbufferB = String.format(
+									"\t %-12s" + "\t %-8s" + "\t %-8s" + "\t %-8s" + "\t %-20s" + "\t %-8s" + "\t %-8s",
+									// (firstYearsArray.get(segmentIndex) + " - " + lastYearsArray.get(segmentIndex)),
+									beginingYearAdj + " - " + lastYearAdj, (i - yearsPriorToEvent.intValue()),
+									threePlacess.format(meanMeanByWindow[i]), threePlacess.format(standardDevMeanByWindow[i]),
+									"[" + threePlacess.format(leftEndPointSim[i][1]) + "," + threePlacess.format(rightEndPointSim[i][1])
+											+ "]", threePlacess.format(minMeanByWindow[i]), threePlacess.format(maxMeanByWindow[i]));
 						}
 						else if (alphaLevel999)
 						{
-							pdfbufferB = String.format("\t %-12s" + "\t %-8s" + "\t %-8s" + "\t %-8s" + "\t %-20s" + "\t %-8s" + "\t %-8s",
-									(firstYearsArray.get(segmentIndex) + " - " + lastYearsArray.get(segmentIndex)),
-									(i - yearsPriorToEvent.intValue()), threePlacess.format(meanMeanByWindow[i]),
-									threePlacess.format(standardDevMeanByWindow[i]), "[" + threePlacess.format(leftEndPointSim[i][2]) + ","
-											+ threePlacess.format(rightEndPointSim[i][2]) + "]", threePlacess.format(minMeanByWindow[i]),
-									threePlacess.format(maxMeanByWindow[i]));
+							pdfbufferB = String.format(
+									"\t %-12s" + "\t %-8s" + "\t %-8s" + "\t %-8s" + "\t %-20s" + "\t %-8s" + "\t %-8s",
+									// (firstYearsArray.get(segmentIndex) + " - " + lastYearsArray.get(segmentIndex)),
+									beginingYearAdj + " - " + lastYearAdj, (i - yearsPriorToEvent.intValue()),
+									threePlacess.format(meanMeanByWindow[i]), threePlacess.format(standardDevMeanByWindow[i]),
+									"[" + threePlacess.format(leftEndPointSim[i][2]) + "," + threePlacess.format(rightEndPointSim[i][2])
+											+ "]", threePlacess.format(minMeanByWindow[i]), threePlacess.format(maxMeanByWindow[i]));
 						}
 						
 						report = report + pdfbufferB + "\n";
