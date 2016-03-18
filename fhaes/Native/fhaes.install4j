@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <install4j version="6.0.1" transformSequenceNumber="5">
   <directoryPresets config="../target/classes/LinBuild/fhaes.desktop" />
-  <application name="FHAES" distributionSourceDir="" applicationId="0745-8927-8095-9837" mediaDir="../target/binaries/${compiler:sys.version}/${compiler:sys.platform}" mediaFilePattern="${compiler:sys.shortName}-${compiler:sys.version}" compression="6" lzmaCompression="true" pack200Compression="false" excludeSignedFromPacking="true" commonExternalFiles="false" createMd5Sums="true" shrinkRuntime="true" shortName="FHAES" publisher="University of Arizona" publisherWeb="http://www.fhaes.org" version="2.0.0" allPathsRelative="true" backupOnSave="false" autoSave="false" convertDotsToUnderscores="false" macSignature="????" macVolumeId="71ce969904c145c0" javaMinVersion="1.6" javaMaxVersion="" allowBetaVM="true" jdkMode="jdk" jdkName="JDK 1.7">
+  <application name="FHAES" distributionSourceDir="" applicationId="0745-8927-8095-9837" mediaDir="../target/binaries/${compiler:sys.version}/${compiler:sys.platform}" mediaFilePattern="${compiler:sys.shortName}-${compiler:sys.version}" compression="6" lzmaCompression="true" pack200Compression="false" excludeSignedFromPacking="true" commonExternalFiles="false" createMd5Sums="true" shrinkRuntime="true" shortName="FHAES" publisher="University of Arizona" publisherWeb="http://www.fhaes.org" version="2.0.1-SNAPSHOT" allPathsRelative="true" backupOnSave="false" autoSave="false" convertDotsToUnderscores="false" macSignature="????" macVolumeId="71ce969904c145c0" javaMinVersion="1.6" javaMaxVersion="" allowBetaVM="true" jdkMode="jdk" jdkName="JDK 1.7">
     <languages skipLanguageSelection="false" languageSelectionInPrincipalLanguage="false">
       <principalLanguage id="en" customLocalizationFile="" />
       <additionalLanguages />
@@ -29,7 +29,7 @@
       <mountPoint id="95" root="93" location="" mode="755" />
     </mountPoints>
     <entries>
-      <fileEntry mountPoint="25" file="../target/fhaes-2.0.0.jar" overwriteMode="4" shared="false" fileMode="644" uninstallMode="0" overrideFileMode="false" overrideOverwriteMode="false" overrideUninstallMode="false" />
+      <fileEntry mountPoint="25" file="../target/fhaes-2.0.1-SNAPSHOT.jar" overwriteMode="4" shared="false" fileMode="644" uninstallMode="0" overrideFileMode="false" overrideOverwriteMode="false" overrideUninstallMode="false" />
       <fileEntry mountPoint="25" file="../target/classes/LinBuild/customfhaes.desktop" overwriteMode="4" shared="false" fileMode="644" uninstallMode="0" overrideFileMode="false" overrideOverwriteMode="false" overrideUninstallMode="false" />
       <dirEntry mountPoint="95" file="../src/main/resources/TestData" overwriteMode="4" shared="false" fileMode="644" uninstallMode="0" overrideFileMode="false" overrideOverwriteMode="false" overrideUninstallMode="false" entryMode="subdir" subDirectory="Test data" excludeSuffixes="" dirMode="755" overrideDirMode="false">
         <exclude />
@@ -72,7 +72,7 @@
       </splashScreen>
       <java mainClass="org.fhaes.gui.MainWindow" vmParameters="" arguments="" allowVMPassthroughParameters="true" preferredVM="" bundleRuntime="true">
         <classPath>
-          <archive location="fhaes-2.0.0.jar" failOnError="false" />
+          <archive location="fhaes-2.0.1-SNAPSHOT.jar" failOnError="false" />
         </classPath>
         <nativeLibraryDirectories />
       </java>

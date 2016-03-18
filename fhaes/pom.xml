@@ -188,7 +188,7 @@
 		<dependency>
 			<groupId>org.fhaes</groupId>
 			<artifactId>fhsamplesize</artifactId>
-			<version>1.0.3-SNAPSHOT</version>
+			<version>1.0.4-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>jfree</groupId>

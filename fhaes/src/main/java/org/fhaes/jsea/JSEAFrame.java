@@ -1073,7 +1073,7 @@ public class JSEAFrame extends JFrame implements ActionListener {
 					spnLagsPrior = new JSpinner();
 					new SpinnerWrapper(spnLagsPrior, PrefKey.JSEA_LAGS_PRIOR_TO_EVENT, 6);
 					panel.add(spnLagsPrior, "cell 2 1,growx");
-					spnLagsPrior.setModel(new SpinnerNumberModel(6, 1, 100, 1));
+					// spnLagsPrior.setModel(new SpinnerNumberModel(6, 1, 100, 1));
 				}
 				{
 					JLabel lblSimulationsToRun = new JLabel("Simulations:");
@@ -1102,7 +1102,7 @@ public class JSEAFrame extends JFrame implements ActionListener {
 					spnLagsAfter = new JSpinner();
 					new SpinnerWrapper(spnLagsAfter, PrefKey.JSEA_LAGS_AFTER_EVENT, 4);
 					panel.add(spnLagsAfter, "cell 2 2,growx");
-					spnLagsAfter.setModel(new SpinnerNumberModel(4, 1, 100, 1));
+					// spnLagsAfter.setModel(new SpinnerNumberModel(4, 1, 100, 1));
 				}
 				{
 					JLabel lblSeedNumber = new JLabel("Seed number:");
