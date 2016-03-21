@@ -30,6 +30,7 @@ import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.DatasetRenderingOrder;
 import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.plot.ValueMarker;
 import org.jfree.chart.renderer.category.BarRenderer;
 import org.jfree.chart.renderer.category.CategoryItemRenderer;
 import org.jfree.chart.renderer.category.LineAndShapeRenderer;
@@ -69,7 +70,7 @@ public class JSEABarChart extends ChartPanel {
 	 */
 	public JSEABarChart(String title, double[] meanByWindow, int lengthOfWindow, int yearsPriorOfEvent, int yearsAfterEvent,
 			double[][] leftEndPointSim, double[][] rightEndPointSim, String outputFilePrefix, int alphaLevel, int segmentIndex) {
-			
+	
 		super(createChart(title, meanByWindow, lengthOfWindow, yearsPriorOfEvent, yearsAfterEvent, leftEndPointSim, rightEndPointSim,
 				outputFilePrefix, alphaLevel, segmentIndex));
 	}
@@ -80,7 +81,7 @@ public class JSEABarChart extends ChartPanel {
 	 * @param m
 	 */
 	public JSEABarChart(BarChartParametersModel m) {
-		
+	
 		super(createChart(m.getTitle(), m.getMeanByWindow(), m.getLengthOfWindow(), m.getYearsPriorOfEvent(), m.getYearsAfterEvent(),
 				m.getLeftEndPointSim(), m.getRightEndPointSim(), m.getOutputFilePrefix(), m.getAlphaLevel(), m.getSegmentIndex()));
 	}
@@ -94,7 +95,7 @@ public class JSEABarChart extends ChartPanel {
 	public static JFreeChart createChart(String title, double[] meanByWindow, int lengthOfWindow, int yearsPriorOfEvent,
 			int yearsAfterEvent, double[][] leftEndPointSim, double[][] rightEndPointSim, String outputFilePrefix, int alphaLevel,
 			int segmentIndex) {
-			
+	
 		JSEABarChart.meanByWindow = meanByWindow;
 		JSEABarChart.lengthOfWindow = lengthOfWindow;
 		JSEABarChart.yearsPriorOfEvent = yearsPriorOfEvent;
@@ -137,8 +138,11 @@ public class JSEABarChart extends ChartPanel {
 		plot.setDatasetRenderingOrder(DatasetRenderingOrder.FORWARD);
 		// plot.setBackgroundPaint(Color.WHITE);
 		plot.setDomainAxis(new CategoryAxis("LAG"));
+		
+		plot.addRangeMarker(new ValueMarker(0));
+		
 		plot.setRangeAxis(new NumberAxis(outputFilePrefix));
-		plot.setRangeGridlinesVisible(false);
+		plot.setRangeGridlinesVisible(true);
 		
 		JFreeChart chart = new JFreeChart(plot);
 		chart.setTitle(title);
@@ -150,7 +154,7 @@ public class JSEABarChart extends ChartPanel {
 	
 	@Override
 	public JFreeChart getChart() {
-		
+	
 		return chart;
 	}
 	
@@ -163,7 +167,7 @@ public class JSEABarChart extends ChartPanel {
 	 */
 	@SuppressWarnings("deprecation")
 	private static CategoryItemRenderer createCategoryItemRenderer(Paint c, int k) {
-		
+	
 		CategoryItemRenderer renderer = new LineAndShapeRenderer();
 		renderer.setPaint(Color.black);
 		renderer.setShape(new Ellipse2D.Double(0, 0, 0, 0));
@@ -173,13 +177,13 @@ public class JSEABarChart extends ChartPanel {
 		}
 		if (k == 2)
 		{
-			renderer.setSeriesStroke(0,
-					new BasicStroke(3.0f, BasicStroke.JOIN_MITER, BasicStroke.JOIN_ROUND, 1.0f, new float[] { 1.0f, 5.0f }, 0.0f));
+			renderer.setSeriesStroke(0, new BasicStroke(3.0f, BasicStroke.JOIN_MITER, BasicStroke.JOIN_ROUND, 1.0f, new float[] { 1.0f,
+					5.0f }, 0.0f));
 		}
 		if (k == 1)
 		{
-			renderer.setSeriesStroke(0,
-					new BasicStroke(3.0f, BasicStroke.JOIN_BEVEL, BasicStroke.JOIN_ROUND, 1.0f, new float[] { 5.0f, 10.0f }, 0.0f));
+			renderer.setSeriesStroke(0, new BasicStroke(3.0f, BasicStroke.JOIN_BEVEL, BasicStroke.JOIN_ROUND, 1.0f, new float[] { 5.0f,
+					10.0f }, 0.0f));
 		}
 		
 		return renderer;
@@ -191,7 +195,7 @@ public class JSEABarChart extends ChartPanel {
 	 * @return a the dataset.
 	 */
 	private static DefaultCategoryDataset createDataset() {
-		
+	
 		DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 		int k;
 		for (int n = 0; n < lengthOfWindow; n++)
@@ -208,7 +212,7 @@ public class JSEABarChart extends ChartPanel {
 	 * @return a the dataset.
 	 */
 	private static DefaultCategoryDataset createEndDataset(int level, boolean left) {
-		
+	
 		DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 		int k;
 		for (int n = 0; n < lengthOfWindow; n++)
@@ -228,7 +232,7 @@ public class JSEABarChart extends ChartPanel {
 	 * @return An array of paint objects.
 	 */
 	private static Paint[] createPaint(int lengthOfWindow, Color color) {
-		
+	
 		Paint[] colors = new Paint[lengthOfWindow];
 		for (int i = 0; i <= lengthOfWindow - 1; i++)
 		{
@@ -260,7 +264,7 @@ public class JSEABarChart extends ChartPanel {
 		 * @param colors the colors.
 		 */
 		public CustomBarRenderer(Paint[] colors) {
-			
+		
 			this.setShadowVisible(false);
 			this.colors = colors;
 		}
@@ -270,12 +274,12 @@ public class JSEABarChart extends ChartPanel {
 		 * 
 		 * @param row the series.
 		 * @param column the category.
-		 * 			
+		 * 
 		 * @return The item color.
 		 */
 		@Override
 		public Paint getItemPaint(int row, int column) {
-			
+		
 			return this.colors[column % this.colors.length];
 		}
 	}
