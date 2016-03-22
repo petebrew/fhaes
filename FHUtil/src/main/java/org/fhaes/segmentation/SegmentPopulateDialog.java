@@ -31,9 +31,9 @@ import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.border.EmptyBorder;
 
-import org.fhaes.util.Builder;
-
 import net.miginfocom.swing.MigLayout;
+
+import org.fhaes.util.Builder;
 
 /**
  * SegmentPopulateDialog Class.
@@ -50,8 +50,8 @@ public class SegmentPopulateDialog extends JDialog implements ActionListener {
 	/**
 	 * Create the dialog.
 	 */
-	public SegmentPopulateDialog(Component parent, int firstyear) {
-		
+	public SegmentPopulateDialog(Component parent, int firstyear, int lastyear) {
+	
 		this.setModal(true);
 		setBounds(100, 100, 281, 140);
 		setTitle("Generate segments");
@@ -66,7 +66,7 @@ public class SegmentPopulateDialog extends JDialog implements ActionListener {
 		}
 		{
 			spnStartYear = new JSpinner();
-			spnStartYear.setModel(new SpinnerNumberModel(firstyear, firstyear, 2014, 1));
+			spnStartYear.setModel(new SpinnerNumberModel(firstyear, firstyear, lastyear, 1));
 			spnStartYear.setEditor(new JSpinner.NumberEditor(spnStartYear, "####"));
 			contentPanel.add(spnStartYear, "cell 1 0");
 		}
@@ -113,28 +113,28 @@ public class SegmentPopulateDialog extends JDialog implements ActionListener {
 	}
 	
 	public int getLength() {
-		
+	
 		return (Integer) spnLength.getValue();
 	}
 	
 	public int getLag() {
-		
+	
 		return (Integer) spnLag.getValue();
 	}
 	
 	public int getStartYear() {
-		
+	
 		return (Integer) spnStartYear.getValue();
 	}
 	
 	public boolean isSuccessful() {
-		
+	
 		return success;
 	}
 	
 	@Override
 	public void actionPerformed(ActionEvent evt) {
-		
+	
 		if (evt.getActionCommand().equals("OK"))
 		{
 			success = true;

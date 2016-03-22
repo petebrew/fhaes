@@ -59,6 +59,8 @@ import javax.swing.JToolBar;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileFilter;
 
 import net.miginfocom.swing.MigLayout;
@@ -87,13 +89,17 @@ import org.fhaes.util.Platform;
 import org.fhaes.util.TableUtil;
 import org.jdesktop.swingx.JXTable;
 import org.jfree.chart.ChartUtilities;
+import org.jfree.chart.JFreeChart;
 import org.jfree.chart.editor.ChartEditor;
 import org.jfree.chart.editor.ChartEditorManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.tridas.io.util.SafeIntYear;
 import org.tridas.io.util.StringUtils;
+import org.tridas.io.util.YearRange;
 
 import au.com.bytecode.opencsv.CSVReader;
+import edu.emory.mathcs.backport.java.util.Collections;
 
 /**
  * JSEAFrame Class.
@@ -132,6 +138,9 @@ public class JSEAFrame extends JFrame implements ActionListener {
 	protected ArrayList<Integer> chronologyYears = new ArrayList<Integer>();
 	protected ArrayList<Double> chronologyActual = new ArrayList<Double>();;
 	protected ArrayList<Integer> events = new ArrayList<Integer>();
+	private SafeIntYear firstPossibleYear;
+	private SafeIntYear lastPossibleYear;
+	
 	private JSpinner spnFirstYear;
 	private JSpinner spnLastYear;
 	private JCheckBox chkAllYears;
@@ -840,7 +849,31 @@ public class JSEAFrame extends JFrame implements ActionListener {
 	private void saveChartPNG(File file) throws IOException {
 	
 		log.debug("Saving chart as PNG file");
-		ChartUtilities.saveChartAsPNG(file, jsea.getChartList().get(segmentComboBox.getSelectedIndex()).getChart(), 1000, 500);
+		
+		ArrayList<BarChartParametersModel> chartlist = jsea.getChartList();
+		log.debug("Chart list size " + chartlist.size());
+		JFreeChart chart = null;
+		if (chartlist.size() == 0)
+		{
+			log.debug("No charts in list");
+			return;
+		}
+		else if (chartlist.size() == 1)
+		{
+			chart = chartlist.get(0).getChart();
+		}
+		else
+		{
+			chart = chartlist.get(segmentComboBox.getSelectedIndex()).getChart();
+		}
+		if (chart != null)
+		{
+			ChartUtilities.saveChartAsPNG(file, chart, 1000, 500);
+		}
+		else
+		{
+			log.error("Cannot save PNG of chart as chart is null!");
+		}
 	}
 	
 	/**
@@ -867,12 +900,10 @@ public class JSEAFrame extends JFrame implements ActionListener {
 		// Create default segment if segmentation was selected but not defined
 		if (segmentationPanel.chkSegmentation.isSelected() && segmentationPanel.table.tableModel.getSegments().isEmpty())
 		{
-			int earliestYearInDataSet = chronologyYears.get(0);
-			int latestYearInDataSet = chronologyYears.get(chronologyYears.size() - 1);
-			
-			segmentationPanel.table.tableModel.addSegment(new SegmentModel(earliestYearInDataSet, latestYearInDataSet));
-			segmentationPanel.table.setEarliestYear(earliestYearInDataSet);
-			segmentationPanel.table.setLatestYear(latestYearInDataSet);
+			segmentationPanel.table.tableModel.addSegment(new SegmentModel(Integer.parseInt(this.firstPossibleYear.toString()), Integer
+					.parseInt(this.lastPossibleYear.toString())));
+			segmentationPanel.table.setEarliestYear(Integer.parseInt(this.firstPossibleYear.toString()));
+			segmentationPanel.table.setLatestYear(Integer.parseInt(this.lastPossibleYear.toString()));
 		}
 		
 		// Run the analysis via the JSEAProgressDialog
@@ -1020,7 +1051,7 @@ public class JSEAFrame extends JFrame implements ActionListener {
 				panel.setBorder(new TitledBorder(null, "Window, Simulation and Statistics", TitledBorder.LEADING, TitledBorder.TOP, null,
 						null));
 				contentPanel.add(panel, "cell 0 1,grow");
-				panel.setLayout(new MigLayout("", "[right][][fill][10px:10px:10px][right][][90.00,grow,fill]", "[grow][][][][]"));
+				panel.setLayout(new MigLayout("", "[right][][fill][10px:10px:10px][right][][90.00,grow,fill]", "[grow][][][]"));
 				{
 					JLabel lblYears = new JLabel("Years to analyse:");
 					panel.add(lblYears, "cell 0 0");
@@ -1074,6 +1105,15 @@ public class JSEAFrame extends JFrame implements ActionListener {
 					new SpinnerWrapper(spnLagsPrior, PrefKey.JSEA_LAGS_PRIOR_TO_EVENT, 6);
 					panel.add(spnLagsPrior, "cell 2 1,growx");
 					// spnLagsPrior.setModel(new SpinnerNumberModel(6, 1, 100, 1));
+					spnLagsPrior.addChangeListener(new ChangeListener() {
+						
+						@Override
+						public void stateChanged(ChangeEvent e) {
+						
+							segmentationPanel.table.tableModel.clearSegments();
+							validateForm();
+						}
+					});
 				}
 				{
 					JLabel lblSimulationsToRun = new JLabel("Simulations:");
@@ -1102,7 +1142,15 @@ public class JSEAFrame extends JFrame implements ActionListener {
 					spnLagsAfter = new JSpinner();
 					new SpinnerWrapper(spnLagsAfter, PrefKey.JSEA_LAGS_AFTER_EVENT, 4);
 					panel.add(spnLagsAfter, "cell 2 2,growx");
-					// spnLagsAfter.setModel(new SpinnerNumberModel(4, 1, 100, 1));
+					spnLagsAfter.addChangeListener(new ChangeListener() {
+						
+						@Override
+						public void stateChanged(ChangeEvent e) {
+						
+							segmentationPanel.table.tableModel.clearSegments();
+							validateForm();
+						}
+					});
 				}
 				{
 					JLabel lblSeedNumber = new JLabel("Seed number:");
@@ -1146,36 +1194,27 @@ public class JSEAFrame extends JFrame implements ActionListener {
 					panel.add(cbxPValue, "cell 6 3");
 					cbxPValue.setModel(new DefaultComboBoxModel(new Double[] { 0.05, 0.01, 0.001 }));
 				}
-				{
-					JLabel lblZscoreTransformation = new JLabel("Z-score transformation:");
-					panel.add(lblZscoreTransformation, "cell 0 4");
-				}
-				{
-					HelpTipButton helpTipButton = new HelpTipButton(
-							"Whether to perform a z-score transformation or not.  When the z-score transformation is used the data are centered around the mean.");
-					panel.add(helpTipButton, "cell 1 4");
-				}
-				{
-					JCheckBox chkZScore = new JCheckBox("");
-					new CheckBoxWrapper(chkZScore, PrefKey.JSEA_Z_SCORE, false);
-					panel.add(chkZScore, "cell 2 4");
-				}
 			}
 			{
 				JPanel panel = new JPanel();
 				panel.setBorder(new TitledBorder(null, "Chart Options", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 				contentPanel.add(panel, "cell 0 2,grow");
 				
-				panel.setLayout(new MigLayout("", "[right][grow]", "[][]"));
+				panel.setLayout(new MigLayout("", "[right][][grow]", "[][]"));
 				{
 					JLabel lblTitleOfChart = new JLabel("Title of chart:");
 					panel.add(lblTitleOfChart, "cell 0 0,alignx trailing");
 				}
 				{
+					HelpTipButton helpTipButton = new HelpTipButton(
+							"Title to use on the chart.  The placeholder {segment} is replaced with the years of the segment being plotted.");
+					panel.add(helpTipButton, "cell 1 0,alignx trailing");
+				}
+				{
 					txtChartTitle = new JTextField();
 					txtChartTitle.setToolTipText("<html>Title to be displayed on the<br/>" + "chart output");
-					new TextComponentWrapper(txtChartTitle, PrefKey.JSEA_CHART_TITLE, "Chart title");
-					panel.add(txtChartTitle, "cell 1 0,growx,aligny top");
+					new TextComponentWrapper(txtChartTitle, PrefKey.JSEA_CHART_TITLE, "Chart title {segment}");
+					panel.add(txtChartTitle, "cell 2 0,growx,aligny top");
 					txtChartTitle.setColumns(10);
 				}
 				{
@@ -1186,14 +1225,14 @@ public class JSEAFrame extends JFrame implements ActionListener {
 					txtYAxisLabel = new JTextField();
 					txtYAxisLabel.setToolTipText("<html>Label to be displayed on the<br/> " + "continuous series axis");
 					new TextComponentWrapper(txtYAxisLabel, PrefKey.JSEA_YAXIS_LABEL, "Y Axis");
-					panel.add(txtYAxisLabel, "cell 1 1,growx");
+					panel.add(txtYAxisLabel, "cell 2 1,growx");
 					txtYAxisLabel.setColumns(10);
 				}
 			}
 			{
 				// Segmentation implementation used from FHSampleSize
 				segmentationPanel = new SegmentationPanel();
-				segmentationPanel.chkSegmentation.setText("Process subset or segments of dataset?");
+				segmentationPanel.chkSegmentation.setText("Process subset or segments of events?");
 				segmentationPanel.chkSegmentation.setActionCommand("SegmentationMode");
 				segmentationPanel.chkSegmentation.addActionListener(this);
 				contentPanel.add(segmentationPanel, "cell 0 3,grow");
@@ -1310,7 +1349,7 @@ public class JSEAFrame extends JFrame implements ActionListener {
 		pack();
 		validateForm();
 		setAnalysisAvailable(false);
-		this.setSize(1040, 660);
+		setExtendedState(this.getExtendedState() | JFrame.MAXIMIZED_BOTH);
 	}
 	
 	/**
@@ -1343,12 +1382,16 @@ public class JSEAFrame extends JFrame implements ActionListener {
 		if (segmentationPanel.chkSegmentation.isSelected())
 		{
 			// Populates the segmentComboBox according to the segments from the table
-			for (int i = 0; i < tableModel.getSegments().size(); i++)
+			/*
+			 * for (int i = 0; i < tableModel.getSegments().size(); i++) { if
+			 * (!segmentationPanel.table.tableModel.getSegment(i).isBadSegment()) {
+			 * segmentComboBox.addItem(tableModel.getSegment(i).getFirstYear() + " - " + tableModel.getSegment(i).getLastYear()); } }
+			 */
+			
+			for (int i = 0; i < jsea.getChartList().size(); i++)
 			{
-				if (!segmentationPanel.table.tableModel.getSegment(i).isBadSegment())
-				{
-					segmentComboBox.addItem(tableModel.getSegment(i).getFirstYear() + " - " + tableModel.getSegment(i).getLastYear());
-				}
+				BarChartParametersModel ch = jsea.getChartList().get(i);
+				segmentComboBox.addItem(ch.getFirstYear() + " - " + ch.getLastYear());
 			}
 			
 			// Redraws the chart via the segmentComboBox's itemListener
@@ -1370,7 +1413,9 @@ public class JSEAFrame extends JFrame implements ActionListener {
 			
 			// Clear the segmentComboBox since there are no segments to choose from
 			segmentComboBox.setEnabled(false);
-			segmentComboBox.addItem(jsea.getFirstYearOfProcess() + " - " + jsea.getLastYearOfProcess());
+			BarChartParametersModel ch = jsea.getChartList().get(0);
+			segmentComboBox.addItem(ch.getFirstYear() + " - " + ch.getLastYear());
+			// segmentComboBox.addItem(jsea.getFirstYearOfProcess() + " - " + jsea.getLastYearOfProcess());
 		}
 		
 		segmentComboBox.revalidate();
@@ -1382,10 +1427,23 @@ public class JSEAFrame extends JFrame implements ActionListener {
 	
 		if (event.getActionCommand().equals("SegmentationMode"))
 		{
+			Boolean $success = this.validateDataFiles();
+			
+			if ($success == null)
+			{
+				log.debug("Files not set yet");
+				return;
+			}
+			else if ($success == false)
+			{
+				log.debug("Invalid file ranges");
+				return;
+			}
+			
 			if (segmentationPanel.chkSegmentation.isSelected() && chronologyYears.size() > 1)
 			{
-				segmentationPanel.table.setEarliestYear(chronologyYears.get(0));
-				segmentationPanel.table.setLatestYear(chronologyYears.get(chronologyYears.size() - 1));
+				segmentationPanel.table.setEarliestYear(Integer.parseInt(this.firstPossibleYear.toString()));
+				segmentationPanel.table.setLatestYear(Integer.parseInt(this.lastPossibleYear.toString()));
 			}
 			else
 			{
@@ -1615,6 +1673,8 @@ public class JSEAFrame extends JFrame implements ActionListener {
 			
 		}
 		
+		Collections.sort(events);
+		
 		return true;
 	}
 	
@@ -1716,6 +1776,55 @@ public class JSEAFrame extends JFrame implements ActionListener {
 		return true;
 	}
 	
+	private Boolean validateDataFiles() {
+	
+		if (events == null || chronologyActual == null || chronologyYears == null || events.size() == 0 || chronologyYears.size() == 0)
+		{
+			this.firstPossibleYear = null;
+			this.lastPossibleYear = null;
+			// JOptionPane.showMessageDialog(this, "Data files not ready yet");
+			
+			this.segmentationPanel.setEnabled(false);
+			return null;
+		}
+		
+		SafeIntYear firstEventYear = new SafeIntYear(events.get(0) - App.prefs.getIntPref(PrefKey.JSEA_LAGS_PRIOR_TO_EVENT, 6));
+		SafeIntYear lastEventYear = new SafeIntYear(events.get(events.size() - 1) + App.prefs.getIntPref(PrefKey.JSEA_LAGS_AFTER_EVENT, 4));
+		
+		SafeIntYear firstChronologyYear = new SafeIntYear(chronologyYears.get(0));
+		SafeIntYear lastChronologyYear = new SafeIntYear(chronologyYears.get(chronologyYears.size() - 1));
+		
+		YearRange eventRange = new YearRange(firstEventYear, lastEventYear);
+		YearRange chronologyRange = new YearRange(firstChronologyYear, lastChronologyYear);
+		
+		if (eventRange.overlap(chronologyRange) == 0)
+		{
+			log.error("No overlap");
+			this.firstPossibleYear = null;
+			this.lastPossibleYear = null;
+			JOptionPane.showMessageDialog(this, "There is no overlap between the continous and event data.");
+			this.segmentationPanel.setEnabled(false);
+			return false;
+		}
+		else if (eventRange.overlap(chronologyRange) < 30)
+		{
+			log.error("Range overlap must be > 30");
+			this.firstPossibleYear = null;
+			this.lastPossibleYear = null;
+			JOptionPane.showMessageDialog(this, "The overlap between continuous and event data must be >30 years.");
+			this.segmentationPanel.setEnabled(false);
+			return false;
+		}
+		
+		YearRange intersect = eventRange.intersection(chronologyRange);
+		
+		this.firstPossibleYear = intersect.getStart();
+		this.lastPossibleYear = intersect.getEnd();
+		
+		this.segmentationPanel.setEnabled(true);
+		return true;
+	}
+	
 	/**
 	 * Sets the value of the scroll bar to zero.
 	 */
@@ -1751,7 +1860,10 @@ public class JSEAFrame extends JFrame implements ActionListener {
 		txtTimeSeriesFile.setText("");
 		txtEventListFile.setText("");
 		
-		txtChartTitle.setText("Chart title");
+		App.prefs.setPref(PrefKey.JSEA_CHART_TITLE, "Chart title {segment}");
+		txtChartTitle.setText("Chart title {segment}");
+		
+		App.prefs.setPref(PrefKey.JSEA_YAXIS_LABEL, "Y Axis");
 		txtYAxisLabel.setText("Y Axis");
 		
 		spnLagsPrior.setValue(6);
@@ -1772,10 +1884,20 @@ public class JSEAFrame extends JFrame implements ActionListener {
 	private void validateForm() {
 	
 		log.debug("Validating form");
-		if (chronologyActual.size() > 0 && chronologyYears.size() > 0 && events.size() > 0 && txtTimeSeriesFile.getText() != null
-				&& txtEventListFile.getText() != null)
+		
+		Boolean areDataFilesValid = validateDataFiles();
+		if (areDataFilesValid != null && areDataFilesValid == true)
 		{
-			actionRun.setEnabled(true);
+			
+			if (chronologyActual.size() > 0 && chronologyYears.size() > 0 && events.size() > 0 && txtTimeSeriesFile.getText() != null
+					&& txtEventListFile.getText() != null)
+			{
+				actionRun.setEnabled(true);
+			}
+			else
+			{
+				actionRun.setEnabled(false);
+			}
 		}
 		else
 		{

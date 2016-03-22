@@ -18,11 +18,15 @@
 package org.fhaes.jsea;
 
 import org.jfree.chart.JFreeChart;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * BarChartParametersModel Class.
  */
 public class BarChartParametersModel {
+	
+	private static final Logger log = LoggerFactory.getLogger(JSEAFrame.class);
 	
 	private String title;
 	private double[] meanByWindow;
@@ -34,8 +38,11 @@ public class BarChartParametersModel {
 	private String outputFilePrefix;
 	private int alphaLevel;
 	private int segmentIndex;
+	private int firstyear;
+	private int lastyear;
+	private int totalSegmentCount;
 	
-	private static JFreeChart chart;
+	// private static JFreeChart chart;
 	
 	/**
 	 * TODO
@@ -52,8 +59,9 @@ public class BarChartParametersModel {
 	 * @param segmentIndex
 	 */
 	public BarChartParametersModel(String title, double[] meanByWindow, int lengthOfWindow, int yearsPriorOfEvent, int yearsAfterEvent,
-			double[][] leftEndPointSim, double[][] rightEndPointSim, String outputFilePrefix, int alphaLevel, int segmentIndex) {
-			
+			double[][] leftEndPointSim, double[][] rightEndPointSim, String outputFilePrefix, int alphaLevel, int segmentIndex,
+			int totalSegmentCount, int firstyear, int lastyear) {
+	
 		this.title = title;
 		this.meanByWindow = meanByWindow;
 		this.lengthOfWindow = lengthOfWindow;
@@ -64,65 +72,99 @@ public class BarChartParametersModel {
 		this.outputFilePrefix = outputFilePrefix;
 		this.alphaLevel = alphaLevel;
 		this.segmentIndex = segmentIndex;
+		this.firstyear = firstyear;
+		this.lastyear = lastyear;
+		this.totalSegmentCount = totalSegmentCount;
+	}
+	
+	protected int getFirstYear() {
+	
+		return this.firstyear;
+	}
+	
+	protected int getLastYear() {
+	
+		return this.lastyear;
 	}
 	
 	protected String getTitle() {
+	
+		log.debug("Getting title for chart...");
+		log.debug("Raw title is " + title);
+		log.debug("Total segment count: " + totalSegmentCount);
+		
+		// if (title.contains("{segment}") && totalSegmentCount > 1)
+		if (title.contains("{segment}"))
+		{
+			log.debug("Title contains {segment}");
+			String years = firstyear + " - " + lastyear;
+			title = title.replace("{segment}", years);
+		}
+		
+		log.debug("Title is now " + title);
+		
+		title = title.replace("{segment}", "");
+		
+		log.debug("Final title is now " + title);
 		
 		return title;
+		
 	}
 	
 	protected double[] getMeanByWindow() {
-		
+	
 		return meanByWindow;
 	}
 	
 	protected int getLengthOfWindow() {
-		
+	
 		return lengthOfWindow;
 	}
 	
 	protected int getYearsPriorOfEvent() {
-		
+	
 		return yearsPriorOfEvent;
 	}
 	
 	protected int getYearsAfterEvent() {
-		
+	
 		return yearsAfterEvent;
 	}
 	
 	protected double[][] getLeftEndPointSim() {
-		
+	
 		return leftEndPointSim;
 	}
 	
 	protected double[][] getRightEndPointSim() {
-		
+	
 		return rightEndPointSim;
 	}
 	
 	protected String getOutputFilePrefix() {
-		
+	
 		return outputFilePrefix;
 	}
 	
 	protected int getAlphaLevel() {
-		
+	
 		return alphaLevel;
 	}
 	
 	protected int getSegmentIndex() {
-		
+	
 		return segmentIndex;
 	}
 	
 	protected JFreeChart getChart() {
-		
-		return chart;
+	
+		return JSEABarChart.createChart(getTitle(), getMeanByWindow(), getLengthOfWindow(), getYearsPriorOfEvent(), getYearsAfterEvent(),
+				getLeftEndPointSim(), getRightEndPointSim(), getOutputFilePrefix(), getAlphaLevel(), getSegmentIndex());
 	}
 	
-	protected void setChart(JFreeChart inChart) {
-		
-		chart = inChart;
-	}
+	/*
+	 * protected void setChart(JFreeChart inChart) {
+	 * 
+	 * chart = inChart; }
+	 */
 }

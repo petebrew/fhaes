@@ -26,9 +26,9 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.TitledBorder;
 
-import org.fhaes.util.Builder;
-
 import net.miginfocom.swing.MigLayout;
+
+import org.fhaes.util.Builder;
 
 /**
  * SegmentationPanel Class. A panel containing components that allows the user to define one or more segments for fire history analysis.
@@ -49,7 +49,7 @@ public class SegmentationPanel extends JPanel implements ActionListener {
 	 * Create the panel.
 	 */
 	public SegmentationPanel() {
-		
+	
 		setBorder(new TitledBorder(null, "Segmentation", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		setLayout(new MigLayout("", "[grow][][]", "[][][grow]"));
 		
@@ -95,7 +95,7 @@ public class SegmentationPanel extends JPanel implements ActionListener {
 	
 	@Override
 	public void actionPerformed(ActionEvent evt) {
-		
+	
 		if (evt.getActionCommand().equals("AddSegment"))
 		{
 			// Add a new segment to the list. Defaults to the full range of years
@@ -126,35 +126,43 @@ public class SegmentationPanel extends JPanel implements ActionListener {
 			// Autopopulate the segmentation table
 			
 			// Ask user what they want
-			SegmentPopulateDialog dialog = new SegmentPopulateDialog(this, table.getEarliestYear());
+			SegmentPopulateDialog dialog = new SegmentPopulateDialog(this, table.getEarliestYear(), table.getLatestYear());
 			
 			if (!dialog.isSuccessful())
 				return;
-				
+			
 			// Remove existing segments
 			table.tableModel.clearSegments();
 			
 			// Generate segments based on what user chose
 			Integer segmentLength = dialog.getLength();
 			Integer segmentLag = dialog.getLag();
-			Integer segmentBeginingYear = dialog.getStartYear();
+			Integer segmentBeginningYear = dialog.getStartYear();
 			Integer firstYearOfProcess = table.getEarliestYear();
 			Integer lastYearOfProcess = table.getLatestYear();
 			Integer startSegmentLoop;
 			
-			if (Math.abs((segmentBeginingYear.intValue() - firstYearOfProcess) % segmentLag.intValue()) == 0)
+			if (Math.abs((segmentBeginningYear.intValue() - firstYearOfProcess) % segmentLag.intValue()) == 0)
 			{
-				startSegmentLoop = segmentBeginingYear.intValue() + segmentLag.intValue();
-				SegmentModel seg = new SegmentModel(segmentBeginingYear, (segmentBeginingYear + segmentLength - 1));
+				startSegmentLoop = segmentBeginningYear.intValue() + segmentLag.intValue();
+				// Check we don't go beyond last year in dataset
+				int lastyear = (segmentBeginningYear + segmentLength - 1);
+				if (lastyear > lastYearOfProcess)
+					lastyear = lastYearOfProcess;
+				SegmentModel seg = new SegmentModel(segmentBeginningYear, lastyear);
 				table.tableModel.addSegment(seg);
 			}
 			else
 			{
 				startSegmentLoop = (firstYearOfProcess.intValue()
-						+ (segmentLag.intValue()
-								- Math.abs((segmentBeginingYear.intValue() - firstYearOfProcess.intValue()) % segmentLag.intValue()))
-						+ segmentLag.intValue());
-				SegmentModel seg = new SegmentModel(firstYearOfProcess, (firstYearOfProcess + segmentLength - 1));
+						+ (segmentLag.intValue() - Math.abs((segmentBeginningYear.intValue() - firstYearOfProcess.intValue())
+								% segmentLag.intValue())) + segmentLag.intValue());
+				
+				// Check we don't go beyond last year in dataset
+				int lastyear = (firstYearOfProcess + segmentLength - 1);
+				if (lastyear > lastYearOfProcess)
+					lastyear = lastYearOfProcess;
+				SegmentModel seg = new SegmentModel(firstYearOfProcess, lastyear);
 				table.tableModel.addSegment(seg);
 			}
 			
@@ -164,6 +172,9 @@ public class SegmentationPanel extends JPanel implements ActionListener {
 				{
 					Integer firstyear = Math.min(i, (lastYearOfProcess.intValue() - segmentLength.intValue() + 1));
 					Integer lastyear = Math.min(i, (lastYearOfProcess.intValue() - segmentLength.intValue() + 1)) + segmentLength - 1;
+					// Check we don't go beyond last year in dataset
+					if (lastyear > lastYearOfProcess)
+						lastyear = lastYearOfProcess;
 					SegmentModel seg = new SegmentModel(firstyear, lastyear);
 					table.tableModel.addSegment(seg);
 				}
@@ -173,12 +184,28 @@ public class SegmentationPanel extends JPanel implements ActionListener {
 					{
 						Integer firstyear = (Math.min(i, (lastYearOfProcess.intValue() - segmentLength.intValue() + 1)));
 						Integer lastyear = (Math.min(i, (lastYearOfProcess.intValue() - segmentLength.intValue() + 1)) + segmentLength - 1);
+						// Check we don't go beyond last year in dataset
+						if (lastyear > lastYearOfProcess)
+							lastyear = lastYearOfProcess;
 						SegmentModel seg = new SegmentModel(firstyear, lastyear);
 						table.tableModel.addSegment(seg);
 					}
 					break;
 				}
 			}
+		}
+	}
+	
+	@Override
+	public void setEnabled(boolean b) {
+	
+		super.setEnabled(b);
+		this.chkSegmentation.setEnabled(b);
+		this.table.setEnabled(b);
+		
+		if (b == false)
+		{
+			this.table.tableModel.clearSegments();
 		}
 	}
 }

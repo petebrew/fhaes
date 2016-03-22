@@ -111,21 +111,16 @@ public class JSEAProgressDialog extends JDialog implements PropertyChangeListene
 		
 			jseaframe.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 			
-			jseaframe.jsea = new JSEAStatsFunctions(
-					// App.prefs.getPref (PrefKey.JSEA_CHART_TITLE, "Chart Title"),
-					// App.prefs.getPref (PrefKey.JSEA_YAXIS_LABEL, "Y Axis label"),
-					"Chart Title", "Y Axis Label", App.prefs.getIntPref(PrefKey.JSEA_SEED_NUMBER, 30188),
-					App.prefs.getIntPref(PrefKey.JSEA_LAGS_PRIOR_TO_EVENT, 6),
-					App.prefs.getIntPref(PrefKey.JSEA_LAGS_AFTER_EVENT, 4),
-					App.prefs.getIntPref(PrefKey.JSEA_SIMULATION_COUNT, 1000),
-					App.prefs.getIntPref(PrefKey.JSEA_FIRST_YEAR, 0),
-					App.prefs.getIntPref(PrefKey.JSEA_LAST_YEAR, 2020),
-					// App.prefs.getBooleanPref(PrefKey.JSEA_INCLUDE_INCOMPLETE_WINDOW, false),
-					App.prefs.getBooleanPref(PrefKey.JSEA_INCLUDE_INCOMPLETE_WINDOW, false), true, jseaframe.chronologyYears,
-					jseaframe.chronologyActual, jseaframe.events, false, false, jseaframe.segmentationPanel.chkSegmentation.isSelected(),
-					jseaframe.segmentationPanel.table, App.prefs.getPref(PrefKey.JSEA_CONTINUOUS_TIME_SERIES_FILE, "blah"),
-					jseaframe.cbxPValue.getSelectedIndex() == 0, jseaframe.cbxPValue.getSelectedIndex() == 1,
-					jseaframe.cbxPValue.getSelectedIndex() == 2, App.prefs.getBooleanPref(PrefKey.JSEA_Z_SCORE, false));
+			jseaframe.jsea = new JSEAStatsFunctions(App.prefs.getPref(PrefKey.JSEA_CHART_TITLE, "Chart Title"), App.prefs.getPref(
+					PrefKey.JSEA_YAXIS_LABEL, "Y Axis label"), App.prefs.getIntPref(PrefKey.JSEA_SEED_NUMBER, 30188), App.prefs.getIntPref(
+					PrefKey.JSEA_LAGS_PRIOR_TO_EVENT, 6), App.prefs.getIntPref(PrefKey.JSEA_LAGS_AFTER_EVENT, 4), App.prefs.getIntPref(
+					PrefKey.JSEA_SIMULATION_COUNT, 1000), App.prefs.getIntPref(PrefKey.JSEA_FIRST_YEAR, 0), App.prefs.getIntPref(
+					PrefKey.JSEA_LAST_YEAR, 2020), App.prefs.getBooleanPref(PrefKey.JSEA_INCLUDE_INCOMPLETE_WINDOW, false), true,
+					jseaframe.chronologyYears, jseaframe.chronologyActual, jseaframe.events, false, false,
+					jseaframe.segmentationPanel.chkSegmentation.isSelected(), jseaframe.segmentationPanel.table, App.prefs.getPref(
+							PrefKey.JSEA_CONTINUOUS_TIME_SERIES_FILE, "blah"), jseaframe.cbxPValue.getSelectedIndex() == 0,
+					jseaframe.cbxPValue.getSelectedIndex() == 1, jseaframe.cbxPValue.getSelectedIndex() == 2, App.prefs.getBooleanPref(
+							PrefKey.JSEA_Z_SCORE, false));
 			
 			return null;
 		}

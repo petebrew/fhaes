@@ -180,7 +180,7 @@ public class JSEAStatsFunctions {
 	
 	// Default Constructor
 	public JSEAStatsFunctions() {
-		
+	
 		titleForRun = "Title for Chart";
 		outputFilePrefix = "ZZZZZ";
 		yearsPriorToEvent = 6;
@@ -237,10 +237,11 @@ public class JSEAStatsFunctions {
 	 */
 	public JSEAStatsFunctions(String titleForRun, String outputFilePrefix, Integer seedNumber, Integer yearsPriorToEvent,
 			Integer yearsAfterTheEvent, Integer numberOfSimulations, Integer firstYearOfProcess, Integer lastYearOfProcess,
-			boolean includeIncompleteEpochs, boolean randomSampling, ArrayList<Integer> chronologyYears, ArrayList<Double> chronologyActual,
-			ArrayList<Integer> events, boolean growth, boolean save, boolean usingSegmentation, SegmentTable segmentTable,
-			String chronologyFile, boolean alphaLevel95, boolean alphaLevel99, boolean alphaLevel999, boolean doZScore) {
-			
+			boolean includeIncompleteEpochs, boolean randomSampling, ArrayList<Integer> chronologyYears,
+			ArrayList<Double> chronologyActual, ArrayList<Integer> events, boolean growth, boolean save, boolean usingSegmentation,
+			SegmentTable segmentTable, String chronologyFile, boolean alphaLevel95, boolean alphaLevel99, boolean alphaLevel999,
+			boolean doZScore) {
+	
 		long begintime = System.currentTimeMillis();
 		this.titleForRun = titleForRun;
 		this.outputFilePrefix = outputFilePrefix;
@@ -852,9 +853,15 @@ public class JSEAStatsFunctions {
 					/*
 					 * adding the chart and the creation on the buffer here
 					 */
+					
+					// BarChartParametersModel m = new BarChartParametersModel(titleForRun, meanByWindow, lengthOfWindow, yearsPriorToEvent,
+					// yearsAfterTheEvent, leftEndPointSim, rightEndPointSim, outputFilePrefix, alphaLevel, segmentIndex,
+					// firstYearsArray.size(), firstYearsArray.get(segmentIndex), lastYearsArray.get(segmentIndex));
+					
 					BarChartParametersModel m = new BarChartParametersModel(titleForRun, meanByWindow, lengthOfWindow, yearsPriorToEvent,
-							yearsAfterTheEvent, leftEndPointSim, rightEndPointSim, outputFilePrefix, alphaLevel, segmentIndex);
-					m.setChart(new JSEABarChart(m).getChart());
+							yearsAfterTheEvent, leftEndPointSim, rightEndPointSim, outputFilePrefix, alphaLevel, segmentIndex,
+							firstYearsArray.size(), beginingYearAdj, lastYearAdj);
+					// m.setChart(new JSEABarChart(m).getChart());
 					this.chartList.add(m);
 					
 					/*
@@ -926,7 +933,7 @@ public class JSEAStatsFunctions {
 					report = report + "\t" + "KURTOSIS of the adjusted time series is  " + threePlacess.format(kurtAdj) + "\n";
 					report = report + "\t" + "First Order AUTOCORRELATION Index of the adjusted time series is  "
 							+ threePlacess.format(autocorrelationAdj) + "\n";
-							
+					
 					/*
 					 * save the general statistical information on the Adjusted time series data in pdf fie.
 					 */
@@ -946,7 +953,7 @@ public class JSEAStatsFunctions {
 							+ "\n";
 					pdfbufferpar1 = pdfbufferpar1 + "\t" + "First Order AUTOCORRELATION Index of the adjusted time series is  "
 							+ threePlacess.format(autocorrelationAdj) + "\n";
-							
+					
 					/*
 					 * Display the general information on the Actual Event list.
 					 */
@@ -1032,7 +1039,8 @@ public class JSEAStatsFunctions {
 					{
 						if (alphaLevel95)
 						{
-							pdfbufferA = String.format("\t %-12s" + "\t %-8s" + "\t %-8s" + "\t %-8s" + "\t %-20s" + "\t %-8s" + "\t %-8s",
+							pdfbufferA = String.format(
+									"\t %-12s" + "\t %-8s" + "\t %-8s" + "\t %-8s" + "\t %-20s" + "\t %-8s" + "\t %-8s",
 									// (firstYearsArray.get(segmentIndex) + " - " + lastYearsArray.get(segmentIndex)),
 									beginingYearAdj + " - " + lastYearAdj, (i - yearsPriorToEvent.intValue()),
 									threePlacess.format(meanByWindow[i]), threePlacess.format(standardDevByWindow[i]),
@@ -1041,7 +1049,8 @@ public class JSEAStatsFunctions {
 						}
 						else if (alphaLevel99)
 						{
-							pdfbufferA = String.format("\t %-12s" + "\t %-8s" + "\t %-8s" + "\t %-8s" + "\t %-20s" + "\t %-8s" + "\t %-8s",
+							pdfbufferA = String.format(
+									"\t %-12s" + "\t %-8s" + "\t %-8s" + "\t %-8s" + "\t %-20s" + "\t %-8s" + "\t %-8s",
 									// (firstYearsArray.get(segmentIndex) + " - " + lastYearsArray.get(segmentIndex)),
 									beginingYearAdj + " - " + lastYearAdj, (i - yearsPriorToEvent.intValue()),
 									threePlacess.format(meanByWindow[i]), threePlacess.format(standardDevByWindow[i]),
@@ -1050,7 +1059,8 @@ public class JSEAStatsFunctions {
 						}
 						else if (alphaLevel999)
 						{
-							pdfbufferA = String.format("\t %-12s" + "\t %-8s" + "\t %-8s" + "\t %-8s" + "\t %-20s" + "\t %-8s" + "\t %-8s",
+							pdfbufferA = String.format(
+									"\t %-12s" + "\t %-8s" + "\t %-8s" + "\t %-8s" + "\t %-20s" + "\t %-8s" + "\t %-8s",
 									// (firstYearsArray.get(segmentIndex) + " - " + lastYearsArray.get(segmentIndex)),
 									beginingYearAdj + " - " + lastYearAdj, (i - yearsPriorToEvent.intValue()),
 									threePlacess.format(meanByWindow[i]), threePlacess.format(standardDevByWindow[i]),
@@ -1061,8 +1071,8 @@ public class JSEAStatsFunctions {
 						report = report + pdfbufferA + "\n";
 						actualTable = actualTable + pdfbufferA.substring(1) + "\n";
 						
-						PdfPCell cell00A = new PdfPCell(
-								new Paragraph(firstYearsArray.get(segmentIndex) + " - " + lastYearsArray.get(segmentIndex)));
+						PdfPCell cell00A = new PdfPCell(new Paragraph(firstYearsArray.get(segmentIndex) + " - "
+								+ lastYearsArray.get(segmentIndex)));
 						tableAct.addCell(cell00A);
 						PdfPCell cell01A = new PdfPCell(new Paragraph((i - yearsPriorToEvent.intValue())));
 						tableAct.addCell(cell01A);
@@ -1073,20 +1083,20 @@ public class JSEAStatsFunctions {
 						
 						if (alphaLevel95)
 						{
-							PdfPCell cell04A = new PdfPCell(new Paragraph(
-									"[" + threePlacess.format(leftEndPoint[i][0]) + "," + threePlacess.format(rightEndPoint[i][0]) + "]"));
+							PdfPCell cell04A = new PdfPCell(new Paragraph("[" + threePlacess.format(leftEndPoint[i][0]) + ","
+									+ threePlacess.format(rightEndPoint[i][0]) + "]"));
 							tableAct.addCell(cell04A);
 						}
 						else if (alphaLevel99)
 						{
-							PdfPCell cell04A = new PdfPCell(new Paragraph(
-									"[" + threePlacess.format(leftEndPoint[i][1]) + "," + threePlacess.format(rightEndPoint[i][1]) + "]"));
+							PdfPCell cell04A = new PdfPCell(new Paragraph("[" + threePlacess.format(leftEndPoint[i][1]) + ","
+									+ threePlacess.format(rightEndPoint[i][1]) + "]"));
 							tableAct.addCell(cell04A);
 						}
 						else if (alphaLevel999)
 						{
-							PdfPCell cell04A = new PdfPCell(new Paragraph(
-									"[" + threePlacess.format(leftEndPoint[i][2]) + "," + threePlacess.format(rightEndPoint[i][2]) + "]"));
+							PdfPCell cell04A = new PdfPCell(new Paragraph("[" + threePlacess.format(leftEndPoint[i][2]) + ","
+									+ threePlacess.format(rightEndPoint[i][2]) + "]"));
 							tableAct.addCell(cell04A);
 						}
 						
@@ -1179,40 +1189,40 @@ public class JSEAStatsFunctions {
 					{
 						if (alphaLevel95)
 						{
-							pdfbufferB = String.format("\t %-12s" + "\t %-8s" + "\t %-8s" + "\t %-8s" + "\t %-20s" + "\t %-8s" + "\t %-8s",
+							pdfbufferB = String.format(
+									"\t %-12s" + "\t %-8s" + "\t %-8s" + "\t %-8s" + "\t %-20s" + "\t %-8s" + "\t %-8s",
 									// (firstYearsArray.get(segmentIndex) + " - " + lastYearsArray.get(segmentIndex)),
 									beginingYearAdj + " - " + lastYearAdj, (i - yearsPriorToEvent.intValue()),
-									threePlacess.format(meanMeanByWindow[i]),
-									threePlacess.format(standardDevMeanByWindow[i]), "[" + threePlacess.format(leftEndPointSim[i][0]) + ","
-											+ threePlacess.format(rightEndPointSim[i][0]) + "]",
-									threePlacess.format(minMeanByWindow[i]), threePlacess.format(maxMeanByWindow[i]));
+									threePlacess.format(meanMeanByWindow[i]), threePlacess.format(standardDevMeanByWindow[i]),
+									"[" + threePlacess.format(leftEndPointSim[i][0]) + "," + threePlacess.format(rightEndPointSim[i][0])
+											+ "]", threePlacess.format(minMeanByWindow[i]), threePlacess.format(maxMeanByWindow[i]));
 						}
 						else if (alphaLevel99)
 						{
-							pdfbufferB = String.format("\t %-12s" + "\t %-8s" + "\t %-8s" + "\t %-8s" + "\t %-20s" + "\t %-8s" + "\t %-8s",
+							pdfbufferB = String.format(
+									"\t %-12s" + "\t %-8s" + "\t %-8s" + "\t %-8s" + "\t %-20s" + "\t %-8s" + "\t %-8s",
 									// (firstYearsArray.get(segmentIndex) + " - " + lastYearsArray.get(segmentIndex)),
 									beginingYearAdj + " - " + lastYearAdj, (i - yearsPriorToEvent.intValue()),
-									threePlacess.format(meanMeanByWindow[i]),
-									threePlacess.format(standardDevMeanByWindow[i]), "[" + threePlacess.format(leftEndPointSim[i][1]) + ","
-											+ threePlacess.format(rightEndPointSim[i][1]) + "]",
-									threePlacess.format(minMeanByWindow[i]), threePlacess.format(maxMeanByWindow[i]));
+									threePlacess.format(meanMeanByWindow[i]), threePlacess.format(standardDevMeanByWindow[i]),
+									"[" + threePlacess.format(leftEndPointSim[i][1]) + "," + threePlacess.format(rightEndPointSim[i][1])
+											+ "]", threePlacess.format(minMeanByWindow[i]), threePlacess.format(maxMeanByWindow[i]));
 						}
 						else if (alphaLevel999)
 						{
-							pdfbufferB = String.format("\t %-12s" + "\t %-8s" + "\t %-8s" + "\t %-8s" + "\t %-20s" + "\t %-8s" + "\t %-8s",
+							pdfbufferB = String.format(
+									"\t %-12s" + "\t %-8s" + "\t %-8s" + "\t %-8s" + "\t %-20s" + "\t %-8s" + "\t %-8s",
 									// (firstYearsArray.get(segmentIndex) + " - " + lastYearsArray.get(segmentIndex)),
 									beginingYearAdj + " - " + lastYearAdj, (i - yearsPriorToEvent.intValue()),
-									threePlacess.format(meanMeanByWindow[i]),
-									threePlacess.format(standardDevMeanByWindow[i]), "[" + threePlacess.format(leftEndPointSim[i][2]) + ","
-											+ threePlacess.format(rightEndPointSim[i][2]) + "]",
-									threePlacess.format(minMeanByWindow[i]), threePlacess.format(maxMeanByWindow[i]));
+									threePlacess.format(meanMeanByWindow[i]), threePlacess.format(standardDevMeanByWindow[i]),
+									"[" + threePlacess.format(leftEndPointSim[i][2]) + "," + threePlacess.format(rightEndPointSim[i][2])
+											+ "]", threePlacess.format(minMeanByWindow[i]), threePlacess.format(maxMeanByWindow[i]));
 						}
 						
 						report = report + pdfbufferB + "\n";
 						simulationTable = simulationTable + pdfbufferB.substring(1) + "\n";
 						
-						PdfPCell cell00B = new PdfPCell(
-								new Paragraph(firstYearsArray.get(segmentIndex) + " - " + lastYearsArray.get(segmentIndex)));
+						PdfPCell cell00B = new PdfPCell(new Paragraph(firstYearsArray.get(segmentIndex) + " - "
+								+ lastYearsArray.get(segmentIndex)));
 						tableSim.addCell(cell00B);
 						PdfPCell cell01B = new PdfPCell(new Paragraph((i - yearsPriorToEvent.intValue())));
 						tableSim.addCell(cell01B);
@@ -1358,27 +1368,27 @@ public class JSEAStatsFunctions {
 	
 	// this method is the new print report method
 	public String getReportText() {
-		
+	
 		return report;
 	}
 	
 	public ArrayList<BarChartParametersModel> getChartList() {
-		
+	
 		return chartList;
 	}
 	
 	public String getActualTableText() {
-		
+	
 		return actualTable;
 	}
 	
 	public String getSimulationTableText() {
-		
+	
 		return simulationTable;
 	}
 	
 	public void savePDFReport(String filename) {
-		
+	
 		Document document = new Document();
 		try
 		{
@@ -1422,7 +1432,7 @@ public class JSEAStatsFunctions {
 		}
 		catch (Exception e)
 		{
-		
+			
 		}
 		
 		document.close();
@@ -1430,133 +1440,133 @@ public class JSEAStatsFunctions {
 	}
 	
 	public ArrayList<Integer> getChronologyYears() {
-		
+	
 		return chronologyYears;
 	}
 	
 	public void setChronologyYears(ArrayList<Integer> chronologyYears) {
-		
+	
 		this.chronologyYears = chronologyYears;
 	}
 	
 	public ArrayList<Double> getChronologyActual() {
-		
+	
 		return chronologyActual;
 	}
 	
 	public void setChronologyActual(ArrayList<Double> chronologyActual) {
-		
+	
 		this.chronologyActual = chronologyActual;
 	}
 	
 	public ArrayList<Integer> getEvents() {
-		
+	
 		return events;
 	}
 	
 	public void setEvents(ArrayList<Integer> events) {
-		
+	
 		this.events = events;
 	}
 	
 	// Getters and Setters
 	public String getTitleForRun() {
-		
+	
 		return titleForRun;
 	}
 	
 	public void setTitleForRun(String titleForRun) {
-		
+	
 		this.titleForRun = titleForRun;
 	}
 	
 	public String getOutputFilePrefix() {
-		
+	
 		return outputFilePrefix;
 	}
 	
 	public void setOutputFilePrefix(String outputFilePrefix) {
-		
+	
 		this.outputFilePrefix = outputFilePrefix;
 	}
 	
 	public Integer getYearsPriorToEvent() {
-		
+	
 		return yearsPriorToEvent;
 	}
 	
 	public void setYearsPriorToEvent(Integer yearsPriorToEvent) {
-		
+	
 		this.yearsPriorToEvent = yearsPriorToEvent;
 	}
 	
 	public boolean isRandomSampling() {
-		
+	
 		return randomSampling;
 	}
 	
 	public void setRandomSampling(boolean randomSampling) {
-		
+	
 		this.randomSampling = randomSampling;
 	}
 	
 	public Integer getYearsAfterTheEvent() {
-		
+	
 		return yearsAfterTheEvent;
 	}
 	
 	public void setYearsAfterTheEvent(Integer yearsAfterTheEvent) {
-		
+	
 		this.yearsAfterTheEvent = yearsAfterTheEvent;
 	}
 	
 	public Integer getNumberOfSimulations() {
-		
+	
 		return numberOfSimulations;
 	}
 	
 	public void setNumberOfSimulations(Integer numberOfSimulations) {
-		
+	
 		this.numberOfSimulations = numberOfSimulations;
 	}
 	
 	public Integer getSeedNumber() {
-		
+	
 		return seedNumber;
 	}
 	
 	public void setSeedNumber(Integer seedNumber) {
-		
+	
 		this.seedNumber = seedNumber;
 	}
 	
 	public Integer getFirstYearOfProcess() {
-		
+	
 		return firstYearOfProcess;
 	}
 	
 	public void setFirstYearOfProcess(Integer firstYearOfProcess) {
-		
+	
 		this.firstYearOfProcess = firstYearOfProcess;
 	}
 	
 	public Integer getLastYearOfProcess() {
-		
+	
 		return lastYearOfProcess;
 	}
 	
 	public void setLastYearOfProcess(Integer lastYearOfProcess) {
-		
+	
 		this.lastYearOfProcess = lastYearOfProcess;
 	}
 	
 	public boolean isIncludeIncompleteEpochs() {
-		
+	
 		return includeIncompleteEpochs;
 	}
 	
 	public void setIncludeIncompleteEpochs(boolean includeIncompleteEpochs) {
-		
+	
 		this.includeIncompleteEpochs = includeIncompleteEpochs;
 	}
 }

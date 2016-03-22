@@ -43,7 +43,7 @@ public class SegmentTable extends JXTable {
 	 * TODO
 	 */
 	public SegmentTable() {
-		
+	
 		tableModel = new SegmentTableModel();
 		
 		this.setModel(tableModel);
@@ -64,7 +64,7 @@ public class SegmentTable extends JXTable {
 	 * @param y
 	 */
 	public void setEarliestYear(int y) {
-		
+	
 		this.earliestYear = y;
 		setYearBounds();
 	}
@@ -75,7 +75,7 @@ public class SegmentTable extends JXTable {
 	 * @param y
 	 */
 	public void setLatestYear(int y) {
-		
+	
 		this.latestYear = y;
 		setYearBounds();
 	}
@@ -86,7 +86,7 @@ public class SegmentTable extends JXTable {
 	 * @return
 	 */
 	public int getEarliestYear() {
-		
+	
 		return earliestYear;
 	}
 	
@@ -96,7 +96,7 @@ public class SegmentTable extends JXTable {
 	 * @return
 	 */
 	public int getLatestYear() {
-		
+	
 		return this.latestYear;
 	}
 	
@@ -104,7 +104,7 @@ public class SegmentTable extends JXTable {
 	 * Sets the limits to the acceptable values for years in the table.
 	 */
 	private void setYearBounds() {
-		
+	
 		getColumnModel().getColumn(1).setCellEditor(new IntegerEditor(earliestYear, latestYear));
 		getColumnModel().getColumn(2).setCellEditor(new IntegerEditor(earliestYear, latestYear));
 	}
@@ -119,9 +119,8 @@ public class SegmentTable extends JXTable {
 		private static final long serialVersionUID = 1L;
 		
 		@Override
-		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row,
-				int column) {
-				
+		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+		
 			DecimalFormat formatter = new DecimalFormat("#");
 			value = formatter.format(value);
 			Component item = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
