@@ -996,7 +996,7 @@ public class JSEAFrame extends JFrame implements ActionListener {
 				}
 				{
 					HelpTipButton label = new HelpTipButton(
-							"Continuous time series data files should be two column comma seperated (CSV) text files.  Column one should contains the years (in sequence), and column two should contain the data values.  If there are header lines or comments in the file, these lines should beginning with a #");
+							"Continuous time series data files should be two column comma seperated (CSV) text files.  Column one should contains the years (in sequence), and column two should contain the data values.  If there are header lines or comments in the file, these lines should beginning with a *");
 					panel.add(label, "cell 1 0,alignx trailing");
 				}
 				{
@@ -1024,7 +1024,7 @@ public class JSEAFrame extends JFrame implements ActionListener {
 				}
 				{
 					HelpTipButton helpTipButton = new HelpTipButton(
-							"Event data files should be a text file with a single column of integer year values.  If there are any header or comment lines, these should begin with a #");
+							"Event data files should be a text file with a single column of integer year values.  If there are any header or comment lines, these should begin with a *");
 					panel.add(helpTipButton, "cell 1 1,alignx trailing");
 				}
 				{
