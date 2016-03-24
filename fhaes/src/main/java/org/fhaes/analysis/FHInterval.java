@@ -919,7 +919,7 @@ public class FHInterval {
 				for (int k = 0; k < myReader.get(i).getNumberOfSeries(); k++)
 				{
 					
-					log.debug("Parsing file index " + i + ", series number " + k);
+					log.debug("Parsing file index " + i + ", series number " + (k + 1));
 					FyearperSampletemp = new ArrayList<Integer>();
 					// log.debug("the size of the years of the file is:"+
 					// myReader.get(i).getYear().size());
@@ -986,32 +986,68 @@ public class FHInterval {
 						}
 						
 					} // / end of the loop for listYears in common (finish loading the fire year per sample
-					log.debug("FyearperSampletemp.size() is first" + FyearperSampletemp.size());
+					log.debug("series number " + (k + 1) + " FyearperSampletemp.size() " + FyearperSampletemp.size());
 					if (FyearperSampletemp.size() != 0)
 					{
 						if (includeIncomplete)
 						{
-							numberOfintervalssamp[i] = numberOfintervalssamp[i] + FyearperSampletemp.size();
+							if (maxLastYear.compareTo(FyearperSampletemp.get(FyearperSampletemp.size() - 1)) != 0)
+							{
+								numberOfintervalssamp[i] = numberOfintervalssamp[i] + FyearperSampletemp.size();
+							}
 						}
 						else
 						{
 							numberOfintervalssamp[i] = numberOfintervalssamp[i] + (FyearperSampletemp.size() - 1);
 						}
 					}
+					log.debug("series number: " + (k + 1) + " number of intervals " + numberOfintervalssamp[i]);
 					// new
 					if ((FyearperSampletemp.size() == 1) && (includeIncomplete))
 					{
-						if ((myReader.get(i).getLastYearIndexPerSample()[k] + myReader.get(i).getFirstYear()) != FyearperSampletemp
-								.get(FyearperSampletemp.size() - 1))
+						log.debug("last index per sample is " + myReader.get(i).getLastYearIndexPerSample()[k]);
+						log.debug("first year per sample is " + myReader.get(i).getFirstYear());
+						log.debug("maxLastyear is " + maxLastYear);
+						// if (maxLastYear != FyearperSampletemp.get(FyearperSampletemp.size() - 1))
+						if (maxLastYear.compareTo(FyearperSampletemp.get(FyearperSampletemp.size() - 1)) != 0)
 						{
-							FIyearperSampletemp.add((myReader.get(i).getFirstYear() + myReader.get(i).getLastYearIndexPerSample()[k])
-									- FyearperSampletemp.get(FyearperSampletemp.size() - 1));
+							log.debug("I am in not equal ");
+							log.debug("last year in the sample  is "
+									+ (myReader.get(i).getLastYearIndexPerSample()[k] + myReader.get(i).getFirstYear()));
+							log.debug("maxLastyear is " + maxLastYear);
+							log.debug("the last fire year in the sample " + FyearperSampletemp.get(FyearperSampletemp.size() - 1));
+							if (maxLastYear <= (myReader.get(i).getLastYearIndexPerSample()[k] + myReader.get(i).getFirstYear()))
+							{
+								Integer temp = ((maxLastYear) - FyearperSampletemp.get(FyearperSampletemp.size() - 1));
+								// int temp1 = maxLastYear.intValue() - FyearperSampletemp.get(FyearperSampletemp.size() - 1).intValue();
+								log.debug("in less than or equal to ");
+								// temp = (maxLastYear) - FyearperSampletemp.get(FyearperSampletemp.size() - 1);
+								log.debug("the resta temp is " + temp);
+								// FIyearperSampletemp.add(((maxLastYear) - FyearperSampletemp.get(FyearperSampletemp.size() - 1)));
+								if ((maxLastYear) - FyearperSampletemp.get(FyearperSampletemp.size() - 1) > 0)
+								{
+									FIyearperSampletemp.add((maxLastYear) - FyearperSampletemp.get(FyearperSampletemp.size() - 1));
+									log.debug("the fire intervals for sample " + k + " is " + FIyearperSampletemp.get(0));
+								}
+								// FIyearperSampletemp.add(temp);
+								// log.debug("the fire intervals for sample " + k + " is " + FIyearperSampletemp.get(0));
+							}
+							else
+							{
+								log.debug("in else ");
+								FIyearperSampletemp.add((myReader.get(i).getLastYearIndexPerSample()[k] + myReader.get(i).getFirstYear())
+										- FyearperSampletemp.get(FyearperSampletemp.size() - 1));
+								log.debug("fire intervals for sample " + k + " is " + FIyearperSampletemp.get(0));
+							}
+							// FIyearperSampletemp.add((myReader.get(i).getFirstYear() + myReader.get(i).getLastYearIndexPerSample()[k])
+							// - FyearperSampletemp.get(FyearperSampletemp.size() - 1));
 						}
+						// log.debug("fire intervals for sample " + k + " is " + FIyearperSampletemp.get(0));
 					} // end of if one fire year and includelastyear so we have at least one interval in a given series.
 						// endofnew
 					if ((FyearperSampletemp.size() >= 2))
 					{
-						log.debug("FyearperSampletemp.size() is " + FyearperSampletemp.size());
+						log.debug("Series number is " + (k + 1));
 						for (int jk = 0; jk < FyearperSampletemp.size() - 1; jk++)
 						{
 							// FIyearperSampletemp.add(FyearperSample.get(k).get(jk+1)
@@ -1029,25 +1065,39 @@ public class FHInterval {
 						}
 						if (includeIncomplete)
 						{
-							if (maxLastYear != FyearperSampletemp.get(FyearperSampletemp.size() - 1))
+							// if (maxLastYear != FyearperSampletemp.get(FyearperSampletemp.size() - 1))
+							if (maxLastYear.compareTo(FyearperSampletemp.get(FyearperSampletemp.size() - 1)) != 0)
 							// if ((myReader.get(i).getLastYearIndexPerSample()[k] + myReader.get(i).getFirstYear()) != FyearperSampletemp
 							// .get(FyearperSampletemp.size() - 1))
 							{
+								if (maxLastYear <= (myReader.get(i).getLastYearIndexPerSample()[k] + myReader.get(i).getFirstYear()))
+								{
+									if (((maxLastYear) - FyearperSampletemp.get(FyearperSampletemp.size() - 1)) > 0)
+									{
+										FIyearperSampletemp.add(((maxLastYear) - FyearperSampletemp.get(FyearperSampletemp.size() - 1)));
+									}
+								}
+								else
+								{
+									FIyearperSampletemp.add((myReader.get(i).getLastYearIndexPerSample()[k] + myReader.get(i)
+											.getFirstYear()) - FyearperSampletemp.get(FyearperSampletemp.size() - 1));
+								}
 								// log.debug("the sample number is "+k+
 								// " the size of the fyearpersampletemp is "+
 								// FyearperSampletemp.size() );
-								log.debug("the last year per sample is "
-										+ (myReader.get(i).getLastYearIndexPerSample()[k] + myReader.get(i).getFirstYear()));
-								log.debug(" the last fire year per sample " + FyearperSampletemp.get(FyearperSampletemp.size() - 1));
-								FIyearperSampletemp.add((maxLastYear) - FyearperSampletemp.get(FyearperSampletemp.size() - 1));
-								log.debug("the last intrval in included is on is   "
-										+ FIyearperSampletemp.get(FIyearperSampletemp.size() - 1));
+								// log.debug("the last year per sample is "
+								// + (myReader.get(i).getLastYearIndexPerSample()[k] + myReader.get(i).getFirstYear()));
+								// log.debug(" the last fire year per sample " + FyearperSampletemp.get(FyearperSampletemp.size() - 1));
+								// FIyearperSampletemp.add((maxLastYear) - FyearperSampletemp.get(FyearperSampletemp.size() - 1));
+								// log.debug("the last intrval in included is on is   "
+								// + FIyearperSampletemp.get(FIyearperSampletemp.size() - 1));
 							}
 						}
 					} // end of if at least 2 fier years so we have at least one interval in a given series.
-						// log.debug("size of FIyearperSample "+
-						// FIyearperSampletemp.size()+
-						// " X "+FIyearperSampletemp.get(0).size());
+					log.debug("size of FIyearperSampletemp " + FIyearperSampletemp.size() + "  at series is :" + (k + 1));
+					// FIyearperSampletemp.size()+
+					// " X "+FIyearperSampletemp.get(0).size());
+					
 				} // end of the loop for number of series.
 					// log.debug("size of FIyearperSample "+
 					// FIyearperSampletemp.size());
