@@ -151,7 +151,7 @@ public class FHSampleSize extends JFrame implements ActionListener {
 	
 	private FHAESAction actionRun;
 	private FHAESAction actionBrowse;
-	private FHAESAction actionSaveAll;
+	private FHAESAction actionSaveTable;
 	private FHAESAction actionExportPDF;
 	private FHAESAction actionExportPNG;
 	private FHAESAction actionClose;
@@ -214,8 +214,17 @@ public class FHSampleSize extends JFrame implements ActionListener {
 		mntmOpen.setText("Open...");
 		mnFile.add(mntmOpen);
 		
-		JMenuItem mntmSave = new JMenuItem(this.actionSaveAll);
-		mnFile.add(mntmSave);
+		JMenu mnSave = new JMenu("Save...");
+		mnFile.add(mnSave);
+		
+		JMenuItem mntmSaveTable = new JMenuItem(this.actionSaveTable);
+		mnSave.add(mntmSaveTable);
+		
+		JMenuItem mntmSaveChartPDF = new JMenuItem(this.actionExportPDF);
+		mnSave.add(mntmSaveChartPDF);
+		
+		JMenuItem mntmSaveChartPNG = new JMenuItem(this.actionExportPNG);
+		mnSave.add(mntmSaveChartPNG);
 		
 		mnFile.addSeparator();
 		
@@ -263,7 +272,7 @@ public class FHSampleSize extends JFrame implements ActionListener {
 					
 					reader = null;
 					actionRun.setEnabled(false);
-					actionSaveAll.setEnabled(false);
+					actionSaveTable.setEnabled(false);
 					actionExportPDF.setEnabled(false);
 					actionExportPNG.setEnabled(false);
 				}
@@ -284,17 +293,17 @@ public class FHSampleSize extends JFrame implements ActionListener {
 		};
 		actionBrowse.setEnabled(true);
 		
-		actionSaveAll = new FHAESAction("Save all", "save_all.png") {
+		actionSaveTable = new FHAESAction("Save table", "save.png") {
 			
 			private static final long serialVersionUID = 1L;
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
 			
-				saveAll();
+				saveTableToTextFile();
 			}
 		};
-		actionSaveAll.setEnabled(false);
+		actionSaveTable.setEnabled(false);
 		
 		actionExportPDF = new FHAESAction("Export chart to PDF", "pdf.png") {
 			
@@ -303,16 +312,7 @@ public class FHSampleSize extends JFrame implements ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent event) {
 			
-				try
-				{
-					File fileToSave = getFileFromSaveDialog("PDF");
-					if (fileToSave != null)
-						SSIZCurveChart.writeAsPDF(fileToSave, curveChart.getWidth(), curveChart.getHeight());
-				}
-				catch (Exception e)
-				{
-					e.printStackTrace();
-				}
+				saveChartToPDF();
 			}
 		};
 		actionExportPDF.setEnabled(false);
@@ -324,14 +324,7 @@ public class FHSampleSize extends JFrame implements ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent event) {
 			
-				try
-				{
-					curveChart.doSaveAs();
-				}
-				catch (IOException e)
-				{
-					e.printStackTrace();
-				}
+				saveChartToPNG();
 			}
 		};
 		actionExportPNG.setEnabled(false);
@@ -374,7 +367,7 @@ public class FHSampleSize extends JFrame implements ActionListener {
 			
 			reader = null;
 			actionRun.setEnabled(false);
-			actionSaveAll.setEnabled(false);
+			actionSaveTable.setEnabled(false);
 			actionExportPDF.setEnabled(false);
 			actionExportPNG.setEnabled(false);
 		}
@@ -402,13 +395,9 @@ public class FHSampleSize extends JFrame implements ActionListener {
 		btnOpen.setIcon(Builder.getImageIcon("fileopen.png"));
 		toolBar.add(btnOpen);
 		
-		JToolBarButton btnSave = new JToolBarButton(actionSaveAll);
-		btnSave.setIcon(Builder.getImageIcon("save_all.png"));
+		JToolBarButton btnSave = new JToolBarButton(actionSaveTable);
+		btnSave.setIcon(Builder.getImageIcon("save.png"));
 		toolBar.add(btnSave);
-		
-		JToolBarButton btnRun = new JToolBarButton(actionRun);
-		btnRun.setIcon(Builder.getImageIcon("run.png"));
-		toolBar.add(btnRun);
 		
 		JToolBarButton btnExportPDF = new JToolBarButton(actionExportPDF);
 		btnExportPDF.setIcon(Builder.getImageIcon("pdf.png"));
@@ -417,6 +406,12 @@ public class FHSampleSize extends JFrame implements ActionListener {
 		JToolBarButton btnExportPNG = new JToolBarButton(actionExportPNG);
 		btnExportPNG.setIcon(Builder.getImageIcon("formatpng.png"));
 		toolBar.add(btnExportPNG);
+		
+		toolBar.addSeparator();
+		
+		JToolBarButton btnRun = new JToolBarButton(actionRun);
+		btnRun.setIcon(Builder.getImageIcon("run.png"));
+		toolBar.add(btnRun);
 		
 		JPanel panelMain = new JPanel();
 		getContentPane().add(panelMain, "cell 0 1,grow");
@@ -711,20 +706,20 @@ public class FHSampleSize extends JFrame implements ActionListener {
 				if (filePathHasValidFile(txtInputFile.getText()))
 				{
 					actionRun.setEnabled(true);
-					actionSaveAll.setEnabled(true);
+					actionSaveTable.setEnabled(true);
 					segmentationPanel.chkSegmentation.setEnabled(true);
 				}
 				else
 				{
 					actionRun.setEnabled(false);
-					actionSaveAll.setEnabled(false);
+					actionSaveTable.setEnabled(false);
 					segmentationPanel.chkSegmentation.setEnabled(false);
 				}
 			}
 			catch (Exception ex)
 			{
 				actionRun.setEnabled(false);
-				actionSaveAll.setEnabled(false);
+				actionSaveTable.setEnabled(false);
 				segmentationPanel.chkSegmentation.setEnabled(false);
 			}
 		}
@@ -960,12 +955,12 @@ public class FHSampleSize extends JFrame implements ActionListener {
 				&& (segmentationPanel.table.tableModel.getSegments() == null || segmentationPanel.table.tableModel.getSegments().size() == 0))
 		{
 			actionRun.setEnabled(false);
-			actionSaveAll.setEnabled(false);
+			actionSaveTable.setEnabled(false);
 			return;
 		}
 		
 		actionRun.setEnabled(true);
-		actionSaveAll.setEnabled(true);
+		actionSaveTable.setEnabled(true);
 	}
 	
 	/**
@@ -985,7 +980,7 @@ public class FHSampleSize extends JFrame implements ActionListener {
 		actionExportPDF.setEnabled(false);
 		actionExportPNG.setEnabled(false);
 		actionRun.setEnabled(false);
-		actionSaveAll.setEnabled(false);
+		actionSaveTable.setEnabled(false);
 		chkCommonYears.setEnabled(false);
 		chkExcludeSeriesWithNoEvents.setEnabled(false);
 		segmentationPanel.chkSegmentation.setEnabled(false);
@@ -1109,7 +1104,7 @@ public class FHSampleSize extends JFrame implements ActionListener {
 			actionExportPDF.setEnabled(true);
 			actionExportPNG.setEnabled(true);
 			actionRun.setEnabled(true);
-			actionSaveAll.setEnabled(true);
+			actionSaveTable.setEnabled(true);
 			chkCommonYears.setEnabled(true);
 			chkExcludeSeriesWithNoEvents.setEnabled(true);
 			segmentationPanel.chkSegmentation.setEnabled(true);
@@ -1228,14 +1223,6 @@ public class FHSampleSize extends JFrame implements ActionListener {
 	}
 	
 	/**
-	 * Save the results of the analysis to disk.
-	 */
-	public void saveAll() {
-	
-		// TODO
-	}
-	
-	/**
 	 * TODO
 	 */
 	@SuppressWarnings("unused")
@@ -1346,9 +1333,7 @@ public class FHSampleSize extends JFrame implements ActionListener {
 				@Override
 				public void actionPerformed(ActionEvent arg0) {
 				
-					File fileToSave = getFileFromSaveDialog("TAB");
-					if (fileToSave != null)
-						SSIZResultsTable.exportResultsTableToTAB(fileToSave, adapter);
+					saveTableToTextFile();
 				}
 			});
 			add(exportToTAB);
@@ -1379,6 +1364,40 @@ public class FHSampleSize extends JFrame implements ActionListener {
 			});
 			add(copy);
 		}
+	}
+	
+	public void saveTableToTextFile() {
+	
+		File fileToSave = getFileFromSaveDialog("TAB");
+		if (fileToSave != null)
+			SSIZResultsTable.exportResultsTableToTAB(fileToSave, adapter);
+	}
+	
+	public void saveChartToPDF() {
+	
+		try
+		{
+			File fileToSave = getFileFromSaveDialog("PDF");
+			if (fileToSave != null)
+				SSIZCurveChart.writeAsPDF(fileToSave, curveChart.getWidth(), curveChart.getHeight());
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
+	
+	public void saveChartToPNG() {
+	
+		try
+		{
+			curveChart.doSaveAs();
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+		
 	}
 	
 	/**
