@@ -742,8 +742,7 @@ public class FHInterval {
 					if (climateMatrixSite.get(i).get(ij) == 1)
 					{
 						yearsWithFires.add(listYears.get(ij));
-						// log.debug("year with fires "
-						// +listYears.get(ij));
+						log.debug("year with fires " + listYears.get(ij));
 					}
 				}
 				
@@ -756,13 +755,22 @@ public class FHInterval {
 				{
 					if (includeIncomplete)
 					{
-						numberOfintervalscomp[i] = yearsWithFires.size();
+						if (maxLastYear.compareTo(yearsWithFires.get(yearsWithFires.size() - 1)) != 0)
+						{
+							log.debug("here");
+							numberOfintervalscomp[i] = yearsWithFires.size();
+						}
+						else
+						{
+							numberOfintervalscomp[i] = yearsWithFires.size() - 1;
+						}
 					}
 					else
 					{
 						numberOfintervalscomp[i] = yearsWithFires.size() - 1;
 					}
 				}
+				log.debug("number of invervlas in comp is: " + numberOfintervalscomp[i]);
 				// end of new switch
 				if (numberOfintervalscomp[i] >= 3)
 				{
@@ -774,7 +782,6 @@ public class FHInterval {
 						// test1.getFireIntervals().get(ij));
 						fireintervalspersite.add(fireIntervals.get(ij) * 1.0);
 					}
-					log.debug("FireintervalsPerSite =" + fireintervalspersite);
 					
 					/*
 					 * Add extra interval if include incomplete is selected. the interval goes from the last fire scar year to the last year
@@ -783,12 +790,15 @@ public class FHInterval {
 					if (includeIncomplete)
 					{
 						double includeinterval = maxLastYear - yearsWithFires.get(yearsWithFires.size() - 1);
-						fireintervalspersite.add(includeinterval);
-						System.out.println("the last year is " + maxLastYear + "the last year with fire is "
-								+ yearsWithFires.get(yearsWithFires.size() - 1));
-						log.debug("the included interval is " + includeinterval);
+						if (includeinterval > 0)
+						{
+							fireintervalspersite.add(includeinterval);
+							System.out.println("the last year is " + maxLastYear + "the last year with fire is "
+									+ yearsWithFires.get(yearsWithFires.size() - 1));
+							log.debug("the included interval is " + includeinterval);
+						}
 					}
-					
+					log.debug("FireintervalsPerSite =" + fireintervalspersite);
 					/*
 					 * Get the normal statistics for the fire intervals add the values to the stats and then call them for the stats
 					 */
