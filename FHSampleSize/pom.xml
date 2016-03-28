@@ -94,7 +94,7 @@
 		<dependency>
 			<groupId>org.fhaes</groupId>
 			<artifactId>fhutil</artifactId>
-			<version>0.1.9-SNAPSHOT</version>
+			<version>0.1.9</version>
 		</dependency>
 		<dependency>
 			<groupId>org.jfree</groupId>
@@ -118,5 +118,5 @@
 		</dependency>
 	</dependencies>
 
-	<version>1.0.4-SNAPSHOT</version>
+	<version>1.0.4</version>
 </project>
