@@ -1620,6 +1620,7 @@ public class JSEAFrame extends JFrame implements ActionListener {
 		FileReader fr = null;
 		BufferedReader br = null;
 		String record = null;
+		events = new ArrayList<Integer>();
 		
 		try
 		{
