@@ -20,14 +20,15 @@ package org.fhaes.fhfilereader;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.regex.Pattern;
 
 import org.fhaes.enums.EventTypeToProcess;
 import org.fhaes.model.FHSeries;
+import org.mozilla.universalchardet.ReaderFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -1751,7 +1752,7 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 	
 		String record = null;
 		String blankName = "";
-		FileReader fr = null;
+		Reader fr = null;
 		BufferedReader br = null;
 		dataBlock = new ArrayList<String>();
 		dataByRow = new ArrayList<String>();
@@ -1765,7 +1766,7 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 		
 		try
 		{
-			fr = new FileReader(file);
+			fr = ReaderFactory.createReaderFromFile(file);
 			br = new BufferedReader(fr);
 			
 			while ((record = br.readLine()) != null)
