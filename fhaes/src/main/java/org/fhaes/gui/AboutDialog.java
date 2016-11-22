@@ -81,7 +81,7 @@ public class AboutDialog extends JDialog implements ActionListener {
 			contentPanel.add(lblFhaesfireHistory, "cell 2 1,alignx right");
 		}
 		
-		JLabel lblF = new JLabel(I18n.getText("general.FHAES.long"));
+		JLabel lblF = new JLabel(I18n.getText("general.FHAES.fullname"));
 		lblF.setFont(new Font("Dialog", Font.BOLD, 10));
 		contentPanel.add(lblF, "cell 2 2,alignx right,aligny top");
 		
