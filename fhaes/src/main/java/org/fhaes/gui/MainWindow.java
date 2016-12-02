@@ -188,6 +188,7 @@ public class MainWindow implements PrefsListener {
 	protected FHAESAction actionSaveResults;
 	private FHAESAction actionGenerateSHP;
 	private FHAESAction actionFHSampleSize;
+	private FHAESAction actionSetCharsetPrefs;
 	// private FHAESAction actionOpenCategoryFile;
 	private FHAESAction actionEditCategories;
 	private FHAESAction actionShowQuickLaunch;
@@ -1790,6 +1791,18 @@ public class MainWindow implements PrefsListener {
 			}
 		};
 		
+		actionSetCharsetPrefs = new FHAESAction(I18n.getText("MainWindow.mntmCharset.text"), "accessories_character_map22.png") { //$NON-NLS-1$
+		
+			private static final long serialVersionUID = 1L;
+			
+			@Override
+			public void actionPerformed(ActionEvent event) {
+			
+				CharacterEncodingChooserDialog dialog = new CharacterEncodingChooserDialog();
+				dialog.setVisible(true);
+			}
+		};
+		
 		actionAbout = new FHAESAction(I18n.getText("MainWindow.mntmAboutFhaes.text"), "info.png") { //$NON-NLS-1$
 		
 			private static final long serialVersionUID = 1L;
@@ -2520,6 +2533,7 @@ public class MainWindow implements PrefsListener {
 		
 		mnPreferences.add(new FHAESCheckBoxMenuItem(actionPrefChangeShowQuickLaunch));
 		mnPreferences.add(new FHAESCheckBoxMenuItem(actionPrefChangeAutoLoadCategories));
+		mnPreferences.add(new FHAESMenuItem(actionSetCharsetPrefs));
 		mnPreferences.addSeparator();
 		mnPreferences.add(new FHAESMenuItem(actionResetAllFeedbackMessagePrefs));
 		

@@ -39,6 +39,8 @@ public abstract class AbstractFireHistoryReader implements IFHAESReader {
 	protected ArrayList<FHSeries> seriesList;
 	private boolean needToPopulateSeriesList = true;
 	
+	public abstract String getFileContentsAsString();
+	
 	/**
 	 * Construct a list of FHSeries, one for each series in the file.
 	 */

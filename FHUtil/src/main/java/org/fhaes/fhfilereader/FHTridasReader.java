@@ -365,4 +365,11 @@ public class FHTridasReader extends AbstractFireHistoryReader {
 		return null;
 	}
 	
+	@Override
+	public String getFileContentsAsString() {
+	
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
 }

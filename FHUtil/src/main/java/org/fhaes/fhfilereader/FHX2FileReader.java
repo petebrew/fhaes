@@ -19,18 +19,25 @@ package org.fhaes.fhfilereader;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.Reader;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.regex.Pattern;
 
 import org.fhaes.enums.EventTypeToProcess;
 import org.fhaes.model.FHSeries;
-import org.mozilla.universalchardet.ReaderFactory;
+import org.fhaes.preferences.App;
+import org.fhaes.preferences.FHAESPreferences.PrefKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.ibm.icu.text.CharsetDetector;
+import com.ibm.icu.text.CharsetMatch;
 
 /**
  * FHX2FileReader Class.
@@ -59,6 +66,7 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 	
 	private static final Logger log = LoggerFactory.getLogger(FHX2FileReader.class);
 	private final File file;
+	private String rawContent = "";
 	private String format;
 	private Integer firstYear;
 	private Integer firstFireYear;
@@ -1752,8 +1760,9 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 	
 		String record = null;
 		String blankName = "";
-		Reader fr = null;
 		BufferedReader br = null;
+		FileInputStream is = null;
+		InputStreamReader isr = null;
 		dataBlock = new ArrayList<String>();
 		dataByRow = new ArrayList<String>();
 		badDataLines = new ArrayList<Integer>();
@@ -1766,11 +1775,34 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 		
 		try
 		{
-			fr = ReaderFactory.createReaderFromFile(file);
-			br = new BufferedReader(fr);
+			
+			String charsetName = App.prefs.getCharsetPref(PrefKey.FORCE_CHAR_ENC_TO, Charset.defaultCharset()).toString();
+			
+			if (App.prefs.getBooleanPref(PrefKey.AUTO_DETECT_CHAR_ENC, true))
+			{
+				CharsetDetector detector;
+				CharsetMatch match;
+				byte[] byteData = Files.readAllBytes(file.toPath());
+				
+				detector = new CharsetDetector();
+				
+				detector.setText(byteData);
+				match = detector.detect();
+				
+				charsetName = match.getName();
+			}
+			
+			is = new FileInputStream(file.toPath().toString());
+			isr = new InputStreamReader(is, charsetName);
+			log.debug("Opening file using " + charsetName + " charset");
+			// BufferedReader buffReader = new BufferedReader(isr);
+			
+			// fr = ReaderFactory.createReaderFromFile(file);
+			br = new BufferedReader(isr);
 			
 			while ((record = br.readLine()) != null)
 			{
+				rawContent += record + System.lineSeparator();
 				idx = record.lastIndexOf(" ");
 				// log.debug("record is: "+ record +" idx is: "+idx);
 				if (idx != -1)
@@ -1794,6 +1826,7 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 						}
 						
 						record = br.readLine();
+						rawContent += record + System.lineSeparator();
 						String[] result = p.split(record);
 						// if(result[0].t)
 						
@@ -1811,6 +1844,7 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 							
 							// record = br.readLine().trim();
 							record = br.readLine();
+							rawContent += record + System.lineSeparator();
 							// log.debug("length of record is : "+
 							// record.length());
 							if ((i == this.getLengthOfSeriesName() && record.isEmpty())
@@ -1836,6 +1870,7 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 						int countblines = 0;
 						while ((record = br.readLine()) != null)
 						{
+							rawContent += record + System.lineSeparator();
 							dataByRow.add(record);
 							// log.debug("I am here in the while of the loop and countblines is "+countblines);
 							// log.debug("Line has "+record.length()+" records in it, whereas format line says "+this.getNumberOfSeries());
@@ -1905,7 +1940,8 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 			// Clean up readers
 			try
 			{
-				fr.close();
+				is.close();
+				isr.close();
 				br.close();
 			}
 			catch (IOException e)
@@ -2965,5 +3001,11 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	@Override
+	public String getFileContentsAsString() {
+	
+		return this.rawContent;
 	}
 }

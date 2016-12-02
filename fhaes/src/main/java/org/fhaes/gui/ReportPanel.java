@@ -24,8 +24,6 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.util.ArrayList;
 
 import javax.swing.JButton;
@@ -306,18 +304,13 @@ public class ReportPanel extends JPanel implements PrefsListener {
 		
 		try
 		{
+			txtFHX.setText(fhxFile.getContentsAsString());
+			
 			// Try to read file into FHX viewer tab
-			FileReader reader = new FileReader(fhxFile);
-			BufferedReader br = new BufferedReader(reader);
-			if (fhxFile.length() < FIVE_MEGABYTE_LENGTH) // 5mb
-			{
-				txtFHX.read(br, txtFHX);
-				br.close();
-			}
-			else
-			{
-				txtFHX.setText("File too large to display");
-			}
+			/*
+			 * FileReader reader = new FileReader(fhxFile); BufferedReader br = new BufferedReader(reader); if (fhxFile.length() <
+			 * FIVE_MEGABYTE_LENGTH) // 5mb { txtFHX.read(br, txtFHX); br.close(); } else { txtFHX.setText("File too large to display"); }
+			 */
 			
 			// If there are errors in the file try to highlight the offensive line
 			txtFHX.getHighlighter().removeAllHighlights();

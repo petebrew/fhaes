@@ -17,6 +17,8 @@
  *************************************************************************************************/
 package org.fhaes.preferences.wrappers;
 
+import java.nio.charset.Charset;
+
 import org.fhaes.enums.AnalysisLabelType;
 import org.fhaes.enums.AnalysisType;
 import org.fhaes.enums.EventTypeToProcess;
@@ -202,6 +204,10 @@ public abstract class PrefWrapper<OBJTYPE> {
 		{
 			App.prefs.setOperatorPref(getPrefName(), (OperatorEnum) prefValue);
 		}
+		else if (baseClass == Charset.class)
+		{
+			App.prefs.setCharsetPref(getPrefName(), (Charset) prefValue);
+		}
 		else
 			throw new IllegalArgumentException("I don't know how to save a pref for type " + baseClass);
 		
@@ -272,6 +278,10 @@ public abstract class PrefWrapper<OBJTYPE> {
 		else if (baseClass == OperatorEnum.class)
 		{
 			prefValue = App.prefs.getOperatorPref(getPrefName(), (OperatorEnum) defaultValue);
+		}
+		else if (baseClass == Charset.class)
+		{
+			prefValue = App.prefs.getCharsetPref(getPrefName(), (Charset) defaultValue);
 		}
 		else
 		{

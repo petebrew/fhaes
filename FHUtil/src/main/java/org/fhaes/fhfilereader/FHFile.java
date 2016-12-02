@@ -17,9 +17,14 @@
  *************************************************************************************************/
 package org.fhaes.fhfilereader;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.math.BigDecimal;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -45,6 +50,9 @@ import org.tridas.schema.TridasGenericField;
 import org.tridas.schema.TridasObject;
 import org.tridas.schema.TridasProject;
 import org.tridas.spatial.GMLPointSRSHandler;
+
+import com.ibm.icu.text.CharsetDetector;
+import com.ibm.icu.text.CharsetMatch;
 
 /**
  * FHFile Class. Simple extension of java.io.File which includes functions for checking whether this is a valid FHX format file, and if not,
@@ -808,6 +816,71 @@ public class FHFile extends File {
 		{
 			log.debug("Elena's file checker found an error");
 			errorMessage = "FHAES stage 2 parser found an error with this file.  See summary tab for more information.";
+		}
+	}
+	
+	public String getContentsAsString() {
+	
+		if (fhaesReader != null && fhaesReader.getFileContentsAsString() != null && fhaesReader.getFileContentsAsString().length() > 0)
+		{
+			return fhaesReader.getFileContentsAsString();
+		}
+		else
+		{
+			String record = null;
+			BufferedReader br = null;
+			FileInputStream is = null;
+			InputStreamReader isr = null;
+			String rawContent = "";
+			try
+			{
+				String charsetName = App.prefs.getCharsetPref(PrefKey.FORCE_CHAR_ENC_TO, Charset.defaultCharset()).toString();
+				
+				if (App.prefs.getBooleanPref(PrefKey.AUTO_DETECT_CHAR_ENC, true))
+				{
+					CharsetDetector detector;
+					CharsetMatch match;
+					byte[] byteData = Files.readAllBytes(this.toPath());
+					
+					detector = new CharsetDetector();
+					
+					detector.setText(byteData);
+					match = detector.detect();
+					
+					charsetName = match.getName();
+				}
+				
+				is = new FileInputStream(this.toPath().toString());
+				isr = new InputStreamReader(is, charsetName);
+				log.debug("Opening file using " + charsetName + " charset");
+				// BufferedReader buffReader = new BufferedReader(isr);
+				
+				// fr = ReaderFactory.createReaderFromFile(file);
+				br = new BufferedReader(isr);
+				
+				while ((record = br.readLine()) != null)
+				{
+					rawContent += record + System.lineSeparator();
+				}
+			}
+			catch (Exception e)
+			{
+				
+			}
+			finally
+			{
+				try
+				{
+					br.close();
+				}
+				catch (IOException e)
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			
+			return rawContent;
 		}
 	}
 }

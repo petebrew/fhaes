@@ -21,9 +21,10 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -506,9 +507,15 @@ public class FileController {
 				saveFile.createNewFile();
 			}
 			
-			FileWriter fw = new FileWriter(saveFile.getAbsoluteFile());
-			BufferedWriter bw = new BufferedWriter(fw);
+			BufferedWriter bw = null;
+			String encoding = "UTF-8";
+			if (App.prefs.getBooleanPref(PrefKey.ENFORCE_FHX2_RESTRICTIONS, false))
+			{
+				// Force character encoding to IBM437
+				encoding = "IBM437";
+			}
 			
+			bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(saveFile.getAbsoluteFile()), encoding));
 			IOController.writeFileToDisk(bw);
 			bw.close();
 			

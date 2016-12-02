@@ -36,6 +36,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
+import net.miginfocom.swing.MigLayout;
+
 import org.fhaes.components.HelpTipButton;
 import org.fhaes.enums.FeedbackDisplayProtocol;
 import org.fhaes.enums.FeedbackMessageType;
@@ -47,8 +49,6 @@ import org.fhaes.fhrecorder.util.MetaDataTextField;
 import org.fhaes.help.LocalHelp;
 import org.fhaes.preferences.FHAESPreferences.PrefKey;
 import org.fhaes.preferences.wrappers.CheckBoxWrapper;
-
-import net.miginfocom.swing.MigLayout;
 
 /**
  * MetaDataPanel Class. This class displays all of the meta data of a FHX2 file.
@@ -210,7 +210,7 @@ public class MetaDataPanel extends javax.swing.JPanel {
 	 * Creates new form MetaDataPanel
 	 */
 	public MetaDataPanel(FHX2_FileOptionalPart inOptPart) {
-		
+	
 		initComponents();
 		optionalData = inOptPart;
 		
@@ -224,12 +224,12 @@ public class MetaDataPanel extends javax.swing.JPanel {
 	 * Hide/Show restricted fields info depending on preference
 	 */
 	private void updateGUIRestrictions(boolean enforce) {
-		
+	
 		if (enforce)
 		{
 			if (CheckForNonCompatibleFieldLengths())
 				enableTextFieldEnforcement();
-				
+			
 			setFieldLengthBoxesVisible(true);
 		}
 		else
@@ -246,7 +246,7 @@ public class MetaDataPanel extends javax.swing.JPanel {
 	 * Initializes the GUI components.
 	 */
 	private void initComponents() {
-		
+	
 		metaDataScrollPane = new javax.swing.JScrollPane();
 		metaDataPanel = new javax.swing.JPanel();
 		
@@ -254,14 +254,14 @@ public class MetaDataPanel extends javax.swing.JPanel {
 			
 			@Override
 			public void componentHidden(java.awt.event.ComponentEvent evt) {
-				
+			
 				if (saveToData)
 					saveInfoToData();
 			}
 			
 			@Override
 			public void componentShown(java.awt.event.ComponentEvent evt) {
-				
+			
 				fillTextFields();
 				siteNameText.requestFocusInWindow();
 			}
@@ -273,20 +273,23 @@ public class MetaDataPanel extends javax.swing.JPanel {
 		
 		metaDataPanel.setAutoscrolls(true);
 		metaDataPanel.setFocusable(false);
-		metaDataPanel.setLayout(new MigLayout("hidemode 1", "[right][368.00,grow][fill][:20:20]",
-				"[:26:26][:24:24][:24:24][:24:24][:24:24][:24:24][:24:24][:24:24][:24:24][:24:24][:24:24][:24:24][:24:24][:24:24][:24:24][:24:24][:24:24][:24:24][:24:24][:24:24][:24:24][:24:24,grow][:24:24][:24:24][:24:24][:24:24][:24:24][:24:24][:24:24][:24:24][:24:24]"));
-				
-		enforceOldReqsCheckBox = new JCheckBox("Enforce original FHX2 format length requirements?");
+		metaDataPanel
+				.setLayout(new MigLayout(
+						"hidemode 1",
+						"[right][368.00,grow][fill][:20:20]",
+						"[:26:26][:24:24][:24:24][:24:24][:24:24][:24:24][:24:24][:24:24][:24:24][:24:24][:24:24][:24:24][:24:24][:24:24][:24:24][:24:24][:24:24][:24:24][:24:24][:24:24][:24:24][:24:24,grow][:24:24][:24:24][:24:24][:24:24][:24:24][:24:24][:24:24][:24:24][:24:24]"));
+		
+		enforceOldReqsCheckBox = new JCheckBox("Enforce original FHX2 format length and ASCII character requirements?");
 		new CheckBoxWrapper(enforceOldReqsCheckBox, PrefKey.ENFORCE_FHX2_RESTRICTIONS, false);
 		
 		enforceOldReqsCheckBox.addItemListener(new ItemListener() { // maintenance request: missing features #3
-			
-			@Override
-			public void itemStateChanged(ItemEvent arg0) {
 				
-				updateGUIRestrictions(enforceOldReqsCheckBox.isSelected());
-			}
-		});
+					@Override
+					public void itemStateChanged(ItemEvent arg0) {
+					
+						updateGUIRestrictions(enforceOldReqsCheckBox.isSelected());
+					}
+				});
 		enforceOldReqsCheckBox
 				.setToolTipText("This will constrain the amount of information that can be entered into each of the fields below.");
 		metaDataPanel.add(enforceOldReqsCheckBox, "flowx,cell 1 0,grow");
@@ -295,7 +298,7 @@ public class MetaDataPanel extends javax.swing.JPanel {
 			
 			@Override
 			public void keyReleased(KeyEvent e) {
-				
+			
 				if (enforceOldReqsCheckBox.isSelected())
 					if (CheckForNonCompatibleFieldLengths())
 						enableTextFieldEnforcement();
@@ -325,7 +328,7 @@ public class MetaDataPanel extends javax.swing.JPanel {
 			
 			@Override
 			public void keyReleased(KeyEvent e) {
-				
+			
 				if (enforceOldReqsCheckBox.isSelected())
 					if (CheckForNonCompatibleFieldLengths())
 						enableTextFieldEnforcement();
@@ -351,7 +354,7 @@ public class MetaDataPanel extends javax.swing.JPanel {
 			
 			@Override
 			public void keyReleased(KeyEvent e) {
-				
+			
 				if (enforceOldReqsCheckBox.isSelected())
 					if (CheckForNonCompatibleFieldLengths())
 						enableTextFieldEnforcement();
@@ -377,7 +380,7 @@ public class MetaDataPanel extends javax.swing.JPanel {
 			
 			@Override
 			public void keyReleased(KeyEvent e) {
-				
+			
 				if (enforceOldReqsCheckBox.isSelected())
 					if (CheckForNonCompatibleFieldLengths())
 						enableTextFieldEnforcement();
@@ -403,7 +406,7 @@ public class MetaDataPanel extends javax.swing.JPanel {
 			
 			@Override
 			public void keyReleased(KeyEvent e) {
-				
+			
 				if (enforceOldReqsCheckBox.isSelected())
 					if (CheckForNonCompatibleFieldLengths())
 						enableTextFieldEnforcement();
@@ -429,7 +432,7 @@ public class MetaDataPanel extends javax.swing.JPanel {
 			
 			@Override
 			public void keyReleased(KeyEvent e) {
-				
+			
 				if (enforceOldReqsCheckBox.isSelected())
 					if (CheckForNonCompatibleFieldLengths())
 						enableTextFieldEnforcement();
@@ -455,7 +458,7 @@ public class MetaDataPanel extends javax.swing.JPanel {
 			
 			@Override
 			public void keyReleased(KeyEvent e) {
-				
+			
 				if (enforceOldReqsCheckBox.isSelected())
 					if (CheckForNonCompatibleFieldLengths())
 						enableTextFieldEnforcement();
@@ -481,7 +484,7 @@ public class MetaDataPanel extends javax.swing.JPanel {
 			
 			@Override
 			public void keyReleased(KeyEvent e) {
-				
+			
 				if (enforceOldReqsCheckBox.isSelected())
 					if (CheckForNonCompatibleFieldLengths())
 						enableTextFieldEnforcement();
@@ -507,7 +510,7 @@ public class MetaDataPanel extends javax.swing.JPanel {
 			
 			@Override
 			public void keyReleased(KeyEvent e) {
-				
+			
 				if (enforceOldReqsCheckBox.isSelected())
 					if (CheckForNonCompatibleFieldLengths())
 						enableTextFieldEnforcement();
@@ -519,7 +522,7 @@ public class MetaDataPanel extends javax.swing.JPanel {
 			
 			@Override
 			public void focusGained(java.awt.event.FocusEvent evt) {
-				
+			
 				metaDataPanel.repaint();
 			}
 		});
@@ -541,7 +544,7 @@ public class MetaDataPanel extends javax.swing.JPanel {
 			
 			@Override
 			public void keyReleased(KeyEvent e) {
-				
+			
 				if (enforceOldReqsCheckBox.isSelected())
 					if (CheckForNonCompatibleFieldLengths())
 						enableTextFieldEnforcement();
@@ -567,7 +570,7 @@ public class MetaDataPanel extends javax.swing.JPanel {
 			
 			@Override
 			public void keyReleased(KeyEvent e) {
-				
+			
 				if (enforceOldReqsCheckBox.isSelected())
 					if (CheckForNonCompatibleFieldLengths())
 						enableTextFieldEnforcement();
@@ -593,7 +596,7 @@ public class MetaDataPanel extends javax.swing.JPanel {
 			
 			@Override
 			public void keyReleased(KeyEvent e) {
-				
+			
 				if (enforceOldReqsCheckBox.isSelected())
 					if (CheckForNonCompatibleFieldLengths())
 						enableTextFieldEnforcement();
@@ -619,7 +622,7 @@ public class MetaDataPanel extends javax.swing.JPanel {
 			
 			@Override
 			public void keyReleased(KeyEvent e) {
-				
+			
 				if (enforceOldReqsCheckBox.isSelected())
 					if (CheckForNonCompatibleFieldLengths())
 						enableTextFieldEnforcement();
@@ -645,7 +648,7 @@ public class MetaDataPanel extends javax.swing.JPanel {
 			
 			@Override
 			public void keyReleased(KeyEvent e) {
-				
+			
 				if (enforceOldReqsCheckBox.isSelected())
 					if (CheckForNonCompatibleFieldLengths())
 						enableTextFieldEnforcement();
@@ -671,7 +674,7 @@ public class MetaDataPanel extends javax.swing.JPanel {
 			
 			@Override
 			public void keyReleased(KeyEvent e) {
-				
+			
 				if (enforceOldReqsCheckBox.isSelected())
 					if (CheckForNonCompatibleFieldLengths())
 						enableTextFieldEnforcement();
@@ -696,7 +699,7 @@ public class MetaDataPanel extends javax.swing.JPanel {
 			
 			@Override
 			public void keyReleased(KeyEvent e) {
-				
+			
 				if (enforceOldReqsCheckBox.isSelected())
 					if (CheckForNonCompatibleFieldLengths())
 						enableTextFieldEnforcement();
@@ -722,7 +725,7 @@ public class MetaDataPanel extends javax.swing.JPanel {
 			
 			@Override
 			public void keyReleased(KeyEvent e) {
-				
+			
 				if (enforceOldReqsCheckBox.isSelected())
 					if (CheckForNonCompatibleFieldLengths())
 						enableTextFieldEnforcement();
@@ -748,7 +751,7 @@ public class MetaDataPanel extends javax.swing.JPanel {
 			
 			@Override
 			public void keyReleased(KeyEvent e) {
-				
+			
 				if (enforceOldReqsCheckBox.isSelected())
 					if (CheckForNonCompatibleFieldLengths())
 						enableTextFieldEnforcement();
@@ -774,7 +777,7 @@ public class MetaDataPanel extends javax.swing.JPanel {
 			
 			@Override
 			public void keyReleased(KeyEvent e) {
-				
+			
 				if (enforceOldReqsCheckBox.isSelected())
 					if (CheckForNonCompatibleFieldLengths())
 						enableTextFieldEnforcement();
@@ -800,7 +803,7 @@ public class MetaDataPanel extends javax.swing.JPanel {
 			
 			@Override
 			public void keyReleased(KeyEvent e) {
-				
+			
 				if (enforceOldReqsCheckBox.isSelected())
 					if (CheckForNonCompatibleFieldLengths())
 						enableTextFieldEnforcement();
@@ -831,7 +834,7 @@ public class MetaDataPanel extends javax.swing.JPanel {
 			
 			@Override
 			public void keyReleased(KeyEvent e) {
-				
+			
 				if (enforceOldReqsCheckBox.isSelected())
 					if (CheckForNonCompatibleFieldLengths())
 						enableTextFieldEnforcement();
@@ -857,7 +860,7 @@ public class MetaDataPanel extends javax.swing.JPanel {
 			
 			@Override
 			public void keyReleased(KeyEvent e) {
-				
+			
 				if (enforceOldReqsCheckBox.isSelected())
 					if (CheckForNonCompatibleFieldLengths())
 						enableTextFieldEnforcement();
@@ -879,7 +882,7 @@ public class MetaDataPanel extends javax.swing.JPanel {
 			
 			@Override
 			public void keyReleased(KeyEvent e) {
-				
+			
 				if (enforceOldReqsCheckBox.isSelected())
 					if (CheckForNonCompatibleFieldLengths())
 						enableTextFieldEnforcement();
@@ -905,7 +908,7 @@ public class MetaDataPanel extends javax.swing.JPanel {
 			
 			@Override
 			public void keyReleased(KeyEvent e) {
-				
+			
 				if (enforceOldReqsCheckBox.isSelected())
 					if (CheckForNonCompatibleFieldLengths())
 						enableTextFieldEnforcement();
@@ -931,7 +934,7 @@ public class MetaDataPanel extends javax.swing.JPanel {
 			
 			@Override
 			public void keyReleased(KeyEvent e) {
-				
+			
 				if (enforceOldReqsCheckBox.isSelected())
 					if (CheckForNonCompatibleFieldLengths())
 						enableTextFieldEnforcement();
@@ -956,7 +959,7 @@ public class MetaDataPanel extends javax.swing.JPanel {
 			
 			@Override
 			public void keyReleased(KeyEvent e) {
-				
+			
 				if (enforceOldReqsCheckBox.isSelected())
 					if (CheckForNonCompatibleFieldLengths())
 						enableTextFieldEnforcement();
@@ -982,7 +985,7 @@ public class MetaDataPanel extends javax.swing.JPanel {
 			
 			@Override
 			public void keyReleased(KeyEvent e) {
-				
+			
 				if (enforceOldReqsCheckBox.isSelected())
 					if (CheckForNonCompatibleFieldLengths())
 						enableTextFieldEnforcement();
@@ -1008,7 +1011,7 @@ public class MetaDataPanel extends javax.swing.JPanel {
 			
 			@Override
 			public void keyReleased(KeyEvent e) {
-				
+			
 				if (enforceOldReqsCheckBox.isSelected())
 					if (CheckForNonCompatibleFieldLengths())
 						enableTextFieldEnforcement();
@@ -1036,7 +1039,7 @@ public class MetaDataPanel extends javax.swing.JPanel {
 			
 			@Override
 			public void keyReleased(KeyEvent e) {
-				
+			
 				if (enforceOldReqsCheckBox.isSelected())
 					if (CheckForNonCompatibleFieldLengths())
 						enableTextFieldEnforcement();
@@ -1072,7 +1075,7 @@ public class MetaDataPanel extends javax.swing.JPanel {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
+			
 				if (latitudeText.getText() != null && latitudeText.getText().length() > 0)
 				{
 					try
@@ -1081,13 +1084,12 @@ public class MetaDataPanel extends javax.swing.JPanel {
 						
 						if (coord != null)
 							latitudeText.setText(coord.toString());
-							
+						
 					}
 					catch (NumberFormatException ex)
 					{
-						JOptionPane.showMessageDialog(FileController.thePrimaryWindow,
-								"Unable to convert latitude to decimal degrees.\n" + ex.getLocalizedMessage(), "Error",
-								JOptionPane.ERROR_MESSAGE);
+						JOptionPane.showMessageDialog(FileController.thePrimaryWindow, "Unable to convert latitude to decimal degrees.\n"
+								+ ex.getLocalizedMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 					}
 				}
 			}
@@ -1099,7 +1101,7 @@ public class MetaDataPanel extends javax.swing.JPanel {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
+			
 				if (longitudeText.getText() != null && longitudeText.getText().length() > 0)
 				{
 					try
@@ -1110,9 +1112,8 @@ public class MetaDataPanel extends javax.swing.JPanel {
 					}
 					catch (NumberFormatException ex)
 					{
-						JOptionPane.showMessageDialog(FileController.thePrimaryWindow,
-								"Unable to convert longitude to decimal degrees.\n" + ex.getLocalizedMessage(), "Error",
-								JOptionPane.ERROR_MESSAGE);
+						JOptionPane.showMessageDialog(FileController.thePrimaryWindow, "Unable to convert longitude to decimal degrees.\n"
+								+ ex.getLocalizedMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 					}
 				}
 			}
@@ -1130,7 +1131,7 @@ public class MetaDataPanel extends javax.swing.JPanel {
 	 * Sets text fields to their appropriate values.
 	 */
 	private void fillTextFields() {
-		
+	
 		siteNameText.setText(optionalData.getNameOfSite());
 		siteCodeText.setText(optionalData.getSiteCode());
 		collectionDateText.setText(optionalData.getCollectionDate());
@@ -1221,7 +1222,7 @@ public class MetaDataPanel extends javax.swing.JPanel {
 	 * Saves all data as it is displayed on the form.
 	 */
 	public void saveInfoToData() {
-		
+	
 		IOController.getFile().getOptionalPart().setNameOfSite(siteNameText.getText());
 		IOController.getFile().getOptionalPart().setSiteCode(siteCodeText.getText());
 		IOController.getFile().getOptionalPart().setCollectionDate(collectionDateText.getText());
@@ -1257,7 +1258,7 @@ public class MetaDataPanel extends javax.swing.JPanel {
 	 * Updates the value of the numSamples text field.
 	 */
 	public static void updateNumSamplesField() {
-		
+	
 		numSamplesText.setText("" + IOController.getFile().getRequiredPart().getNumSamples());
 	}
 	
@@ -1270,14 +1271,14 @@ public class MetaDataPanel extends javax.swing.JPanel {
 	 * @return
 	 */
 	public static Double parseLatLonFromHalfLatLongString(String str) throws NumberFormatException {
-		
+	
 		str = str.trim();
 		str = str.toUpperCase();
 		if (str == null)
 			return null;
 		if (str == "")
 			return null;
-			
+		
 		String regex;
 		Pattern p;
 		Matcher m;
@@ -1310,7 +1311,7 @@ public class MetaDataPanel extends javax.swing.JPanel {
 			throw new NumberFormatException("Coordinate string in unknown format");
 		else if (val.length > 3)
 			throw new NumberFormatException("Coordinate string in unknown format");
-			
+		
 		try
 		{
 			deg = Double.parseDouble(val[0]);
@@ -1324,7 +1325,7 @@ public class MetaDataPanel extends javax.swing.JPanel {
 			min = Double.parseDouble(val[1]);
 		if (val.length == 3)
 			sec = Double.parseDouble(val[2]);
-			
+		
 		// Determine if direction sign is present
 		String firstChar = str.substring(0, 1);
 		String lastChar = str.substring(str.length() - 1, str.length());
@@ -1366,7 +1367,7 @@ public class MetaDataPanel extends javax.swing.JPanel {
 	 * @return
 	 */
 	public static Double getDecimalCoords(String sign, Double degrees, Double minutes, Double seconds) throws NumberFormatException {
-		
+	
 		Double coords = getDecimalCoords(degrees, minutes, seconds);
 		
 		sign = sign.trim();
@@ -1378,7 +1379,7 @@ public class MetaDataPanel extends javax.swing.JPanel {
 		}
 		else if (sign.equalsIgnoreCase("N") || sign.equalsIgnoreCase("E"))
 			return coords;
-			
+		
 		throw new NumberFormatException("Coordinate direction must be one of N,S,E or W, but direction was '" + sign + "'");
 	}
 	
@@ -1393,7 +1394,7 @@ public class MetaDataPanel extends javax.swing.JPanel {
 	 * @return
 	 */
 	public static Double getDecimalCoords(Double degrees, Double minutes, Double seconds) throws NumberFormatException {
-		
+	
 		Double coords = 0.0;
 		Integer significantFigures = 0;
 		
@@ -1406,7 +1407,7 @@ public class MetaDataPanel extends javax.swing.JPanel {
 		}
 		else
 			throw new NumberFormatException("Degrees cannot be null in a coordinate");
-			
+		
 		if (minutes != null)
 		{
 			significantFigures = 4;
@@ -1438,7 +1439,7 @@ public class MetaDataPanel extends javax.swing.JPanel {
 	 * @return true if all fields are good, false if any field violates the requirements
 	 */
 	public boolean CheckForNonCompatibleFieldLengths() {
-		
+	
 		int numFieldsCompatible = 0;
 		
 		// Handles updating of the site name display components
@@ -1888,7 +1889,7 @@ public class MetaDataPanel extends javax.swing.JPanel {
 		{
 			FireHistoryRecorder.getFeedbackMessagePanel().updateFeedbackMessage(FeedbackMessageType.WARNING,
 					FeedbackDisplayProtocol.MANUAL_HIDE, FHX2_META_DATA_LENGTH_MESSAGE);
-					
+			
 			return false;
 		}
 	}
@@ -1897,7 +1898,7 @@ public class MetaDataPanel extends javax.swing.JPanel {
 	 * Resets the site info text field colors to black after changing to the new unrestricted data length format.
 	 */
 	private void resetTextBoxColors() {
-		
+	
 		if (FireHistoryRecorder.getFeedbackMessagePanel().getCurrentMessage() == FHX2_META_DATA_LENGTH_MESSAGE)
 		{
 			FireHistoryRecorder.getFeedbackMessagePanel().clearFeedbackMessage();
@@ -1990,7 +1991,7 @@ public class MetaDataPanel extends javax.swing.JPanel {
 	 * Enables length enforcement on all meta data text fields.
 	 */
 	private void enableTextFieldEnforcement() {
-		
+	
 		String t = siteNameText.getText();
 		siteNameText.setDocument(new LengthRestrictedDocument(SEVENTY_CHARACTERS));
 		siteNameText.setText(t);
@@ -2078,7 +2079,7 @@ public class MetaDataPanel extends javax.swing.JPanel {
 	 * Disables length enforcement on all meta data text fields.
 	 */
 	private void disableTextFieldEnforcement() {
-		
+	
 		String t = siteNameText.getText();
 		siteNameText.setDocument(new LengthRestrictedDocument(DOCUMENT_LIMIT));
 		siteNameText.setText(t);
@@ -2166,7 +2167,7 @@ public class MetaDataPanel extends javax.swing.JPanel {
 	 * Set visibility of field length boxes.
 	 */
 	private void setFieldLengthBoxesVisible(boolean b) {
-		
+	
 		fieldLengthLabel.setVisible(b);
 		siteNameCountBox.setVisible(b);
 		siteCodeCountBox.setVisible(b);

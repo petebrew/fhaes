@@ -18,6 +18,7 @@
 package org.fhaes.preferences;
 
 import java.awt.Color;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -133,6 +134,10 @@ public class FHAESPreferences {
 		LARGE_DATASET_WARNING_DISABLED("largeDatasetWarningDisabled"),
 		
 		SHAPEFILE_OUTPUT_STYLE("shapefileOutputStyle"),
+		
+		AUTO_DETECT_CHAR_ENC("autoDetectCharacterEncoding"),
+		
+		FORCE_CHAR_ENC_TO("forceCharacterEncodingTo"),
 		
 		/**
 		 * 
@@ -1090,6 +1095,11 @@ public class FHAESPreferences {
 		setPref(pref, encoded);
 	}
 	
+	public void setCharsetPref(PrefKey pref, Charset charset) {
+	
+		setPref(pref, charset.toString());
+	}
+	
 	/**
 	 * Get the value of a EventTypeToProcess preference.
 	 * 
@@ -1196,6 +1206,31 @@ public class FHAESPreferences {
 	public void setOperatorPref(PrefKey key, OperatorEnum value) {
 	
 		setPref(key, value.toString());
+	}
+	
+	public Charset getCharsetPref(PrefKey key, Charset defaultValue) {
+	
+		String value = "";
+		if (defaultValue == null)
+		{
+			value = prefs.get(key.getValue(), null);
+		}
+		else
+		{
+			value = prefs.get(key.getValue(), defaultValue.name());
+		}
+		if (value == null)
+			return defaultValue;
+		
+		try
+		{
+			return Charset.forName(value);
+		}
+		catch (Exception e)
+		{
+			return defaultValue;
+		}
+		
 	}
 	
 	/**
