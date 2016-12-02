@@ -174,7 +174,7 @@ public class ErrorDisplayPanel extends JPanel {
 		originalFileInstructionsTextArea.setFont(new Font("Tahoma", Font.PLAIN, 11));
 		originalFileInstructionsTextArea.setLineWrap(true);
 		originalFileInstructionsTextArea.setWrapStyleWord(true);
-		originalFileInstructionsTextArea.setText("This is the currenty file as it has been loaded into the program."
+		originalFileInstructionsTextArea.setText("This is the current file as it has been loaded into the program."
 				+ " The highlighted text below describes errors that the program detected as it attempted to load the file.");
 		originalFileInstructionsScrollPane.setViewportView(originalFileInstructionsTextArea);
 		
