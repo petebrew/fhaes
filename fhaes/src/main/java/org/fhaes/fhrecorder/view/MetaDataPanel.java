@@ -26,6 +26,10 @@ import java.awt.event.ItemListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.math.BigDecimal;
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -61,6 +65,7 @@ public class MetaDataPanel extends javax.swing.JPanel {
 	
 	// Declare string constants
 	private final String FHX2_META_DATA_LENGTH_MESSAGE = "Cannot enforce length restrictions without losing data! Please revise the highlighted fields.";
+	private final String FHX2_META_ENCODING_MESSAGE = "Cannot encode all characters for use by FHX2! Please remove non-ASCII characters from the highlighted fields.";
 	
 	// Declare integer constants
 	private final int TWO_CHARACTERS = 2;
@@ -227,7 +232,7 @@ public class MetaDataPanel extends javax.swing.JPanel {
 	
 		if (enforce)
 		{
-			if (CheckForNonCompatibleFieldLengths())
+			if (checkForNonCompatibleFields())
 				enableTextFieldEnforcement();
 			
 			setFieldLengthBoxesVisible(true);
@@ -300,7 +305,7 @@ public class MetaDataPanel extends javax.swing.JPanel {
 			public void keyReleased(KeyEvent e) {
 			
 				if (enforceOldReqsCheckBox.isSelected())
-					if (CheckForNonCompatibleFieldLengths())
+					if (checkForNonCompatibleFields())
 						enableTextFieldEnforcement();
 			}
 		});
@@ -330,7 +335,7 @@ public class MetaDataPanel extends javax.swing.JPanel {
 			public void keyReleased(KeyEvent e) {
 			
 				if (enforceOldReqsCheckBox.isSelected())
-					if (CheckForNonCompatibleFieldLengths())
+					if (checkForNonCompatibleFields())
 						enableTextFieldEnforcement();
 			}
 		});
@@ -356,7 +361,7 @@ public class MetaDataPanel extends javax.swing.JPanel {
 			public void keyReleased(KeyEvent e) {
 			
 				if (enforceOldReqsCheckBox.isSelected())
-					if (CheckForNonCompatibleFieldLengths())
+					if (checkForNonCompatibleFields())
 						enableTextFieldEnforcement();
 			}
 		});
@@ -382,7 +387,7 @@ public class MetaDataPanel extends javax.swing.JPanel {
 			public void keyReleased(KeyEvent e) {
 			
 				if (enforceOldReqsCheckBox.isSelected())
-					if (CheckForNonCompatibleFieldLengths())
+					if (checkForNonCompatibleFields())
 						enableTextFieldEnforcement();
 			}
 		});
@@ -408,7 +413,7 @@ public class MetaDataPanel extends javax.swing.JPanel {
 			public void keyReleased(KeyEvent e) {
 			
 				if (enforceOldReqsCheckBox.isSelected())
-					if (CheckForNonCompatibleFieldLengths())
+					if (checkForNonCompatibleFields())
 						enableTextFieldEnforcement();
 			}
 		});
@@ -434,7 +439,7 @@ public class MetaDataPanel extends javax.swing.JPanel {
 			public void keyReleased(KeyEvent e) {
 			
 				if (enforceOldReqsCheckBox.isSelected())
-					if (CheckForNonCompatibleFieldLengths())
+					if (checkForNonCompatibleFields())
 						enableTextFieldEnforcement();
 			}
 		});
@@ -460,7 +465,7 @@ public class MetaDataPanel extends javax.swing.JPanel {
 			public void keyReleased(KeyEvent e) {
 			
 				if (enforceOldReqsCheckBox.isSelected())
-					if (CheckForNonCompatibleFieldLengths())
+					if (checkForNonCompatibleFields())
 						enableTextFieldEnforcement();
 			}
 		});
@@ -486,7 +491,7 @@ public class MetaDataPanel extends javax.swing.JPanel {
 			public void keyReleased(KeyEvent e) {
 			
 				if (enforceOldReqsCheckBox.isSelected())
-					if (CheckForNonCompatibleFieldLengths())
+					if (checkForNonCompatibleFields())
 						enableTextFieldEnforcement();
 			}
 		});
@@ -512,7 +517,7 @@ public class MetaDataPanel extends javax.swing.JPanel {
 			public void keyReleased(KeyEvent e) {
 			
 				if (enforceOldReqsCheckBox.isSelected())
-					if (CheckForNonCompatibleFieldLengths())
+					if (checkForNonCompatibleFields())
 						enableTextFieldEnforcement();
 			}
 		});
@@ -546,7 +551,7 @@ public class MetaDataPanel extends javax.swing.JPanel {
 			public void keyReleased(KeyEvent e) {
 			
 				if (enforceOldReqsCheckBox.isSelected())
-					if (CheckForNonCompatibleFieldLengths())
+					if (checkForNonCompatibleFields())
 						enableTextFieldEnforcement();
 			}
 		});
@@ -572,7 +577,7 @@ public class MetaDataPanel extends javax.swing.JPanel {
 			public void keyReleased(KeyEvent e) {
 			
 				if (enforceOldReqsCheckBox.isSelected())
-					if (CheckForNonCompatibleFieldLengths())
+					if (checkForNonCompatibleFields())
 						enableTextFieldEnforcement();
 			}
 		});
@@ -598,7 +603,7 @@ public class MetaDataPanel extends javax.swing.JPanel {
 			public void keyReleased(KeyEvent e) {
 			
 				if (enforceOldReqsCheckBox.isSelected())
-					if (CheckForNonCompatibleFieldLengths())
+					if (checkForNonCompatibleFields())
 						enableTextFieldEnforcement();
 			}
 		});
@@ -624,7 +629,7 @@ public class MetaDataPanel extends javax.swing.JPanel {
 			public void keyReleased(KeyEvent e) {
 			
 				if (enforceOldReqsCheckBox.isSelected())
-					if (CheckForNonCompatibleFieldLengths())
+					if (checkForNonCompatibleFields())
 						enableTextFieldEnforcement();
 			}
 		});
@@ -650,7 +655,7 @@ public class MetaDataPanel extends javax.swing.JPanel {
 			public void keyReleased(KeyEvent e) {
 			
 				if (enforceOldReqsCheckBox.isSelected())
-					if (CheckForNonCompatibleFieldLengths())
+					if (checkForNonCompatibleFields())
 						enableTextFieldEnforcement();
 			}
 		});
@@ -676,7 +681,7 @@ public class MetaDataPanel extends javax.swing.JPanel {
 			public void keyReleased(KeyEvent e) {
 			
 				if (enforceOldReqsCheckBox.isSelected())
-					if (CheckForNonCompatibleFieldLengths())
+					if (checkForNonCompatibleFields())
 						enableTextFieldEnforcement();
 			}
 		});
@@ -701,7 +706,7 @@ public class MetaDataPanel extends javax.swing.JPanel {
 			public void keyReleased(KeyEvent e) {
 			
 				if (enforceOldReqsCheckBox.isSelected())
-					if (CheckForNonCompatibleFieldLengths())
+					if (checkForNonCompatibleFields())
 						enableTextFieldEnforcement();
 			}
 		});
@@ -727,7 +732,7 @@ public class MetaDataPanel extends javax.swing.JPanel {
 			public void keyReleased(KeyEvent e) {
 			
 				if (enforceOldReqsCheckBox.isSelected())
-					if (CheckForNonCompatibleFieldLengths())
+					if (checkForNonCompatibleFields())
 						enableTextFieldEnforcement();
 			}
 		});
@@ -753,7 +758,7 @@ public class MetaDataPanel extends javax.swing.JPanel {
 			public void keyReleased(KeyEvent e) {
 			
 				if (enforceOldReqsCheckBox.isSelected())
-					if (CheckForNonCompatibleFieldLengths())
+					if (checkForNonCompatibleFields())
 						enableTextFieldEnforcement();
 			}
 		});
@@ -779,7 +784,7 @@ public class MetaDataPanel extends javax.swing.JPanel {
 			public void keyReleased(KeyEvent e) {
 			
 				if (enforceOldReqsCheckBox.isSelected())
-					if (CheckForNonCompatibleFieldLengths())
+					if (checkForNonCompatibleFields())
 						enableTextFieldEnforcement();
 			}
 		});
@@ -805,7 +810,7 @@ public class MetaDataPanel extends javax.swing.JPanel {
 			public void keyReleased(KeyEvent e) {
 			
 				if (enforceOldReqsCheckBox.isSelected())
-					if (CheckForNonCompatibleFieldLengths())
+					if (checkForNonCompatibleFields())
 						enableTextFieldEnforcement();
 			}
 		});
@@ -836,7 +841,7 @@ public class MetaDataPanel extends javax.swing.JPanel {
 			public void keyReleased(KeyEvent e) {
 			
 				if (enforceOldReqsCheckBox.isSelected())
-					if (CheckForNonCompatibleFieldLengths())
+					if (checkForNonCompatibleFields())
 						enableTextFieldEnforcement();
 			}
 		});
@@ -862,7 +867,7 @@ public class MetaDataPanel extends javax.swing.JPanel {
 			public void keyReleased(KeyEvent e) {
 			
 				if (enforceOldReqsCheckBox.isSelected())
-					if (CheckForNonCompatibleFieldLengths())
+					if (checkForNonCompatibleFields())
 						enableTextFieldEnforcement();
 			}
 		});
@@ -884,7 +889,7 @@ public class MetaDataPanel extends javax.swing.JPanel {
 			public void keyReleased(KeyEvent e) {
 			
 				if (enforceOldReqsCheckBox.isSelected())
-					if (CheckForNonCompatibleFieldLengths())
+					if (checkForNonCompatibleFields())
 						enableTextFieldEnforcement();
 			}
 		});
@@ -910,7 +915,7 @@ public class MetaDataPanel extends javax.swing.JPanel {
 			public void keyReleased(KeyEvent e) {
 			
 				if (enforceOldReqsCheckBox.isSelected())
-					if (CheckForNonCompatibleFieldLengths())
+					if (checkForNonCompatibleFields())
 						enableTextFieldEnforcement();
 			}
 		});
@@ -936,7 +941,7 @@ public class MetaDataPanel extends javax.swing.JPanel {
 			public void keyReleased(KeyEvent e) {
 			
 				if (enforceOldReqsCheckBox.isSelected())
-					if (CheckForNonCompatibleFieldLengths())
+					if (checkForNonCompatibleFields())
 						enableTextFieldEnforcement();
 			}
 		});
@@ -961,7 +966,7 @@ public class MetaDataPanel extends javax.swing.JPanel {
 			public void keyReleased(KeyEvent e) {
 			
 				if (enforceOldReqsCheckBox.isSelected())
-					if (CheckForNonCompatibleFieldLengths())
+					if (checkForNonCompatibleFields())
 						enableTextFieldEnforcement();
 			}
 		});
@@ -987,7 +992,7 @@ public class MetaDataPanel extends javax.swing.JPanel {
 			public void keyReleased(KeyEvent e) {
 			
 				if (enforceOldReqsCheckBox.isSelected())
-					if (CheckForNonCompatibleFieldLengths())
+					if (checkForNonCompatibleFields())
 						enableTextFieldEnforcement();
 			}
 		});
@@ -1013,7 +1018,7 @@ public class MetaDataPanel extends javax.swing.JPanel {
 			public void keyReleased(KeyEvent e) {
 			
 				if (enforceOldReqsCheckBox.isSelected())
-					if (CheckForNonCompatibleFieldLengths())
+					if (checkForNonCompatibleFields())
 						enableTextFieldEnforcement();
 			}
 		});
@@ -1041,7 +1046,7 @@ public class MetaDataPanel extends javax.swing.JPanel {
 			public void keyReleased(KeyEvent e) {
 			
 				if (enforceOldReqsCheckBox.isSelected())
-					if (CheckForNonCompatibleFieldLengths())
+					if (checkForNonCompatibleFields())
 						enableTextFieldEnforcement();
 			}
 		});
@@ -1434,11 +1439,138 @@ public class MetaDataPanel extends javax.swing.JPanel {
 	}
 	
 	/**
+	 * Checks whether the text of a JTextField can be encoded with the desired character encoding
+	 * 
+	 * @param field
+	 * @return
+	 */
+	private boolean canEncodeCharsInTextField(JTextField field) {
+	
+		Charset charset = StandardCharsets.UTF_8;
+		
+		if (enforceOldReqsCheckBox.isSelected())
+			charset = StandardCharsets.ISO_8859_1;
+		
+		if (field == null || field.getText().length() == 0)
+			return true;
+		
+		return canEncodeString(field.getText(), charset);
+		
+	}
+	
+	public static boolean canEncodeString(String str, Charset charset) {
+	
+		char[] chars = str.toCharArray();
+		
+		CharsetEncoder encoder = charset.newEncoder();
+		
+		for (char c : chars)
+		{
+			if (!encoder.canEncode(c))
+			{
+				return false;
+			}
+		}
+		
+		return true;
+	}
+	
+	/**
+	 * Checks all metadata text fields to see if the values entered can be encoded using the desired character encoding
+	 * 
+	 * @return
+	 */
+	public boolean CheckForNonEncodableField() {
+	
+		int numFieldsCompatible = 0;
+		
+		ArrayList<JTextField> fields = new ArrayList<JTextField>();
+		fields.add(latinNamesText);
+		fields.add(latitudeText);
+		fields.add(longitudeText);
+		fields.add(lowestElevationText);
+		fields.add(parkText);
+		fields.add(quarterSectionText);
+		fields.add(rangeText);
+		fields.add(rangerDistrictText);
+		fields.add(sectionText);
+		fields.add(siteCodeText);
+		fields.add(siteNameText);
+		fields.add(slopeText);
+		fields.add(stateText);
+		fields.add(substrateText);
+		fields.add(topographicMapText);
+		fields.add(townshipText);
+		fields.add(utmEastingText);
+		fields.add(utmNorthingText);
+		fields.add(areaSampledText);
+		fields.add(aspectText);
+		fields.add(collectionDateText);
+		fields.add(collectorNamesText);
+		fields.add(commonNamesText);
+		fields.add(countryText);
+		fields.add(countyText);
+		fields.add(daterNamesText);
+		fields.add(forestText);
+		fields.add(habitatText);
+		fields.add(highestElevationText);
+		
+		for (JTextField field : fields)
+		{
+			if (canEncodeCharsInTextField(field))
+			{
+				field.setForeground(Color.BLACK);
+				numFieldsCompatible++;
+			}
+			else
+			{
+				field.setForeground(Color.RED);
+			}
+		}
+		
+		// Updates the status pane according to the compatibility of the above fields
+		if (numFieldsCompatible == fields.size())
+		{
+			if (FireHistoryRecorder.getFeedbackMessagePanel().getCurrentMessage().equals(FHX2_META_ENCODING_MESSAGE))
+			{
+				FireHistoryRecorder.getFeedbackMessagePanel().clearFeedbackMessage();
+			}
+			
+			return true;
+		}
+		else
+		{
+			FireHistoryRecorder.getFeedbackMessagePanel().updateFeedbackMessage(FeedbackMessageType.WARNING,
+					FeedbackDisplayProtocol.MANUAL_HIDE, FHX2_META_ENCODING_MESSAGE);
+			
+			return false;
+		}
+		
+	}
+	
+	/**
+	 * Runs checks on all metadata fields to see if they violate any requirements
+	 * 
+	 * @return
+	 */
+	public boolean checkForNonCompatibleFields() {
+	
+		boolean success = checkForNonCompatibleFieldLengths();
+		boolean success2 = CheckForNonEncodableField();
+		
+		if (success && success2)
+			return true;
+		
+		return false;
+		
+	}
+	
+	/**
 	 * Checks whether or not the current information in the site info fields violates any of the original FHX2 length requirements.
 	 * 
 	 * @return true if all fields are good, false if any field violates the requirements
 	 */
-	public boolean CheckForNonCompatibleFieldLengths() {
+	public boolean checkForNonCompatibleFieldLengths() {
 	
 		int numFieldsCompatible = 0;
 		
@@ -1878,7 +2010,7 @@ public class MetaDataPanel extends javax.swing.JPanel {
 		// Updates the status pane according to the compatibility of the above fields
 		if (numFieldsCompatible == ALL_FIELDS_COMPATIBLE)
 		{
-			if (FireHistoryRecorder.getFeedbackMessagePanel().getCurrentMessage() == FHX2_META_DATA_LENGTH_MESSAGE)
+			if (FireHistoryRecorder.getFeedbackMessagePanel().getCurrentMessage().equals(FHX2_META_DATA_LENGTH_MESSAGE))
 			{
 				FireHistoryRecorder.getFeedbackMessagePanel().clearFeedbackMessage();
 			}
@@ -1899,7 +2031,7 @@ public class MetaDataPanel extends javax.swing.JPanel {
 	 */
 	private void resetTextBoxColors() {
 	
-		if (FireHistoryRecorder.getFeedbackMessagePanel().getCurrentMessage() == FHX2_META_DATA_LENGTH_MESSAGE)
+		if (FireHistoryRecorder.getFeedbackMessagePanel().getCurrentMessage().equals(FHX2_META_DATA_LENGTH_MESSAGE))
 		{
 			FireHistoryRecorder.getFeedbackMessagePanel().clearFeedbackMessage();
 		}
