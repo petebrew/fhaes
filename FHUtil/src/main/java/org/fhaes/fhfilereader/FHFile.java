@@ -17,14 +17,9 @@
  *************************************************************************************************/
 package org.fhaes.fhfilereader;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.math.BigDecimal;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -50,9 +45,6 @@ import org.tridas.schema.TridasGenericField;
 import org.tridas.schema.TridasObject;
 import org.tridas.schema.TridasProject;
 import org.tridas.spatial.GMLPointSRSHandler;
-
-import com.ibm.icu.text.CharsetDetector;
-import com.ibm.icu.text.CharsetMatch;
 
 /**
  * FHFile Class. Simple extension of java.io.File which includes functions for checking whether this is a valid FHX format file, and if not,
@@ -758,7 +750,7 @@ public class FHFile extends File {
 			log.info("IO Exception in DendroFileIO...  " + e.getLocalizedMessage());
 			errorMessage = "Unable to open file";
 			isFileValid = false;
-			return;
+			
 		}
 		catch (InvalidDendroFileException e)
 		{
@@ -778,7 +770,6 @@ public class FHFile extends File {
 					// Do nothing!
 				}
 			}
-			return;
 		}
 		
 		log.debug("DendroFileIO was happy with file, but let's make sure that FHAES parser is happy too...");
@@ -809,12 +800,12 @@ public class FHFile extends File {
 		
 		if (isFileValid)
 		{
-			log.debug("Elena's file checker is happy with file");
+			log.debug("File checker is happy with file");
 			return;
 		}
 		else
 		{
-			log.debug("Elena's file checker found an error");
+			log.debug("File checker found an error");
 			errorMessage = "FHAES stage 2 parser found an error with this file.  See summary tab for more information.";
 		}
 	}
@@ -827,60 +818,8 @@ public class FHFile extends File {
 		}
 		else
 		{
-			String record = null;
-			BufferedReader br = null;
-			FileInputStream is = null;
-			InputStreamReader isr = null;
-			String rawContent = "";
-			try
-			{
-				String charsetName = App.prefs.getCharsetPref(PrefKey.FORCE_CHAR_ENC_TO, Charset.defaultCharset()).toString();
-				
-				if (App.prefs.getBooleanPref(PrefKey.AUTO_DETECT_CHAR_ENC, true))
-				{
-					CharsetDetector detector;
-					CharsetMatch match;
-					byte[] byteData = Files.readAllBytes(this.toPath());
-					
-					detector = new CharsetDetector();
-					
-					detector.setText(byteData);
-					match = detector.detect();
-					
-					charsetName = match.getName();
-				}
-				
-				is = new FileInputStream(this.toPath().toString());
-				isr = new InputStreamReader(is, charsetName);
-				log.debug("Opening file using " + charsetName + " charset");
-				// BufferedReader buffReader = new BufferedReader(isr);
-				
-				// fr = ReaderFactory.createReaderFromFile(file);
-				br = new BufferedReader(isr);
-				
-				while ((record = br.readLine()) != null)
-				{
-					rawContent += record + System.lineSeparator();
-				}
-			}
-			catch (Exception e)
-			{
-				
-			}
-			finally
-			{
-				try
-				{
-					br.close();
-				}
-				catch (IOException e)
-				{
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-			
-			return rawContent;
+			log.error("FHX2FileReader cannot be null");
+			return "ERROR READING FILE";
 		}
 	}
 }

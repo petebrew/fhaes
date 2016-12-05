@@ -1775,8 +1775,7 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 		
 		try
 		{
-			
-			String charsetName = App.prefs.getCharsetPref(PrefKey.FORCE_CHAR_ENC_TO, Charset.defaultCharset()).toString();
+			String charsetName = App.prefs.getCharsetPref(PrefKey.FORCE_CHAR_ENC_TO, Charset.forName("UTF-8")).toString();
 			
 			if (App.prefs.getBooleanPref(PrefKey.AUTO_DETECT_CHAR_ENC, true))
 			{
