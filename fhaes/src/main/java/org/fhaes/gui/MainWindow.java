@@ -1800,6 +1800,28 @@ public class MainWindow implements PrefsListener {
 			
 				CharacterEncodingChooserDialog dialog = new CharacterEncodingChooserDialog();
 				dialog.setVisible(true);
+				
+				if (fileListModel.getSize() > 0)
+				{
+					Object[] options = { "Yes", "No", "Cancel" };
+					String message = "Would you like to reload the current files using these settings?";
+					if (fileListModel.getSize() == 0)
+					{
+						message = "Would you like to reload the current file using these settings?";
+					}
+					int response = JOptionPane.showOptionDialog(frame, message, "Confirm", JOptionPane.YES_NO_CANCEL_OPTION,
+							JOptionPane.QUESTION_MESSAGE, null, // do not use a
+							// custom
+							// Icon
+							options, // the titles of buttons
+							options[0]); // default button title
+					
+					if (response == JOptionPane.YES_OPTION)
+					{
+						reloadAllFiles();
+					}
+					
+				}
 			}
 		};
 		
@@ -2681,5 +2703,14 @@ public class MainWindow implements PrefsListener {
 			toolBar.addSeparator();
 			toolBar.add(btnQuickLaunch);
 		}
+	}
+	
+	public void reloadAllFiles() {
+	
+		ArrayList<FHFile> fileList = this.fileListModel.getCompleteFileList();
+		
+		fileListModel.clear();
+		loadFiles(fileList.toArray(new FHFile[fileList.size()]));
+		
 	}
 }
