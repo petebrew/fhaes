@@ -29,6 +29,7 @@ import org.fhaes.enums.SampleDepthFilterType;
 import org.fhaes.fhfilereader.FHFile;
 import org.fhaes.fhfilereader.FHX2FileReader;
 import org.fhaes.model.FHSeries;
+import org.fhaes.preferences.App;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,6 +40,11 @@ public class FileReaderCalculationTests extends TestCase {
 	
 	// Declare logger
 	private static final Logger log = LoggerFactory.getLogger(FileReaderCalculationTests.class);
+	
+	public FileReaderCalculationTests() {
+	
+		App.init();
+	}
 	
 	/**
 	 * TODO

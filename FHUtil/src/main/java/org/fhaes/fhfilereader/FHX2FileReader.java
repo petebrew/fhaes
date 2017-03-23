@@ -1939,9 +1939,12 @@ public class FHX2FileReader extends AbstractFireHistoryReader {
 			// Clean up readers
 			try
 			{
-				is.close();
-				isr.close();
-				br.close();
+				if (is != null)
+					is.close();
+				if (isr != null)
+					isr.close();
+				if (br != null)
+					br.close();
 			}
 			catch (IOException e)
 			{
