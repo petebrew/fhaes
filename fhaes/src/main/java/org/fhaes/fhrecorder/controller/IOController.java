@@ -70,10 +70,10 @@ public class IOController {
 	public static final String ASPECT_PREFIX = "Aspect         :";
 	public static final String AREA_SAMPLED_PREFIX = "Area sampled   :";
 	public static final String SUBSTRATE_TYPE_PREFIX = "Substrate type :";
-	public static final String BEGIN_COMMENTS_PREFIX = "Begin comments BELOW this line:";
-	public static final String END_COMMENTS_PREFIX = "End comments ABOVE this line.";
-	public static final String BEGIN_COMMENTS_OLD_PREFIX = "Begin comments :";
-	public static final String END_COMMENTS_OLD_PREFIX = "End comments   :";
+	public static final String BEGIN_COMMENTS_PREFIX = "Begin comments BELOW ";
+	public static final String END_COMMENTS_PREFIX = "End comments ABOVE ";
+	public static final String BEGIN_COMMENTS_OLD_PREFIX = "Begin comments";
+	public static final String END_COMMENTS_OLD_PREFIX = "End comments";
 	public static final int START_OF_VALUE = 17;
 	
 	private static FHX2_File theFHX2File;
@@ -135,7 +135,7 @@ public class IOController {
 	private static void readOptionalPartFromFile(BufferedReader br) throws IOException {
 	
 		String line;
-		while (((line = br.readLine()) != null) && !line.equals("FHX2 FORMAT") && !line.equals("FIRE2 FORMAT"))
+		while (((line = br.readLine()) != null) && !line.startsWith("FHX2 FORMAT") && !line.startsWith("FIRE2 FORMAT"))
 		{
 			if (!line.startsWith(BEGIN_COMMENTS_OLD_PREFIX))
 				oldFile += line + "\r\n";
@@ -276,6 +276,7 @@ public class IOController {
 			FileController.setTitleName(FileController.progName + " - " + FileController.fileName);
 			readSamplesFromFile(br, dataSetFirstYear, numSamples, idLength);
 		}
+		
 	}
 	
 	/**
