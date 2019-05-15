@@ -189,6 +189,12 @@
 			<groupId>org.fhaes</groupId>
 			<artifactId>fhsamplesize</artifactId>
 			<version>1.0.6</version>
+			<exclusions>
+				<exclusion>
+					<groupId>xml-apis</groupId>
+					<artifactId>xml-apis</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>jfree</groupId>

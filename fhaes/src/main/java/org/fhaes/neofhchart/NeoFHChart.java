@@ -73,14 +73,14 @@ public class NeoFHChart extends JPanel implements PrefsListener {
 	protected boolean paneActive = false;
 	
 	@SuppressWarnings("unused")
-	private HashMap<String, FireChartSVG> chartMap = new HashMap<String, FireChartSVG>();
+	private HashMap<String, FireChartSVG> chartMap = new HashMap<>();
 	
 	/**
 	 * Constructor for JPanel containing SVG chart.
 	 */
 	@SuppressWarnings("unchecked")
 	public NeoFHChart() {
-	
+		
 		App.prefs.addPrefsListener(this);
 		this.setLayout(new BorderLayout());
 		
@@ -90,7 +90,7 @@ public class NeoFHChart extends JPanel implements PrefsListener {
 			
 			@Override
 			public boolean startInteraction(InputEvent ie) {
-			
+				
 				int mods = ie.getModifiers();
 				return ie.getID() == MouseEvent.MOUSE_PRESSED && (mods & InputEvent.BUTTON1_MASK) != 0;
 			}
@@ -99,7 +99,7 @@ public class NeoFHChart extends JPanel implements PrefsListener {
 			
 			@Override
 			public void mouseWheelMoved(MouseWheelEvent evt) {
-			
+				
 				double rotation = evt.getPreciseWheelRotation();
 				ActionMap map = svgCanvas.getActionMap();
 				Action action = null;
@@ -152,7 +152,7 @@ public class NeoFHChart extends JPanel implements PrefsListener {
 	 * Clear the current chart from the canvas.
 	 */
 	public void clearChart() {
-	
+		
 		currentChart = null;
 		svgCanvas.setDocument(null);
 	}
@@ -161,7 +161,7 @@ public class NeoFHChart extends JPanel implements PrefsListener {
 	 * This method creates the series list dialog if it doesn't exist yet
 	 */
 	protected void showSeriesPane() {
-	
+		
 		SeriesListDialog.showDialog(currentChart, svgCanvas);
 	}
 	
@@ -172,7 +172,7 @@ public class NeoFHChart extends JPanel implements PrefsListener {
 	 * @param fr
 	 */
 	public void loadFile(AbstractFireHistoryReader fr) {
-	
+		
 		if (fr == null)
 		{
 			// Reader is null so clear chart
@@ -201,7 +201,7 @@ public class NeoFHChart extends JPanel implements PrefsListener {
 	 * Export the current chart as a PDF document, PNG image, or SVG file.
 	 */
 	public void doSingleExport() {
-	
+		
 		if (currentChart != null)
 		{
 			String lastVisitedFolder = App.prefs.getPref(PrefKey.CHART_LAST_EXPORT_FOLDER, null);
@@ -262,9 +262,9 @@ public class NeoFHChart extends JPanel implements PrefsListener {
 				if (outputFile.exists())
 				{
 					Object[] options = { "Overwrite", "No", "Cancel" };
-					int response = JOptionPane.showOptionDialog(App.mainFrame, "The file '" + outputFile.getName()
-							+ "' already exists.  Are you sure you want to overwrite?", "Confirm", JOptionPane.YES_NO_CANCEL_OPTION,
-							JOptionPane.QUESTION_MESSAGE, null, // do not use a custom Icon
+					int response = JOptionPane.showOptionDialog(App.mainFrame,
+							"The file '" + outputFile.getName() + "' already exists.  Are you sure you want to overwrite?", "Confirm",
+							JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, // do not use a custom Icon
 							options, // the titles of buttons
 							options[0]); // default button title
 					
@@ -302,7 +302,7 @@ public class NeoFHChart extends JPanel implements PrefsListener {
 	 * @param outputFile
 	 */
 	public void doBulkExport(FileFilter selectedFilter, PDFFilter pdff, PNGFilter pngf, SVGFilter svgf, File outputFile) {
-	
+		
 		if (selectedFilter.equals(pdff))
 		{
 			new PDFExportOptionsDialog(currentChart, outputFile, true);
@@ -322,7 +322,7 @@ public class NeoFHChart extends JPanel implements PrefsListener {
 	 */
 	@Override
 	public void prefChanged(PrefsEvent e) {
-	
+		
 		if (currentChart != null)
 		{
 			if (e.getPref().getValue().toLowerCase().startsWith("chart"))
@@ -341,12 +341,12 @@ public class NeoFHChart extends JPanel implements PrefsListener {
 	 * Force redraw of chart
 	 */
 	public void redrawChart() {
-	
+		
 		Runnable r = new Runnable() {
 			
 			@Override
 			public void run() {
-			
+				
 				currentChart.buildElements();
 			}
 		};
