@@ -526,7 +526,7 @@ public class DataPanel extends JPanel implements ChangeListener, PropertyChangeL
 					continue;
 				}
 				
-				if (row.length == 5)
+				if (row.length < 50)
 				{
 					
 					try
@@ -557,9 +557,9 @@ public class DataPanel extends JPanel implements ChangeListener, PropertyChangeL
 						{
 							sample.setBark(false);
 						}
-						else if (row[endcodeindex].toLowerCase().replace(" ", "").equals("b")
-								|| row[endcodeindex].toLowerCase().replace(" ", "").equals("g")
-								|| row[endcodeindex].toLowerCase().replace(" ", "").equals("l"))
+						else if (row[endcodeindex].toLowerCase().replace(" ", "").contains("b")
+								|| row[endcodeindex].toLowerCase().replace(" ", "").contains("g")
+								|| row[endcodeindex].toLowerCase().replace(" ", "").contains("l"))
 						{
 							sample.setBark(true);
 						}
@@ -596,25 +596,6 @@ public class DataPanel extends JPanel implements ChangeListener, PropertyChangeL
 					}
 					
 				}
-				else
-				{
-					log.debug("Failed to read row " + rowcount + ". Invalid row length of " + row.length);
-					if (keepWarningImportFailed)
-					{
-						String msg = "Failed to read row " + rowcount
-								+ " of text file. \nInvalid row length of \" + row.length\n\nDo you want to continue importing?";
-						int result = JOptionPane.showConfirmDialog(this, msg, "alert", JOptionPane.YES_NO_CANCEL_OPTION);
-						if (result == JOptionPane.YES_OPTION)
-						{
-							keepWarningImportFailed = false;
-						}
-						else
-						{
-							return;
-						}
-					}
-				}
-				
 			}
 		}
 		catch (Exception e)

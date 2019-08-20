@@ -31,12 +31,12 @@ import javax.swing.JPanel;
 import javax.swing.JTextPane;
 import javax.swing.border.EmptyBorder;
 
-import net.miginfocom.swing.MigLayout;
-
 import org.fhaes.help.RemoteHelp;
 import org.fhaes.util.Builder;
 import org.fhaes.util.I18n;
 import org.fhaes.util.Platform;
+
+import net.miginfocom.swing.MigLayout;
 
 /**
  * AboutDialog Class. This is a basic about dialog for the application.
@@ -53,7 +53,7 @@ public class AboutDialog extends JDialog implements ActionListener {
 	 * Create the dialog.
 	 */
 	public AboutDialog(Frame parent) {
-	
+		
 		this.parent = parent;
 		init();
 	}
@@ -62,7 +62,7 @@ public class AboutDialog extends JDialog implements ActionListener {
 	 * TODO
 	 */
 	public void init() {
-	
+		
 		getContentPane().setBackground(Color.WHITE);
 		setBounds(100, 100, 614, 517);
 		getContentPane().setLayout(new BorderLayout());
@@ -115,7 +115,7 @@ public class AboutDialog extends JDialog implements ActionListener {
 		contentPanel.add(txtpnScientificSteeringCommittee, "cell 0 8,alignx right,growy");
 		
 		JTextPane txtpnElaineKennedySutherland = new JTextPane();
-		txtpnElaineKennedySutherland.setText("Elaine Kennedy Sutherland; Tom Swetnam; Donald Falk; Peter Brown; and Henri Grissino-Mayer.");
+		txtpnElaineKennedySutherland.setText("Elaine Kennedy Sutherland; Tom Swetnam; Donald Falk; and Peter Brown.");
 		txtpnElaineKennedySutherland.setFont(new Font("Dialog", Font.PLAIN, 9));
 		contentPanel.add(txtpnElaineKennedySutherland, "cell 1 8 2 1,grow");
 		
@@ -126,8 +126,8 @@ public class AboutDialog extends JDialog implements ActionListener {
 		
 		JTextPane txtProgrammers = new JTextPane();
 		txtProgrammers.setFont(new Font("Dialog", Font.PLAIN, 9));
-		txtProgrammers
-				.setText("Peter Brewer; Elena Velasquez; Michael Ababio; Hidayatullah Ahsan; Alex Beatty; Clayton Bodendein; Joshua Brogan; Code Calhoun; Brendan Compton; Aaron Decker; Zachariah Ferree; Scott Goble; Wendy Gross; Kyle Hartmann; Dylan Jones; Anthony Messerschmidt; Alex Richter; Chinmay Shah; Chris Wald; Seth Westphal; Matthew Willie.");
+		txtProgrammers.setText(
+				"Peter Brewer; Elena Velasquez; Michael Ababio; Hidayatullah Ahsan; Alex Beatty; Clayton Bodendein; Joshua Brogan; Code Calhoun; Brendan Compton; Aaron Decker; Zachariah Ferree; Scott Goble; Wendy Gross; Kyle Hartmann; Dylan Jones; Anthony Messerschmidt; Alex Richter; Chinmay Shah; Chris Wald; Seth Westphal; Matthew Willie.");
 		contentPanel.add(txtProgrammers, "cell 1 9 2 1,alignx left,growy");
 		
 		JTextPane txtpnThisProgramIs = new JTextPane();
@@ -171,7 +171,7 @@ public class AboutDialog extends JDialog implements ActionListener {
 	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
-	
+		
 		if (e.getActionCommand().equals("License"))
 		{
 			Platform.browseWebpage(RemoteHelp.LICENSE_INFO);

@@ -54,7 +54,7 @@ public class PercentScarredPlotElementBuilder {
 		
 		String strokeWidth = Double
 				.toString(FireChartUtil.pixelsToYears(1, parent.getChartWidth(), parent.getFirstChartYear(), parent.getLastChartYear()));
-				
+		
 		Element borderLine1 = parent.getSVGDocument().createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
 		borderLine1.setAttributeNS(null, "x1", "0");
 		borderLine1.setAttributeNS(null, "y1", "0");
@@ -96,7 +96,7 @@ public class PercentScarredPlotElementBuilder {
 		
 		String strokeWidth = Double
 				.toString(FireChartUtil.pixelsToYears(1, parent.getChartWidth(), parent.getFirstChartYear(), parent.getLastChartYear()));
-				
+		
 		Element borderLine3 = parent.getSVGDocument().createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
 		borderLine3.setAttributeNS(null, "x1", Integer.toString(parent.getLastChartYear() - parent.getFirstChartYear()));
 		borderLine3.setAttributeNS(null, "y1", "100");
@@ -181,9 +181,12 @@ public class PercentScarredPlotElementBuilder {
 	 */
 	public Element getVerticalLine(int xPosition, double y2Position) {
 		
+		// String strokeWidth = Double
+		// .toString(FireChartUtil.pixelsToYears(1, parent.getChartWidth(), parent.getFirstChartYear(), parent.getLastChartYear()));
 		String strokeWidth = Double
-				.toString(FireChartUtil.pixelsToYears(1, parent.getChartWidth(), parent.getFirstChartYear(), parent.getLastChartYear()));
-				
+				.toString(FireChartUtil.pixelsToYears(1, parent.getChartWidth(), parent.getFirstChartYear(), parent.getLastChartYear())
+						* App.prefs.getIntPref(PrefKey.CHART_INDEX_PERCENT_SCARRED_LINE_WIDTH, 1));
+		
 		Element verticalLine = parent.getSVGDocument().createElementNS(SVGDOMImplementation.SVG_NAMESPACE_URI, "line");
 		verticalLine.setAttributeNS(null, "x1", Integer.toString(xPosition));
 		verticalLine.setAttributeNS(null, "y1", "0");
@@ -191,6 +194,7 @@ public class PercentScarredPlotElementBuilder {
 		verticalLine.setAttributeNS(null, "y2", Double.toString(y2Position));
 		verticalLine.setAttributeNS(null, "stroke", "black");
 		verticalLine.setAttributeNS(null, "stroke-width", strokeWidth);
+		verticalLine.setAttributeNS(null, "stroke-linecap", "butt");
 		
 		return verticalLine;
 	}
