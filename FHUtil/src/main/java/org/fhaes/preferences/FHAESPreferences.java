@@ -317,6 +317,8 @@ public class FHAESPreferences {
 		
 		CHART_INDEX_PLOT_HEIGHT("chartIndexPlotHeight"),
 		
+		CHART_INDEX_PERCENT_SCARRED_LINE_WIDTH("chartIndexPercentScarredLineWidth"),
+		
 		CHART_SHOW_SAMPLE_DEPTH("chartShowSampleDepth"),
 		
 		CHART_SHOW_PERCENT_SCARRED("chartShowPercentScarred"),
@@ -492,7 +494,7 @@ public class FHAESPreferences {
 		 * @param inKeyValue
 		 */
 		private PrefKey(String inKeyValue) {
-		
+			
 			this.key = inKeyValue;
 		}
 		
@@ -502,7 +504,7 @@ public class FHAESPreferences {
 		 * @return key
 		 */
 		public String getValue() {
-		
+			
 			return key;
 		}
 	}
@@ -513,7 +515,7 @@ public class FHAESPreferences {
 	 * @param pref
 	 */
 	public void firePrefChanged(PrefKey pref) {
-	
+		
 		if (this.silentMode)
 			return;
 		
@@ -533,7 +535,7 @@ public class FHAESPreferences {
 	 * @param mode
 	 */
 	public void setSilentMode(Boolean mode) {
-	
+		
 		this.silentMode = mode;
 		
 	}
@@ -546,7 +548,7 @@ public class FHAESPreferences {
 	 * @return
 	 */
 	public boolean isSilentMode() {
-	
+		
 		return this.silentMode;
 	}
 	
@@ -556,7 +558,7 @@ public class FHAESPreferences {
 	 * @param l
 	 */
 	public void addPrefsListener(PrefsListener l) {
-	
+		
 		log.debug("PrefsListener added");
 		
 		listeners.add(l);
@@ -568,7 +570,7 @@ public class FHAESPreferences {
 	 * @param l
 	 */
 	public void removePrefsListener(PrefsListener l) {
-	
+		
 		listeners.remove(l);
 	}
 	
@@ -578,7 +580,7 @@ public class FHAESPreferences {
 	 * @param key
 	 */
 	public void clearPref(PrefKey key) {
-	
+		
 		prefs.remove(key.getValue());
 	}
 	
@@ -588,7 +590,7 @@ public class FHAESPreferences {
 	 * @param key
 	 */
 	public static void removePref(PrefKey key) {
-	
+		
 		prefs.remove(key.getValue());
 	}
 	
@@ -600,7 +602,7 @@ public class FHAESPreferences {
 	 * @param maxSize
 	 */
 	public void addStringtoPrefArray(PrefKey key, String str, Integer maxSize) {
-	
+		
 		str = str.replace(",", "|||");
 		
 		LinkedList<String> arr = getStringArrayPref(key);
@@ -635,7 +637,7 @@ public class FHAESPreferences {
 	 * @param str
 	 */
 	public void removeStringFromPrefArray(PrefKey key, String str) {
-	
+		
 		LinkedList<String> arr = getStringArrayPref(key);
 		
 		if (arr == null)
@@ -670,7 +672,7 @@ public class FHAESPreferences {
 	 * @return
 	 */
 	public String getPref(PrefKey key, String defaultValue) {
-	
+		
 		return prefs.get(key.getValue(), defaultValue);
 	}
 	
@@ -681,7 +683,7 @@ public class FHAESPreferences {
 	 * @param value
 	 */
 	public void setPref(PrefKey key, String value) {
-	
+		
 		prefs.put(key.getValue(), value);
 		firePrefChanged(key);
 	}
@@ -694,7 +696,7 @@ public class FHAESPreferences {
 	 * @return
 	 */
 	public Boolean getBooleanPref(PrefKey key, Boolean defaultValue) {
-	
+		
 		String value = "";
 		if (defaultValue == null)
 		{
@@ -717,7 +719,7 @@ public class FHAESPreferences {
 	 * @param value
 	 */
 	public void setBooleanPref(PrefKey key, boolean value) {
-	
+		
 		setPref(key, Boolean.toString(value));
 	}
 	
@@ -729,7 +731,7 @@ public class FHAESPreferences {
 	 * @return
 	 */
 	public int getIntPref(PrefKey key, int defaultValue) {
-	
+		
 		// log.debug("Getting integer pref for key: "+key);
 		String value = prefs.get(key.getValue(), Integer.toString(defaultValue));
 		// log.debug("Value is = "+value);
@@ -753,7 +755,7 @@ public class FHAESPreferences {
 	 * @param value
 	 */
 	public void setIntPref(PrefKey pref, int value) {
-	
+		
 		// log.debug("Setting integer pref value for key "+pref+" to value: "+value);
 		setPref(pref, Integer.toString(value));
 	}
@@ -766,7 +768,7 @@ public class FHAESPreferences {
 	 * @return
 	 */
 	public Double getDoublePref(PrefKey key, Double defaultValue) {
-	
+		
 		String value = prefs.get(key.getValue(), Double.toString(defaultValue));
 		if (value == null)
 			return defaultValue;
@@ -788,7 +790,7 @@ public class FHAESPreferences {
 	 * @param value
 	 */
 	public void setDoublePref(PrefKey pref, Double value) {
-	
+		
 		setPref(pref, Double.toString(value));
 	}
 	
@@ -800,7 +802,7 @@ public class FHAESPreferences {
 	 * @return
 	 */
 	public ArrayList<String> getArrayListPref(PrefKey key, ArrayList<String> defaultValue) {
-	
+		
 		String value = prefs.get(key.getValue(), null);
 		if (value == null)
 		{
@@ -831,7 +833,7 @@ public class FHAESPreferences {
 	 * @param values
 	 */
 	public void setArrayListPref(PrefKey key, ArrayList<String> values) {
-	
+		
 		String pref = key.getValue();
 		String arrAsStr = "";
 		
@@ -859,7 +861,7 @@ public class FHAESPreferences {
 	 * @return
 	 */
 	public ArrayList<Integer> getIntegerArrayPref(PrefKey key, ArrayList<Integer> defaultValue) {
-	
+		
 		String value = prefs.get(key.getValue(), null);
 		if (value == null)
 		{
@@ -902,7 +904,7 @@ public class FHAESPreferences {
 	 * @param values
 	 */
 	public void setIntegerArrayPref(PrefKey key, ArrayList<Integer> values) {
-	
+		
 		String pref = key.getValue();
 		String arrAsStr = "";
 		
@@ -929,7 +931,7 @@ public class FHAESPreferences {
 	 * @return
 	 */
 	public LinkedList<String> getStringArrayPref(PrefKey key) {
-	
+		
 		String raw = prefs.get(key.getValue(), null);
 		// log.debug("Raw string array as string is : "+raw);
 		
@@ -967,7 +969,7 @@ public class FHAESPreferences {
 	 * @param arr
 	 */
 	public void setStringArrayPref(PrefKey key, List<String> arr) {
-	
+		
 		if (arr == null)
 		{
 			prefs.put(key.getValue(), "");
@@ -989,7 +991,7 @@ public class FHAESPreferences {
 	 * @return
 	 */
 	public AnalysisType getAnalysisTypePref(PrefKey key, AnalysisType defaultValue) {
-	
+		
 		String value = "";
 		if (defaultValue == null)
 		{
@@ -1014,7 +1016,7 @@ public class FHAESPreferences {
 	 * @param value
 	 */
 	public void setAnalysisTypePref(PrefKey key, AnalysisType value) {
-	
+		
 		setPref(key, value.toString());
 	}
 	
@@ -1026,7 +1028,7 @@ public class FHAESPreferences {
 	 * @return
 	 */
 	public AnalysisLabelType getAnalysisLabelTypePref(PrefKey key, AnalysisLabelType defaultValue) {
-	
+		
 		String value = "";
 		if (defaultValue == null)
 		{
@@ -1049,7 +1051,7 @@ public class FHAESPreferences {
 	 * @param value
 	 */
 	public void setAnalysisLabelTypePref(PrefKey key, AnalysisLabelType value) {
-	
+		
 		if (value == null)
 		{
 			setPref(key, null);
@@ -1068,7 +1070,7 @@ public class FHAESPreferences {
 	 * @return
 	 */
 	public Color getColorPref(PrefKey key, Color defaultValue) {
-	
+		
 		String value = prefs.get(key.getValue(), null);
 		if (value == null)
 			return defaultValue;
@@ -1090,13 +1092,13 @@ public class FHAESPreferences {
 	 * @param value
 	 */
 	public void setColorPref(PrefKey pref, Color value) {
-	
+		
 		String encoded = "#" + Integer.toHexString(value.getRGB() & 0x00ffffff);
 		setPref(pref, encoded);
 	}
 	
 	public void setCharsetPref(PrefKey pref, Charset charset) {
-	
+		
 		setPref(pref, charset.toString());
 	}
 	
@@ -1108,7 +1110,7 @@ public class FHAESPreferences {
 	 * @return
 	 */
 	public EventTypeToProcess getEventTypePref(PrefKey key, EventTypeToProcess defaultValue) {
-	
+		
 		String value = "";
 		if (defaultValue == null)
 		{
@@ -1132,7 +1134,7 @@ public class FHAESPreferences {
 	 * @param value
 	 */
 	public void setEventTypePref(PrefKey key, EventTypeToProcess value) {
-	
+		
 		setPref(key, value.toString());
 	}
 	
@@ -1144,7 +1146,7 @@ public class FHAESPreferences {
 	 * @return
 	 */
 	public FireFilterType getFireFilterTypePref(PrefKey key, FireFilterType defaultValue) {
-	
+		
 		String value = "";
 		if (defaultValue == null)
 		{
@@ -1168,7 +1170,7 @@ public class FHAESPreferences {
 	 * @param value
 	 */
 	public void setFireFilterTypePref(PrefKey key, FireFilterType value) {
-	
+		
 		setPref(key, value.toString());
 	}
 	
@@ -1180,7 +1182,7 @@ public class FHAESPreferences {
 	 * @return
 	 */
 	public OperatorEnum getOperatorPref(PrefKey key, OperatorEnum defaultValue) {
-	
+		
 		String value = "";
 		if (defaultValue == null)
 		{
@@ -1204,12 +1206,12 @@ public class FHAESPreferences {
 	 * @param value
 	 */
 	public void setOperatorPref(PrefKey key, OperatorEnum value) {
-	
+		
 		setPref(key, value.toString());
 	}
 	
 	public Charset getCharsetPref(PrefKey key, Charset defaultValue) {
-	
+		
 		String value = "";
 		if (defaultValue == null)
 		{
@@ -1241,7 +1243,7 @@ public class FHAESPreferences {
 	 * @return
 	 */
 	public SampleDepthFilterType getSampleDepthFilterTypePref(PrefKey key, SampleDepthFilterType defaultValue) {
-	
+		
 		String value = "";
 		if (defaultValue == null)
 		{
@@ -1265,7 +1267,7 @@ public class FHAESPreferences {
 	 * @param value
 	 */
 	public void setSampleDepthFilterTypePref(PrefKey key, SampleDepthFilterType value) {
-	
+		
 		setPref(key, value.toString());
 	}
 	
@@ -1277,7 +1279,7 @@ public class FHAESPreferences {
 	 * @return
 	 */
 	public JustificationType getJustificationTypePref(PrefKey key, JustificationType defaultValue) {
-	
+		
 		String value = "";
 		if (defaultValue == null)
 		{
@@ -1300,7 +1302,7 @@ public class FHAESPreferences {
 	 * @param value
 	 */
 	public void setJustificationTypePref(PrefKey key, JustificationType value) {
-	
+		
 		if (value == null)
 		{
 			setPref(key, null);
@@ -1319,7 +1321,7 @@ public class FHAESPreferences {
 	 * @return
 	 */
 	public LabelOrientation getLabelOrientationPref(PrefKey key, LabelOrientation defaultValue) {
-	
+		
 		String value = "";
 		if (defaultValue == null)
 		{
@@ -1342,7 +1344,7 @@ public class FHAESPreferences {
 	 * @param value
 	 */
 	public void setLabelOrientationPref(PrefKey key, LabelOrientation value) {
-	
+		
 		if (value == null)
 		{
 			setPref(key, null);
@@ -1361,7 +1363,7 @@ public class FHAESPreferences {
 	 * @return
 	 */
 	public LineStyle getLineStylePref(PrefKey key, LineStyle defaultValue) {
-	
+		
 		String value = "";
 		if (defaultValue == null)
 		{
@@ -1385,7 +1387,7 @@ public class FHAESPreferences {
 	 * @param value
 	 */
 	public void setLineStylePref(PrefKey key, LineStyle value) {
-	
+		
 		setPref(key, value.toString());
 	}
 	
@@ -1397,7 +1399,7 @@ public class FHAESPreferences {
 	 * @return
 	 */
 	public NoDataLabel getNoDataLabelPref(PrefKey key, NoDataLabel defaultValue) {
-	
+		
 		String value = "";
 		if (defaultValue == null)
 		{
@@ -1421,7 +1423,7 @@ public class FHAESPreferences {
 	 * @param value
 	 */
 	public void setNoDataLabelPref(PrefKey key, NoDataLabel value) {
-	
+		
 		setPref(key, value.toString());
 	}
 	
@@ -1433,7 +1435,7 @@ public class FHAESPreferences {
 	 * @return
 	 */
 	public ResamplingType getResamplingTypePref(PrefKey key, ResamplingType defaultValue) {
-	
+		
 		String value = "";
 		if (defaultValue == null)
 		{
@@ -1456,7 +1458,7 @@ public class FHAESPreferences {
 	 * @param value
 	 */
 	public void setResamplingTypePref(PrefKey key, ResamplingType value) {
-	
+		
 		setPref(key, value.toString());
 	}
 }
