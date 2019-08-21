@@ -1,0 +1,3 @@
+eclipse.preferences.version=1
+jds.translations.folder=src/main/resources/locale
+jds.translations.prefix=locale_

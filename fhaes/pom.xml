@@ -219,17 +219,13 @@
 
 		<!-- Create launch scripts for Linux builds with correct version number -->
 		<resources>
-			<resource>
-				<directory>src/main/resources</directory>
-				<filtering>true</filtering>
-				<excludes>
-					<exclude>**/*.xml</exclude>
-					<exclude>**/*.wav</exclude>
-					<exclude>**/*.ttf</exclude>
-				</excludes>
-			</resource>
+			
 			<resource>
 				<directory>Native/BuildResources/</directory>
+				<filtering>true</filtering>
+			</resource>
+			<resource>
+				<directory>Native/</directory>
 				<filtering>true</filtering>
 			</resource>
 			<resource>
@@ -239,6 +235,10 @@
 					<include>**/log4j.xml</include>
 					<include>**/*.wav</include>
 					<include>**/*.ttf</include>
+					<include>**/*.ico</include>
+					<include>**/*.png</include>
+					<include>**/*.icns</include>
+					<include>**/*.txt</include>
 				</includes>
 			</resource>
 		</resources>
@@ -347,22 +347,24 @@
 								<mkdir
 									dir="${project.build.directory}/binaries/${project.version}/java" />
 								<exec dir="${project.build.directory}" executable="jarsigner">
-									<arg value="-storetype" />
-									<arg value="pkcs12" />
-									<arg value="-keystore" />
-									<arg value="${cert.file}" />
-									<arg value="-tsa" />
-									<arg value="http://timestamp.comodoca.com/rfc3161" />
-									<arg value="-storepass" />
-									<arg value="${cert.password}" />
-									<arg value="-keypass" />
-									<arg value="${cert.password}" />
-									<arg value="-digestalg" />
-									<arg value="SHA-256" />
-									<arg
-										value="${project.build.directory}/${project.build.finalName}.jar" />
-									<arg value="the university of arizona's internet2 id" />
-								</exec>
+													<arg value="-storetype" />
+													<arg value="pkcs12" />
+													<arg value="-tsa" />
+													<arg value="http://tsa.starfieldtech.com" />
+													<arg value="-keystore" />
+													<!-- <arg value="/home/pbrewer/.ssh/pwb_code_signing_2014.p12" 
+														/> -->
+													<arg value="${pkcs12.filename}" />
+													<arg value="-storepass" />
+													<!-- <arg value="/home/pbrewer/.ssh/key" /> -->
+													<arg value="${cert.password}" />
+													<arg value="-keypass" />
+													<!-- <arg value="/home/pbrewer/.ssh/key" /> -->
+													<arg value="${cert.password}" />
+													<arg
+														value="${project.build.directory}/${project.build.finalName}.jar" />
+													<arg value="the university of arizona's internet2 id" />
+												</exec>
 								<copy
 									file="${project.build.directory}/${project.build.finalName}.jar"
 									tofile="${project.build.directory}/binaries/${project.version}/java/${project.build.finalName}.jar"
@@ -382,9 +384,12 @@
 								<taskdef resource="net/sf/antcontrib/antcontrib.properties"
 									classpathref="maven.plugin.classpath" />
 								<exec dir="${project.build.directory}" executable="install4jc">
-									<arg value="--win-keystore-password" />
-									<arg value="${cert.password}" />
-									<arg value="../Native/fhaes.install4j" />
+											<arg value="--win-keystore-password" />
+											<arg value="${cert.password}" />
+											<arg value="--mac-keystore-password" />
+											<arg value="${cert.password}" />
+											<arg value="${project.build.directory}/classes/fhaes.install4j" />
+									
 								</exec>
 							</tasks>
 						</configuration>
