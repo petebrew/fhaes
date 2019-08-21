@@ -67,8 +67,6 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileFilter;
 
-import net.miginfocom.swing.MigLayout;
-
 import org.fhaes.components.FHAESCheckBoxMenuItem;
 import org.fhaes.components.FHAESMenuItem;
 import org.fhaes.components.JToolBarButton;
@@ -119,11 +117,12 @@ import org.fhaes.util.Platform;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import uk.org.lidalia.sysoutslf4j.context.SysOutOverSLF4J;
-
 import com.explodingpixels.macwidgets.MacButtonFactory;
 import com.explodingpixels.macwidgets.MacUtils;
 import com.explodingpixels.macwidgets.UnifiedToolBar;
+
+import net.miginfocom.swing.MigLayout;
+import uk.org.lidalia.sysoutslf4j.context.SysOutOverSLF4J;
 
 /**
  * MainWindow Class. This is the main window for FHAES. It contains the menus and toolbars that interact with all the other FHAES modules.
@@ -137,7 +136,8 @@ public class MainWindow implements PrefsListener {
 	private static MainWindow instanceOfMainWindow = null;
 	
 	// Declare bundle and logger
-	//public static final ResourceBundle BUNDLE = ResourceBundle.getBundle("locale/locale"); // ResourceBundle.getBundle("org.fhaes.gui.locale"); //$NON-NLS-1$
+	// public static final ResourceBundle BUNDLE = ResourceBundle.getBundle("locale/locale"); //
+	// ResourceBundle.getBundle("org.fhaes.gui.locale"); //$NON-NLS-1$
 	private static final Logger log = LoggerFactory.getLogger(MainWindow.class);
 	
 	// Declare public constants
@@ -206,7 +206,7 @@ public class MainWindow implements PrefsListener {
 	 * Launch the application.
 	 */
 	public static void main(final String[] args) {
-	
+		
 		try
 		{
 			if (args.length > 0)
@@ -235,7 +235,7 @@ public class MainWindow implements PrefsListener {
 	 * Hide the default constructor from other classes.
 	 */
 	private MainWindow() {
-	
+		
 		// Do nothing - this is handled in GetInstance()
 	}
 	
@@ -243,7 +243,7 @@ public class MainWindow implements PrefsListener {
 	 * Singleton instance access method - call this when you want to use the MainWindow.
 	 */
 	public static MainWindow getInstance() {
-	
+		
 		if (instanceOfMainWindow == null)
 			instanceOfMainWindow = new MainWindow();
 		
@@ -256,7 +256,7 @@ public class MainWindow implements PrefsListener {
 	 * @return frame
 	 */
 	protected JFrame getFrame() {
-	
+		
 		return frame;
 	}
 	
@@ -266,7 +266,7 @@ public class MainWindow implements PrefsListener {
 	 * @return reportPanel
 	 */
 	protected ReportPanel getReportPanel() {
-	
+		
 		return reportPanel;
 	}
 	
@@ -276,7 +276,7 @@ public class MainWindow implements PrefsListener {
 	 * @wbp.parser.entryPoint
 	 */
 	private void doStartup() {
-	
+		
 		// Redirect System.out calls to logger
 		SysOutOverSLF4J.sendSystemOutAndErrToSLF4J();
 		
@@ -288,7 +288,13 @@ public class MainWindow implements PrefsListener {
 		frame.getRootPane().setFocusable(false);
 		
 		App.init(frame);
-		ChartPropertiesDialog.setChartPreferencesToDefaults();
+		
+		// Only reset the chart preferences if user allows
+		if (!App.prefs.getBooleanPref(PrefKey.CHART_REMEMBER_CHART_PREFS_AFTER_RESTART, false))
+		{
+			ChartPropertiesDialog.setChartPreferencesToDefaults();
+		}
+		
 		initGUI();
 		
 		UpdateChecker uc = new UpdateChecker();
@@ -299,7 +305,7 @@ public class MainWindow implements PrefsListener {
 	 * Initializes the MainWindow and shows the quick launch dialog.
 	 */
 	private void doStartUpWithQuickLaunchDialog() {
-	
+		
 		doStartup();
 		new QuickLaunchDialog(true);
 	}
@@ -308,7 +314,7 @@ public class MainWindow implements PrefsListener {
 	 * Remove all files from the list.
 	 */
 	private void clearAllFiles() {
-	
+		
 		if (fileListModel == null || fileListModel.getSize() == 0)
 			return;
 		
@@ -333,7 +339,7 @@ public class MainWindow implements PrefsListener {
 	 * @param warn
 	 */
 	private void clearSelectedFiles(boolean warn) {
-	
+		
 		if (fileListModel == null || fileListModel.getSize() == 0 || fhxFileList.getSelectedValuesList().size() == 0)
 			return;
 		
@@ -382,7 +388,7 @@ public class MainWindow implements PrefsListener {
 	 * Save reports for all files to disk.
 	 */
 	private void saveAllOutputFiles() {
-	
+		
 		File outputFolder = IOUtil.getOutputFolder(frame);
 		
 		if (outputFolder == null)
@@ -416,7 +422,7 @@ public class MainWindow implements PrefsListener {
 	 * Save report for currently selected file to disk.
 	 */
 	private void saveFileSummary() {
-	
+		
 		saveFileSummary(null, null);
 	}
 	
@@ -427,7 +433,7 @@ public class MainWindow implements PrefsListener {
 	 * @param outputFolder
 	 */
 	private void saveFileSummary(File fileToSave, File outputFolder) {
-	
+		
 		if (fileToSave == null)
 		{
 			fileToSave = (FHFile) fhxFileList.getSelectedValue();
@@ -441,7 +447,8 @@ public class MainWindow implements PrefsListener {
 		log.debug("Saving to " + outputFolder);
 		
 		// TODO replace access to reports from GUI to File itself
-		if (writeTextAreaToDisk(outputFolder + File.separator + fileToSave.getName() + "-summary.txt", reportPanel.txtSummary, false) == JOptionPane.CANCEL_OPTION)
+		if (writeTextAreaToDisk(outputFolder + File.separator + fileToSave.getName() + "-summary.txt", reportPanel.txtSummary,
+				false) == JOptionPane.CANCEL_OPTION)
 			return;
 		// if(writeTextAreaToDisk(outputFolder+File.separator+fileToSave.getName()+"-seasonality.txt",
 		// rightSplitPanel.txtSeasonality)==JOptionPane.CANCEL_OPTION) return;
@@ -456,7 +463,7 @@ public class MainWindow implements PrefsListener {
 	 * @param confirmedOverwriteOK
 	 */
 	private void saveAllFileSummaries(File outputFolder, Boolean confirmedOverwriteOK) {
-	
+		
 		if (outputFolder == null)
 			outputFolder = IOUtil.getOutputFolder(frame);
 		
@@ -494,7 +501,7 @@ public class MainWindow implements PrefsListener {
 	 * Save the summary of the current file to disk.
 	 */
 	private void saveCurrentFileSummary() {
-	
+		
 		File outputFile = IOUtil.getOutputFile(new TXTFileFilter());
 		
 		if (writeTextAreaToDisk(outputFile.getAbsolutePath(), reportPanel.txtSummary, false) == JOptionPane.CANCEL_OPTION)
@@ -510,7 +517,7 @@ public class MainWindow implements PrefsListener {
 	 * @return
 	 */
 	private int writeTextAreaToDisk(String filename, JTextArea ta, Boolean confirmedOverwriteOK) {
-	
+		
 		if (filename == null || ta == null)
 			return JOptionPane.CANCEL_OPTION;
 		
@@ -518,9 +525,9 @@ public class MainWindow implements PrefsListener {
 		if (file.exists() && confirmedOverwriteOK.equals(false))
 		{
 			Object[] options = { "Overwrite", "No", "Cancel" };
-			int response = JOptionPane.showOptionDialog(frame, "The file: " + filename
-					+ " already exists.\nWould you like to overwrite it?", "Confirm", JOptionPane.YES_NO_CANCEL_OPTION,
-					JOptionPane.QUESTION_MESSAGE, null, // do not use a custom Icon
+			int response = JOptionPane.showOptionDialog(frame,
+					"The file: " + filename + " already exists.\nWould you like to overwrite it?", "Confirm",
+					JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, // do not use a custom Icon
 					options, // the titles of buttons
 					options[0]); // default button title
 			
@@ -551,7 +558,7 @@ public class MainWindow implements PrefsListener {
 	 * @param format
 	 */
 	public void bulkExportCharts(String format) {
-	
+		
 		if (fileListModel.getSize() > 0)
 		{
 			String lastVisitedFolder = App.prefs.getPref(PrefKey.CHART_LAST_EXPORT_FOLDER, null);
@@ -627,11 +634,8 @@ public class MainWindow implements PrefsListener {
 						reportPanel.panelChart.doBulkExport(fc.getFileFilter(), pdff, pngf, svgf, outputFile);
 					}
 					
-					MainWindow
-							.getInstance()
-							.getFeedbackMessagePanel()
-							.updateFeedbackMessage(FeedbackMessageType.INFO, FeedbackDisplayProtocol.AUTO_HIDE,
-									FeedbackDictionary.NEOFHCHART_BULK_EXPORT_MESSAGE.toString());
+					MainWindow.getInstance().getFeedbackMessagePanel().updateFeedbackMessage(FeedbackMessageType.INFO,
+							FeedbackDisplayProtocol.AUTO_HIDE, FeedbackDictionary.NEOFHCHART_BULK_EXPORT_MESSAGE.toString());
 				}
 				catch (Exception ex)
 				{
@@ -647,7 +651,7 @@ public class MainWindow implements PrefsListener {
 	 * @param file
 	 */
 	private void loadFile(File file) {
-	
+		
 		File[] arr = new File[1];
 		arr[0] = file;
 		loadFiles(arr);
@@ -659,7 +663,7 @@ public class MainWindow implements PrefsListener {
 	 * @param files
 	 */
 	public void loadFiles(File[] files) {
-	
+		
 		try
 		{
 			frame.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
@@ -720,7 +724,7 @@ public class MainWindow implements PrefsListener {
 	 * @param file
 	 */
 	private void loadFileByName(String file) {
-	
+		
 		File fhf = null;
 		
 		try
@@ -738,7 +742,7 @@ public class MainWindow implements PrefsListener {
 	 * Open dialog for user to choose FHX files to work on.
 	 */
 	protected void openFiles() {
-	
+		
 		String lastVisitedFolder = App.prefs.getPref(PrefKey.PREF_LAST_READ_FOLDER, null);
 		JFileChooser fc;
 		
@@ -775,7 +779,7 @@ public class MainWindow implements PrefsListener {
 	 * Opens a category file to attach attributes to the selected FHX file.
 	 */
 	private void openCategoryFile(File categoryFile) {
-	
+		
 		if (!categoryFile.exists())
 		{
 			log.debug("The specified category file does not exist");
@@ -811,7 +815,7 @@ public class MainWindow implements PrefsListener {
 	 * @param f
 	 */
 	protected void openFileRecorder(File f) {
-	
+		
 		frame.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 		
 		FireHistoryRecorder primaryWindow = new FireHistoryRecorder();
@@ -839,10 +843,11 @@ public class MainWindow implements PrefsListener {
 			frame.setCursor(Cursor.getDefaultCursor());
 			
 			Object[] options = { "Yes", "No", "Cancel" };
-			int n = JOptionPane.showOptionDialog(frame, "This file appears to be a composite file.  The FHAES editor is only designed to\n"
-					+ "edit standard raw data files not composite files.  Erroneous composite files\n"
-					+ "should be rebuilt from the corrected raw data files. If you continue, the meaning\n"
-					+ "of your file may be unintentionally altered.\n\n" + "Would you like to edit the file anyway?",
+			int n = JOptionPane.showOptionDialog(frame,
+					"This file appears to be a composite file.  The FHAES editor is only designed to\n"
+							+ "edit standard raw data files not composite files.  Erroneous composite files\n"
+							+ "should be rebuilt from the corrected raw data files. If you continue, the meaning\n"
+							+ "of your file may be unintentionally altered.\n\n" + "Would you like to edit the file anyway?",
 					"Composite File Detected", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[2]);
 			if (n == JOptionPane.YES_OPTION)
 			{
@@ -942,7 +947,7 @@ public class MainWindow implements PrefsListener {
 	 * Opens FHRecorder to allow editing of the currently selected file, if one has been selected.
 	 */
 	private void editSelectedFile() {
-	
+		
 		try
 		{
 			FHFile file = (FHFile) this.fhxFileList.getSelectedValue();
@@ -964,8 +969,8 @@ public class MainWindow implements PrefsListener {
 	 * @return
 	 */
 	private FHFile[] getSelectedValidFiles() {
-	
-		ArrayList<FHFile> tempList = new ArrayList<FHFile>();
+		
+		ArrayList<FHFile> tempList = new ArrayList<>();
 		
 		for (Object f : fhxFileList.getSelectedValuesList())
 		{
@@ -985,8 +990,8 @@ public class MainWindow implements PrefsListener {
 	 * @return
 	 */
 	private FHFile[] getSelectedValidFilesWithEvents() {
-	
-		ArrayList<FHFile> tempList = new ArrayList<FHFile>();
+		
+		ArrayList<FHFile> tempList = new ArrayList<>();
 		
 		for (Object f : fhxFileList.getSelectedValuesList())
 		{
@@ -1004,7 +1009,7 @@ public class MainWindow implements PrefsListener {
 	 * TODO
 	 */
 	private void drawMap() {
-	
+		
 		URI uri;
 		try
 		{
@@ -1073,7 +1078,7 @@ public class MainWindow implements PrefsListener {
 	 */
 	@SuppressWarnings("unused")
 	private void plotChart() {
-	
+		
 		if (fhxFileList.getSelectedValue() == null)
 			return;
 		
@@ -1090,7 +1095,7 @@ public class MainWindow implements PrefsListener {
 	 */
 	@Override
 	public void prefChanged(PrefsEvent e) {
-	
+		
 		log.debug("Preference change for key " + e.getPref() + " picked up by MainWindow");
 		boolean doSetFileOperation = true;
 		
@@ -1129,7 +1134,7 @@ public class MainWindow implements PrefsListener {
 	 * @param b
 	 */
 	public void setBusyCursor(boolean b) {
-	
+		
 		if (b)
 		{
 			frame.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
@@ -1146,7 +1151,7 @@ public class MainWindow implements PrefsListener {
 	 * @return boolean value indicating whether or not the list contains at least one element
 	 */
 	protected boolean isFileListPopulated() {
-	
+		
 		if (fileListModel == null || fileListModel.getSize() == 0)
 		{
 			return false;
@@ -1159,7 +1164,7 @@ public class MainWindow implements PrefsListener {
 	 * Repaints the file list.
 	 */
 	protected void repaintFileList() {
-	
+		
 		log.debug("Repainting file list");
 		
 		this.fhxFileList.repaint(this.fhxFileList.getCellBounds(0, this.fileListModel.getSize() - 1));
@@ -1169,7 +1174,7 @@ public class MainWindow implements PrefsListener {
 	 * Run when file list is changed.
 	 */
 	private void handleFileListChanged() {
-	
+		
 		if (fileListListenerPaused)
 		{
 			return;
@@ -1230,7 +1235,7 @@ public class MainWindow implements PrefsListener {
 	 * Handles when an FHX file is selected on the MainWindow.
 	 */
 	private void handleFileSelectionChanged() {
-	
+		
 		try
 		{
 			boolean isFileSelected = (fhxFileList.getSelectedValue() != null);
@@ -1285,12 +1290,12 @@ public class MainWindow implements PrefsListener {
 	 * @param popup
 	 */
 	private void addPopup(final Component component, final JPopupMenu popup) {
-	
+		
 		component.addMouseListener(new MouseAdapter() {
 			
 			@Override
 			public void mousePressed(MouseEvent e) {
-			
+				
 				if (e.getClickCount() > 1)
 				{
 					editSelectedFile();
@@ -1307,7 +1312,7 @@ public class MainWindow implements PrefsListener {
 			
 			@Override
 			public void mouseReleased(MouseEvent e) {
-			
+				
 				if (e.isPopupTrigger())
 				{
 					showMenu(e);
@@ -1315,7 +1320,7 @@ public class MainWindow implements PrefsListener {
 			}
 			
 			private void showMenu(MouseEvent e) {
-			
+				
 				popup.show(e.getComponent(), e.getX(), e.getY());
 			}
 		});
@@ -1325,7 +1330,7 @@ public class MainWindow implements PrefsListener {
 	 * TODO
 	 */
 	private void updateRecentDocsMenu() {
-	
+		
 		mnOpenRecent.removeAll();
 		int i = 1;
 		
@@ -1352,7 +1357,7 @@ public class MainWindow implements PrefsListener {
 					
 					@Override
 					public void actionPerformed(ActionEvent evt) {
-					
+						
 						if (file.exists())
 						{
 							loadFileByName(file.getAbsolutePath());
@@ -1380,7 +1385,7 @@ public class MainWindow implements PrefsListener {
 				
 				@Override
 				public void actionPerformed(ActionEvent arg0) {
-				
+					
 					App.prefs.setStringArrayPref(PrefKey.RECENT_DOCUMENT_LIST, null);
 				}
 				
@@ -1398,7 +1403,7 @@ public class MainWindow implements PrefsListener {
 	 * Gets the feedbackMessagePanel instance.
 	 */
 	public FeedbackMessagePanel getFeedbackMessagePanel() {
-	
+		
 		return feedbackMessagePanel;
 	}
 	
@@ -1406,7 +1411,7 @@ public class MainWindow implements PrefsListener {
 	 * Initialize the main frame.
 	 */
 	private void initGUI() {
-	
+		
 		logviewer = new Log4JViewer();
 		log.debug("Initializing FHAES application");
 		
@@ -1420,7 +1425,7 @@ public class MainWindow implements PrefsListener {
 			
 			@Override
 			public void windowClosing(WindowEvent e) {
-			
+				
 				// Save frame size and position on close
 				Rectangle bounds = frame.getBounds();
 				App.prefs.setIntPref(PrefKey.SCREEN_BOUNDS_X, ((Double) bounds.getX()).intValue());
@@ -1476,7 +1481,7 @@ public class MainWindow implements PrefsListener {
 			
 			@Override
 			public void valueChanged(ListSelectionEvent evt) {
-			
+				
 				handleFileSelectionChanged();
 			}
 		});
@@ -1485,19 +1490,19 @@ public class MainWindow implements PrefsListener {
 			
 			@Override
 			public void contentsChanged(ListDataEvent evt) {
-			
+				
 				handleFileListChanged();
 			}
 			
 			@Override
 			public void intervalAdded(ListDataEvent evt) {
-			
+				
 				handleFileListChanged();
 			}
 			
 			@Override
 			public void intervalRemoved(ListDataEvent evt) {
-			
+				
 				handleFileListChanged();
 				reportPanel.setFile(null);
 				
@@ -1529,12 +1534,12 @@ public class MainWindow implements PrefsListener {
 			
 			@Override
 			public void keyPressed(KeyEvent arg0) {
-			
+				
 			} // Ignored
 			
 			@Override
 			public void keyReleased(KeyEvent evt) {
-			
+				
 				if (evt.getKeyCode() == KeyEvent.VK_DELETE || evt.getKeyCode() == KeyEvent.VK_BACK_SPACE)
 				{
 					clearSelectedFiles(false);
@@ -1543,7 +1548,7 @@ public class MainWindow implements PrefsListener {
 			
 			@Override
 			public void keyTyped(KeyEvent evt) {
-			
+				
 			} // Ignored
 			
 		});
@@ -1591,7 +1596,7 @@ public class MainWindow implements PrefsListener {
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-			
+				
 				if (fileSortComboBox.getSelectedIndex() == 0)
 				{
 					fileListModel.sortAscending(new FHFileNameComparator());
@@ -1682,7 +1687,7 @@ public class MainWindow implements PrefsListener {
 	 * Initialize the menu and toolbar actions.
 	 */
 	private void initActions() {
-	
+		
 		chartActions = new ChartActions(null);
 		
 		this.actionEditCategories = new FHAESAction("Edit categories", "category.png", "Categories") {
@@ -1691,7 +1696,7 @@ public class MainWindow implements PrefsListener {
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-			
+				
 				FHFile selectedFile = (FHFile) fhxFileList.getSelectedValue();
 				
 				if (selectedFile.isValidFHXFile())
@@ -1734,12 +1739,12 @@ public class MainWindow implements PrefsListener {
 		 */
 		
 		this.actionFHSampleSize = new FHAESAction("Sample size analysis", "samplesize.png", "SSIZ") { //$NON-NLS-1$
-		
+			
 			private static final long serialVersionUID = 1L;
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-			
+				
 				FHSampleSize ssiz = new FHSampleSize(frame);
 				ssiz.openFile((File) fhxFileList.getSelectedValue());
 			}
@@ -1747,57 +1752,57 @@ public class MainWindow implements PrefsListener {
 		// actionFHSampleSize.setEnabled(false);
 		
 		this.actionEditFile = new FHAESAction("Edit file", "edit.png") { //$NON-NLS-1$
-		
+			
 			private static final long serialVersionUID = 1L;
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-			
+				
 				editSelectedFile();
 			}
 		};
 		actionEditFile.setEnabled(false);
 		
 		this.actionFileOpen = new FHAESAction("Open...", "fileopen.png", "Open") { //$NON-NLS-1$
-		
+			
 			private static final long serialVersionUID = 1L;
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-			
+				
 				openFiles();
 			}
 		};
 		
 		this.actionFileNew = new FHAESAction("New...", "file.png", "New") { //$NON-NLS-1$
-		
+			
 			private static final long serialVersionUID = 1L;
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-			
+				
 				openFileRecorder(null);
 			}
 		};
 		
 		actionFileExit = new FHAESAction(I18n.getText("MainWindow.mntmExit.text"), "close.png") { //$NON-NLS-1$
-		
+			
 			private static final long serialVersionUID = 1L;
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-			
+				
 				frame.dispose();
 			}
 		};
 		
 		actionSetCharsetPrefs = new FHAESAction(I18n.getText("MainWindow.mntmCharset.text"), "accessories_character_map22.png") { //$NON-NLS-1$
-		
+			
 			private static final long serialVersionUID = 1L;
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-			
+				
 				CharacterEncodingChooserDialog dialog = new CharacterEncodingChooserDialog();
 				dialog.setVisible(true);
 				
@@ -1826,70 +1831,70 @@ public class MainWindow implements PrefsListener {
 		};
 		
 		actionAbout = new FHAESAction(I18n.getText("MainWindow.mntmAboutFhaes.text"), "info.png") { //$NON-NLS-1$
-		
+			
 			private static final long serialVersionUID = 1L;
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-			
+				
 				AboutDialog about = new AboutDialog(frame);
 				about.setVisible(true);
 			}
 		};
 		
 		actionHelp = new FHAESAction(I18n.getText("MainWindow.mnHelp.text"), "help.png") { //$NON-NLS-1$
-		
+			
 			private static final long serialVersionUID = 1L;
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-			
+				
 				Platform.browseWebpage(RemoteHelp.FHAES_HELP_HOME, frame); // $NON-NLS-1$
 			}
 		};
 		
 		this.actionClearList = new FHAESAction(I18n.getText("MainWindow.mntmClearFileList.text"), "edit_clear.png", "Clear files") { //$NON-NLS-1$
-		
+			
 			private static final long serialVersionUID = 1L;
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-			
+				
 				clearAllFiles();
 			}
 		};
 		
 		this.actionClearCurrent = new FHAESAction(I18n.getText("MainWindow.mntmClear.text"), "delete.png") { //$NON-NLS-1$
-		
+			
 			private static final long serialVersionUID = 1L;
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-			
+				
 				clearSelectedFiles(true);
 			}
 		};
 		actionClearCurrent.setEnabled(false);
 		
 		this.actionDrawMap = new FHAESAction(I18n.getText("MainWindow.mntmDrawMap.text"), "map.png") { //$NON-NLS-1$
-		
+			
 			private static final long serialVersionUID = 1L;
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-			
+				
 				drawMap();
 			}
 		};
 		actionDrawMap.setEnabled(false);
 		
 		this.actionSave = new FHAESAction(I18n.getText("MainWindow.mntmSave.text"), "save.png") { //$NON-NLS-1$
-		
+			
 			private static final long serialVersionUID = 1L;
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-			
+				
 				saveFileSummary();
 			}
 		};
@@ -1901,7 +1906,7 @@ public class MainWindow implements PrefsListener {
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-			
+				
 				saveCurrentFileSummary();
 			}
 		};
@@ -1913,19 +1918,19 @@ public class MainWindow implements PrefsListener {
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-			
+				
 				saveAllFileSummaries(null, false);
 			}
 		};
 		actionSaveAllSummaries.setEnabled(false);
 		
 		this.actionSaveAll = new FHAESAction(I18n.getText("MainWindow.mntmSaveAll.text"), "save_all.png") { //$NON-NLS-1$
-		
+			
 			private static final long serialVersionUID = 1L;
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-			
+				
 				saveAllOutputFiles();
 			}
 		};
@@ -1936,7 +1941,7 @@ public class MainWindow implements PrefsListener {
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-			
+				
 				new JSEAFrame(frame);
 			}
 		};
@@ -1947,7 +1952,7 @@ public class MainWindow implements PrefsListener {
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-			
+				
 				logviewer.setVisible(true);
 			}
 		};
@@ -1958,7 +1963,7 @@ public class MainWindow implements PrefsListener {
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-			
+				
 				UpdateChecker uc = new UpdateChecker();
 				uc.manualCheckForUpdates();
 			}
@@ -1970,7 +1975,7 @@ public class MainWindow implements PrefsListener {
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-			
+				
 				TemporalFilterDialog dialog = new TemporalFilterDialog();
 				dialog.setIconImage(Builder.getApplicationIcon());
 				dialog.setModal(true);
@@ -1988,8 +1993,8 @@ public class MainWindow implements PrefsListener {
 					if (file != null)
 					{
 						Object[] options = { "Yes", "No", "Cancel" };
-						int response = JOptionPane.showOptionDialog(frame, "Would you like to add this file to you project now?",
-								"Confirm", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, // do not use a
+						int response = JOptionPane.showOptionDialog(frame, "Would you like to add this file to you project now?", "Confirm",
+								JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, // do not use a
 								// custom
 								// Icon
 								options, // the titles of buttons
@@ -2016,7 +2021,7 @@ public class MainWindow implements PrefsListener {
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-			
+				
 				CompositeFilterDialog dialog = new CompositeFilterDialog(true);
 				dialog.setIconImage(Builder.getApplicationIcon());
 				dialog.setModal(true);
@@ -2041,7 +2046,7 @@ public class MainWindow implements PrefsListener {
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-			
+				
 				String lastVisitedFolder = App.prefs.getPref(PrefKey.PREF_LAST_READ_FOLDER, null);
 				JFileChooser fc;
 				
@@ -2104,7 +2109,7 @@ public class MainWindow implements PrefsListener {
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-			
+				
 				CompositeFilterDialog dialog = new CompositeFilterDialog();
 				dialog.setIconImage(Builder.getApplicationIcon());
 				dialog.setModal(true);
@@ -2116,15 +2121,15 @@ public class MainWindow implements PrefsListener {
 				
 				try
 				{
-					File file = FHOperations.createCompositeFile(frame, getSelectedValidFiles(), dialog.getStartYear(),
-							dialog.getEndYear(), dialog.getFireFilterType(), dialog.getSampleDepthFilterType(),
-							dialog.getFireFilterValue(), dialog.getMinNumberOfSamples(), dialog.getEventTypeToProcess());
+					File file = FHOperations.createCompositeFile(frame, getSelectedValidFiles(), dialog.getStartYear(), dialog.getEndYear(),
+							dialog.getFireFilterType(), dialog.getSampleDepthFilterType(), dialog.getFireFilterValue(),
+							dialog.getMinNumberOfSamples(), dialog.getEventTypeToProcess());
 					
 					if (file != null)
 					{
 						Object[] options = { "Yes", "No", "Cancel" };
-						int response = JOptionPane.showOptionDialog(frame, "Would you like to add this file to you project now?",
-								"Confirm", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, // do not use a
+						int response = JOptionPane.showOptionDialog(frame, "Would you like to add this file to you project now?", "Confirm",
+								JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, // do not use a
 								// custom
 								// Icon
 								options, // the titles of buttons
@@ -2153,7 +2158,7 @@ public class MainWindow implements PrefsListener {
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-			
+				
 				String lastVisitedFolder = App.prefs.getPref(PrefKey.PREF_LAST_READ_FOLDER, null);
 				JFileChooser fc;
 				
@@ -2214,7 +2219,7 @@ public class MainWindow implements PrefsListener {
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-			
+				
 				new ShapeFileDialog(reportPanel, reportPanel.panelResults.getFHMatrix());
 			}
 		};
@@ -2226,7 +2231,7 @@ public class MainWindow implements PrefsListener {
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-			
+				
 				SpatialJoinDialog sjd = new SpatialJoinDialog(FileListModel.getValidSelectedFileList(fhxFileList));
 				sjd.setVisible(true);
 			}
@@ -2239,7 +2244,7 @@ public class MainWindow implements PrefsListener {
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-			
+				
 				String lastVisitedFolder = App.prefs.getPref(PrefKey.PREF_LAST_EXPORT_FOLDER, null);
 				String lastExportFormat = App.prefs.getPref(PrefKey.PREF_LAST_EXPORT_FORMAT, new XLSXFileFilter().getDescription());
 				
@@ -2284,9 +2289,9 @@ public class MainWindow implements PrefsListener {
 					if (outputFile.exists())
 					{
 						Object[] options = { "Overwrite", "No", "Cancel" };
-						int response = JOptionPane.showOptionDialog(frame, "The file '" + outputFile.getName()
-								+ "' already exists.  Are you sure you want to overwrite?", "Confirm", JOptionPane.YES_NO_CANCEL_OPTION,
-								JOptionPane.QUESTION_MESSAGE, null, // do not use a
+						int response = JOptionPane.showOptionDialog(frame,
+								"The file '" + outputFile.getName() + "' already exists.  Are you sure you want to overwrite?", "Confirm",
+								JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, // do not use a
 								// custom
 								// Icon
 								options, // the titles of buttons
@@ -2334,7 +2339,7 @@ public class MainWindow implements PrefsListener {
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-			
+				
 				new QuickLaunchDialog(false);
 			}
 		};
@@ -2346,7 +2351,7 @@ public class MainWindow implements PrefsListener {
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-			
+				
 				boolean val = (Boolean) getValue(Action.SELECTED_KEY);
 				App.prefs.setBooleanPref(PrefKey.SHOW_QUICK_LAUNCH_AT_STARTUP, val);
 			}
@@ -2359,7 +2364,7 @@ public class MainWindow implements PrefsListener {
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-			
+				
 				boolean val = (Boolean) getValue(Action.SELECTED_KEY);
 				App.prefs.setBooleanPref(PrefKey.AUTO_LOAD_CATEGORIES, val);
 			}
@@ -2372,7 +2377,7 @@ public class MainWindow implements PrefsListener {
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-			
+				
 				FeedbackPreferenceManager.ResetAllFeedbackMessagePrefs();
 			}
 		};
@@ -2382,7 +2387,7 @@ public class MainWindow implements PrefsListener {
 	 * Initialize the menus.
 	 */
 	private void initMenu() {
-	
+		
 		/**
 		 * 
 		 * FILE MENU
@@ -2474,6 +2479,7 @@ public class MainWindow implements PrefsListener {
 		mnEdit.add(new FHAESMenuItem(reportPanel.actionCopy));
 		mnEdit.addSeparator();
 		mnEdit.add(new FHAESMenuItem(actionEditFile));
+		mnEdit.add(new FHAESMenuItem(actionEditCategories));
 		
 		/**
 		 * 
@@ -2580,7 +2586,7 @@ public class MainWindow implements PrefsListener {
 	 * Initialize the toolbar.
 	 */
 	private void initToolbar() {
-	
+		
 		JToolBarButton btnNew = new JToolBarButton(this.actionFileNew);
 		JToolBarButton btnOpen = new JToolBarButton(this.actionFileOpen);
 		JToolBarButton btnSaveAll = new JToolBarButton(this.actionSaveResults);
@@ -2706,7 +2712,7 @@ public class MainWindow implements PrefsListener {
 	}
 	
 	public void reloadAllFiles() {
-	
+		
 		ArrayList<FHFile> fileList = this.fileListModel.getCompleteFileList();
 		
 		fileListModel.clear();

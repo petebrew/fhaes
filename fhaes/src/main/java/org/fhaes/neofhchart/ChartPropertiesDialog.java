@@ -254,6 +254,7 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 	private HelpTipButton htbSortSamples;
 	private JLabel lblIndexLineWidth;
 	private JSpinner spnPercentScarredLineWidth;
+	private JCheckBox chkRememberChartPrefs;
 	
 	/**
 	 * Create the dialog.
@@ -645,6 +646,7 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 		App.prefs.setIntPref(PrefKey.CHART_HIGHLIGHT_YEARS_WEIGHT, (int) spnHighlightWeight.getValue());
 		App.prefs.setColorPref(PrefKey.CHART_HIGHLIGHT_YEARS_COLOR, btnHighlightColor.getBackground());
 		App.prefs.setIntegerArrayPref(PrefKey.CHART_HIGHLIGHT_YEARS_ARRAY, highlightYearsModel.getAllYears());
+		App.prefs.setBooleanPref(PrefKey.CHART_SHOW_LEGEND, this.chkShowLegend.isSelected());
 		
 		// Index plot tab
 		App.prefs.setBooleanPref(PrefKey.CHART_SHOW_INDEX_PLOT, chkIndexPlot.isSelected());
@@ -1819,7 +1821,7 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 		
 		JPanel buttonPane = new JPanel();
 		this.getContentPane().add(buttonPane, BorderLayout.SOUTH);
-		buttonPane.setLayout(new MigLayout("", "[157px][grow][][73px]", "[25px]"));
+		buttonPane.setLayout(new MigLayout("", "[157px][][grow][][73px]", "[25px]"));
 		
 		JButton btnReset = new JButton("Reset to defaults");
 		btnReset.setActionCommand("Reset");
@@ -1834,9 +1836,14 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 		JButton btnOk = new JButton("OK");
 		btnOk.setActionCommand("OK");
 		btnOk.addActionListener(this);
-		buttonPane.add(btnOk, "cell 2 0");
 		
-		buttonPane.add(btnCancel, "cell 3 0,alignx left,aligny top");
+		chkRememberChartPrefs = new JCheckBox("Remember style after restart");
+		new CheckBoxWrapper(chkRememberChartPrefs, PrefKey.CHART_REMEMBER_CHART_PREFS_AFTER_RESTART, false);
+		
+		buttonPane.add(chkRememberChartPrefs, "cell 1 0");
+		buttonPane.add(btnOk, "cell 3 0");
+		
+		buttonPane.add(btnCancel, "cell 4 0,alignx left,aligny top");
 		getRootPane().setDefaultButton(btnCancel);
 		
 		setFromPreferences();

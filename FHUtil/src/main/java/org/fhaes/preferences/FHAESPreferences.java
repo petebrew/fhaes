@@ -461,6 +461,8 @@ public class FHAESPreferences {
 		
 		CHART_SHOW_FILTER_IN_LEGEND("chartShowFilterInLegend"),
 		
+		CHART_REMEMBER_CHART_PREFS_AFTER_RESTART("chartRememberPrefsAfterRestart"),
+		
 		/**
 		 * 
 		 * FEEDBACK MESSAGE PREFERENCES
