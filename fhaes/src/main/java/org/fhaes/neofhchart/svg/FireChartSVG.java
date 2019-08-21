@@ -482,6 +482,12 @@ public class FireChartSVG {
 	 */
 	public int getTotalWidth() {
 		
+		if (!App.prefs.getBooleanPref(PrefKey.CHART_SHOW_LEGEND, true))
+		{
+			return chartWidth + this.widestChronologyLabelSize + 120;
+			
+		}
+		
 		return chartWidth + this.widestChronologyLabelSize + 300;
 	}
 	
@@ -1382,6 +1388,12 @@ public class FireChartSVG {
 	 * @return legend
 	 */
 	private Element getLegend() {
+		
+		if (!App.prefs.getBooleanPref(PrefKey.CHART_SHOW_LEGEND, true))
+		{
+			Element legend = doc.createElementNS(svgNS, "g");
+			return legend;
+		}
 		
 		int labelWidth = FireChartUtil.getStringWidth(Font.PLAIN, 8, "Outer year without bark") + 40;
 		int labelHeight = FireChartUtil.getStringHeight(Font.PLAIN, 8, "Outer year without bark");
