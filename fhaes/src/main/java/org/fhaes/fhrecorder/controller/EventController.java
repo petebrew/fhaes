@@ -31,7 +31,7 @@ public class EventController {
 	 * Adds a FHX2Event to the currently selected FHX2Sample.
 	 */
 	public static void addNewEvent() {
-	
+		
 		if (SampleController.getSelectedSampleIndex() > -1)
 		{
 			FHX2_Event newEvent = new FHX2_Event();
@@ -61,7 +61,9 @@ public class EventController {
 	 * @param index
 	 */
 	public static void deleteEvent(int index) {
-	
+		
+		FileController.setIsChangedSinceLastSave(true);
+		
 		FHX2_Sample selectedSample = IOController.getFile().getRequiredPart().getSample(SampleController.getSelectedSampleIndex());
 		selectedSample.removeEvent(index);
 	}

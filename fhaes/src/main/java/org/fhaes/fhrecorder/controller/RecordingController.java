@@ -36,7 +36,7 @@ public class RecordingController {
 	 * Adds a new recording to the currently selected sample.
 	 */
 	public static void addNewRecording() {
-	
+		
 		if (SampleController.getSelectedSampleIndex() > -1)
 		{
 			FHX2_Recording newRecording = null;
@@ -83,6 +83,8 @@ public class RecordingController {
 			}
 		}
 		SampleController.setSelectedSampleIndex(SampleController.getSelectedSampleIndex());
+		FileController.setIsChangedSinceLastSave(true);
+		
 	}
 	
 	/**
@@ -91,7 +93,7 @@ public class RecordingController {
 	 * @param recording
 	 */
 	public static void addRecordingFromFirstEventToEnd() {
-	
+		
 		if (SampleController.getSelectedSampleIndex() > -1)
 		{
 			FHX2_Recording newRecording = new FHX2_Recording();
@@ -121,6 +123,8 @@ public class RecordingController {
 			selectedSample.addRecording(newRecording);
 			
 		}
+		FileController.setIsChangedSinceLastSave(true);
+		
 		SampleController.setSelectedSampleIndex(SampleController.getSelectedSampleIndex());
 	}
 	
@@ -130,7 +134,7 @@ public class RecordingController {
 	 * @param recording
 	 */
 	public static void addRecordingFromBeginningToEnd() {
-	
+		
 		if (SampleController.getSelectedSampleIndex() > -1)
 		{
 			FHX2_Recording newRecording = new FHX2_Recording();
@@ -151,6 +155,8 @@ public class RecordingController {
 			selectedSample.addRecording(newRecording);
 			
 		}
+		FileController.setIsChangedSinceLastSave(true);
+		
 		SampleController.setSelectedSampleIndex(SampleController.getSelectedSampleIndex());
 	}
 	
@@ -158,7 +164,7 @@ public class RecordingController {
 	 * Add recording years only for years where there are events
 	 */
 	public static void addRecordingEventYearsOnly() {
-	
+		
 		if (SampleController.getSelectedSampleIndex() > -1)
 		{
 			
@@ -175,6 +181,8 @@ public class RecordingController {
 				selectedSample.addRecording(newRecording);
 			}
 		}
+		FileController.setIsChangedSinceLastSave(true);
+		
 		SampleController.setSelectedSampleIndex(SampleController.getSelectedSampleIndex());
 	}
 	
@@ -184,16 +192,20 @@ public class RecordingController {
 	 * @param index
 	 */
 	public static void deleteRecording(int index) {
-	
+		
 		FHX2_Sample selectedSample = IOController.getFile().getRequiredPart().getSample(SampleController.getSelectedSampleIndex());
 		selectedSample.removeRecording(index);
+		FileController.setIsChangedSinceLastSave(true);
+		
 	}
 	
 	/**
 	 * Delete all recordings from the currently selected sample but don't delete any events.
 	 */
 	public static void deleteAllRecordingsButNotEvents() {
-	
+		
+		FileController.setIsChangedSinceLastSave(true);
+		
 		FHX2_Sample selectedSample = IOController.getFile().getRequiredPart().getSample(SampleController.getSelectedSampleIndex());
 		while (selectedSample.getNumOfRecordings() > 0)
 		{

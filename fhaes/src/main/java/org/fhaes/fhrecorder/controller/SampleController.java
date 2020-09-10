@@ -43,7 +43,7 @@ public class SampleController {
 	 * @return the selected sample's index
 	 */
 	public static int getSelectedSampleIndex() {
-	
+		
 		return selectedSampleIndex;
 	}
 	
@@ -53,7 +53,7 @@ public class SampleController {
 	 * @param i
 	 */
 	public static void setSelectedSampleIndex(int i) {
-	
+		
 		FHX2_FileRequiredPart reqTemp = IOController.getFile().getRequiredPart();
 		int numSamples = reqTemp.getNumSamples();
 		
@@ -83,7 +83,7 @@ public class SampleController {
 	 * @return
 	 */
 	public static int getYearOfFirstEventInSelectedSample() {
-	
+		
 		FHX2_Sample currentSample = IOController.getFile().getRequiredPart().getSample(getSelectedSampleIndex());
 		
 		if (currentSample.getNumOfEvents() != 0)
@@ -113,7 +113,7 @@ public class SampleController {
 	 * @return
 	 */
 	public static int getYearOfLastEventInSelectedSample() {
-	
+		
 		FHX2_Sample currentSample = IOController.getFile().getRequiredPart().getSample(getSelectedSampleIndex());
 		
 		if (currentSample.getNumOfEvents() != 0)
@@ -144,7 +144,7 @@ public class SampleController {
 	 * @param inBark
 	 */
 	public static void setSampleBark(boolean inBark) {
-	
+		
 		IOController.getFile().getRequiredPart().getSample(getSelectedSampleIndex()).setBark(inBark);
 	}
 	
@@ -154,7 +154,7 @@ public class SampleController {
 	 * @param inPith
 	 */
 	public static void setSamplePith(boolean inPith) {
-	
+		
 		IOController.getFile().getRequiredPart().getSample(getSelectedSampleIndex()).setPith(inPith);
 	}
 	
@@ -164,7 +164,7 @@ public class SampleController {
 	 * @param inName
 	 */
 	public static void changeSampleName(String inName) {
-	
+		
 		IOController.getFile().getRequiredPart().getSample(getSelectedSampleIndex()).setSampleName(inName);
 		IOController.getFile().getRequiredPart().calculateIDLength();
 	}
@@ -175,7 +175,7 @@ public class SampleController {
 	 * @param inFirstYear
 	 */
 	public static void changeSampleFirstYear(int inFirstYear) {
-	
+		
 		IOController.getFile().getRequiredPart().getSample(getSelectedSampleIndex()).setSampleFirstYear(inFirstYear);
 		IOController.getFile().getRequiredPart().calculateFirstYear();
 	}
@@ -186,7 +186,7 @@ public class SampleController {
 	 * @param inLastYear
 	 */
 	public static void changeSampleLastYear(int inLastYear) {
-	
+		
 		IOController.getFile().getRequiredPart().getSample(getSelectedSampleIndex()).setSampleLastYear(inLastYear);
 		IOController.getFile().getRequiredPart().calculateLastYear();
 	}
@@ -195,7 +195,7 @@ public class SampleController {
 	 * Updates the closing characters of all the samples.
 	 */
 	public static void updateAllSampleOpeningAndClosingChars() {
-	
+		
 		for (int i = 0; i < IOController.getFile().getRequiredPart().getNumSamples(); i++)
 		{
 			FHX2_Sample currentSample = IOController.getFile().getRequiredPart().getSample(i);
@@ -213,7 +213,7 @@ public class SampleController {
 	 * @param inSample
 	 */
 	public static void saveNewSample(FHX2_Sample inSample) {
-	
+		
 		IOController.getFile().getRequiredPart().addSample(inSample);
 		setSelectedSampleIndex(IOController.getFile().getRequiredPart().getNumSamples());
 		
@@ -227,7 +227,7 @@ public class SampleController {
 	 * Deletes a sample from the data.
 	 */
 	public static void deleteSample() {
-	
+		
 		FHX2_FileRequiredPart temp = IOController.getFile().getRequiredPart();
 		if (getSelectedSampleIndex() > -1)
 		{
@@ -237,6 +237,7 @@ public class SampleController {
 			
 			IOController.getFile().getRequiredPart().calculateFirstYear();
 			IOController.getFile().getRequiredPart().calculateLastYear();
+			FileController.setIsChangedSinceLastSave(true);
 		}
 	}
 	
@@ -246,7 +247,7 @@ public class SampleController {
 	 * @param index
 	 */
 	public static void deleteSample(int index) {
-	
+		
 		FHX2_FileRequiredPart temp = IOController.getFile().getRequiredPart();
 		temp.deleteSample(index);
 		setSelectedSampleIndex(index - 1);
@@ -262,7 +263,7 @@ public class SampleController {
 	 * @return false if there are no events, otherwise true
 	 */
 	public static boolean selectedSampleHasEvents() {
-	
+		
 		FHX2_Sample currentSample = IOController.getFile().getRequiredPart().getSample(getSelectedSampleIndex());
 		return currentSample.getNumOfEvents() != 0;
 	}
@@ -274,7 +275,7 @@ public class SampleController {
 	 * @param replaceindex
 	 */
 	public static void swapSamples(int moveindex, int replaceindex) {
-	
+		
 		FHX2_FileRequiredPart temp = IOController.getFile().getRequiredPart();
 		
 		try

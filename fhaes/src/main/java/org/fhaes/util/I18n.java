@@ -9,7 +9,7 @@ import org.tridas.io.DefaultResourceBundle;
 public class I18n {
 	
 	private I18n() {
-	
+		
 		// don't instantiate me
 	}
 	
@@ -21,7 +21,7 @@ public class I18n {
 		ResourceBundle bundle;
 		try
 		{
-			bundle = ResourceBundle.getBundle("locale.locale", Locale.getDefault());
+			bundle = ResourceBundle.getBundle("locale", Locale.getDefault());
 		}
 		catch (MissingResourceException mre)
 		{
@@ -29,7 +29,7 @@ public class I18n {
 			try
 			{
 				Locale nonexistentLocale = new Locale("xx", "XX");
-				bundle = ResourceBundle.getBundle("locale.locale", nonexistentLocale);
+				bundle = ResourceBundle.getBundle("locale", nonexistentLocale);
 			}
 			catch (MissingResourceException mre2)
 			{
@@ -50,7 +50,7 @@ public class I18n {
 	 * @return the text
 	 */
 	public static String getText(String key) {
-	
+		
 		String value = null;
 		
 		try

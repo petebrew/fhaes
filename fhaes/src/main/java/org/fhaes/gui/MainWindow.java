@@ -122,7 +122,6 @@ import com.explodingpixels.macwidgets.MacUtils;
 import com.explodingpixels.macwidgets.UnifiedToolBar;
 
 import net.miginfocom.swing.MigLayout;
-import uk.org.lidalia.sysoutslf4j.context.SysOutOverSLF4J;
 
 /**
  * MainWindow Class. This is the main window for FHAES. It contains the menus and toolbars that interact with all the other FHAES modules.
@@ -278,7 +277,7 @@ public class MainWindow implements PrefsListener {
 	private void doStartup() {
 		
 		// Redirect System.out calls to logger
-		SysOutOverSLF4J.sendSystemOutAndErrToSLF4J();
+		// SysOutOverSLF4J.sendSystemOutAndErrToSLF4J();
 		
 		// Setup our look and feel
 		Platform.setLookAndFeel();

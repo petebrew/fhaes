@@ -435,6 +435,7 @@ public class DataPanel extends JPanel implements ChangeListener, PropertyChangeL
 		FileController.checkIfNumSamplesExceedsFHX2Reqs();
 		
 		needToRefreshPanel = true;
+		FileController.setIsChangedSinceLastSave(true);
 		handleUpdatedIndex();
 	}
 	

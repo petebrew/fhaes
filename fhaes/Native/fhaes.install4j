@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<install4j version="7.0.11" transformSequenceNumber="7">
+<install4j version="7.0.10" transformSequenceNumber="7">
   <directoryPresets config="${project.build.directory}/classes/LinBuild/fhaes.desktop" />
   <application name="FHAES" distributionSourceDir="" applicationId="0745-8927-8095-9837" mediaDir="${project.build.directory}/binaries/${compiler:sys.version}/${compiler:sys.platform}" mediaFilePattern="${compiler:sys.shortName}-${compiler:sys.version}" compression="6" lzmaCompression="true" pack200Compression="false" excludeSignedFromPacking="true" commonExternalFiles="false" createMd5Sums="true" shrinkRuntime="true" shortName="FHAES" publisher="University of Arizona" publisherWeb="http://www.fhaes.org" version="2.0.3-SNAPSHOT" allPathsRelative="true" backupOnSave="false" autoSave="false" convertDotsToUnderscores="false" macSignature="????" macVolumeId="71ce969904c145c0" javaMinVersion="1.8" javaMaxVersion="" allowBetaVM="true" jdkMode="jdk" jdkName="JDK 1.8">
     <languages skipLanguageSelection="false" languageSelectionInPrincipalLanguage="false">
@@ -1341,7 +1341,7 @@ return console.askYesNo(message, true);
     </styles>
   </installerGui>
   <mediaSets>
-    <windows name="Windows" id="26" customizedId="" mediaFileName="" installDir="${compiler:sys.shortName}" overridePrincipalLanguage="false" jreBitType="32" runPostProcessor="false" postProcessor="" failOnPostProcessorError="false" useLegacyMediaFileIds="false" legacyMediaFileIds="" downloadURL="" includeAllDownloadableComponents="false" includedJRE="windows-x86-1.8.0_202" manualJREEntry="false" bundleType="1" jreURL="" jreShared="false" directDownload="false" installOnlyIfNecessary="false" customInstallBaseDir="" contentFilesType="1" verifyIntegrity="true">
+    <windows name="Windows" id="26" customizedId="" mediaFileName="" installDir="${compiler:sys.shortName}" overridePrincipalLanguage="false" jreBitType="64" runPostProcessor="false" postProcessor="" failOnPostProcessorError="false" useLegacyMediaFileIds="false" legacyMediaFileIds="" downloadURL="" includeAllDownloadableComponents="false" includedJRE="windows-amd64-11.0.3" manualJREEntry="false" bundleType="1" jreURL="" jreShared="false" directDownload="false" installOnlyIfNecessary="false" customInstallBaseDir="" contentFilesType="1" verifyIntegrity="true">
       <excludedComponents />
       <includedDownloadableComponents />
       <excludedLaunchers />
@@ -1432,7 +1432,7 @@ ln -s /opt/FHAES/.install4j/fhaes.png /usr/share/pixmaps</content>
 rm /usr/share/pixmaps/fhaes.png</content>
       </postUninstallScript>
     </linuxRPM>
-    <macosArchive name="Mac OS X Single Bundle Archive" id="47" customizedId="" mediaFileName="" installDir="${compiler:sys.shortName}" overridePrincipalLanguage="false" jreBitType="all" runPostProcessor="false" postProcessor="" failOnPostProcessorError="false" useLegacyMediaFileIds="false" legacyMediaFileIds="" downloadURL="" includeAllDownloadableComponents="true" includedJRE="macosx-amd64-1.8.0_202_unpacked" manualJREEntry="false" archiveType="dmg" volumeName="${compiler:sys.shortName}" launcherId="24">
+    <macosArchive name="Mac OS X Single Bundle Archive" id="47" customizedId="" mediaFileName="" installDir="${compiler:sys.shortName}" overridePrincipalLanguage="false" jreBitType="all" runPostProcessor="false" postProcessor="" failOnPostProcessorError="false" useLegacyMediaFileIds="false" legacyMediaFileIds="" downloadURL="" includeAllDownloadableComponents="true" includedJRE="macosx-amd64-11.0.3" manualJREEntry="false" archiveType="dmg" volumeName="${compiler:sys.shortName}" launcherId="24">
       <excludedComponents />
       <includedDownloadableComponents />
       <excludedBeans />
@@ -1448,8 +1448,8 @@ rm /usr/share/pixmaps/fhaes.png</content>
       <topLevelFiles />
     </macosArchive>
   </mediaSets>
-  <buildIds buildAll="false">
-    <mediaSet refId="30" />
+  <buildIds buildAll="true">
+    <mediaSet refId="26" />
   </buildIds>
   <buildOptions verbose="false" faster="false" disableSigning="false" disableJreBundling="false" debug="false" />
 </install4j>
