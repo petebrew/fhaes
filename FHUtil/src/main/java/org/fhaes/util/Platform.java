@@ -25,6 +25,8 @@ import java.net.URISyntaxException;
 
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
+import javax.swing.UIManager.LookAndFeelInfo;
+import javax.swing.UnsupportedLookAndFeelException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,12 +60,32 @@ public class Platform {
 			// For non-MacOSX systems set Nimbus as LnF
 			try
 			{
-				UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
+				for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels())
+				{
+					if ("Nimbus".equals(info.getName()))
+					{
+						UIManager.setLookAndFeel(info.getClassName());
+						break;
+					}
+				}
 			}
-			catch (Exception e)
+			catch (UnsupportedLookAndFeelException e)
 			{
-				log.warn("Error setting Nimbus look and feel.");
+				// handle exception
 			}
+			catch (ClassNotFoundException e)
+			{
+				// handle exception
+			}
+			catch (InstantiationException e)
+			{
+				// handle exception
+			}
+			catch (IllegalAccessException e)
+			{
+				// handle exception
+			}
+			
 		}
 		else
 		{
