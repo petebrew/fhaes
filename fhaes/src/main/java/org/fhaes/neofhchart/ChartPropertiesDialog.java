@@ -1117,7 +1117,7 @@ public class ChartPropertiesDialog extends JDialog implements ActionListener {
 		JLabel label = new JLabel("Year spacing:");
 		panelGenericOptionsTicksAndGuides.add(label, "cell 3 2,alignx right,aligny center");
 		
-		cboVerticalGuideStyle = new JComboBox<>();
+		cboVerticalGuideStyle = new JComboBox();
 		
 		for (int i = 0; i < LineStyle.values().length; i++)
 		{

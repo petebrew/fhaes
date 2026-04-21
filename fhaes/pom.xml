@@ -35,6 +35,15 @@
 				<updatePolicy>always</updatePolicy>
 			</snapshots>
 		</repository>
+		
+				<repository>
+		    <id>josm</id>
+		    <name>JOSM Release Repository</name>
+		    <url>https://josm.openstreetmap.de/nexus/content/repositories/releases/</url>
+		    <snapshots><enabled>false</enabled></snapshots>
+		    <releases><enabled>true</enabled></releases>
+		  </repository>
+		
 		<repository>
 		    <id>osgeo</id>
 		    <name>OSGeo Release Repository</name>
@@ -144,7 +153,7 @@
 		<dependency>
 			<groupId>org.codehaus.plexus</groupId>
 			<artifactId>plexus-utils</artifactId>
-			<version>1.1</version>
+			<version>4.0.3</version>
 		</dependency>
 		<dependency>
 			<groupId>org.geotools</groupId>
@@ -171,10 +180,11 @@
 			<version>4.2</version>
 		</dependency>
 		<dependency>
-			<groupId>org.openstreetmap</groupId>
-			<artifactId>jmapviewer</artifactId>
-			<version>1.0.2</version>
+		    <groupId>org.openstreetmap.jmapviewer</groupId>
+		    <artifactId>jmapviewer</artifactId>
+		    <version>2.9</version>
 		</dependency>
+
 		<dependency>
 			<groupId>net.sf.opencsv</groupId>
 			<artifactId>opencsv</artifactId>
@@ -288,6 +298,16 @@
 				<configuration>
 					<doCheck>false</doCheck>
 					<doUpdate>false</doUpdate>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.8.1</version>
+				<configuration>
+					<source>8</source>
+					<target>8</target>
 				</configuration>
 			</plugin>
 

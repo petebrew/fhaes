@@ -27,7 +27,6 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.swing.JCheckBox;
@@ -46,15 +45,12 @@ import org.openstreetmap.gui.jmapviewer.JMapViewer;
 import org.openstreetmap.gui.jmapviewer.JMapViewerTree;
 import org.openstreetmap.gui.jmapviewer.Layer;
 import org.openstreetmap.gui.jmapviewer.MapMarkerDot;
-import org.openstreetmap.gui.jmapviewer.OsmFileCacheTileLoader;
 import org.openstreetmap.gui.jmapviewer.OsmTileLoader;
 import org.openstreetmap.gui.jmapviewer.events.JMVCommandEvent;
 import org.openstreetmap.gui.jmapviewer.interfaces.JMapViewerEventListener;
 import org.openstreetmap.gui.jmapviewer.interfaces.TileLoader;
 import org.openstreetmap.gui.jmapviewer.interfaces.TileSource;
 import org.openstreetmap.gui.jmapviewer.tilesources.BingAerialTileSource;
-import org.openstreetmap.gui.jmapviewer.tilesources.MapQuestOpenAerialTileSource;
-import org.openstreetmap.gui.jmapviewer.tilesources.MapQuestOsmTileSource;
 import org.openstreetmap.gui.jmapviewer.tilesources.OsmTileSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -85,7 +81,7 @@ public class MapPanel extends JPanel implements JMapViewerEventListener {
 		holder = new JPanel();
 		if (Platform.isOSX())
 			holder.setBackground(MainWindow.MAC_BACKGROUND_COLOR);
-			
+		
 		holder.setLayout(new BorderLayout(0, 0));
 		initGUI();
 		setFHFiles(files);
@@ -99,7 +95,7 @@ public class MapPanel extends JPanel implements JMapViewerEventListener {
 		holder = new JPanel();
 		if (Platform.isOSX())
 			holder.setBackground(MainWindow.MAC_BACKGROUND_COLOR);
-			
+		
 		holder.setLayout(new BorderLayout(0, 0));
 		initGUI();
 		setFHFiles(null);
@@ -116,7 +112,7 @@ public class MapPanel extends JPanel implements JMapViewerEventListener {
 			return;
 		if (groups.size() == 0)
 			return;
-			
+		
 		ColorPalette palette = new ColorPalette();
 		
 		for (FHFileGroup group : groups)
@@ -185,7 +181,7 @@ public class MapPanel extends JPanel implements JMapViewerEventListener {
 		setLayout(new BorderLayout(0, 0));
 		if (Platform.isOSX())
 			setBackground(MainWindow.MAC_BACKGROUND_COLOR);
-			
+		
 		treeMap = new JMapViewerTree("Zones");
 		fhaesSites = treeMap.addLayer("Sites");
 		fhaesSites.setVisibleTexts(false);
@@ -203,19 +199,19 @@ public class MapPanel extends JPanel implements JMapViewerEventListener {
 		JPanel panel = new JPanel();
 		if (Platform.isOSX())
 			panel.setBackground(MainWindow.MAC_BACKGROUND_COLOR);
-			
+		
 		JPanel panelTop = new JPanel();
 		if (Platform.isOSX())
 			panelTop.setBackground(MainWindow.MAC_BACKGROUND_COLOR);
-			
+		
 		JPanel panelBottom = new JPanel();
 		if (Platform.isOSX())
 			panelBottom.setBackground(MainWindow.MAC_BACKGROUND_COLOR);
-			
+		
 		JPanel helpPanel = new JPanel();
 		if (Platform.isOSX())
 			helpPanel.setBackground(MainWindow.MAC_BACKGROUND_COLOR);
-			
+		
 		DefaultMapController mapController = new DefaultMapController(treeMap.getViewer());
 		mapController.setMovementMouseButton(MouseEvent.BUTTON1);
 		
@@ -236,8 +232,7 @@ public class MapPanel extends JPanel implements JMapViewerEventListener {
 				getMapViewerTree().setDisplayToFitMapMarkers();
 			}
 		});
-		JComboBox tileSourceSelector = new JComboBox(new TileSource[] { new OsmTileSource.Mapnik(), new OsmTileSource.CycleMap(),
-				new BingAerialTileSource(), new MapQuestOsmTileSource(), new MapQuestOpenAerialTileSource() });
+		JComboBox tileSourceSelector = new JComboBox(new TileSource[] { new OsmTileSource.Mapnik(), new BingAerialTileSource() });
 		tileSourceSelector.addItemListener(new ItemListener() {
 			
 			@Override
@@ -247,15 +242,9 @@ public class MapPanel extends JPanel implements JMapViewerEventListener {
 			}
 		});
 		JComboBox tileLoaderSelector;
-		try
-		{
-			tileLoaderSelector = new JComboBox(
-					new TileLoader[] { new OsmFileCacheTileLoader(getMapViewerTree()), new OsmTileLoader(getMapViewerTree()) });
-		}
-		catch (IOException e)
-		{
-			tileLoaderSelector = new JComboBox(new TileLoader[] { new OsmTileLoader(getMapViewerTree()) });
-		}
+		
+		tileLoaderSelector = new JComboBox(new TileLoader[] { new OsmTileLoader(getMapViewerTree()) });
+		
 		tileLoaderSelector.addItemListener(new ItemListener() {
 			
 			@Override
@@ -330,7 +319,7 @@ public class MapPanel extends JPanel implements JMapViewerEventListener {
 		});
 		// panelBottom.add(showTileGrid);
 		final JCheckBox showZoomControls = new JCheckBox("Show zoom controls");
-		showZoomControls.setSelected(getMapViewerTree().getZoomContolsVisible());
+		showZoomControls.setSelected(getMapViewerTree().getZoomControlsVisible());
 		showZoomControls.addActionListener(new ActionListener() {
 			
 			@Override
@@ -360,7 +349,7 @@ public class MapPanel extends JPanel implements JMapViewerEventListener {
 		
 		//
 		
-		getMapViewerTree().setDisplayPositionByLatLon(0, 0, 1);
+		getMapViewerTree().setDisplayPosition(0, 0, 1);
 		getMapViewerTree().setDisplayToFitMapMarkers();
 		
 		getMapViewerTree().addMouseListener(new MouseAdapter() {
@@ -407,7 +396,7 @@ public class MapPanel extends JPanel implements JMapViewerEventListener {
 		
 		if (command.getCommand().equals(JMVCommandEvent.COMMAND.ZOOM) || command.getCommand().equals(JMVCommandEvent.COMMAND.MOVE))
 		{
-		
+			
 		}
 	}
 	
