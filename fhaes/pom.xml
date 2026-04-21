@@ -14,11 +14,11 @@
 	<distributionManagement>
 		<repository>
 			<id>tridas-releases</id>
-			<url>http://maven.tridas.org/repository/tridas-releases/</url>
+			<url>https://maven.tridas.org/repository/tridas-releases/</url>
 		</repository>
 		<snapshotRepository>
 			<id>tridas-snapshots</id>
-			<url>http://maven.tridas.org/repository/tridas-snapshots/</url>
+			<url>https://maven.tridas.org/repository/tridas-snapshots/</url>
 		</snapshotRepository>
 	</distributionManagement>
 
@@ -26,11 +26,11 @@
 		<repository>
 			<id>tridas-releases</id>
 			<name>TRiDaS Maven Releases Repository</name>
-			<url>http://maven.tridas.org/repository/tridas-releases/</url>
+			<url>https://maven.tridas.org/repository/tridas-releases/</url>
 		</repository>
 		<repository>
 			<id>tridas-snapshots</id>
-			<url>http://maven.tridas.org/repository/tridas-snapshots/</url>
+			<url>https://maven.tridas.org/repository/tridas-snapshots/</url>
 			<snapshots>
 				<updatePolicy>always</updatePolicy>
 			</snapshots>
@@ -132,6 +132,7 @@
 		<maven.build.timestamp.format>yyy-MM-dd</maven.build.timestamp.format>
 		<timestamp>${maven.build.timestamp}</timestamp>
 		<geotools.version>9.0</geotools.version>
+		<maven.compiler.release>25</maven.compiler.release>
 	</properties>
 
 	<dependencies>
@@ -250,14 +251,27 @@
 		<!-- Create launch scripts for Linux builds with correct version number -->
 		<resources>
 			
-			<resource>
-				<directory>Native/BuildResources/</directory>
-				<filtering>true</filtering>
-			</resource>
-			<resource>
-				<directory>Native/</directory>
-				<filtering>true</filtering>
-			</resource>
+				<resource>
+					<directory>Native/BuildResources/</directory>
+					<filtering>true</filtering>
+					<excludes>
+						<exclude>MacBuild/JavaApplicationStub</exclude>
+					</excludes>
+				</resource>
+				<resource>
+					<directory>Native/BuildResources/</directory>
+					<filtering>false</filtering>
+					<includes>
+						<include>MacBuild/JavaApplicationStub</include>
+					</includes>
+				</resource>
+				<resource>
+					<directory>Native/</directory>
+					<filtering>true</filtering>
+					<excludes>
+						<exclude>BuildResources/**</exclude>
+					</excludes>
+				</resource>
 			<resource>
 				<directory>src/main/resources</directory>
 				<filtering>false</filtering>
@@ -304,10 +318,9 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.8.1</version>
+				<version>3.14.0</version>
 				<configuration>
-					<source>8</source>
-					<target>8</target>
+					<release>${maven.compiler.release}</release>
 				</configuration>
 			</plugin>
 

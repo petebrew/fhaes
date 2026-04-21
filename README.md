@@ -17,6 +17,8 @@ FHAES is open source software and we actively encourage collaboration and assist
 
 ## Development environment
 
+The Maven builds in this repository now target Java 25. If your shell is still using another JDK, use `scripts/mvn-java25` instead of `mvn`, or enable automatic JDK switching with a tool that reads `.java-version`.
+
 The IDE of choice of the main FHAES developers is [Eclipse](http://www.eclipse.org). There are many other IDEs around and there is no reason you can't use them instead.  Either way, the following instructions will hopefully be of use.  We have successfully developed FHAES on Mac, Windows and Linux computers.  The methods for setting up are almost identical.  
 
 The first step is to install Eclipse, Java JDK (currently we are using Java 7), Git, Maven, RPM and Install4J.  These are all readily available from their respective websites.  On Ubuntu they can be install from the command line easily as follows:

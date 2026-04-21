@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+JAVA_25_HOME="/home/pbrewer/.jdk/jdk-25"
+
+if [[ ! -x "${JAVA_25_HOME}/bin/java" ]]; then
+  echo "Java 25 was not found at ${JAVA_25_HOME}" >&2
+  exit 1
+fi
+
+export JAVA_HOME="${JAVA_25_HOME}"
+export PATH="${JAVA_HOME}/bin:${PATH}"
+
+exec mvn "$@"

@@ -1,0 +1,7 @@
+{
+  "java.jdt.ls.java.home": "/home/pbrewer/.jdk/jdk-25",
+  "terminal.integrated.env.linux": {
+    "JAVA_HOME": "/home/pbrewer/.jdk/jdk-25",
+    "PATH": "/home/pbrewer/.jdk/jdk-25/bin:${env:PATH}"
+  }
+}

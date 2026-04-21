@@ -66,6 +66,7 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.compiler.release>25</maven.compiler.release>
 	</properties>
 
 	<!-- Repository to deploy to. When deploying make sure your .m2/settings.xml 
@@ -73,22 +74,22 @@
 	<distributionManagement>
 		<repository>
 			<id>tridas-releases</id>
-			<url>http://maven.tridas.org/repository/tridas-releases/</url>
+			<url>https://maven.tridas.org/repository/tridas-releases/</url>
 		</repository>
 		<snapshotRepository>
 			<id>tridas-snapshots</id>
-			<url>http://maven.tridas.org/repository/tridas-snapshots/</url>
+			<url>https://maven.tridas.org/repository/tridas-snapshots/</url>
 		</snapshotRepository>
 	</distributionManagement>
 
 	<repositories>
 		<repository>
 			<id>tridas-releases</id>
-			<url>http://maven.tridas.org/repository/tridas-releases/</url>
+			<url>https://maven.tridas.org/repository/tridas-releases/</url>
 		</repository>
 		<repository>
 			<id>tridas-snapshots</id>
-			<url>http://maven.tridas.org/repository/tridas-snapshots/</url>
+			<url>https://maven.tridas.org/repository/tridas-snapshots/</url>
 		</repository>
 	</repositories>
 
@@ -97,20 +98,19 @@
 		<resources>
 			<resource>
 				<directory>src/main/resources</directory>
-				<filtering>true</filtering>
+				<filtering>false</filtering>
 			</resource>
 		</resources>
 
 		<plugins>
 
-			    <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.2</version>
-        <configuration>
-            <source>8</source>
-            <target>8</target>
-        </configuration>
-    </plugin>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.14.0</version>
+				<configuration>
+					<release>${maven.compiler.release}</release>
+				</configuration>
+			</plugin>
 
 
 			 <!-- <plugin>

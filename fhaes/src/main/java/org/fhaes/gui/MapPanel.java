@@ -28,6 +28,8 @@ import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -50,8 +52,9 @@ import org.openstreetmap.gui.jmapviewer.events.JMVCommandEvent;
 import org.openstreetmap.gui.jmapviewer.interfaces.JMapViewerEventListener;
 import org.openstreetmap.gui.jmapviewer.interfaces.TileLoader;
 import org.openstreetmap.gui.jmapviewer.interfaces.TileSource;
-import org.openstreetmap.gui.jmapviewer.tilesources.BingAerialTileSource;
 import org.openstreetmap.gui.jmapviewer.tilesources.OsmTileSource;
+import org.openstreetmap.gui.jmapviewer.tilesources.TemplatedTMSTileSource;
+import org.openstreetmap.gui.jmapviewer.tilesources.TileSourceInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,6 +65,10 @@ import org.slf4j.LoggerFactory;
 public class MapPanel extends JPanel implements JMapViewerEventListener {
 	
 	private static final Logger log = LoggerFactory.getLogger(MapPanel.class);
+	private static final String TILE_USER_AGENT = "FHAES/2.x (+https://github.com/petebrew/fhaes)";
+	private static final String USGS_TOPO_TILES = "https://basemap.nationalmap.gov/arcgis/rest/services/USGSTopo/MapServer/tile/{z}/{y}/{x}";
+	private static final String USGS_IMAGERY_TILES = "https://basemap.nationalmap.gov/arcgis/rest/services/USGSImageryOnly/MapServer/tile/{z}/{y}/{x}";
+	private static final String USGS_IMAGERY_TOPO_TILES = "https://basemap.nationalmap.gov/arcgis/rest/services/USGSImageryTopo/MapServer/tile/{z}/{y}/{x}";
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -232,7 +239,12 @@ public class MapPanel extends JPanel implements JMapViewerEventListener {
 				getMapViewerTree().setDisplayToFitMapMarkers();
 			}
 		});
-		JComboBox tileSourceSelector = new JComboBox(new TileSource[] { new OsmTileSource.Mapnik(), new BingAerialTileSource() });
+		JComboBox tileSourceSelector = new JComboBox(new TileSource[] {
+			new OsmTileSource.Mapnik(),
+			createUsgsTileSource("USGS Topo", USGS_TOPO_TILES),
+			createUsgsTileSource("USGS Imagery", USGS_IMAGERY_TILES),
+			createUsgsTileSource("USGS Imagery Topo", USGS_IMAGERY_TOPO_TILES)
+		});
 		tileSourceSelector.addItemListener(new ItemListener() {
 			
 			@Override
@@ -243,7 +255,7 @@ public class MapPanel extends JPanel implements JMapViewerEventListener {
 		});
 		JComboBox tileLoaderSelector;
 		
-		tileLoaderSelector = new JComboBox(new TileLoader[] { new OsmTileLoader(getMapViewerTree()) });
+		tileLoaderSelector = new JComboBox(new TileLoader[] { createTileLoader() });
 		
 		tileLoaderSelector.addItemListener(new ItemListener() {
 			
@@ -384,6 +396,23 @@ public class MapPanel extends JPanel implements JMapViewerEventListener {
 			}
 		});
 		
+	}
+
+	private TileLoader createTileLoader() {
+		
+		Map<String, String> headers = new HashMap<String, String>();
+		headers.put("User-Agent", TILE_USER_AGENT);
+		
+		OsmTileLoader tileLoader = new OsmTileLoader(getMapViewerTree(), headers);
+		tileLoader.timeoutConnect = 10000;
+		tileLoader.timeoutRead = 10000;
+		return tileLoader;
+	}
+
+	private TileSource createUsgsTileSource(String name, String url) {
+		
+		TileSourceInfo tileSourceInfo = new TileSourceInfo(name, url, name.toLowerCase().replace(' ', '-'));
+		return new TemplatedTMSTileSource(tileSourceInfo);
 	}
 	
 	private JMapViewer getMapViewerTree() {
