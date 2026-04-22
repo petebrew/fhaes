@@ -27,6 +27,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 import javax.swing.JComponent;
 import javax.swing.JTable;
@@ -118,7 +119,7 @@ public class JTableSpreadsheetByRowAdapter implements ActionListener {
 			sbf.append("\n");
 		}
 		
-		FileUtils.writeStringToFile(f, sbf.toString());
+		FileUtils.writeStringToFile(f, sbf.toString(), StandardCharsets.UTF_8);
 	}
 	
 	/**
